@@ -1,0 +1,20 @@
+{
+  "name": "old-time-radio",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codebox/old-time-radio.git"
+  },
+  "author": "Rob Dawson <rob@codebox.net> (http://codebox.net)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/codebox/old-time-radio/issues"
+  },
+  "homepage": "https://github.com/codebox/old-time-radio/issues",
+  "dependencies": {
+    "express": "^4.17.1",
+    "axios": "^0.19.2"
+  }
+}
