@@ -1,8 +1,11 @@
 {
   "name": "old-time-radio",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A website for listening to Old Time Radio hosted by archive.org",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/codebox/old-time-radio.git"
