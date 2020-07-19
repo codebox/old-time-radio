@@ -1,8 +1,149 @@
 {
   "shows" : [
     {
+      "id": "OTRR_X_Minus_One_Singles",
+      "tags": ["sci-fi"]
+    },
+    {
+      "id": "OTRR_Dimension_X_Singles",
+      "tags": ["sci-fi"]
+    },
+    {
+      "id": "OTRR_Space_Patrol_Singles",
+      "tags": ["sci-fi"]
+    },
+    {
+      "id": "SpaceCadet",
+      "tags": ["sci-fi"]
+    },
+    {
+      "id": "SpaceCadet2",
+      "tags": ["sci-fi"]
+    },
+    {
+      "id": "Flash_Gordon1935",
+      "tags": ["sci-fi"]
+    },
+    {
+      "id": "otr_buckrogers",
+      "tags": ["sci-fi"]
+    },
+    {
       "id": "superman_otr",
       "tags": ["action"]
-    }
+    },
+    {
+      "id": "PatNovakForHire",
+      "tags": ["action"]
+    },
+    {
+      "id": "TheGreenHornet",
+      "tags": ["action"]
+    },
+    {
+      "id": "Dragnet_OTR",
+      "tags": ["action"]
+    },
+    {
+      "id": "Speed_Gibson_Of_The_International_Secret_Police",
+      "tags": ["action"]
+    },
+    {
+      "id": "OTRR_Dark_Fantasy_Singles",
+      "tags": ["mystery"]
+    },
+    {
+      "id": "otr_iloveamystery",
+      "tags": ["mystery"]
+    },
+    {
+      "id": "SUSPENSE",
+      "tags": ["mystery"]
+    },
+    {
+      "id": "SUSPENSE2",
+      "tags": ["mystery"]
+    },
+    {
+      "id": "SUSPENSE3",
+      "tags": ["mystery"]
+    },
+    {
+      "id": "SUSPENSE4",
+      "tags": ["mystery"]
+    },
+    {
+      "id": "SUSPENSE5",
+      "tags": ["mystery"]
+    },
+    {
+      "id": "SUSPENSE6",
+      "tags": ["mystery"]
+    },
+    {
+      "id": "SUSPENSE",
+      "tags": ["mystery"]
+    },
+    {
+      "id": "SUSPENSE7",
+      "tags": ["mystery"]
+    },
+    {
+      "id": "SUSPENSE8",
+      "tags": ["mystery"]
+    },
+    {
+      "id": "SUSPENSE9",
+      "tags": ["mystery"]
+    },
+    {
+      "id": "SUSPENSE_FINAL",
+      "tags": ["mystery"]
+    },
+    {
+      "id": "GUNSMOKE01",
+      "tags": ["western"]
+    },
+    {
+      "id": "GUNSMOKE02",
+      "tags": ["western"]
+    },
+    {
+      "id": "GUNSMOKE03",
+      "tags": ["western"]
+    },
+    {
+      "id": "GUNSMOKE04",
+      "tags": ["western"]
+    },
+    {
+      "id": "GUNSMOKE05",
+      "tags": ["western"]
+    },
+    {
+      "id": "The_Lone_Ranger_Page_01",
+      "tags": ["western"]
+    },
+    {
+      "id": "The_Lone_Ranger_Page_01",
+      "tags": ["western"]
+    },
+    {
+      "id": "The_Lone_Ranger_Page_01",
+      "tags": ["western"]
+    },
+    {
+      "id": "The_Lone_Ranger_Page_02",
+      "tags": ["western"]
+    },
+    {
+      "id": "The_Lone_Ranger_Page_03",
+      "tags": ["western"]
+    },
+    {
+      "id": "HaveGunWillTravel_OldTimeRadio",
+      "tags": ["western"]
+    },
+
   ]
 }
