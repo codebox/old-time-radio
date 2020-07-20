@@ -3,16 +3,23 @@ const express = require('express'),
     app = express(),
     port = 3000;
 
-audioList.init().then(_ => audioList.getShows()).then(_=> console.log('init complete'))
-
 app.use(express.static('public'))
 
 app.get(`/api/playlist`, (req, res) => {
     try {
-        res.status(200).json(playlist)
+        res.status(200).json(playlist);
     } catch (error) {
         res.status(500).json({error : error.message});
     }
 });
 
-app.listen(port, () => console.log(`Listening on port ${port}!`))
+audioList.init()
+    .then(_ => {
+        audioList.getShows();
+        app.listen(port, () => console.log(`Initialisation complete, listening on port ${port}...`));
+    })
+    .catch(err => {
+        console.error('Failed to start application', err)
+    });
+
+

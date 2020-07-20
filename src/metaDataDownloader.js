@@ -37,6 +37,10 @@ module.exports = {
             }, _ => {
                 console.log(`downloading metadata for ${itemId}`);
                 return axios.get(downloadUrl).then(response => {
+                    if (!response.data.files) {
+                        // archive.org returns 200 even if it doesn't recognise the id
+                        return Promise.reject(`No file list returned for id '${itemId}'`);
+                    }
                     return fs.promises.writeFile(cachedFileName, JSON.stringify(response.data, 4), {encoding: ENCODING})
                         .then(() => processResponse(itemId, response.data));
                 });
