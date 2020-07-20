@@ -1,50 +1,8 @@
 const fs = require('fs'),
-    metaDataDownloader = require('./metaDataDownloader.js');
+    metaDataDownloader = require('./metaDataDownloader.js'),
+    channelManager = require('./channel.js');
 
 const DATA_FILE = 'data.json';
-const playlistsByChannel = {};
-
-function buildPlaylistUsing(channelName, shows) {
-    "use strict";
-    const episodeCount = shows.flatMap(show => show.files).length,
-        remainingForEachShow = {};
-
-    shows.forEach(show => {
-        remainingForEachShow[show.id] = {
-            startCount: show.files.length,
-            remaining: show.files.length
-        };
-    });
-    console.log(`Build '${channelName}' channel with ${episodeCount} episodes`);
-
-    const episodeList = [];
-    let currentPlayLength = 0;
-    for (let i=0; i<episodeCount; i++) {
-        const nextShowId = Object.entries(remainingForEachShow).map(kv => {
-            return {
-                showId: kv[0],
-                remainingFraction: (kv[1].remaining - 1) / kv[1].startCount
-            };
-        }).sort((o1, o2) => o2.remainingFraction - o1.remainingFraction)[0].showId;
-
-        const remainingForNextShow = remainingForEachShow[nextShowId],
-            nextShow = shows.find(s => s.id === nextShowId),
-            nextFile = nextShow.files[remainingForNextShow.startCount - remainingForNextShow.remaining],
-            nextEpisode = {
-                url: `${nextShow.urlPrefixes[0]}${nextFile.file}`,
-                offset: currentPlayLength
-            };
-        currentPlayLength += nextFile.length;
-        remainingForNextShow.remaining--;
-        episodeList.push(nextEpisode);
-    }
-    console.log(remainingForEachShow)
-
-    return {
-        title: channelName,
-        list: episodeList
-    };
-}
 
 module.exports.audioList = {
     init() {
@@ -80,13 +38,13 @@ module.exports.audioList = {
 
                         Object.keys(tags).forEach(tag => {
                             const channelName = tag;
-                            playlistsByChannel[tag] = buildPlaylistUsing(channelName, tags[tag].flatMap(showId => shows[showId]));
+                            channelManager.addChannel(channelName, tags[tag].flatMap(showId => shows[showId]));
                         });
                     });
             });
     },
-    getListForChannel(channel){
+    getListForChannel(channelId){
         "use strict";
-        return playlistsByChannel[channel];
+        return channelManager.getPlaylist(channelId);
     }
 };
