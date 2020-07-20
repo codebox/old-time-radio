@@ -5,9 +5,17 @@ const express = require('express'),
 
 app.use(express.static('public'))
 
-app.get(`/api/playlist`, (req, res) => {
+app.get(`/api/playlist/:channel`, (req, res) => {
     try {
-        res.status(200).json(playlist);
+        const channelId = req.params.channel,
+            channel = audioList.getListForChannel(channelId);
+
+        if (channel) {
+            res.status(200).json(channel);
+        } else {
+            res.status(400).send('Unknown channel');
+        }
+
     } catch (error) {
         res.status(500).json({error : error.message});
     }
@@ -15,7 +23,6 @@ app.get(`/api/playlist`, (req, res) => {
 
 audioList.init()
     .then(_ => {
-        audioList.getShows();
         app.listen(port, () => console.log(`Initialisation complete, listening on port ${port}...`));
     })
     .catch(err => {
