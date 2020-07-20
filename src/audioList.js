@@ -17,7 +17,8 @@ function buildPlaylistUsing(channelName, shows) {
     });
     console.log(`Build '${channelName}' channel with ${episodeCount} episodes`);
 
-    const episodeList = [], currentPlayLength = 0;
+    const episodeList = [];
+    let currentPlayLength = 0;
     for (let i=0; i<episodeCount; i++) {
         const nextShowId = Object.entries(remainingForEachShow).map(kv => {
             return {
@@ -27,17 +28,21 @@ function buildPlaylistUsing(channelName, shows) {
         }).sort((o1, o2) => o2.remainingFraction - o1.remainingFraction)[0].showId;
 
         const remainingForNextShow = remainingForEachShow[nextShowId],
+            nextShow = shows.find(s => s.id === nextShowId),
+            nextFile = nextShow.files[remainingForNextShow.startCount - remainingForNextShow.remaining],
             nextEpisode = {
-                file: shows.find(s => s.id === nextShowId).files[remainingForNextShow.startCount - remainingForNextShow.remaining]
+                url: `${nextShow.urlPrefixes[0]}${nextFile.file}`,
+                offset: currentPlayLength
             };
+        currentPlayLength += nextFile.length;
         remainingForNextShow.remaining--;
         episodeList.push(nextEpisode);
     }
     console.log(remainingForEachShow)
 
     return {
-        title: channelName
-
+        title: channelName,
+        list: episodeList
     };
 }
 

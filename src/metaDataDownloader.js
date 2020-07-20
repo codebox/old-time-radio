@@ -7,7 +7,11 @@ function processResponse(itemId, data) {
         title = data.metadata.title || itemId,
         dir = data.dir;
 
-    const files = data.files.filter(f => f.name.toLowerCase().endsWith('.mp3')).map(f => {
+    const files = data.files.filter(f => f.name.toLowerCase().endsWith('.mp3')).filter(f => f.length).map(f => {
+        if (f.length.match(/^[0-9]+:[0-9]+$/)) {
+            const [min, sec] = f.length.split(':')
+            f.length = Number(min) * 60 + Number(sec);
+        }
         return {
             file : f.name,
             length: Number(f.length),
