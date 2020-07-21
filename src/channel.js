@@ -53,8 +53,7 @@ module.exports.buildChannelManager = (clock = DEFAULT_CLOCK, playlistMinLengthIn
                 list: episodeList
             };
         },
-        getPlaylist(channelId) {
-            "use strict";
+        getPlaylist(channelId, trimToNearestBoundary = false) {
             const channel = channels[channelId],
                 playlistLength = channel.list.reduce((lengthSoFar, currentItem) => lengthSoFar + currentItem.length, 0),
                 offsetSinceStartOfPlay = (clock.now() - START_TIME) % playlistLength;
@@ -69,6 +68,14 @@ module.exports.buildChannelManager = (clock = DEFAULT_CLOCK, playlistMinLengthIn
                 }
                 currentOffset += currentItem.length;
                 i++;
+            }
+
+            if (trimToNearestBoundary) {
+                const isPastHalfWay = initialOffset > currentItem.length / 2;
+                initialOffset = 0;
+                if (isPastHalfWay) {
+                    i++;
+                }
             }
 
             currentProgrammeDuration = -initialOffset;

@@ -33,11 +33,21 @@ const SHOWS = [
 describe("channel", () => {
     let timeOffset = 0,
         playlistLength = 60 * 60,
-        channelManager;
+        channelManager,
+        trimToNearest = false;
+
+    beforeEach(() => {
+        "use strict";
+        trimToNearest = false;
+    });
 
     function givenPlaylistLength(seconds) {
         "use strict";
         playlistLength = seconds;
+    }
+    function givenTrimToNearest() {
+        "use strict";
+        trimToNearest = true;
     }
     function givenTimeOffset(seconds) {
         "use strict";
@@ -54,7 +64,8 @@ describe("channel", () => {
     }
     function assertPlaylist(offset, items) {
         "use strict";
-        const playlist = channelManager.getPlaylist(CHANNEL_ID);
+        const playlist = channelManager.getPlaylist(CHANNEL_ID, trimToNearest);
+        console.log(playlist)
         expect(playlist.list).toEqual(items.map(a => {
             return {url: `http://myserver.com/otr/${a[0]}`, length: a[1]};
         }));
@@ -133,6 +144,28 @@ describe("channel", () => {
             ['s3f1', 400], ['s2f2', 1], ['s1f3', 15], ['s1f4', 15], ['s2f3', 9],
             ['s3f2', 10], ['s4f1', 10], ['s1f1', 20], ['s2f1', 15], ['s1f2', 30],
             ['s3f1', 400]]
+        );
+    });
+
+    it("returns correct playlist if trim backwards", function() {
+        givenTrimToNearest();
+        givenPlaylistLength(450);
+        givenTimeOffset(25);
+        initChannelManager();
+
+        assertPlaylist(0, [
+            ['s2f1', 15], ['s1f2', 30], ['s3f1', 400], ['s2f2', 1], ['s1f3', 15]]
+        );
+    });
+
+    it("returns correct playlist if trim forwards", function() {
+        givenTrimToNearest();
+        givenPlaylistLength(450);
+        givenTimeOffset(30);
+        initChannelManager();
+
+        assertPlaylist(0, [
+            ['s1f2', 30], ['s3f1', 400], ['s2f2', 1], ['s1f3', 15], ['s1f4', 15]]
         );
     });
 });

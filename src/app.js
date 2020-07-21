@@ -8,7 +8,8 @@ app.use(express.static('public'))
 app.get(`/api/playlist/:channel`, (req, res) => {
     try {
         const channelId = req.params.channel,
-            channel = audioList.getListForChannel(channelId);
+            trimToNearestBoundary = !! req.query.nearest,
+            channel = audioList.getListForChannel(channelId, trimToNearestBoundary);
 
         if (channel) {
             res.status(200).json(channel);

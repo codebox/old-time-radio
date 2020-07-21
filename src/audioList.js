@@ -1,8 +1,10 @@
 const fs = require('fs'),
     metaDataDownloader = require('./metaDataDownloader.js'),
-    channelManager = require('./channel.js');
+    buildChannelManager = require('./channel.js').buildChannelManager;
 
 const DATA_FILE = 'data.json';
+
+let channelManager = buildChannelManager();
 
 module.exports.audioList = {
     init() {
@@ -43,8 +45,8 @@ module.exports.audioList = {
                     });
             });
     },
-    getListForChannel(channelId){
+    getListForChannel(channelId, trimToNearestBoundary){
         "use strict";
-        return channelManager.getPlaylist(channelId);
+        return channelManager.getPlaylist(channelId, trimToNearestBoundary);
     }
 };
