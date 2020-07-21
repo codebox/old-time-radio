@@ -53,6 +53,10 @@ module.exports.buildChannelManager = (clock = DEFAULT_CLOCK, playlistMinLengthIn
                 list: episodeList
             };
         },
+        getChannels() {
+            "use strict";
+            return Object.keys(channels);
+        },
         getPlaylist(channelId, trimToNearestBoundary = false) {
             const channel = channels[channelId],
                 playlistLength = channel.list.reduce((lengthSoFar, currentItem) => lengthSoFar + currentItem.length, 0),

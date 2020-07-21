@@ -5,6 +5,11 @@ const express = require('express'),
 
 app.use(express.static('public'))
 
+app.get(`/api/channels`, (req, res) => {
+    "use strict";
+    res.status(200).json(audioList.getChannels());
+});
+
 app.get(`/api/playlist/:channel`, (req, res) => {
     try {
         const channelId = req.params.channel,

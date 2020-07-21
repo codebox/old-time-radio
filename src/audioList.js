@@ -45,6 +45,10 @@ module.exports.audioList = {
                     });
             });
     },
+    getChannels() {
+        "use strict";
+        return channelManager.getChannels();
+    },
     getListForChannel(channelId, trimToNearestBoundary){
         "use strict";
         return channelManager.getPlaylist(channelId, trimToNearestBoundary);
