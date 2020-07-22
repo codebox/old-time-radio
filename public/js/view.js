@@ -22,10 +22,6 @@ const view = (() => {
     }
 
     function setState(newState) {
-        if (newState === state) {
-            return;
-        }
-
         if (newState === STATE_INIT) {
             elMessage.innerText = 'Loading channels...';
 

@@ -132,7 +132,7 @@ window.onload = () => {
     audioPlayer.onAudioEnded(() => {
         "use strict";
         playNextFromCurrentChannel().then(nowPlaying => {
-            view.setChannelPlaying(channelId, nowPlaying.name);
+            view.setChannelPlaying(model.channel, nowPlaying.name);
         });
     });
 
