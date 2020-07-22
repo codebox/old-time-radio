@@ -14,8 +14,7 @@ function processResponse(itemId, data) {
         }
         return {
             file : f.name,
-            length: Number(f.length),
-            size: Number(f.size)
+            length: Number(f.length)
         };
     });
 

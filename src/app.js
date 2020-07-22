@@ -13,7 +13,7 @@ app.get(`/api/channels`, (req, res) => {
 app.get(`/api/playlist/:channel`, (req, res) => {
     try {
         const channelId = req.params.channel,
-            trimToNearestBoundary = !! req.query.nearest,
+            trimToNearestBoundary = req.query.nearest !== undefined,
             channel = audioList.getListForChannel(channelId, trimToNearestBoundary);
 
         if (channel) {
