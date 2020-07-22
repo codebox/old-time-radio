@@ -41,6 +41,7 @@ module.exports.buildChannelManager = (clock = DEFAULT_CLOCK, playlistMinLengthIn
                     nextFile = nextShow.files[remainingForNextShow.startCount - remainingForNextShow.remaining],
                     nextEpisode = {
                         url: `${nextShow.urlPrefixes[0]}${nextFile.file}`,
+                        name: nextFile.name,
                         length: nextFile.length
                     };
                 remainingForNextShow.remaining--;

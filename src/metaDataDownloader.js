@@ -14,6 +14,7 @@ function processResponse(itemId, data) {
         }
         return {
             file : f.name,
+            name: 'This is ' + f.name,
             length: Number(f.length)
         };
     });

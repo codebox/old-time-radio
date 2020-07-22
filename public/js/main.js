@@ -48,9 +48,20 @@ window.onload = () => {
                 }
             };
         })(),
+
         playlistManager = (() => {
             "use strict";
             let currentChannelId, playlistForCurrentChannel;
+
+            function shiftPlaylist(includeOffset = false) {
+                const nextItem = playlistForCurrentChannel.list.shift();
+
+                return {
+                    url: nextItem.url,
+                    name: nextItem.name,
+                    offset: includeOffset ? playlistForCurrentChannel.initialOffset : 0
+                };
+            }
 
             return {
                 getNext(channelId) {
@@ -59,26 +70,19 @@ window.onload = () => {
                             return service.getPlaylistForChannel(channelId, true).then(playlist => {
                                 playlistForCurrentChannel = playlist;
 
-                                return {
-                                    url: playlist.list.shift().url,
-                                    offset: 0
-                                };
+                                return shiftPlaylist();
                             });
+
                         } else {
-                            return {
-                                url: playlist.list.shift().url,
-                                offset: 0
-                            };
+                            return shiftPlaylist();
                         }
+
                     } else {
                         currentChannelId = channelId;
                         return service.getPlaylistForChannel(channelId).then(playlist => {
                             playlistForCurrentChannel = playlist;
 
-                            return {
-                                url: playlist.list.shift().url,
-                                offset: playlist.initialOffset
-                            };
+                            return shiftPlaylist(true);
                         });
                     }
                 }
@@ -89,11 +93,14 @@ window.onload = () => {
 
     function playNextFromCurrentChannel() {
         "use strict";
-        playlistManager.getNext(model.channel)
+        return playlistManager.getNext(model.channel)
             .then(nextItem => {
                 const {url, offset} = nextItem;
-                audioPlayer.load(url, offset)
-                    .then(audioPlayer.play())
+                return audioPlayer.load(url, offset)
+                    .then(() => {
+                        audioPlayer.play()
+                        return nextItem;
+                    })
                     .catch(err => console.error(err));
             });
     }
@@ -102,12 +109,17 @@ window.onload = () => {
     view.onChannelSelected(channelId => {
         "use strict";
         view.setChannelLoading(model.channel = channelId);
-        playNextFromCurrentChannel();
+        playNextFromCurrentChannel().then(nowPlaying => {
+            console.log(nowPlaying.name)
+            view.setChannelPlaying(channelId, nowPlaying.name);
+        });
     });
 
     audioPlayer.onAudioEnded(() => {
         "use strict";
-        playNextFromCurrentChannel();
+        playNextFromCurrentChannel().then(nowPlaying => {
+            view.setChannelPlaying(channelId, nowPlaying.name);
+        });
     });
 
     service.getChannels().then(channels => {

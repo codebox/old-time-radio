@@ -11,3 +11,10 @@
     cursor: pointer;
     display: inline;
 }
+
+.channelLoading {
+    color: red;
+}
+.channelPlaying {
+    color: green;
+}
