@@ -1,4 +1,5 @@
 const axios = require('axios'),
+    extractName = require('./nameParser').parseName,
     fs = require("fs");
 
 function processResponse(itemId, data) {
@@ -14,7 +15,7 @@ function processResponse(itemId, data) {
         }
         return {
             file : f.name,
-            name: 'This is ' + f.name,
+            name: extractName(itemId, f),
             length: Number(f.length)
         };
     });

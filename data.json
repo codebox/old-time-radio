@@ -1,6 +1,10 @@
 {
   "shows" : [
     {
+        "id": "Old_Radio_Adverts_01",
+        "tags": ["adverts"]
+    },
+    {
       "id": "OTRR_X_Minus_One_Singles",
       "tags": ["sci-fi"]
     },
