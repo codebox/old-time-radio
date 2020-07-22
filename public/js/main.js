@@ -40,6 +40,9 @@ window.onload = () => {
                     audio.volume = VOLUME_NORMAL;
                     audio.play();
                 },
+                stop() {
+                    audio.pause();
+                },
                 mute() {
                     audio.volume = VOLUME_MUTED;
                 },
@@ -64,6 +67,9 @@ window.onload = () => {
             }
 
             return {
+                setChannel(channelId) {
+                    currentChannelId = channelId;
+                },
                 getNext(channelId) {
                     if (channelId === currentChannelId) {
                         if (playlistForCurrentChannel.list.length === 0) {
@@ -74,7 +80,7 @@ window.onload = () => {
                             });
 
                         } else {
-                            return shiftPlaylist();
+                            return Promise.resolve(shiftPlaylist());
                         }
 
                     } else {
@@ -98,7 +104,7 @@ window.onload = () => {
                 const {url, offset} = nextItem;
                 return audioPlayer.load(url, offset)
                     .then(() => {
-                        audioPlayer.play()
+                        audioPlayer.play();
                         return nextItem;
                     })
                     .catch(err => console.error(err));
@@ -108,11 +114,19 @@ window.onload = () => {
 
     view.onChannelSelected(channelId => {
         "use strict";
-        view.setChannelLoading(model.channel = channelId);
-        playNextFromCurrentChannel().then(nowPlaying => {
-            console.log(nowPlaying.name)
-            view.setChannelPlaying(channelId, nowPlaying.name);
-        });
+        if (channelId === model.channel) {
+            model.channel = null;
+            audioPlayer.stop();
+            playlistManager.setChannel();
+            view.setNoChannelPlaying();
+
+        } else {
+            view.setChannelLoading(model.channel = channelId);
+            playNextFromCurrentChannel().then(nowPlaying => {
+                console.log(nowPlaying.name)
+                view.setChannelPlaying(channelId, nowPlaying.name);
+            });
+        }
     });
 
     audioPlayer.onAudioEnded(() => {
