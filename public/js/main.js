@@ -50,67 +50,36 @@ window.onload = () => {
         })(),
         playlistManager = (() => {
             "use strict";
-            const channelPlaylists = {}, LOW_CHANNEL_THRESHOLD_SECONDS = 30 * 60;
-
-            function isChannelLow(channelId) {
-                const lengthRemaining = channelPlaylists[channelId].list.reduce((a,c) => a + c.length, -channelPlaylists[channelId].initialOffset);
-                return lengthRemaining < LOW_CHANNEL_THRESHOLD_SECONDS;
-            }
-
-            function getItemAndOffsetForNow(playlist, nearestStart) {
-                const now = Date.now();
-
-                let playTime = playlist.loadTime, i = 0;
-                while (true) {
-                    const nextItem = playlist.list[i];
-                    if (playTime + nextItem.length > now) {
-                        if (nearestStart) {
-                            if (now - playTime < nextItem.length / 2) {
-                                return {
-                                    url: nextItem.url,
-                                    offset: 0
-                                };
-                            } else {
-                                return {
-                                    url: playlist.list[i+1].url,
-                                    offset: 0
-                                };
-                            }
-                        } else {
-                            return {
-                                url: nextItem.url,
-                                offset: now - playTime
-                            };
-                        }
-                    }
-                }
-            }
+            let currentChannelId, playlistForCurrentChannel;
 
             return {
-                getNext(channelId, nearestStart = false) {
-                    if (! (channelId in channelPlaylists)) {
-                        return service.getPlaylistForChannel(channelId).then(playlist => {
-                            playlist.loadTime = Date.now();
-                            channelPlaylists[channelId] = playlist;
+                getNext(channelId) {
+                    if (channelId === currentChannelId) {
+                        if (playlistForCurrentChannel.list.length === 0) {
+                            return service.getPlaylistForChannel(channelId, true).then(playlist => {
+                                playlistForCurrentChannel = playlist;
 
-                            return getItemAndOffsetForNow(channelId, nearestStart);
-                        });
-
-                    } else {
-                        const playlist = channelPlaylists[channelId];
-                        if (isChannelLow(channelId)) {
-                            service.getPlaylistForChannel(channelId, true).then(newPlaylist => {
-                                const urlsWeAlreadyHave = new Set(playlist.list.map(o => o.url));
-
-                                newPlaylist.list.forEach(item => {
-                                    if (!urlsWeAlreadyHave.has(item.url)) {
-                                        playlist.list.push(item);
-                                    }
-                                });
+                                return {
+                                    url: playlist.list.shift().url,
+                                    offset: 0
+                                };
                             });
+                        } else {
+                            return {
+                                url: playlist.list.shift().url,
+                                offset: 0
+                            };
                         }
+                    } else {
+                        currentChannelId = channelId;
+                        return service.getPlaylistForChannel(channelId).then(playlist => {
+                            playlistForCurrentChannel = playlist;
 
-                        Promise.resolve(getItemAndOffsetForNow(channelId, nearestStart));
+                            return {
+                                url: playlist.list.shift().url,
+                                offset: playlist.initialOffset
+                            };
+                        });
                     }
                 }
             };
@@ -118,31 +87,22 @@ window.onload = () => {
 
     view.init();
 
-    // function playNextFromCurrentChannel() {
-    //     "use strict";
-    //     playlistManager.getNext(model.channel)
-    //         .then(nextItem => {
-    //             const {url, offset} = nextItem;
-    //             audioPlayer.load(url, offset)
-    //                 .then(audioPlayer.play())
-    //                 .catch(err => console.error(err));
-    //         });
-    // }
-
-    function startPlayingCurrentChannel() {
-        "use strict";
-
-    }
-
     function playNextFromCurrentChannel() {
         "use strict";
-
+        playlistManager.getNext(model.channel)
+            .then(nextItem => {
+                const {url, offset} = nextItem;
+                audioPlayer.load(url, offset)
+                    .then(audioPlayer.play())
+                    .catch(err => console.error(err));
+            });
     }
+
 
     view.onChannelSelected(channelId => {
         "use strict";
         view.setChannelLoading(model.channel = channelId);
-        startPlayingCurrentChannel();
+        playNextFromCurrentChannel();
     });
 
     audioPlayer.onAudioEnded(() => {
