@@ -1,20 +1,60 @@
-#channels {
-    list-style-type: none;
+html, body, div {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    box-sizing: border-box;
 }
-#channels li {
-    padding: 10px;
-    border: 1px solid grey;
-    border-radius: 10px;
+div {
+    border: 1px solid black;
+}
+#container {
+    display: flex;
+    flex-direction: column;
+    max-width: 800px;
+    margin: 0 auto;
+    height: 100%;
+}
+#message {
+    display: flex;
+    flex: 0 0 50px;
+    align-items: center;
+    justify-content: center;
+}
+#title {
+    display: flex;
+    flex: 0 0 100px;
+    align-items: center;
+    justify-content: center;
+}
+#visualiser {
+    display: flex;
+    flex: 1 0 200px;
+}
+#buttons {
+    display: flex;
+    flex: 0 0 200px;
+    flex-direction: row;
+    justify-content: center;
+}
+.buttonBox {
+    display: flex;
+    flex: 0 0 100px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+.buttonIndicator, .button {
+    display: flex;
+    flex: 0 0 50px;
     width: 50px;
-    text-align: center;
-    margin: 10px;
+    height: 50px;
+    border-radius: 50%;
+}
+.buttonLabel {
+    display: flex;
+    flex: 0 0 20px;
+    align-items: center;
+}
+.button {
     cursor: pointer;
-    display: inline;
-}
-
-.channelLoading {
-    color: red;
-}
-.channelPlaying {
-    color: green;
 }

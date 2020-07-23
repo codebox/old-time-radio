@@ -8,7 +8,7 @@ const view = (() => {
         CLASS_LOADING = 'channelLoading',
         CLASS_PLAYING = 'channelPlaying',
 
-        elChannelsList = document.getElementById('channels'),
+        elButtonContainer = document.getElementById('buttons'),
         elMessage = document.getElementById('message'),
 
         channelButtons = {};
@@ -56,13 +56,26 @@ const view = (() => {
         setChannels(channelIds) {
             setState(STATE_NO_CHANNEL);
             channelIds.forEach(channelId => {
-                const elChannel = document.createElement('li');
-                elChannel.innerText = channelId;
-                elChannel.onclick = () => {
+                const elButtonBox = document.createElement('div');
+                elButtonBox.classList.add('buttonBox');
+
+                const elButtonIndicator = document.createElement('div'),
+                    elButton = document.createElement('div'),
+                    elButtonLabel = document.createElement('div');
+
+                elButtonIndicator.classList.add('buttonIndicator');
+                elButton.classList.add('button');
+                elButtonLabel.classList.add('buttonLabel');
+                elButtonLabel.innerText = channelId;
+
+                elButton.onclick = () => {
                     onChannelSelectedHandler(channelId);
                 };
-                elChannelsList.appendChild(elChannel);
-                channelButtons[channelId] = elChannel;
+                elButtonBox.appendChild(elButtonIndicator);
+                elButtonBox.appendChild(elButton);
+                elButtonBox.appendChild(elButtonLabel);
+                elButtonContainer.appendChild(elButtonBox);
+                channelButtons[channelId] = elButtonBox;
             });
         },
         setNoChannelPlaying() {
