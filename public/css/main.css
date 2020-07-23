@@ -1,3 +1,7 @@
+@font-face {
+    font-family: 'Bellerose';
+    src: url('Bellerose.ttf') format('truetype');
+}
 html, body, div {
     margin: 0;
     padding: 0;
@@ -25,6 +29,9 @@ div {
     flex: 0 0 100px;
     align-items: center;
     justify-content: center;
+    font-family: Bellerose;
+    font-size: 48px;
+    margin-top: -24px;
 }
 #visualiser {
     display: flex;
@@ -43,12 +50,22 @@ div {
     align-items: center;
     justify-content: space-evenly;
 }
-.buttonIndicator, .button {
+.buttonIndicatorInner {
+    display: flex;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+}
+.buttonIndicatorOuter, .button {
     display: flex;
     flex: 0 0 50px;
     width: 50px;
     height: 50px;
     border-radius: 50%;
+}
+.buttonIndicatorOuter {
+    align-items: center;
+    justify-content: center;
 }
 .buttonLabel {
     display: flex;
@@ -57,4 +74,45 @@ div {
 }
 .button {
     cursor: pointer;
+    background-color: #f7f7f7;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#f7f7f7), to(#e7e7e7));
+    background-image: -webkit-linear-gradient(top, #f7f7f7, #e7e7e7);
+    background-image: -moz-linear-gradient(top, #f7f7f7, #e7e7e7);
+    background-image: -ms-linear-gradient(top, #f7f7f7, #e7e7e7);
+    background-image: -o-linear-gradient(top, #f7f7f7, #e7e7e7);
+    color: #a7a7a7;
+    box-shadow: 0px 3px 8px #aaa, inset 0px 2px 3px #fff;
+}
+.button:active {
+    box-shadow: none;
+}
+@keyframes channelLoadingAnimation {
+    0%   { opacity:0.6; }
+    50%  { opacity:0.3; }
+    100% { opacity:0.6; }
+}
+.buttonBox.channelLoading .buttonIndicatorInner {
+    animation: channelLoadingAnimation 1s infinite;
+    background-color: #00f700;
+}
+.buttonBox.channelPlaying .buttonIndicatorInner {
+    background-color: #00f700;
+    box-shadow:0 0 10px #00f700,0 0 20px #00f700;
+}
+.buttonIndicatorOuter {
+    background-color: black;
+}
+.buttonIndicatorInner {
+    border: none;
+    background-color: grey;
+}
+.buttonLabel {
+    border: none;
+    background-color: white;
+    padding: 5px;
+    font-family: Bellerose;
+    text-transform: capitalize;
+    font-size: 24px;
+    line-height: 24px;
+    margin-top: -10px;
 }
