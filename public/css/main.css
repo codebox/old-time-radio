@@ -2,6 +2,10 @@
     font-family: 'Bellerose';
     src: url('Bellerose.ttf') format('truetype');
 }
+@font-face {
+    font-family: 'Courier Prime';
+    src: url('CourierPrime-Regular.ttf') format('truetype');
+}
 html, body, div {
     margin: 0;
     padding: 0;
@@ -19,6 +23,7 @@ div {
     height: 100%;
 }
 #message {
+    font-family: 'Courier Prime', monospace;
     display: flex;
     flex: 0 0 50px;
     align-items: center;

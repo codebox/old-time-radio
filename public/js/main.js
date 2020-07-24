@@ -23,7 +23,6 @@ window.onload = () => {
             });
     }
 
-
     view.onChannelSelected(channelId => {
         "use strict";
         model.track = null;
