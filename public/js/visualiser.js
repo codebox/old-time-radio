@@ -1,13 +1,16 @@
 const visualiser = (() => {
+    const BACKGROUND_COLOUR = 'black';
+
     let dataSource, isActive=true, elCanvas, ctx;
 
     function updateCanvasSize() {
-        ctx.canvas.width = elCanvas.clientWidth;
-        ctx.canvas.height = elCanvas.clientHeight;
+        elCanvas.width = elCanvas.offsetWidth;
+        elCanvas.height = elCanvas.offsetHeight;
     }
 
     function clearCanvas() {
-        ctx.clearRect(0, 0, elCanvas.clientWidth, elCanvas.clientHeight);
+        ctx.fillStyle = BACKGROUND_COLOUR;
+        ctx.fillRect(0, 0, elCanvas.clientWidth, elCanvas.clientHeight);
     }
     function paintCanvas() {
         function paint(colour, multiplier) {
@@ -33,8 +36,8 @@ const visualiser = (() => {
         }
         if (isActive && dataSource) {
             clearCanvas();
-            paint('hsla(228, 100%, 50%, 1)', 1)
-            paint('hsla(228, 100%, 85%, 1)', 0.5)
+            paint('#41FF05', 1)
+            paint('#41FF0588', 0.5)
         }
         requestAnimationFrame(paintCanvas);
     }

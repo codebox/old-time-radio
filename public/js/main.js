@@ -5,7 +5,7 @@ window.onload = () => {
     audioPlayer.init();
     view.setVisualisationDataSource(audioPlayer.getData);
     visualiser.init(view.getCanvas());
-    window.resize = visualiser.onResize;
+    window.addEventListener('resize', visualiser.onResize);
     playlist.init(model);
 
     function playNextFromCurrentChannel() {

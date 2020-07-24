@@ -60,13 +60,12 @@ const view = (() => {
                 const elButtonBox = document.createElement('div');
                 elButtonBox.classList.add('buttonBox');
 
-                const elButtonIndicatorInner = document.createElement('div'),
-                    elButtonIndicatorOuter = document.createElement('div'),
+                const elButtonIndicator = document.createElement('div'),
                     elButton = document.createElement('div'),
                     elButtonLabel = document.createElement('div');
 
-                elButtonIndicatorInner.classList.add('buttonIndicatorInner');
-                elButtonIndicatorOuter.classList.add('buttonIndicatorOuter');
+                elButtonIndicator.classList.add('buttonIndicator');
+
                 elButton.classList.add('button');
                 elButtonLabel.classList.add('buttonLabel');
                 elButtonLabel.innerText = channelId;
@@ -78,8 +77,7 @@ const view = (() => {
                         onChannelSelectedHandler(channelId);
                     }
                 };
-                elButtonIndicatorOuter.appendChild(elButtonIndicatorInner);
-                elButtonBox.appendChild(elButtonIndicatorOuter);
+                elButtonBox.appendChild(elButtonIndicator);
                 elButtonBox.appendChild(elButton);
                 elButtonBox.appendChild(elButtonLabel);
                 elButtonContainer.appendChild(elButtonBox);

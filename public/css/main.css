@@ -1,3 +1,14 @@
+:root {
+    --led-off: #5e8a04;
+    --led-on: #41FF05;
+    --led-glow: #89FF00;
+    --led-on-edge: #2a8a01;
+    --font-color: white;
+    --panel-background: linear-gradient(135deg, hsla(0, 0%, 30%, 1) 0%, hsla(0, 0%, 20%, 1) 100%);
+    --button-outer-shadow: #888;
+    --msg-background: black;
+    --divider-colour: #333;
+}
 @font-face {
     font-family: 'Bellerose';
     src: url('Bellerose.ttf') format('truetype');
@@ -28,6 +39,10 @@ div {
     flex: 0 0 50px;
     align-items: center;
     justify-content: center;
+    color: var(--led-on);
+    background-color: var(--msg-background);
+    border-top: 1px solid;
+    border-style: groove;
 }
 #title {
     display: flex;
@@ -37,16 +52,20 @@ div {
     font-family: Bellerose;
     font-size: 48px;
     margin-top: -24px;
+    color: var(--font-color);
+    background: var(--panel-background);
+    text-shadow: 0px 0px 15px var(--font-color);
 }
 #visualiser {
     display: flex;
-    flex: 1 0 200px;
+    flex: 1 1 200px;
 }
 #buttons {
     display: flex;
     flex: 0 0 200px;
     flex-direction: row;
     justify-content: center;
+    background: var(--panel-background);
 }
 .buttonBox {
     display: flex;
@@ -54,77 +73,65 @@ div {
     flex-direction: column;
     align-items: center;
     justify-content: space-evenly;
+    border-width: 0 1px;
+    border-style: groove;
 }
-.buttonIndicatorInner {
+@keyframes blinkGreen {
+    from {
+        background-color: var(--led-off);
+    }
+    50% {
+        background-color: var(--led-on);
+        box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset var(--led-on-edge) 0 -1px 9px, var(--led-on) 0 2px 12px;
+    }
+    to {
+        background-color: var(--led-off);
+    }
+}
+.buttonIndicator {
     display: flex;
     width: 48px;
     height: 48px;
     border-radius: 50%;
+    background-color: var(--led-off);
 }
-.buttonIndicatorOuter, .button {
+.buttonBox.channelLoading .buttonIndicator {
+    animation: blinkGreen 2s infinite;
+}
+.buttonBox.channelPlaying .buttonIndicator {
+    background-color: var(--led-on);
+    box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset var(--led-on-edge) 0 -1px 9px, var(--led-on) 0 2px 12px;
+}
+.button {
     display: flex;
     flex: 0 0 50px;
     width: 50px;
     height: 50px;
     border-radius: 50%;
+    cursor: pointer;
+    background-image: linear-gradient(to bottom right, #fff, #444);
+    color: #a7a7a7;
+    box-shadow: 1px 1px 6px var(--button-outer-shadow), inset 2px 2px 3px #fff;
+    border: 1px solid var(--divider-colour);
 }
-.buttonIndicatorOuter {
-    align-items: center;
-    justify-content: center;
+.button:active {
+    box-shadow: 1px 1px 6px var(--button-outer-shadow);
 }
 .buttonLabel {
     display: flex;
     flex: 0 0 20px;
     align-items: center;
-}
-.button {
-    cursor: pointer;
-    background-color: #f7f7f7;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#f7f7f7), to(#e7e7e7));
-    background-image: -webkit-linear-gradient(top, #f7f7f7, #e7e7e7);
-    background-image: -moz-linear-gradient(top, #f7f7f7, #e7e7e7);
-    background-image: -ms-linear-gradient(top, #f7f7f7, #e7e7e7);
-    background-image: -o-linear-gradient(top, #f7f7f7, #e7e7e7);
-    color: #a7a7a7;
-    box-shadow: 0px 3px 8px #aaa, inset 0px 2px 3px #fff;
-}
-.button:active {
-    box-shadow: none;
-}
-@keyframes channelLoadingAnimation {
-    0%   { opacity: 1; }
-    50%  { opacity: 0; }
-    100% { opacity: 1; }
-}
-@keyframes channelLoadingAnimation2 {
-    0%  { box-shadow:0 0 0px #00D608,0 0 0px #00D608; }
-    50%   { box-shadow:0 0 10px #00D608,0 0 30px #00D608; }
-    100%  { box-shadow:0 0 0px #00D608,0 0 0px #00D608; }
-}
-.buttonBox.channelLoading .buttonIndicatorInner {
-    animation: channelLoadingAnimation 2s infinite;
-}
-.buttonBox.channelLoading .buttonIndicatorOuter {
-    animation: channelLoadingAnimation2 2s infinite;
-}
-.buttonBox.channelPlaying .buttonIndicatorInner {
-    background: radial-gradient(circle, rgba(178,237,183,1) 0%, rgba(98,199,101,1) 50%, rgba(0,214,8,1) 100%);
-    box-shadow:0 0 10px #00D608,0 0 30px #00D608;
-}
-.buttonIndicatorOuter {
-    background-color: #00D608;
-}
-.buttonIndicatorInner {
-    border: none;
-    background-color: #b8c5b7;
-}
-.buttonLabel {
-    border: none;
-    background-color: white;
+    color: var(--font-color);
+    text-shadow: 0px 0px 10px var(--font-color);
     padding: 5px;
     font-family: Bellerose;
     text-transform: capitalize;
     font-size: 24px;
     line-height: 24px;
     margin-top: -10px;
+    border: none ! important;
+}
+canvas {
+    width: 100%;
+    height: 100%;
 }
