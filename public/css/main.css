@@ -1,7 +1,7 @@
 :root {
     --led-off: #5e8a04;
     --led-on: #41FF05;
-    --led-glow: #89FF00;
+    --led-glow: rgba(0, 0, 0, 0.2) 0px 0px 7px 1px, inset #304701 0 0 10px, #41FF05 0 0 12px;
     --led-on-edge: #2a8a01;
     --font-color: white;
     --panel-background: linear-gradient(135deg, hsla(0, 0%, 30%, 1) 0%, hsla(0, 0%, 20%, 1) 100%);
@@ -23,9 +23,6 @@ html, body, div {
     height: 100%;
     box-sizing: border-box;
 }
-div {
-    border: 1px solid black;
-}
 #container {
     display: flex;
     flex-direction: column;
@@ -41,8 +38,6 @@ div {
     justify-content: center;
     color: var(--led-on);
     background-color: var(--msg-background);
-    border-top: 1px solid;
-    border-style: groove;
 }
 #title {
     display: flex;
@@ -55,6 +50,7 @@ div {
     color: var(--font-color);
     background: var(--panel-background);
     text-shadow: 0px 0px 15px var(--font-color);
+    border: 1px solid var(--divider-colour);
 }
 #visualiser {
     display: flex;
@@ -73,8 +69,10 @@ div {
     flex-direction: column;
     align-items: center;
     justify-content: space-evenly;
+    border-color: var(--divider-colour);
     border-width: 0 1px;
-    border-style: groove;
+    border-style: solid;
+    margin: 0 -1px 0 0;
 }
 @keyframes blinkGreen {
     from {
@@ -82,7 +80,7 @@ div {
     }
     50% {
         background-color: var(--led-on);
-        box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset var(--led-on-edge) 0 -1px 9px, var(--led-on) 0 2px 12px;
+        box-shadow: var(--led-glow);
     }
     to {
         background-color: var(--led-off);
@@ -94,13 +92,14 @@ div {
     height: 48px;
     border-radius: 50%;
     background-color: var(--led-off);
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 7px 1px, inset #203001 0 0 10px;
 }
 .buttonBox.channelLoading .buttonIndicator {
     animation: blinkGreen 2s infinite;
 }
 .buttonBox.channelPlaying .buttonIndicator {
     background-color: var(--led-on);
-    box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset var(--led-on-edge) 0 -1px 9px, var(--led-on) 0 2px 12px;
+    box-shadow: var(--led-glow);
 }
 .button {
     display: flex;
