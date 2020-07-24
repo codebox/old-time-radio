@@ -1,56 +1,5 @@
 window.onload = () => {
     const model = {},
-        audioPlayer = (() => {
-            "use strict";
-            const audio = new Audio(),
-                VOLUME_NORMAL = 1,
-                VOLUME_MUTED = 0;
-
-            let onAudioEndedHandler = () => {};
-
-            return {
-                load(url, offset = 0) {
-                    return new Promise((onLoaded, onError) => {
-                        function removeHandlers() {
-                            audio.removeEventListener('canplay', onAudioLoaded);
-                            audio.removeEventListener('err', onAudioLoaded);
-                        }
-
-                        function onAudioLoaded() {
-                            removeHandlers();
-                            onLoaded();
-                        }
-                        function onAudioError() {
-                            removeHandlers();
-                            onError();
-                        }
-
-                        audio.addEventListener('canplay', onAudioLoaded);
-                        audio.addEventListener('error', onAudioError);
-
-                        audio.src = url;
-                        audio.currentTime = offset;
-                    });
-                },
-                onAudioEnded(handler) {
-                    audio.removeEventListener('ended', onAudioEndedHandler);
-                    audio.addEventListener('ended', onAudioEndedHandler = handler);
-                },
-                play() {
-                    audio.volume = VOLUME_NORMAL;
-                    audio.play();
-                },
-                stop() {
-                    audio.pause();
-                },
-                mute() {
-                    audio.volume = VOLUME_MUTED;
-                },
-                unmute() {
-                    audio.volume = VOLUME_NORMAL;
-                }
-            };
-        })(),
 
         playlistManager = (() => {
             "use strict";
@@ -95,7 +44,11 @@ window.onload = () => {
             };
         })();
 
-    view.init();
+    view.init(model);
+    audioPlayer.init();
+    view.setVisualisationDataSource(audioPlayer.getData);
+    visualiser.init(view.getCanvas());
+    window.resize = visualiser.onResize;
 
     function playNextFromCurrentChannel() {
         "use strict";
@@ -107,32 +60,35 @@ window.onload = () => {
                         audioPlayer.play();
                         return nextItem;
                     })
-                    .catch(err => console.error(err));
+                    .catch(err => alert(err));
             });
     }
 
 
     view.onChannelSelected(channelId => {
         "use strict";
-        if (channelId === model.channel) {
-            model.channel = null;
-            audioPlayer.stop();
-            playlistManager.setChannel();
-            view.setNoChannelPlaying();
+        model.track = null;
+        model.channel = channelId;
+        view.updatePlayState(model);
+        playNextFromCurrentChannel().then(nowPlaying => {
+            model.track = nowPlaying.name;
+            view.updatePlayState(model);
+        });
+        audioPlayer.play();
+    });
 
-        } else {
-            view.setChannelLoading(model.channel = channelId);
-            playNextFromCurrentChannel().then(nowPlaying => {
-                console.log(nowPlaying.name)
-                view.setChannelPlaying(channelId, nowPlaying.name);
-            });
-        }
+    view.onChannelDeselected(() => {
+        "use strict";
+        model.channel = model.track = null;
+        audioPlayer.stop();
+        playlistManager.setChannel();
+        view.updatePlayState(model);
     });
 
     audioPlayer.onAudioEnded(() => {
         "use strict";
-        playNextFromCurrentChannel().then(nowPlaying => {
-            view.setChannelPlaying(model.channel, nowPlaying.name);
+        playNextFromCurrentChannel().then(() => {
+            view.updatePlayState(model);
         });
     });
 
@@ -140,6 +96,5 @@ window.onload = () => {
         "use strict";
         view.setChannels(model.channels = channels);
     });
-
 
 };

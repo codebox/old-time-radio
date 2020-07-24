@@ -13,7 +13,7 @@ const view = (() => {
 
         channelButtons = {};
 
-    let state, currentChannelId, currentItemName, onChannelSelectedHandler = () => {};
+    let model, onChannelSelectedHandler = () => {}, onChannelDeselectedHandler = () => {};
 
     function forEachChannelButton(fn) {
         Object.keys(channelButtons).forEach(channelId => {
@@ -21,40 +21,41 @@ const view = (() => {
         });
     }
 
-    function setState(newState) {
-        if (newState === STATE_INIT) {
+    function setViewState(state) {
+        if (state === STATE_INIT) {
             elMessage.innerText = 'Loading channels...';
 
-        } else if (newState === STATE_NO_CHANNEL) {
+        } else if (state === STATE_NO_CHANNEL) {
             elMessage.innerText = 'Select a channel';
             forEachChannelButton((id, el) => {
                 el.classList.remove(CLASS_LOADING, CLASS_PLAYING);
             });
 
-        } else if (newState === STATE_CHANNEL_LOADING) {
-            elMessage.innerText = `Loading ${currentChannelId}...`;
+        } else if (state === STATE_CHANNEL_LOADING) {
+            elMessage.innerText = `Loading ${model.channel}...`;
             forEachChannelButton((id, el) => {
                 el.classList.remove(CLASS_PLAYING);
-                el.classList.toggle(CLASS_LOADING, id === currentChannelId);
+                el.classList.toggle(CLASS_LOADING, id === model.channel);
             });
 
-        } else if (newState === STATE_CHANNEL_PLAYING) {
-            elMessage.innerText = `Playing ${currentItemName}`;
+        } else if (state === STATE_CHANNEL_PLAYING) {
+            elMessage.innerText = `Playing ${model.track}`;
             forEachChannelButton((id, el) => {
                 el.classList.remove(CLASS_LOADING);
-                el.classList.toggle(CLASS_PLAYING, id === currentChannelId);
+                el.classList.toggle(CLASS_PLAYING, id === model.channel);
             });
         }
-        state = newState;
     }
 
+
+
     return {
-        init() {
-            currentChannelId = currentItemName = null;
-            setState(STATE_INIT);
+        init(_model) {
+            model = _model;
+            setViewState(STATE_INIT);
         },
         setChannels(channelIds) {
-            setState(STATE_NO_CHANNEL);
+            setViewState(STATE_NO_CHANNEL);
             channelIds.forEach(channelId => {
                 const elButtonBox = document.createElement('div');
                 elButtonBox.classList.add('buttonBox');
@@ -71,7 +72,11 @@ const view = (() => {
                 elButtonLabel.innerText = channelId;
 
                 elButton.onclick = () => {
-                    onChannelSelectedHandler(channelId);
+                    if (channelId === model.channel) {
+                        onChannelDeselectedHandler(channelId);
+                    } else {
+                        onChannelSelectedHandler(channelId);
+                    }
                 };
                 elButtonIndicatorOuter.appendChild(elButtonIndicatorInner);
                 elButtonBox.appendChild(elButtonIndicatorOuter);
@@ -81,26 +86,26 @@ const view = (() => {
                 channelButtons[channelId] = elButtonBox;
             });
         },
-        setNoChannelPlaying() {
-            setState(STATE_NO_CHANNEL);
-        },
-        setChannelLoading(channelId) {
-            if (state === STATE_CHANNEL_PLAYING && channelId === currentChannelId) {
-                currentChannelId = currentItemName = null;
-                setState(STATE_NO_CHANNEL);
+        updatePlayState() {
+            if (!model.channel) {
+                setViewState(STATE_NO_CHANNEL);
+            } else if (!model.track) {
+                setViewState(STATE_CHANNEL_LOADING);
             } else {
-                currentChannelId = channelId;
-                currentItemName = null;
-                setState(STATE_CHANNEL_LOADING);
+                setViewState(STATE_CHANNEL_PLAYING);
             }
-        },
-        setChannelPlaying(channelId, itemName) {
-            currentChannelId = channelId;
-            currentItemName = itemName;
-            setState(STATE_CHANNEL_PLAYING);
         },
         onChannelSelected(handler) {
             onChannelSelectedHandler = handler;
+        },
+        onChannelDeselected(handler) {
+            onChannelDeselectedHandler = handler;
+        },
+        setVisualisationDataSource(source) {
+            visualiser.setDataSource(source);
+        },
+        getCanvas() {
+            return document.getElementById('canvas');
         }
     };
 })();

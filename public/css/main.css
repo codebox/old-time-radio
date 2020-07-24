@@ -52,8 +52,8 @@ div {
 }
 .buttonIndicatorInner {
     display: flex;
-    width: 46px;
-    height: 46px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
 }
 .buttonIndicatorOuter, .button {
@@ -87,24 +87,31 @@ div {
     box-shadow: none;
 }
 @keyframes channelLoadingAnimation {
-    0%   { opacity:0.6; }
-    50%  { opacity:0.3; }
-    100% { opacity:0.6; }
+    0%   { opacity: 1; }
+    50%  { opacity: 0; }
+    100% { opacity: 1; }
+}
+@keyframes channelLoadingAnimation2 {
+    0%  { box-shadow:0 0 0px #00D608,0 0 0px #00D608; }
+    50%   { box-shadow:0 0 10px #00D608,0 0 30px #00D608; }
+    100%  { box-shadow:0 0 0px #00D608,0 0 0px #00D608; }
 }
 .buttonBox.channelLoading .buttonIndicatorInner {
-    animation: channelLoadingAnimation 1s infinite;
-    background-color: #00f700;
+    animation: channelLoadingAnimation 2s infinite;
+}
+.buttonBox.channelLoading .buttonIndicatorOuter {
+    animation: channelLoadingAnimation2 2s infinite;
 }
 .buttonBox.channelPlaying .buttonIndicatorInner {
-    background-color: #00f700;
-    box-shadow:0 0 10px #00f700,0 0 20px #00f700;
+    background: radial-gradient(circle, rgba(178,237,183,1) 0%, rgba(98,199,101,1) 50%, rgba(0,214,8,1) 100%);
+    box-shadow:0 0 10px #00D608,0 0 30px #00D608;
 }
 .buttonIndicatorOuter {
-    background-color: black;
+    background-color: #00D608;
 }
 .buttonIndicatorInner {
     border: none;
-    background-color: grey;
+    background-color: #b8c5b7;
 }
 .buttonLabel {
     border: none;
