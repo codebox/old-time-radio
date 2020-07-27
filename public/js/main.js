@@ -2,7 +2,6 @@ window.onload = () => {
     const model = {};
 
     view.init(model);
-    audioPlayer.init();
     view.setVisualisationDataSource(audioPlayer.getData);
     visualiser.init(view.getCanvas());
     window.addEventListener('resize', visualiser.onResize());
@@ -29,6 +28,7 @@ window.onload = () => {
         model.playlist = null;
         model.channel = channelId;
         view.updatePlayState(model);
+        visualiser.activate();
         playNextFromCurrentChannel().then(() => {
             view.updatePlayState(model);
         });
@@ -40,6 +40,7 @@ window.onload = () => {
         model.channel = model.playlist = null;
         audioPlayer.stop();
         view.updatePlayState(model);
+        visualiser.deactivate();
     });
 
     audioPlayer.onAudioEnded(() => {
