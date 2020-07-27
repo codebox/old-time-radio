@@ -30,10 +30,11 @@ html, body, div {
 }
 #container {
     display: flex;
+    flex-grow: 1;
+    flex-shrink: 1;
     flex-direction: column;
     max-width: 800px;
     margin: 0 auto;
-    height: 100%;
     box-shadow: 0 0 10px 5px #333;
 }
 @keyframes textGlow {
@@ -116,6 +117,7 @@ html, body, div {
 #visualiser {
     display: flex;
     flex: 1 1 200px;
+    min-height: 0;
 }
 #buttons {
     display: flex;

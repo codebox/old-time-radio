@@ -2,16 +2,18 @@ const visualiser = (() => {
     const BACKGROUND_COLOUR = 'black',
         MAX_FREQ_DATA_VALUE = 255;
 
-    let dataSource, isActive=true, elCanvas, ctx;
+    let dataSource, isActive=true, elCanvas, ctx, width, height
 
     function updateCanvasSize() {
-        elCanvas.width = elCanvas.offsetWidth;
-        elCanvas.height = elCanvas.offsetHeight;
+        clearCanvas();
+        width = elCanvas.width = elCanvas.offsetWidth;
+        height = elCanvas.height = elCanvas.offsetHeight;
+        console.log(width, height)
     }
 
     function clearCanvas() {
         ctx.fillStyle = BACKGROUND_COLOUR;
-        ctx.fillRect(0, 0, elCanvas.clientWidth, elCanvas.clientHeight);
+        ctx.fillRect(0, 0, width, height);
     }
     function paintCanvasGraph() {
         function paint(colour, multiplier) {
@@ -19,16 +21,16 @@ const visualiser = (() => {
             ctx.lineWidth = 2;
             ctx.strokeStyle = colour;
             ctx.beginPath();
-            var sliceWidth = elCanvas.clientWidth * 1.0 / data.length;
+            var sliceWidth = width * 1.0 / data.length;
             var x = 0;
             for(var i = 0; i < data.length; i++) {
                 var v = data[i] / 128.0;
-                var y = multiplier * v * elCanvas.clientHeight/2;
+                var y = multiplier * v * height/2;
 
-                if(i === 0 || x*3 >= elCanvas.clientWidth - 9) {
-                    ctx.moveTo(x*3, elCanvas.clientHeight - y);
+                if(i === 0 || x*3 >= width - 9) {
+                    ctx.moveTo(x*3, height - y);
                 } else {
-                    ctx.lineTo(x*3, elCanvas.clientHeight - y);
+                    ctx.lineTo(x*3, height - y);
                 }
 
                 x += sliceWidth;
@@ -45,10 +47,10 @@ const visualiser = (() => {
 
     function paintCanvasBars() {
         const BAR_COUNT = 20,
-            H_PADDING = 50,
-            V_PADDING = 50,
+            H_PADDING = Math.min(50, width/4),
+            V_PADDING = Math.min(50, height/4),
             BAR_SPACING = 5,
-            BAR_WIDTH = ((elCanvas.clientWidth - 2 * H_PADDING - BAR_SPACING) / BAR_COUNT) - BAR_SPACING;
+            BAR_WIDTH = ((width - 2 * H_PADDING - BAR_SPACING) / BAR_COUNT) - BAR_SPACING;
         const data = dataSource();
 
         const dataBuckets = [],
@@ -63,7 +65,7 @@ const visualiser = (() => {
         }
 
         let barStartX = H_PADDING,
-            barHeightFactor = elCanvas.clientHeight - 2 * V_PADDING;
+            barHeightFactor = height - 2 * V_PADDING;
 
         clearCanvas();
         for (let i=0; i<BAR_COUNT; i++) {
