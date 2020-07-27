@@ -1,8 +1,8 @@
 :root {
-    --led-off: #5e8a04;
-    --led-on: #41FF05;
-    --led-glow: rgba(0, 0, 0, 0.2) 0px 0px 7px 1px, inset #304701 0 0 10px, #41FF05 0 0 12px;
-    --led-on-edge: #2a8a01;
+    --led-off: #808080;
+    --led-on: #ffffff;
+    --led-glow: rgba(0, 0, 0, 0.2) 0px 0px 7px 1px, inset #404040 0 0 10px, #ffffff 0 0 12px;
+    --led-on-edge: #999999;
     --font-color: white;
     --font-color-dim: #888;
     --panel-background: linear-gradient(135deg, hsla(0, 0%, 30%, 1) 0%, hsla(0, 0%, 20%, 1) 100%);
@@ -155,7 +155,7 @@ html, body, div {
     height: 48px;
     border-radius: 50%;
     background-color: var(--led-off);
-    box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 7px 1px, inset #203001 0 0 10px;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 7px 1px, inset #333333 0 0 10px;
     border: 1px solid var(--divider-colour);
 }
 .buttonBox.channelLoading .buttonIndicator {

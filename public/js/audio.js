@@ -17,7 +17,6 @@ const audioPlayer = (() => {
 
             const audioCtx = new (window.AudioContext || window.webkitAudioContext)(),
                 audioSrc = audioCtx.createMediaElementSource(audio);
-
             analyser = audioCtx.createAnalyser();
             analyser.fftSize = FFT_WINDOW_SIZE;
             analyser.smoothingTimeConstant = SMOOTHING;

@@ -5,7 +5,7 @@ const visualiser = (() => {
     let dataSource, isActive=true, elCanvas, ctx, width, height
 
     function updateCanvasSize() {
-        clearCanvas();
+        //clearCanvas();
         width = elCanvas.width = elCanvas.offsetWidth;
         height = elCanvas.height = elCanvas.offsetHeight;
         console.log(width, height)
@@ -15,48 +15,22 @@ const visualiser = (() => {
         ctx.fillStyle = BACKGROUND_COLOUR;
         ctx.fillRect(0, 0, width, height);
     }
-    function paintCanvasGraph() {
-        function paint(colour, multiplier) {
-            const data = dataSource();
-            ctx.lineWidth = 2;
-            ctx.strokeStyle = colour;
-            ctx.beginPath();
-            var sliceWidth = width * 1.0 / data.length;
-            var x = 0;
-            for(var i = 0; i < data.length; i++) {
-                var v = data[i] / 128.0;
-                var y = multiplier * v * height/2;
 
-                if(i === 0 || x*3 >= width - 9) {
-                    ctx.moveTo(x*3, height - y);
-                } else {
-                    ctx.lineTo(x*3, height - y);
-                }
-
-                x += sliceWidth;
-            }
-            ctx.stroke();
-        }
-        if (isActive && dataSource) {
-            clearCanvas();
-            paint('#ddd', 1)
-            paint('#aaa', 0.5)
-        }
-        requestAnimationFrame(paintCanvasGraph);
-    }
-
-    function paintCanvasBars() {
-        const BAR_COUNT = 20,
-            H_PADDING = Math.min(50, width/4),
-            V_PADDING = Math.min(50, height/4),
-            BAR_SPACING = 5,
-            BAR_WIDTH = ((width - 2 * H_PADDING - BAR_SPACING) / BAR_COUNT) - BAR_SPACING;
-        const data = dataSource();
+    let step = 0;
+    function paintSineWave() {
+        "use strict";
+        const data = dataSource(),
+            WAVE_SPEED = 0.5,
+            PADDING = 50,
+            BUCKET_COUNT = 30,
+            TWO_PI = Math.PI * 2,
+            startX = PADDING,
+            endX = width - PADDING;
 
         const dataBuckets = [],
-            BUCKET_SIZE = Math.floor(data.length/BAR_COUNT);
+            BUCKET_SIZE = Math.floor(data.length/BUCKET_COUNT);
 
-        for (let i=0; i<BAR_COUNT; i++) {
+        for (let i=0; i<BUCKET_COUNT; i++) {
             let bucketTotal = 0;
             for (let j=0; j<BUCKET_SIZE; j++) {
                 bucketTotal += data[i*BUCKET_SIZE + j];
@@ -64,18 +38,30 @@ const visualiser = (() => {
             dataBuckets.push(bucketTotal / (BUCKET_SIZE * MAX_FREQ_DATA_VALUE));
         }
 
-        let barStartX = H_PADDING,
-            barHeightFactor = height - 2 * V_PADDING;
-
         clearCanvas();
-        for (let i=0; i<BAR_COUNT; i++) {
-            const barHeight = dataBuckets[i] * barHeightFactor;
-            ctx.fillStyle= `rgba(255,255,255,${0.3 + 0.7 * dataBuckets[i]})`;
-            ctx.fillRect(barStartX, V_PADDING + barHeightFactor - barHeight, BAR_WIDTH, barHeight);
-            barStartX += (BAR_WIDTH + BAR_SPACING);
-        }
+        dataBuckets.forEach((v,i) => {
+            function calcY(x) {
+                const scaledX = TWO_PI * (x - startX) / (endX - startX);
+                return (height/2) + Math.sin(scaledX * (i+1)) * v * height / 2;
+            }
+            ctx.strokeStyle= `hsl(0,0%,${Math.floor(20 + 80 * (1-v))}%)`;
+            ctx.beginPath();
+            let first = true;
 
-        requestAnimationFrame(paintCanvasBars);
+            for (let x = startX; x < endX; x++) {
+                const y = height - calcY(x - step * (i+1));
+                if (first) {
+                    ctx.moveTo(x, y);
+                    first = false;
+                }
+                ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+        });
+
+        step = (step + WAVE_SPEED);
+
+        requestAnimationFrame(paintSineWave);
     }
 
     return {
@@ -84,7 +70,7 @@ const visualiser = (() => {
             ctx = elCanvas.getContext('2d');
             updateCanvasSize();
             clearCanvas();
-            paintCanvasBars();
+            paintSineWave();
         },
         setDataSource(source) {
             dataSource = source;
