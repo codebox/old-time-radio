@@ -14,4 +14,4 @@
 * more messages
     * up next...
     * archive.org credit
-* body background
+* fix resizing issues

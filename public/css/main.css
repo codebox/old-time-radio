@@ -9,6 +9,7 @@
     --button-outer-shadow: #888;
     --msg-background: black;
     --divider-colour: #333;
+    --body-background: #777;
 }
 @font-face {
     font-family: 'Bellerose';
@@ -17,6 +18,9 @@
 @font-face {
     font-family: 'Courier Prime';
     src: url('CourierPrime-Regular.ttf') format('truetype');
+}
+body {
+    background-color: var(--body-background)
 }
 html, body, div {
     margin: 0;
@@ -30,6 +34,7 @@ html, body, div {
     max-width: 800px;
     margin: 0 auto;
     height: 100%;
+    box-shadow: 0 0 10px 5px #333;
 }
 @keyframes textGlow {
     from {
