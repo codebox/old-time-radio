@@ -5,3 +5,13 @@
 * https://css-tricks.com/circular-3d-buttons/
 * https://codepen.io/fskirschbaum/pen/MYJNaj
 * https://www.ibm.com/developerworks/library/wa-ioshtml5/wa-ioshtml5-pdf.pdf
+
+## TODO
+* make audio work on ios
+* new visualisation
+* light colours
+* mix ads with programmes, remove adverts channel
+* more messages
+    * up next...
+    * archive.org credit
+* body background

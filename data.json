@@ -143,6 +143,15 @@
     {
       "id": "HaveGunWillTravel_OldTimeRadio",
       "tags": ["western"]
+    },
+    {
+      "id": "Tarzan1951",
+      "tags": ["action"]
+    },
+    {
+      "id": "OTRR_Tarzan_Singles_TotA",
+      "tags": ["action"]
     }
+
   ]
 }

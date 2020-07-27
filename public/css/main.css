@@ -4,6 +4,7 @@
     --led-glow: rgba(0, 0, 0, 0.2) 0px 0px 7px 1px, inset #304701 0 0 10px, #41FF05 0 0 12px;
     --led-on-edge: #2a8a01;
     --font-color: white;
+    --font-color-dim: #888;
     --panel-background: linear-gradient(135deg, hsla(0, 0%, 30%, 1) 0%, hsla(0, 0%, 20%, 1) 100%);
     --button-outer-shadow: #888;
     --msg-background: black;
@@ -32,13 +33,13 @@ html, body, div {
 }
 @keyframes textGlow {
     from {
-        color: var(--led-off);
+        color: var(--font-color-dim);
     }
     50% {
-        color: var(--led-on);
+        color: var(--font-color);
     }
     to {
-        color: var(--led-off);
+        color: var(--font-color-dim);
     }
 }
 
@@ -50,7 +51,7 @@ html, body, div {
     flex: 0 0 50px;
     align-items: center;
     justify-content: center;
-    color: var(--led-on);
+    color: var(--font-color);
     background-color: var(--msg-background);
     animation: textGlow 5s infinite;
 }

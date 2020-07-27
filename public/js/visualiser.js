@@ -1,5 +1,6 @@
 const visualiser = (() => {
-    const BACKGROUND_COLOUR = 'black';
+    const BACKGROUND_COLOUR = 'black',
+        MAX_FREQ_DATA_VALUE = 255;
 
     let dataSource, isActive=true, elCanvas, ctx;
 
@@ -12,7 +13,7 @@ const visualiser = (() => {
         ctx.fillStyle = BACKGROUND_COLOUR;
         ctx.fillRect(0, 0, elCanvas.clientWidth, elCanvas.clientHeight);
     }
-    function paintCanvas() {
+    function paintCanvasGraph() {
         function paint(colour, multiplier) {
             const data = dataSource();
             ctx.lineWidth = 2;
@@ -36,10 +37,43 @@ const visualiser = (() => {
         }
         if (isActive && dataSource) {
             clearCanvas();
-            paint('#41FF05', 1)
-            paint('#41FF0588', 0.5)
+            paint('#ddd', 1)
+            paint('#aaa', 0.5)
         }
-        requestAnimationFrame(paintCanvas);
+        requestAnimationFrame(paintCanvasGraph);
+    }
+
+    function paintCanvasBars() {
+        const BAR_COUNT = 20,
+            H_PADDING = 50,
+            V_PADDING = 50,
+            BAR_SPACING = 5,
+            BAR_WIDTH = ((elCanvas.clientWidth - 2 * H_PADDING - BAR_SPACING) / BAR_COUNT) - BAR_SPACING;
+        const data = dataSource();
+
+        const dataBuckets = [],
+            BUCKET_SIZE = Math.floor(data.length/BAR_COUNT);
+
+        for (let i=0; i<BAR_COUNT; i++) {
+            let bucketTotal = 0;
+            for (let j=0; j<BUCKET_SIZE; j++) {
+                bucketTotal += data[i*BUCKET_SIZE + j];
+            }
+            dataBuckets.push(bucketTotal / (BUCKET_SIZE * MAX_FREQ_DATA_VALUE));
+        }
+
+        let barStartX = H_PADDING,
+            barHeightFactor = elCanvas.clientHeight - 2 * V_PADDING;
+
+        clearCanvas();
+        for (let i=0; i<BAR_COUNT; i++) {
+            const barHeight = dataBuckets[i] * barHeightFactor;
+            ctx.fillStyle= `rgba(255,255,255,${0.3 + 0.7 * dataBuckets[i]})`;
+            ctx.fillRect(barStartX, V_PADDING + barHeightFactor - barHeight, BAR_WIDTH, barHeight);
+            barStartX += (BAR_WIDTH + BAR_SPACING);
+        }
+
+        requestAnimationFrame(paintCanvasBars);
     }
 
     return {
@@ -48,7 +82,7 @@ const visualiser = (() => {
             ctx = elCanvas.getContext('2d');
             updateCanvasSize();
             clearCanvas();
-            paintCanvas();
+            paintCanvasBars();
         },
         setDataSource(source) {
             dataSource = source;
