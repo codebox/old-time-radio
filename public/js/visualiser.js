@@ -40,6 +40,9 @@ const visualiser = (() => {
 
         clearCanvas();
         dataBuckets.forEach((v,i) => {
+            if (!v) {
+                return;
+            }
             function calcY(x) {
                 const scaledX = TWO_PI * (x - startX) / (endX - startX);
                 return (height/2) + Math.sin(scaledX * (i+1)) * v * height / 2;
