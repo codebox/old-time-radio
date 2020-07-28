@@ -11,7 +11,6 @@
 * mix ads with programmes, remove adverts channel
 * more messages
     * up next...
-    * archive.org credit
 * remove magic numbers from visualisation code
 * sine lookup table, other code efficiencies
 * make button press style change more obvious

@@ -9,7 +9,6 @@ const view = (() => {
         CLASS_PLAYING = 'channelPlaying',
 
         elButtonContainer = document.getElementById('buttons'),
-        elMessage = document.getElementById('message'),
 
         channelButtons = {};
 
@@ -22,36 +21,30 @@ const view = (() => {
     }
 
     function setViewState(state) {
-        if (state === STATE_INIT) {
-            elMessage.innerText = 'Loading channels...';
-
-        } else if (state === STATE_NO_CHANNEL) {
-            elMessage.innerText = 'Select a channel';
+        if (state === STATE_NO_CHANNEL) {
             forEachChannelButton((id, el) => {
                 el.classList.remove(CLASS_LOADING, CLASS_PLAYING);
             });
 
         } else if (state === STATE_CHANNEL_LOADING) {
-            elMessage.innerText = `Loading ${model.channel}...`;
             forEachChannelButton((id, el) => {
                 el.classList.remove(CLASS_PLAYING);
                 el.classList.toggle(CLASS_LOADING, id === model.channel);
             });
 
         } else if (state === STATE_CHANNEL_PLAYING) {
-            elMessage.innerText = `Playing ${model.track}`;
             forEachChannelButton((id, el) => {
                 el.classList.remove(CLASS_LOADING);
                 el.classList.toggle(CLASS_PLAYING, id === model.channel);
             });
         }
+        messageManager.updateStatus();
     }
-
-
 
     return {
         init(_model) {
             model = _model;
+            messageManager.init(document.getElementById('message'), model);
             setViewState(STATE_INIT);
         },
         setChannels(channelIds) {
