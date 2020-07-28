@@ -48,12 +48,18 @@ const messageManager = (() => {
         const MESSAGES = [
             'You are listening to audio from The Internet Archive. Find more at http://archive.org',
             'Please support The Internet Archive by donating at http://archive.org/donate',
-            'All audio on this site is hosted by The Internet Archive. Visit them at http://archive.org'
+            'All audio on this site is hosted by The Internet Archive. Visit them at http://archive.org',
+            () => {
+                if (model.playlist && model.playlist[0]){
+                    return `Up next: ${model.playlist[0].name}`;
+                }
+            }
         ];
         let nextIndex = 0;
         return {
             next() {
-                return MESSAGES[nextIndex = (nextIndex + 1) % MESSAGES.length];
+                const nextMsg = MESSAGES[nextIndex = (nextIndex + 1) % MESSAGES.length];
+                return (typeof nextMsg === 'function') ? nextMsg() : nextMsg;
             }
         };
     })();
@@ -95,8 +101,9 @@ const messageManager = (() => {
     }
 
     function showCannedMessage() {
-        if (!interval) {
-            setMessage(cannedMessages.next(), true);
+        let nextMessage;
+        if (!interval && (nextMessage = cannedMessages.next())) {
+            setMessage(nextMessage, true);
         }
     }
 

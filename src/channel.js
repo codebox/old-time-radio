@@ -6,7 +6,7 @@ const
             return Date.now() / 1000
         }
     },
-    PLAYLIST_MIN_LENGTH = 60 ;
+    PLAYLIST_MIN_LENGTH = 60 * 60;
 
 module.exports.buildChannelManager = (clock = DEFAULT_CLOCK, playlistMinLengthInSeconds = PLAYLIST_MIN_LENGTH) => {
     const channels = {};
