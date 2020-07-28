@@ -8,10 +8,9 @@
 
 ## TODO
 * make audio work on ios
-* new visualisation
-* light colours
 * mix ads with programmes, remove adverts channel
 * more messages
     * up next...
     * archive.org credit
-* fix resizing issues
+* remove magic numbers from visualisation code
+* sine lookup table, other code efficiencies

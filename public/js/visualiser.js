@@ -2,7 +2,7 @@ const visualiser = (() => {
     const BACKGROUND_COLOUR = 'black',
         MAX_FREQ_DATA_VALUE = 255;
 
-    let dataSource, isActive, elCanvas, ctx, width, height
+    let dataSource, activationCount = 0, elCanvas, ctx, width, height
 
     function updateCanvasSize() {
         width = elCanvas.width = elCanvas.offsetWidth;
@@ -17,7 +17,7 @@ const visualiser = (() => {
     let step = 0;
     function paintSineWave() {
         "use strict";
-        if (isActive) {
+        if (activationCount) {
             const data = dataSource(),
                 WAVE_SPEED = 0.5,
                 PADDING = 50,
@@ -80,11 +80,11 @@ const visualiser = (() => {
             dataSource = source;
         },
         activate() {
-            isActive = true;
+            activationCount++;
         },
         deactivate() {
             clearCanvas();
-            isActive = false;
+            activationCount--;
         },
         onResize() {
             return updateCanvasSize;

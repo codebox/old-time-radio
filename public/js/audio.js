@@ -58,6 +58,7 @@ const audioPlayer = (() => {
             audio.pause();
         },
         getData() {
+            initAudio();
             const dataArray = new Uint8Array(BUFFER_LENGTH);
             analyser.getByteFrequencyData(dataArray);
             return dataArray;

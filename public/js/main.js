@@ -40,7 +40,9 @@ window.onload = () => {
         model.channel = model.playlist = null;
         audioPlayer.stop();
         view.updatePlayState(model);
-        visualiser.deactivate();
+        setTimeout(() => {
+            visualiser.deactivate();
+        }, 2000);
     });
 
     audioPlayer.onAudioEnded(() => {
