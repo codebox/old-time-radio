@@ -4,9 +4,11 @@ const view = (() => {
         STATE_NO_CHANNEL = 'nochannel',
         STATE_CHANNEL_LOADING = 'channelLoading',
         STATE_CHANNEL_PLAYING = 'channelPlaying',
+        STATE_CONNECTION_ERROR = 'connectionError',
 
         CLASS_LOADING = 'channelLoading',
         CLASS_PLAYING = 'channelPlaying',
+        CLASS_ERROR = 'channelError',
 
         elButtonContainer = document.getElementById('buttons'),
 
@@ -23,19 +25,24 @@ const view = (() => {
     function setViewState(state) {
         if (state === STATE_NO_CHANNEL) {
             forEachChannelButton((id, el) => {
-                el.classList.remove(CLASS_LOADING, CLASS_PLAYING);
+                el.classList.remove(CLASS_LOADING, CLASS_PLAYING, CLASS_ERROR);
             });
 
         } else if (state === STATE_CHANNEL_LOADING) {
             forEachChannelButton((id, el) => {
-                el.classList.remove(CLASS_PLAYING);
+                el.classList.remove(CLASS_PLAYING, CLASS_ERROR);
                 el.classList.toggle(CLASS_LOADING, id === model.channel);
             });
 
         } else if (state === STATE_CHANNEL_PLAYING) {
             forEachChannelButton((id, el) => {
-                el.classList.remove(CLASS_LOADING);
+                el.classList.remove(CLASS_LOADING, CLASS_ERROR);
                 el.classList.toggle(CLASS_PLAYING, id === model.channel);
+            });
+        } else if (state === STATE_CONNECTION_ERROR) {
+            forEachChannelButton((id, el) => {
+                el.classList.remove(CLASS_LOADING, CLASS_PLAYING);
+                el.classList.add(CLASS_ERROR);
             });
         }
         messageManager.updateStatus();
@@ -85,6 +92,10 @@ const view = (() => {
             } else {
                 setViewState(STATE_CHANNEL_PLAYING);
             }
+        },
+        connectionError() {
+            setViewState(STATE_CONNECTION_ERROR);
+            messageManager.httpError();
         },
         onChannelSelected(handler) {
             onChannelSelectedHandler = handler;

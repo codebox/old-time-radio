@@ -21,6 +21,7 @@ const visualiser = (() => {
             const data = dataSource(),
                 WAVE_SPEED = 0.5,
                 PADDING = 50,
+                MIN_WAVE_LIGHTNESS = 20,
                 BUCKET_COUNT = 30,
                 TWO_PI = Math.PI * 2,
                 startX = PADDING,
@@ -47,7 +48,7 @@ const visualiser = (() => {
                     return (height / 2) + Math.sin(scaledX * (i + 1)) * v * height / 2;
                 }
 
-                ctx.strokeStyle = `hsl(0,0%,${Math.floor(20 + 80 * (1 - v))}%)`;
+                ctx.strokeStyle = `hsl(0,0%,${Math.floor(MIN_WAVE_LIGHTNESS + (100 - MIN_WAVE_LIGHTNESS) * (1 - v))}%)`;
                 ctx.beginPath();
                 let first = true;
 

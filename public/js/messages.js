@@ -126,6 +126,9 @@ const messageManager = (() => {
             } else {
                 setMessage(`Playing ${model.track}`);
             }
+        },
+        httpError() {
+            setMessage('Unable to connect to the server');
         }
     };
 })();

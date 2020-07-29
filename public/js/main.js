@@ -18,7 +18,6 @@ window.onload = () => {
                     .then(() => {
                         audioPlayer.play();
                     })
-                    .catch(err => alert(err));
             });
     }
 
@@ -29,9 +28,14 @@ window.onload = () => {
         model.channel = channelId;
         view.updatePlayState(model);
         visualiser.activate();
-        playNextFromCurrentChannel().then(() => {
-            view.updatePlayState(model);
-        });
+        playNextFromCurrentChannel()
+            .then(() => {
+                view.updatePlayState(model);
+            })
+            .catch(err => {
+                model.channel = null;
+                view.connectionError();
+            });
         audioPlayer.play();
     });
 
@@ -55,6 +59,6 @@ window.onload = () => {
     service.getChannels().then(channels => {
         "use strict";
         view.setChannels(model.channels = channels);
-    });
+    }).catch(err => messageManager.httpError());
 
 };

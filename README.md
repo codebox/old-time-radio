@@ -8,6 +8,4 @@
 
 ## TODO
 * make audio work on ios
-* remove magic numbers from visualisation code
-* check for http errors, show a message and set view state
 * jasmine tests probably broken now that we have adverts in there
