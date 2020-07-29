@@ -6,10 +6,44 @@ const
             return Date.now() / 1000
         }
     },
-    PLAYLIST_MIN_LENGTH = 60 * 60;
+    PLAYLIST_MIN_LENGTH = 60 * 60,
+    ADVERTS_CHANNEL = 'adverts';
 
 module.exports.buildChannelManager = (clock = DEFAULT_CLOCK, playlistMinLengthInSeconds = PLAYLIST_MIN_LENGTH) => {
     const channels = {};
+
+    function mergeAdvertsWithChannel(channelId) {
+        "use strict";
+        console.assert(channelId !== ADVERTS_CHANNEL);
+
+        const requestedChannel = channels[channelId],
+            combinedList = [];
+
+        let i = 0;
+        while(i < requestedChannel.list.length) {
+            combinedList.push(requestedChannel.list[i++]);
+            combinedList.push(advertManager.next());
+        }
+
+        return {
+            title: requestedChannel.title,
+            list: combinedList
+        };
+    }
+
+    const advertManager = (() => {
+        const adverts = [];
+        let nextAdvertIndex = 0;
+        "use strict";
+        return {
+            add(newAdverts) {
+                adverts.push(...newAdverts);
+            },
+            next() {
+                return adverts[nextAdvertIndex++ % adverts.length];
+            }
+        }
+    })();
 
     return {
         addChannel(channelId, shows) {
@@ -48,11 +82,21 @@ module.exports.buildChannelManager = (clock = DEFAULT_CLOCK, playlistMinLengthIn
                 episodeList.push(nextEpisode);
             }
 
-            channels[channelId] = {
-                title: channelId,
-                duration: episodeList[episodeList.length - 1].offset,
-                list: episodeList
-            };
+            if (channelId === ADVERTS_CHANNEL) {
+                advertManager.add(episodeList);
+
+            } else {
+                channels[channelId] = {
+                    title: channelId,
+                    list: episodeList
+                };
+            }
+        },
+        mergeAdverts() {
+            "use strict";
+            Object.keys(channels).forEach(channelId => {
+                channels[channelId] = mergeAdvertsWithChannel(channelId);
+            });
         },
         getChannels() {
             "use strict";

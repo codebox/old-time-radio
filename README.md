@@ -8,9 +8,7 @@
 
 ## TODO
 * make audio work on ios
-* mix ads with programmes, remove adverts channel
-* more messages
-    * up next...
+* name parsing for tarzan episodes
 * remove magic numbers from visualisation code
-* sine lookup table, other code efficiencies
+* sine lookup table? other code efficiencies
 * make button press style change more obvious

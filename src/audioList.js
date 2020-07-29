@@ -42,6 +42,7 @@ module.exports.audioList = {
                             const channelName = tag;
                             channelManager.addChannel(channelName, tags[tag].flatMap(showId => shows[showId]));
                         });
+                        channelManager.mergeAdverts();
                     });
             });
     },
