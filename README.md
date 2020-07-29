@@ -8,4 +8,5 @@
 
 ## TODO
 * make audio work on ios
+* 'up next' messags always just say 'commercial'
 * jasmine tests probably broken now that we have adverts in there
