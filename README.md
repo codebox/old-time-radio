@@ -8,7 +8,7 @@
 
 ## TODO
 * make audio work on ios
-* name parsing for tarzan episodes
 * remove magic numbers from visualisation code
 * sine lookup table? other code efficiencies
 * make button press style change more obvious
+* check for http errors, show a message and set view state

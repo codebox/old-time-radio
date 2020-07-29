@@ -2,6 +2,13 @@ function addSpacesBeforeCapitals(txt) {
     "use strict";
     return txt.replace('_','').replace(/([A-Z])/g, ' $1').trim();
 }
+function toTitleCase(txt) {
+    return txt
+        .toLowerCase()
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.substr(1))
+        .join(' ');
+}
 
 const parsers = [
     {
@@ -173,6 +180,27 @@ const parsers = [
             "use strict";
             const title = addSpacesBeforeCapitals(match[2].replace('64kb', ''));
             return `Have Gun, Will Travel - ${title}`;
+        }
+    },
+    {
+        ids: ['Tarzan1951'],
+        regex: /TARZ.([\.0-9]+)_(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = toTitleCase(match[2].replace(/_+/g, ' '));
+            return `Tarzan - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ['OTRR_Tarzan_Singles_TotA'],
+        regex: /([0-9]+) ([0-9]+) (.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                number = match[2],
+                title = match[3];
+            return `Tarzan of the Apes ${number} - ${title} [${date}]`;
         }
     },
     {
