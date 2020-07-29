@@ -12,3 +12,4 @@
 * sine lookup table? other code efficiencies
 * make button press style change more obvious
 * check for http errors, show a message and set view state
+* jasmine tests probably broken now that we have adverts in there

@@ -121,7 +121,7 @@ const messageManager = (() => {
                 setMessage('Select a channel');
 
             } else if (!model.track) {
-                setMessage(`Loading ${model.channel}...`);
+                setMessage(`Tuning in to the ${model.channel} Channel...`);
 
             } else {
                 setMessage(`Playing ${model.track}`);
