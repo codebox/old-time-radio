@@ -1,7 +1,19 @@
 window.onload = () => {
     const model = {};
 
+    // function isIOS(){
+    //     "use strict";
+    //     return /iPad|iPhone|iPod/.test(navigator.platform)
+    //         || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    // }
+    //
     view.init(model);
+    //
+    // if (isIOS()) {
+    //     view.iosError();
+    //     return;
+    // }
+
     view.setVisualisationDataSource(audioPlayer.getData);
     visualiser.init(view.getCanvas());
     window.addEventListener('resize', visualiser.onResize());
@@ -17,6 +29,10 @@ window.onload = () => {
                 return audioPlayer.load(url, offset)
                     .then(() => {
                         audioPlayer.play();
+                        view.updatePlayState(model);
+                    })
+                    .catch(() => {
+                        return playNextFromCurrentChannel();
                     })
             });
     }
@@ -28,14 +44,7 @@ window.onload = () => {
         model.channel = channelId;
         view.updatePlayState(model);
         visualiser.activate();
-        playNextFromCurrentChannel()
-            .then(() => {
-                view.updatePlayState(model);
-            })
-            .catch(err => {
-                model.channel = null;
-                view.connectionError();
-            });
+        playNextFromCurrentChannel();
         audioPlayer.play();
     });
 
@@ -51,9 +60,7 @@ window.onload = () => {
 
     audioPlayer.onAudioEnded(() => {
         "use strict";
-        playNextFromCurrentChannel().then(() => {
-            view.updatePlayState(model);
-        });
+        playNextFromCurrentChannel();
     });
 
     service.getChannels().then(channels => {

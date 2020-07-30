@@ -7,6 +7,8 @@
 * https://www.ibm.com/developerworks/library/wa-ioshtml5/wa-ioshtml5-pdf.pdf
 
 ## TODO
-* make audio work on ios
-* 'up next' messags always just say 'commercial'
+* show error for ios
+* make layout responsive
+* 'up next' messages always just say 'commercial'
+* put in proper logging
 * jasmine tests probably broken now that we have adverts in there
