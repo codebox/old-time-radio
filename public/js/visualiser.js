@@ -20,7 +20,7 @@ const visualiser = (() => {
         if (activationCount) {
             const data = dataSource(),
                 WAVE_SPEED = 0.5,
-                PADDING = 50,
+                PADDING = width > 500 ? 50 : 25,
                 MIN_WAVE_LIGHTNESS = 20,
                 BUCKET_COUNT = 30,
                 TWO_PI = Math.PI * 2,

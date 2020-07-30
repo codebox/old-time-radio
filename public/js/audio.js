@@ -25,6 +25,22 @@ const audioPlayer = (() => {
             audioInitialised = true;
         }
     }
+
+    let dummyData;
+    function buildDummyData() {
+        "use strict";
+        function fillRange(startIndex, count) {
+            for (let i = startIndex; i < startIndex + count; i++) {
+                data[i] = 255;
+            }
+        }
+        const data = new Array(510).fill(0);
+        fillRange(0, 15);
+        fillRange(100, 15);
+        fillRange(200, 15);
+        return data;
+    }
+
     return {
         load(url, offset = 0) {
             return new Promise((onLoaded, onError) => {
@@ -47,6 +63,7 @@ const audioPlayer = (() => {
                 initAudio();
                 audio.src = url;
                 audio.currentTime = offset;
+                audio.load();
             });
         },
         onAudioEnded(handler) {
@@ -60,13 +77,15 @@ const audioPlayer = (() => {
             audio.pause();
         },
         getData() {
-            initAudio();
             if (analyser) {
                 const dataArray = new Uint8Array(BUFFER_LENGTH);
                 analyser.getByteFrequencyData(dataArray);
                 return dataArray;
             } else {
-                return [];
+                if (!dummyData) {
+                    dummyData = buildDummyData();
+                }
+                return dummyData;
             }
         }
     };
