@@ -23,7 +23,6 @@ app.get(`/api/playlist/:channel`, (req, res) => {
         }
 
     } catch (error) {
-        console.error(error)
         res.status(500).json({error : error.message});
     }
 });
