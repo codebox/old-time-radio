@@ -37,6 +37,7 @@ module.exports.buildChannelManager = (clock = DEFAULT_CLOCK, playlistMinLengthIn
         "use strict";
         return {
             add(newAdverts) {
+                newAdverts.forEach(item => item.commercial = true);
                 adverts.push(...newAdverts);
             },
             next() {

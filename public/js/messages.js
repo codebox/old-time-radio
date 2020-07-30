@@ -51,7 +51,7 @@ const messageManager = (() => {
             'All audio on this site is hosted by The Internet Archive. Visit them at http://archive.org',
             () => {
                 if (model.playlist && model.playlist[0]){
-                    return `Up next: ${model.playlist[0].name}`;
+                    return `Up next: ${model.playlist.filter(item => !item.commercial)[0].name}`;
                 }
             }
         ];

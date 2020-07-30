@@ -7,8 +7,7 @@
 * https://www.ibm.com/developerworks/library/wa-ioshtml5/wa-ioshtml5-pdf.pdf
 
 ## TODO
-* show error for ios
-* make layout responsive
-* 'up next' messages always just say 'commercial'
 * put in proper logging
+* superman_410120_the_black_pearl... not formatted
+* on ios the 'playing' message appears before the audio starts
 * jasmine tests probably broken now that we have adverts in there
