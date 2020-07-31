@@ -33,7 +33,27 @@
       "tags": ["future"]
     },
     {
-      "id": "superman_otr",
+      "id": "Exploring_Tomorrow",
+      "tags": ["future"]
+    },
+    {
+      "id": "otr_2000Plus",
+      "tags": ["future"]
+    },
+    {
+      "id": "OTRR_Planet_Man_Ver2_Singles",
+      "tags": ["future"]
+    },
+    {
+      "id": "TheAdventuresOfSuperman_201805",
+      "tags": ["action"]
+    },
+    {
+      "id": "Tarzan1951",
+      "tags": ["action"]
+    },
+    {
+      "id": "OTRR_Tarzan_Singles_TotA",
       "tags": ["action"]
     },
     {
@@ -143,14 +163,6 @@
     {
       "id": "HaveGunWillTravel_OldTimeRadio",
       "tags": ["western"]
-    },
-    {
-      "id": "Tarzan1951",
-      "tags": ["action"]
-    },
-    {
-      "id": "OTRR_Tarzan_Singles_TotA",
-      "tags": ["action"]
     }
 
   ]
