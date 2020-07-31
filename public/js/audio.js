@@ -5,6 +5,18 @@ const audioPlayer = (() => {
         FFT_WINDOW_SIZE = 1024,
         BUFFER_LENGTH = FFT_WINDOW_SIZE / 2;
 
+    function isIOS(){
+        "use strict";
+        return /iPad|iPhone|iPod/.test(navigator.platform)
+            || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    }
+
+    /*
+    iOS won't start playing the audio until it can play the file through, even though it fires the 'canplay' event
+    some time before that.
+    */
+    const CAN_PLAY_EVENT = isIOS() ? 'canplaythrough' : 'canplay';
+
     let onAudioEndedHandler = () => {},
         analyser, audioInitialised;
 
@@ -12,7 +24,7 @@ const audioPlayer = (() => {
         if (!audioInitialised) {
             audio.crossOrigin = "anonymous";
             if (window.AudioContext) {
-                // webkitAudioContext doesn't work
+                // webkitAudioContext doesn't work for this on latest iOS
                 const audioCtx = new window.AudioContext(),
                     audioSrc = audioCtx.createMediaElementSource(audio);
                 analyser = audioCtx.createAnalyser();
@@ -45,8 +57,8 @@ const audioPlayer = (() => {
         load(url, offset = 0) {
             return new Promise((onLoaded, onError) => {
                 function removeHandlers() {
-                    audio.removeEventListener('canplay', onAudioLoaded);
-                    audio.removeEventListener('err', onAudioLoaded);
+                    audio.removeEventListener(CAN_PLAY_EVENT, onAudioLoaded);
+                    audio.removeEventListener('error', onAudioLoaded);
                 }
 
                 function onAudioLoaded() {
@@ -58,7 +70,7 @@ const audioPlayer = (() => {
                     removeHandlers();
                     onError();
                 }
-                audio.addEventListener('canplay', onAudioLoaded);
+                audio.addEventListener(CAN_PLAY_EVENT, onAudioLoaded);
                 audio.addEventListener('error', onAudioError);
 
                 initAudio();

@@ -1,18 +1,7 @@
 window.onload = () => {
     const model = {};
 
-    // function isIOS(){
-    //     "use strict";
-    //     return /iPad|iPhone|iPod/.test(navigator.platform)
-    //         || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-    // }
-    //
     view.init(model);
-    //
-    // if (isIOS()) {
-    //     view.iosError();
-    //     return;
-    // }
 
     view.setVisualisationDataSource(audioPlayer.getData);
     visualiser.init(view.getCanvas());
