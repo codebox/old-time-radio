@@ -217,6 +217,6 @@ canvas {
     #message {
         white-space: normal;
         text-align: center;
-        flex-basis: 80px;
+        flex-basis: 50px;
     }
 }
