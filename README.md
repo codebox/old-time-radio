@@ -8,8 +8,6 @@
 
 ## TODO
 * put in proper logging
-* find all names not formatted properly
-* check playlists for all channels
 * on ios the 'playing' message appears before the audio starts
 * jasmine tests probably broken now that we have adverts in there
 
