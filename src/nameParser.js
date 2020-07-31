@@ -381,7 +381,7 @@ module.exports.parseName = (showId, metadata) => {
     const matchingParsers = parsers.filter(p => p.ids.includes(showId));
 
     if (matchingParsers.length) {
-        const matches = matchingParsers.filter(parser => {
+        const matches = matchingParsers.map(parser => {
             if (parser.regex) {
                 const match = metadata.name.match(parser.regex);
                 if (match) {
@@ -391,7 +391,7 @@ module.exports.parseName = (showId, metadata) => {
             } else {
                 return parser.getName(metadata);
             }
-        });
+        }).filter(o => o);
         if (matches.length) {
             return matches[0];
         }
