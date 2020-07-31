@@ -8,6 +8,18 @@
 
 ## TODO
 * put in proper logging
-* superman_410120_the_black_pearl... not formatted
+* find all names not formatted properly
+* check playlists for all channels
 * on ios the 'playing' message appears before the audio starts
 * jasmine tests probably broken now that we have adverts in there
+
+
+To dump playlist for channel increase PLAYLIST_MIN_LENGTH in channel.js and then run:
+```
+    const audioList = require('./audioList.js').audioList;
+    
+    audioList.init().then(() => {
+        const playlist = audioList.getListForChannel('western');
+        console.log(JSON.stringify(playlist.list.filter(i => !i.commercial), null, 4));
+    })
+```
