@@ -73,6 +73,14 @@
       "tags": ["action"]
     },
     {
+      "id": "OTRR_Blue_Beetle_Singles",
+      "tags": ["action"]
+    },
+    {
+      "id": "OTRR_Falcon_Singles",
+      "tags": ["action"]
+    },
+    {
       "id": "OTRR_Dark_Fantasy_Singles",
       "tags": ["mystery"]
     },
@@ -93,35 +101,19 @@
       "tags": ["mystery"]
     },
     {
-      "id": "SUSPENSE4",
+      "id": "OTRR_Molle_Mystery_Theatre_Singles",
       "tags": ["mystery"]
     },
     {
-      "id": "SUSPENSE5",
-      "tags": ["mystery"]
-    },
-    {
-      "id": "SUSPENSE6",
-      "tags": ["mystery"]
-    },
-    {
-      "id": "SUSPENSE7",
-      "tags": ["mystery"]
-    },
-    {
-      "id": "SUSPENSE8",
-      "tags": ["mystery"]
-    },
-    {
-      "id": "SUSPENSE9",
-      "tags": ["mystery"]
-    },
-    {
-      "id": "SUSPENSE_FINAL",
+      "id": "OTRR_Mystery_House_Singles",
       "tags": ["mystery"]
     },
     {
       "id": "OTRR_Philip_Marlowe_Singles",
+      "tags": ["mystery"]
+    },
+    {
+      "id": "OTRR_Boston_Blackie_Singles",
       "tags": ["mystery"]
     },
     {
@@ -145,10 +137,6 @@
       "tags": ["western"]
     },
     {
-      "id": "GUNSMOKE05",
-      "tags": ["western"]
-    },
-    {
       "id": "The_Lone_Ranger_Page_01",
       "tags": ["western"]
     },
@@ -157,11 +145,19 @@
       "tags": ["western"]
     },
     {
-      "id": "The_Lone_Ranger_Page_03",
+      "id": "HaveGunWillTravel_OldTimeRadio",
       "tags": ["western"]
     },
     {
-      "id": "HaveGunWillTravel_OldTimeRadio",
+      "id": "TalesOfTheTexasRangers",
+      "tags": ["western"]
+    },
+    {
+      "id": "OTRR_The_Six_Shooter_Singles",
+      "tags": ["western"]
+    },
+    {
+      "id": "OTRR_Fort_Laramie_Singles",
       "tags": ["western"]
     }
 
