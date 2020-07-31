@@ -1,7 +1,15 @@
 const express = require('express'),
     audioList = require('./audioList.js').audioList,
+    winston = require('winston'),
     app = express(),
     port = 3000;
+
+winston.configure({
+    transports: [
+        // new (winston.transports.Console)({json : false }),
+        new (winston.transports.File)({ filename: '/var/log/oldtimeradio/access.log', json : false })
+    ]
+});
 
 app.use(express.static('public'))
 
@@ -29,10 +37,10 @@ app.get(`/api/playlist/:channel`, (req, res) => {
 
 audioList.init()
     .then(_ => {
-        app.listen(port, () => console.log(`Initialisation complete, listening on port ${port}...`));
+        app.listen(port, () => winston.log('info', `Initialisation complete, listening on port ${port}...`));
     })
     .catch(err => {
-        console.error('Failed to start application', err)
+        winston.log('error', 'Failed to start application', err)
     });
 
 

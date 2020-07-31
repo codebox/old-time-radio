@@ -7,8 +7,6 @@
 * https://www.ibm.com/developerworks/library/wa-ioshtml5/wa-ioshtml5-pdf.pdf
 
 ## TODO
-* put in proper logging
-* on ios the 'playing' message appears before the audio starts
 * jasmine tests probably broken now that we have adverts in there
 
 

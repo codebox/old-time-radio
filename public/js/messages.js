@@ -16,7 +16,6 @@ const messageManager = (() => {
         function stopPrinting() {
             clearInterval(interval);
             interval = 0;
-            console.log('end of print')
         }
 
         return {

@@ -1,4 +1,5 @@
 const
+    winston = require('winston'),
     START_TIME = 1595199600, // 2020-07-20 00:00:00
     DEFAULT_CLOCK = {
         now() {
@@ -59,7 +60,7 @@ module.exports.buildChannelManager = (clock = DEFAULT_CLOCK, playlistMinLengthIn
                     remaining: show.files.length
                 };
             });
-            console.log(`Build '${channelId}' channel with ${episodeCount} episodes`);
+            winston.log('info', `Build '${channelId}' channel with ${episodeCount} episodes`);
 
             const episodeList = [];
 

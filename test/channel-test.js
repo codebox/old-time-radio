@@ -65,7 +65,6 @@ describe("channel", () => {
     function assertPlaylist(offset, items) {
         "use strict";
         const playlist = channelManager.getPlaylist(CHANNEL_ID, trimToNearest);
-        console.log(playlist)
         expect(playlist.list).toEqual(items.map(a => {
             return {url: `http://myserver.com/otr/${a[0]}`, length: a[1]};
         }));

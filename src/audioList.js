@@ -1,4 +1,5 @@
 const fs = require('fs'),
+    winston = require('winston'),
     metaDataDownloader = require('./metaDataDownloader.js'),
     buildChannelManager = require('./channel.js').buildChannelManager;
 
@@ -13,7 +14,7 @@ module.exports.audioList = {
             .then(data => {
                 const json = JSON.parse(data),
                     showList = json.shows;
-                console.log(`Read ${showList.length} shows from ${DATA_FILE}`);
+                winston.log('info', `Read ${showList.length} shows from ${DATA_FILE}`);
                 const shows = {},
                     tags = {};
 

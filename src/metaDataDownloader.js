@@ -1,4 +1,5 @@
 const axios = require('axios'),
+    winston = require('winston'),
     extractName = require('./nameParser').parseName,
     fs = require("fs");
 
@@ -37,10 +38,10 @@ module.exports = {
 
         return fs.promises.readFile(cachedFileName, {encoding: ENCODING})
             .then(json => {
-                console.log(`reading metadata from cache for ${itemId}`);
+                winston.log('info', `Reading metadata from cache for ${itemId}`);
                 return processResponse(itemId, JSON.parse(json));
             }, _ => {
-                console.log(`downloading metadata for ${itemId}`);
+                winston.log('info', `Downloading metadata for ${itemId}`);
                 return axios.get(downloadUrl).then(response => {
                     if (!response.data.files) {
                         // archive.org returns 200 even if it doesn't recognise the id
