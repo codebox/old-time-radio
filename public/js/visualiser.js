@@ -21,7 +21,7 @@ const visualiser = (() => {
             const data = dataSource(),
                 WAVE_SPEED = 0.5,
                 PADDING = width > 500 ? 50 : 25,
-                MIN_WAVE_LIGHTNESS = 20,
+                MIN_WAVE_LIGHTNESS = 10,
                 BUCKET_COUNT = 30,
                 TWO_PI = Math.PI * 2,
                 startX = PADDING,

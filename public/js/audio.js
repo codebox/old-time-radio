@@ -50,6 +50,7 @@ const audioPlayer = (() => {
                 }
 
                 function onAudioLoaded() {
+                    audio.currentTime = offset;
                     removeHandlers();
                     onLoaded();
                 }
@@ -62,7 +63,6 @@ const audioPlayer = (() => {
 
                 initAudio();
                 audio.src = url;
-                audio.currentTime = offset;
                 audio.load();
             });
         },
