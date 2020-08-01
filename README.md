@@ -7,7 +7,6 @@
 * https://www.ibm.com/developerworks/library/wa-ioshtml5/wa-ioshtml5-pdf.pdf
 
 ## TODO
-* no header background animation on ios
 * jasmine tests probably broken now that we have adverts in there
 
 

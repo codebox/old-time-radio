@@ -38,20 +38,53 @@ const audioPlayer = (() => {
         }
     }
 
-    let dummyData;
-    function buildDummyData() {
-        "use strict";
-        function fillRange(startIndex, count) {
-            for (let i = startIndex; i < startIndex + count; i++) {
-                data[i] = 255;
+    const dummyData = (() => {
+        let isActive = false, amplitude = 0, animationInterval = 0;
+        return {
+            get() {
+                isActive = true;
+                function fillRange(startIndex, count) {
+                    const value = 255 * amplitude;
+                    for (let i = startIndex; i < startIndex + count; i++) {
+                        data[i] = value;
+                    }
+                }
+
+                const data = new Array(510).fill(0);
+                fillRange(0, 15);
+                fillRange(100, 15);
+                fillRange(200, 15);
+                return data;
+            },
+            setAmplitude(newValue) {
+                if (!isActive) {
+                    return;
+                }
+                const delta = newValue - amplitude;
+                if (!delta) {
+                    return;
+                }
+                const animationLengthMillis = 200,
+                    stepCount = 100,
+                    deltaPerInterval = delta / stepCount,
+                    intervalLength = animationLengthMillis /stepCount;
+
+
+                if (animationInterval) {
+                    clearInterval(animationInterval);
+                }
+                let step = 0;
+                animationInterval = setInterval(() => {
+                    amplitude += deltaPerInterval;
+                    if (step++ >= stepCount) {
+                        amplitude = newValue;
+                        clearInterval(animationInterval);
+                    }
+                }, intervalLength);
             }
         }
-        const data = new Array(510).fill(0);
-        fillRange(0, 15);
-        fillRange(100, 15);
-        fillRange(200, 15);
-        return data;
-    }
+    })();
+
 
     return {
         load(url, offset = 0) {
@@ -63,6 +96,7 @@ const audioPlayer = (() => {
 
                 function onAudioLoaded() {
                     audio.currentTime = offset;
+                    dummyData.setAmplitude(1);
                     removeHandlers();
                     onLoaded();
                 }
@@ -70,6 +104,7 @@ const audioPlayer = (() => {
                     removeHandlers();
                     onError();
                 }
+                dummyData.setAmplitude(0);
                 audio.addEventListener(CAN_PLAY_EVENT, onAudioLoaded);
                 audio.addEventListener('error', onAudioError);
 
@@ -81,11 +116,13 @@ const audioPlayer = (() => {
         onAudioEnded(handler) {
             audio.removeEventListener('ended', onAudioEndedHandler);
             audio.addEventListener('ended', onAudioEndedHandler = handler);
+            dummyData.setAmplitude(0);
         },
         play() {
             audio.play();
         },
         stop() {
+            dummyData.setAmplitude(0);
             audio.pause();
         },
         getData() {
@@ -94,10 +131,7 @@ const audioPlayer = (() => {
                 analyser.getByteFrequencyData(dataArray);
                 return dataArray;
             } else {
-                if (!dummyData) {
-                    dummyData = buildDummyData();
-                }
-                return dummyData;
+                return dummyData.get();
             }
         }
     };
