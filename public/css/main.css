@@ -82,10 +82,10 @@ html, body, div {
 }
 @keyframes growCircle{
     from {
-        transform: translate(-50%, -50%) scale(0);
+        transform: translate3d(-50%, -50%, 0) scale(0) rotateZ(360deg);
     }
     to {
-        transform: translate(-50%, -50%) scale(1);
+        transform: translate3d(-50%, -50%, 0) scale(1) rotateZ(360deg);
     }
 }
 #titleInner1 {
@@ -113,7 +113,8 @@ html, body, div {
     padding-bottom: 100%;
     top:50%;
     left:50%;
-    transform: translate(-50%, -50%) scale(0);
+    will-change: transform;
+    transform: translate3d(-50%, -50%, 0) scale(0);
     animation-name: growCircle;
     animation-timing-function: linear;
     animation-duration: 4s;
