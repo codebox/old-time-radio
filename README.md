@@ -7,6 +7,7 @@
 * https://www.ibm.com/developerworks/library/wa-ioshtml5/wa-ioshtml5-pdf.pdf
 
 ## TODO
+* on very narrow screens, button formatting broken
 * jasmine tests probably broken now that we have adverts in there
 
 

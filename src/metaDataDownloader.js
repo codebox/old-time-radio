@@ -14,9 +14,11 @@ function processResponse(itemId, data) {
             const [min, sec] = f.length.split(':')
             f.length = Number(min) * 60 + Number(sec);
         }
+        const name = extractName(itemId, f);
+
         return {
             file : f.name,
-            name: extractName(itemId, f),
+            name,
             length: Number(f.length)
         };
     });

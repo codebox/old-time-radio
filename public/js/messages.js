@@ -123,7 +123,7 @@ const messageManager = (() => {
                 setMessage(`Tuning in to the ${model.channel} Channel...`);
 
             } else {
-                setMessage(`Playing ${model.track}`);
+                setMessage(`${model.track}`);
             }
         },
         httpError() {

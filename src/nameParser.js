@@ -372,8 +372,71 @@ const parsers = [
                 number = match[2];
             return `Exploring Tomorrow - Episode ${number}: ${title} [${date}]`;
         }
+    },
+    {
+        ids: ['OurMissBrooks'],
+        regex: /Omb([-0-9]+)([0-9]{3})(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = addSpacesBeforeCapitals(match[3]),
+                number = match[2];
+            return `Our Miss Brooks - Episode ${number}: ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ['Great_Gildersleeve'],
+        regex: /gild.([0-9\.]+)_(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = match[2].replace(/_+/g, ' ');
+            return `The Great Gildersleeves - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ['OTRR_Harold_Peary_Show_Singles'],
+        regex: /Harold_Peary_([-0-9]+)_ep([0-9]+)_(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = match[3].replace(/_+/g, ' '),
+                number = match[2];
+            return `The Harold Peary Show - Episode ${number}: ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ['OTRR_Jack_Benny_Singles_1932-1934'],
+        regex: /JB ([-0-9]+) (.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = match[2].replace(/_+/g, ' ');
+            return `Jack Benny - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ['OTRR_Harris_Faye_Singles'],
+        regex: /PhilHarris([-0-9]{8})([0-9]+)(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = addSpacesBeforeCapitals(match[3]),
+                number = match[2];
+            return `The Phil Harris-Alice Faye Show ${number}: ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ['FibberMcgeeAndMollyHq'],
+        regex: /([0-9]+)-([0-9]+)-(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = addSpacesBeforeCapitals(match[3]),
+                number = match[2];
+            return `Fibber McGee and Molly HQ - Episode ${number}: ${title} [${date}]`;
+        }
     }
-
 ];
 
 module.exports.parseName = (showId, metadata) => {
@@ -396,6 +459,5 @@ module.exports.parseName = (showId, metadata) => {
             return matches[0];
         }
     }
-
     return metadata.title || metadata.name;
 };

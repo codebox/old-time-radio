@@ -159,7 +159,30 @@
     {
       "id": "OTRR_Fort_Laramie_Singles",
       "tags": ["western"]
+    },
+    {
+      "id": "OurMissBrooks",
+      "tags": ["comedy"]
+    },
+    {
+      "id": "Great_Gildersleeve",
+      "tags": ["comedy"]
+    },
+    {
+      "id": "OTRR_Harold_Peary_Show_Singles",
+      "tags": ["comedy"]
+    },
+    {
+      "id": "OTRR_Jack_Benny_Singles_1932-1934",
+      "tags": ["comedy"]
+    },
+    {
+      "id": "OTRR_Harris_Faye_Singles",
+      "tags": ["comedy"]
+    },
+    {
+      "id": "FibberMcgeeAndMollyHq",
+      "tags": ["comedy"]
     }
-
   ]
 }
