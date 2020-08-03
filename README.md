@@ -1,22 +1,17 @@
 # old-time-radio
 
-* https://www.html5rocks.com/en/tutorials/webaudio/intro/
-* http://bluefaqs.com/2010/05/40-free-retro-and-vintage-fonts/
-* https://css-tricks.com/circular-3d-buttons/
-* https://codepen.io/fskirschbaum/pen/MYJNaj
-* https://www.ibm.com/developerworks/library/wa-ioshtml5/wa-ioshtml5-pdf.pdf
+There are [thousands of classic radio shows from the 1930s, 40s and 50s available on The Internet Archive](https://archive.org/details/oldtimeradio), so I've made an [internet radio station](https://oldtime.radio/) for them!
 
-## TODO
-* on very narrow screens, button formatting broken
-* jasmine tests probably broken now that we have adverts in there
+<img src="https://codebox.net/assets/images/old-time-radio/oldtime-radio-website.png" alt="Website Screenshot" width="400"/>
 
+The server-side components of the site are written in Node.js. When the site starts up it reads [this configuration file](https://github.com/codebox/old-time-radio/blob/master/data.json), which contains a list of id values representing the various radio programmes that the site will broadcast. The site then uses the [Internet Archive's metadata API](https://archive.org/services/docs/api/metadata.html) to get a list of the individual episodes that are available for each show, together with the mp3 file urls for each one.
 
-To dump playlist for channel increase PLAYLIST_MIN_LENGTH in channel.js and then run:
-```
-    const audioList = require('./audioList.js').audioList;
-    
-    audioList.init().then(() => {
-        const playlist = audioList.getListForChannel('western');
-        console.log(JSON.stringify(playlist.list.filter(i => !i.commercial), null, 4));
-    })
-```
+Each show in the configuration file is associated with one or more 'tags' that indicate what type of show it is (eg Comedy, Western, Action). These tags are used to build the list of channels that are available on the site. A playlist is generated for each channel, alternating the shows with vintage radio commercials to make the listening experience more authentic. The commercials are sometimes more entertaining than the shows themselves, being very much [of](https://archive.org/details/Old_Radio_Adverts_01/OldRadio_Adv--Bromo_Quinine.mp3) [their](https://archive.org/details/Old_Radio_Adverts_01/OldRadio_Adv--Camel1.mp3) [time](https://archive.org/details/Old_Radio_Adverts_01/OldRadio_Adv--Fitch.mp3).
+
+The audio that your hear on the site is streamed directly from The Internet Archive, my site does not host any of the content. The [Same-Origin Policy](https://en.wikipedia.org/wiki/Same-origin_policy) often limits what websites can do with remotely hosted media. Typically such media can be displayed by other websites, but not accessed by any scripts running on those sites. However the Internet Archive explicitly allows script access to their audio files by including [the following header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin) in their HTTP responses:
+
+    Access-Control-Allow-Origin: *
+
+This allowed me to write some JavaScript to analyse the audio signal in real-time and produce a satisfying visualisation, making the site more interesting to look at:
+
+Unfortunately there is a bug in iOS 13 which prevents this feature from working on some Apple devices. Users on the affected platforms will see a placeholder animation until the issue is fixed by Apple.
