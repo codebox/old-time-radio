@@ -1,7 +1,7 @@
 const messageManager = (() => {
     "use strict";
     const PRINT_INTERVAL = 50,
-        TEMP_MESSAGE_INTERVAL = 3 * 60 * 1000,
+        TEMP_MESSAGE_INTERVAL = 60 * 1000,
         TEMP_MESSAGE_DURATION = 5 * 1000,
         STATE_SHOWING_PERSIST = 'showingPersistentMsg',
         STATE_PRINTING_PERSIST = 'printingPersistentMsg',
@@ -44,16 +44,21 @@ const messageManager = (() => {
     })();
 
     const cannedMessages = (() => {
+        function showNext() {
+            if (model.playlist && model.playlist[0]){
+                return `Up next: ${model.playlist.filter(item => !item.commercial)[0].name}`;
+            }
+        }
         const MESSAGES = [
             'You are listening to audio from The Internet Archive. Find more at http://archive.org',
             'Please support The Internet Archive by donating at http://archive.org/donate',
-            'All audio on this site is hosted by The Internet Archive. Visit them at http://archive.org',
-            () => {
-                if (model.playlist && model.playlist[0]){
-                    return `Up next: ${model.playlist.filter(item => !item.commercial)[0].name}`;
-                }
-            }
-        ];
+            'All audio on this site is hosted by The Internet Archive. Visit them at http://archive.org'
+        ].reduce((allMessages, textMessage) => {
+            allMessages.push(showNext);
+            allMessages.push(textMessage);
+            return allMessages;
+        }, []);
+
         let nextIndex = 0;
         return {
             next() {
