@@ -4,7 +4,7 @@
 
 There are [thousands of classic radio shows from the 1930s, 40s and 50s available on The Internet Archive](https://archive.org/details/oldtimeradio), so I've made an [internet radio station](https://oldtime.radio/) for them!
 
-<img src="https://codebox.net/assets/images/old-time-radio/oldtime-radio-website.png" alt="Website Screenshot" width="400"/>
+<img src="https://codebox.net/assets/images/old-time-radio/oldtime-radio-website.png" alt="Website Screenshot" width="600"/>
 
 The server-side components of the site are written in Node.js. When the site starts up it reads [this configuration file](https://github.com/codebox/old-time-radio/blob/master/data.json), which contains a list of id values representing the various radio programmes that the site will broadcast. The site then uses the [Internet Archive's metadata API](https://archive.org/services/docs/api/metadata.html) to get a list of the individual episodes that are available for each show, together with the mp3 file urls for each one.
 
@@ -16,6 +16,6 @@ The audio that your hear on the site is streamed directly from The Internet Arch
 
 This allowed me to write some JavaScript to analyse the audio signal in real-time and produce a satisfying visualisation, making the site more interesting to look at:
 
-
+[Visualisation Video](https://codebox.net/assets/video/old-time-radio/audio-visualisation.mp4)
 
 Unfortunately there is a bug in iOS 13 which prevents this feature from working on some Apple devices. Users on the affected platforms will see a placeholder animation until the issue is fixed by Apple.
