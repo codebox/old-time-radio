@@ -53,11 +53,7 @@ const messageManager = (() => {
             'You are listening to audio from The Internet Archive. Find more at http://archive.org',
             'Please support The Internet Archive by donating at http://archive.org/donate',
             'All audio on this site is hosted by The Internet Archive. Visit them at http://archive.org'
-        ].reduce((allMessages, textMessage) => {
-            allMessages.push(showNext);
-            allMessages.push(textMessage);
-            return allMessages;
-        }, []);
+        ].map(textMessage => [showNext, textMessage]).flatMap(m => m);
 
         let nextIndex = 0;
         return {
