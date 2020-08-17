@@ -49,6 +49,28 @@ const messageManager = (() => {
                 return `Up next: ${model.playlist.filter(item => !item.commercial)[0].name}`;
             }
         }
+        const CHANNEL_MESSAGES = {
+            future: [],
+            action: [],
+            mystery: [],
+            western: [],
+            comedy: []
+        };
+        Object.keys(CHANNEL_MESSAGES).forEach(channelId => {
+            CHANNEL_MESSAGES[channelId] = {
+                messages: CHANNEL_MESSAGES[channelId],
+                nextIndex: 0
+            };
+        });
+        function showChannelMessage(){
+            const messagesForThisChannel = CHANNEL_MESSAGES[(model.channel || '').toLowerCase()];
+            if (messagesForThisChannel && messagesForThisChannel.messages.length) {
+                const nextIndex = messagesForThisChannel.nextIndex,
+                    message = messagesForThisChannel.messages[nextIndex];
+                messagesForThisChannel.nextIndex = (nextIndex + 1) % messagesForThisChannel.messages.length;
+                return message;
+            }
+        }
         const MESSAGES = [
             'You are listening to audio from The Internet Archive. Find more at http://archive.org',
             'Please support The Internet Archive by donating at http://archive.org/donate',
