@@ -19,14 +19,16 @@ module.exports.audioList = {
                     tags = {};
 
                 showList.forEach(show => {
-                    shows[show.id] = {
-                        id: show.id
-                    };
-                    show.tags.forEach(tag => {
-                        if (!(tag in tags)) {
-                            tags[tag] = [];
-                        }
-                        tags[tag].push(show.id);
+                    show.items.forEach(id => {
+                        shows[id] = {
+                            id
+                        };
+                        show.tags.forEach(tag => {
+                            if (!(tag in tags)) {
+                                tags[tag] = [];
+                            }
+                            tags[tag].push(id);
+                        });
                     });
                 });
 

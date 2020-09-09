@@ -1,187 +1,219 @@
 {
   "shows" : [
     {
-        "id": "Old_Radio_Adverts_01",
-        "tags": ["adverts"]
-    },
-    {
-      "id": "OTRR_X_Minus_One_Singles",
+      "name": "X-Minus One",
+      "items": ["OTRR_X_Minus_One_Singles"],
+      "index": 0,
       "tags": ["future"]
     },
     {
-      "id": "OTRR_Dimension_X_Singles",
+      "name": "Dimension X",
+      "items": ["OTRR_Dimension_X_Singles"],
+      "index": 1,
       "tags": ["future"]
     },
     {
-      "id": "OTRR_Space_Patrol_Singles",
+      "name": "Space Patrol",
+      "items": ["OTRR_Space_Patrol_Singles"],
+      "index": 2,
       "tags": ["future"]
     },
     {
-      "id": "SpaceCadet",
+      "name": "Tom Corbett - Space Cadet",
+      "items": ["SpaceCadet", "SpaceCadet2"],
+      "index": 3,
       "tags": ["future"]
     },
     {
-      "id": "SpaceCadet2",
+      "name": "Flash Gordon",
+      "items": ["Flash_Gordon1935"],
+      "index": 4,
       "tags": ["future"]
     },
     {
-      "id": "Flash_Gordon1935",
+      "name": "Buck Rogers",
+      "items": ["otr_buckrogers"],
+      "index": 5,
       "tags": ["future"]
     },
     {
-      "id": "otr_buckrogers",
+      "name": "Exploring Tomorrow",
+      "items": ["Exploring_Tomorrow"],
+      "index": 6,
       "tags": ["future"]
     },
     {
-      "id": "Exploring_Tomorrow",
+      "name": "2000 Plus",
+      "items": ["otr_2000Plus"],
+      "index": 7,
       "tags": ["future"]
     },
     {
-      "id": "otr_2000Plus",
+      "name": "Planet Man",
+      "items": ["OTRR_Planet_Man_Ver2_Singles"],
+      "index": 8,
       "tags": ["future"]
     },
     {
-      "id": "OTRR_Planet_Man_Ver2_Singles",
-      "tags": ["future"]
-    },
-    {
-      "id": "TheAdventuresOfSuperman_201805",
+      "name": "Superman",
+      "items": ["TheAdventuresOfSuperman_201805"],
+      "index": 9,
       "tags": ["action"]
     },
     {
-      "id": "Tarzan1951",
+      "name": "Tarzan",
+      "items": ["OTRR_Tarzan_Singles_TotA"],
+      "index": 10,
       "tags": ["action"]
     },
     {
-      "id": "OTRR_Tarzan_Singles_TotA",
+      "name": "The Green Hornet",
+      "items": ["TheGreenHornet"],
+      "index": 11,
       "tags": ["action"]
     },
     {
-      "id": "PatNovakForHire",
+      "name": "Dragnet",
+      "items": ["Dragnet_OTR"],
+      "index": 12,
       "tags": ["action"]
     },
     {
-      "id": "TheGreenHornet",
+      "name": "Speed Gibson",
+      "items": ["Speed_Gibson_Of_The_International_Secret_Police"],
+      "index": 13,
       "tags": ["action"]
     },
     {
-      "id": "Dragnet_OTR",
+      "name": "Blue Beetle",
+      "items": ["OTRR_Blue_Beetle_Singles"],
+      "index": 14,
       "tags": ["action"]
     },
     {
-      "id": "Speed_Gibson_Of_The_International_Secret_Police",
+      "name": "The Falcon",
+      "items": ["OTRR_Falcon_Singles"],
+      "index": 15,
       "tags": ["action"]
     },
     {
-      "id": "OTRR_Blue_Beetle_Singles",
-      "tags": ["action"]
-    },
-    {
-      "id": "OTRR_Falcon_Singles",
-      "tags": ["action"]
-    },
-    {
-      "id": "OTRR_Dark_Fantasy_Singles",
+      "name": "Dark Fantasy",
+      "items": ["OTRR_Dark_Fantasy_Singles"],
+      "index": 16,
       "tags": ["mystery"]
     },
     {
-      "id": "otr_iloveamystery",
+      "name": "I Love a Mystery",
+      "items": ["otr_iloveamystery"],
+      "index": 17,
       "tags": ["mystery"]
     },
     {
-      "id": "SUSPENSE",
+      "name": "Suspense",
+      "items": ["SUSPENSE", "SUSPENSE2", "SUSPENSE3"],
+      "index": 18,
       "tags": ["mystery"]
     },
     {
-      "id": "SUSPENSE2",
+      "name": "Molle Mystery Theatre",
+      "items": ["OTRR_Molle_Mystery_Theatre_Singles"],
+      "index": 19,
       "tags": ["mystery"]
     },
     {
-      "id": "SUSPENSE3",
+      "name": "Mystery House",
+      "items": ["OTRR_Mystery_House_Singles"],
+      "index": 20,
       "tags": ["mystery"]
     },
     {
-      "id": "OTRR_Molle_Mystery_Theatre_Singles",
+      "name": "Phillip Marlowe",
+      "items": ["OTRR_Philip_Marlowe_Singles"],
+      "index": 21,
       "tags": ["mystery"]
     },
     {
-      "id": "OTRR_Mystery_House_Singles",
+      "name": "Boston Blackie",
+      "items": ["OTRR_Boston_Blackie_Singles"],
+      "index": 22,
       "tags": ["mystery"]
     },
     {
-      "id": "OTRR_Philip_Marlowe_Singles",
+      "name": "Sherlock Holmes",
+      "items": ["sherlockholmes_otr"],
+      "index": 23,
       "tags": ["mystery"]
     },
     {
-      "id": "OTRR_Boston_Blackie_Singles",
-      "tags": ["mystery"]
-    },
-    {
-      "id": "sherlockholmes_otr",
-      "tags": ["mystery"]
-    },
-    {
-      "id": "GUNSMOKE01",
+      "name": "Gunsmoke",
+      "items": ["GUNSMOKE01", "GUNSMOKE02", "GUNSMOKE03", "GUNSMOKE04"],
+      "index": 24,
       "tags": ["western"]
     },
     {
-      "id": "GUNSMOKE02",
+      "name": "Lone Ranger",
+      "items": ["The_Lone_Ranger_Page_01", "The_Lone_Ranger_Page_02"],
+      "index": 25,
       "tags": ["western"]
     },
     {
-      "id": "GUNSMOKE03",
+      "name": "Have Gun Will Travel",
+      "items": ["HaveGunWillTravel_OldTimeRadio"],
+      "index": 26,
       "tags": ["western"]
     },
     {
-      "id": "GUNSMOKE04",
+      "name": "Tales of the Texas Rangers",
+      "items": ["TalesOfTheTexasRangers"],
+      "index": 27,
       "tags": ["western"]
     },
     {
-      "id": "The_Lone_Ranger_Page_01",
+      "name": "The Six Shooter",
+      "items": ["OTRR_The_Six_Shooter_Singles"],
+      "index": 28,
       "tags": ["western"]
     },
     {
-      "id": "The_Lone_Ranger_Page_02",
+      "name": "Fort Laramie",
+      "items": ["OTRR_Fort_Laramie_Singles"],
+      "index": 29,
       "tags": ["western"]
     },
     {
-      "id": "HaveGunWillTravel_OldTimeRadio",
-      "tags": ["western"]
-    },
-    {
-      "id": "TalesOfTheTexasRangers",
-      "tags": ["western"]
-    },
-    {
-      "id": "OTRR_The_Six_Shooter_Singles",
-      "tags": ["western"]
-    },
-    {
-      "id": "OTRR_Fort_Laramie_Singles",
-      "tags": ["western"]
-    },
-    {
-      "id": "OurMissBrooks",
+      "name": "Our Miss Brooks",
+      "items": ["OurMissBrooks"],
+      "index": 30,
       "tags": ["comedy"]
     },
     {
-      "id": "Great_Gildersleeve",
+      "name": "Great Gildersleeve",
+      "items": ["Great_Gildersleeve"],
+      "index": 31,
       "tags": ["comedy"]
     },
     {
-      "id": "OTRR_Harold_Peary_Show_Singles",
+      "name": "Harold Peary Show",
+      "items": ["OTRR_Harold_Peary_Show_Singles"],
+      "index": 32,
       "tags": ["comedy"]
     },
     {
-      "id": "OTRR_Jack_Benny_Singles_1932-1934",
+      "name": "Jack Benny",
+      "items": ["OTRR_Jack_Benny_Singles_1932-1934"],
+      "index": 33,
       "tags": ["comedy"]
     },
     {
-      "id": "OTRR_Harris_Faye_Singles",
+      "name": "The Phil Harris - Alice Faye Show",
+      "items": ["OTRR_Harris_Faye_Singles"],
+      "index": 34,
       "tags": ["comedy"]
     },
     {
-      "id": "FibberMcgeeAndMollyHq",
+      "name": "Fibber McGee",
+      "items": ["FibberMcgeeAndMollyHq"],
+      "index": 35,
       "tags": ["comedy"]
     }
   ]
