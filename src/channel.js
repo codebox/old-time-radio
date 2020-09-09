@@ -50,7 +50,6 @@ module.exports.buildChannelManager = (clock = DEFAULT_CLOCK, playlistMinLengthIn
     return {
         addChannel(channelId, shows) {
             "use strict";
-
             const episodeCount = shows.flatMap(show => show.files).length,
                 remainingForEachShow = {};
 
