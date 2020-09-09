@@ -19,7 +19,7 @@ app.use(express.static('public'))
 
 app.get(`/api/shows`, (req, res) => {
     "use strict";
-    res.status(200).json([]);
+    res.status(200).json(audioList.getShows());
 });
 
 app.get(`/api/channels`, (req, res) => {

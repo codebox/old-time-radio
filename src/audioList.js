@@ -1,11 +1,13 @@
 const fs = require('fs'),
     winston = require('winston'),
     metaDataDownloader = require('./metaDataDownloader.js'),
-    buildChannelManager = require('./channel.js').buildChannelManager;
+    buildChannelManager = require('./channel.js').buildChannelManager,
+    buildShowManager = require('./shows.js').buildShowManager;
 
 const DATA_FILE = 'data.json';
 
-let channelManager = buildChannelManager();
+const channelManager = buildChannelManager(),
+    showManager = buildShowManager();
 
 module.exports.audioList = {
     init() {
@@ -19,6 +21,7 @@ module.exports.audioList = {
                     tags = {};
 
                 showList.forEach(show => {
+                    showManager.addShow(show.name, show.index);
                     show.items.forEach(id => {
                         shows[id] = {
                             id
@@ -52,6 +55,10 @@ module.exports.audioList = {
     getChannels() {
         "use strict";
         return channelManager.getChannels();
+    },
+    getShows() {
+        "use strict";
+        return showManager.getShows();
     },
     getListForChannel(channelId, trimToNearestBoundary){
         "use strict";
