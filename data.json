@@ -2,225 +2,214 @@
   "shows" : [
     {
       "name": "Commercials",
-      "items": ["Old_Radio_Adverts_01"],
-      "index": 0,
-      "tags": ["adverts"]
+      "playlists": ["Old_Radio_Adverts_01"],
+      "index": 0
     },
     {
       "name": "X-Minus One",
-      "items": ["OTRR_X_Minus_One_Singles"],
-      "index": 1,
-      "tags": ["future"]
+      "playlists": ["OTRR_X_Minus_One_Singles"],
+      "index": 1
     },
     {
       "name": "Dimension X",
-      "items": ["OTRR_Dimension_X_Singles"],
-      "index": 2,
-      "tags": ["future"]
+      "playlists": ["OTRR_Dimension_X_Singles"],
+      "index": 2
     },
     {
       "name": "Space Patrol",
-      "items": ["OTRR_Space_Patrol_Singles"],
-      "index": 3,
-      "tags": ["future"]
+      "playlists": ["OTRR_Space_Patrol_Singles"],
+      "index": 3
     },
     {
       "name": "Tom Corbett - Space Cadet",
-      "items": ["SpaceCadet", "SpaceCadet2"],
-      "index": 4,
-      "tags": ["future"]
+      "playlists": ["SpaceCadet", "SpaceCadet2"],
+      "index": 4
     },
     {
       "name": "Flash Gordon",
-      "items": ["Flash_Gordon1935"],
-      "index": 5,
-      "tags": ["future"]
+      "playlists": ["Flash_Gordon1935"],
+      "index": 5
     },
     {
       "name": "Buck Rogers",
-      "items": ["otr_buckrogers"],
-      "index": 6,
-      "tags": ["future"]
+      "playlists": ["otr_buckrogers"],
+      "index": 6
     },
     {
       "name": "Exploring Tomorrow",
-      "items": ["Exploring_Tomorrow"],
-      "index": 7,
-      "tags": ["future"]
+      "playlists": ["Exploring_Tomorrow"],
+      "index": 7
     },
     {
       "name": "2000 Plus",
-      "items": ["otr_2000Plus"],
-      "index": 8,
-      "tags": ["future"]
+      "playlists": ["otr_2000Plus"],
+      "index": 8
     },
     {
       "name": "Planet Man",
-      "items": ["OTRR_Planet_Man_Ver2_Singles"],
-      "index": 9,
-      "tags": ["future"]
+      "playlists": ["OTRR_Planet_Man_Ver2_Singles"],
+      "index": 9
     },
     {
       "name": "Superman",
-      "items": ["TheAdventuresOfSuperman_201805"],
-      "index": 10,
-      "tags": ["action"]
+      "playlists": ["TheAdventuresOfSuperman_201805"],
+      "index": 10
     },
     {
       "name": "Tarzan",
-      "items": ["OTRR_Tarzan_Singles_TotA"],
-      "index": 11,
-      "tags": ["action"]
+      "playlists": ["OTRR_Tarzan_Singles_TotA"],
+      "index": 11
     },
     {
       "name": "The Green Hornet",
-      "items": ["TheGreenHornet"],
-      "index": 12,
-      "tags": ["action"]
+      "playlists": ["TheGreenHornet"],
+      "index": 12
     },
     {
       "name": "Dragnet",
-      "items": ["Dragnet_OTR"],
-      "index": 13,
-      "tags": ["action"]
+      "playlists": ["Dragnet_OTR"],
+      "index": 13
     },
     {
       "name": "Speed Gibson",
-      "items": ["Speed_Gibson_Of_The_International_Secret_Police"],
-      "index": 14,
-      "tags": ["action"]
+      "playlists": ["Speed_Gibson_Of_The_International_Secret_Police"],
+      "index": 14
     },
     {
       "name": "Blue Beetle",
-      "items": ["OTRR_Blue_Beetle_Singles"],
-      "index": 15,
-      "tags": ["action"]
+      "playlists": ["OTRR_Blue_Beetle_Singles"],
+      "index": 15
     },
     {
       "name": "The Falcon",
-      "items": ["OTRR_Falcon_Singles"],
-      "index": 16,
-      "tags": ["action"]
+      "playlists": ["OTRR_Falcon_Singles"],
+      "index": 16
     },
     {
       "name": "Dark Fantasy",
-      "items": ["OTRR_Dark_Fantasy_Singles"],
-      "index": 17,
-      "tags": ["mystery"]
+      "playlists": ["OTRR_Dark_Fantasy_Singles"],
+      "index": 17
     },
     {
       "name": "I Love a Mystery",
-      "items": ["otr_iloveamystery"],
-      "index": 18,
-      "tags": ["mystery"]
+      "playlists": ["otr_iloveamystery"],
+      "index": 18
     },
     {
       "name": "Suspense",
-      "items": ["SUSPENSE", "SUSPENSE2", "SUSPENSE3"],
-      "index": 19,
-      "tags": ["mystery"]
+      "playlists": ["SUSPENSE", "SUSPENSE2", "SUSPENSE3"],
+      "index": 19
     },
     {
       "name": "Molle Mystery Theatre",
-      "items": ["OTRR_Molle_Mystery_Theatre_Singles"],
-      "index": 20,
-      "tags": ["mystery"]
+      "playlists": ["OTRR_Molle_Mystery_Theatre_Singles"],
+      "index": 20
     },
     {
       "name": "Mystery House",
-      "items": ["OTRR_Mystery_House_Singles"],
-      "index": 21,
-      "tags": ["mystery"]
+      "playlists": ["OTRR_Mystery_House_Singles"],
+      "index": 21
     },
     {
       "name": "Phillip Marlowe",
-      "items": ["OTRR_Philip_Marlowe_Singles"],
-      "index": 22,
-      "tags": ["mystery"]
+      "playlists": ["OTRR_Philip_Marlowe_Singles"],
+      "index": 22
     },
     {
       "name": "Boston Blackie",
-      "items": ["OTRR_Boston_Blackie_Singles"],
-      "index": 23,
-      "tags": ["mystery"]
+      "playlists": ["OTRR_Boston_Blackie_Singles"],
+      "index": 23
     },
     {
       "name": "Sherlock Holmes",
-      "items": ["sherlockholmes_otr"],
-      "index": 24,
-      "tags": ["mystery"]
+      "playlists": ["sherlockholmes_otr"],
+      "index": 24
     },
     {
       "name": "Gunsmoke",
-      "items": ["GUNSMOKE01", "GUNSMOKE02", "GUNSMOKE03", "GUNSMOKE04"],
-      "index": 25,
-      "tags": ["western"]
+      "playlists": ["GUNSMOKE01", "GUNSMOKE02", "GUNSMOKE03", "GUNSMOKE04"],
+      "index": 25
     },
     {
       "name": "Lone Ranger",
-      "items": ["The_Lone_Ranger_Page_01", "The_Lone_Ranger_Page_02"],
-      "index": 26,
-      "tags": ["western"]
+      "playlists": ["The_Lone_Ranger_Page_01", "The_Lone_Ranger_Page_02"],
+      "index": 26
     },
     {
       "name": "Have Gun Will Travel",
-      "items": ["HaveGunWillTravel_OldTimeRadio"],
-      "index": 27,
-      "tags": ["western"]
+      "playlists": ["HaveGunWillTravel_OldTimeRadio"],
+      "index": 27
     },
     {
       "name": "Tales of the Texas Rangers",
-      "items": ["TalesOfTheTexasRangers"],
-      "index": 28,
-      "tags": ["western"]
+      "playlists": ["TalesOfTheTexasRangers"],
+      "index": 28
     },
     {
       "name": "The Six Shooter",
-      "items": ["OTRR_The_Six_Shooter_Singles"],
-      "index": 29,
-      "tags": ["western"]
+      "playlists": ["OTRR_The_Six_Shooter_Singles"],
+      "index": 29
     },
     {
       "name": "Fort Laramie",
-      "items": ["OTRR_Fort_Laramie_Singles"],
-      "index": 30,
-      "tags": ["western"]
+      "playlists": ["OTRR_Fort_Laramie_Singles"],
+      "index": 30
     },
     {
       "name": "Our Miss Brooks",
-      "items": ["OurMissBrooks"],
-      "index": 31,
-      "tags": ["comedy"]
+      "playlists": ["OurMissBrooks"],
+      "index": 31
     },
     {
       "name": "Great Gildersleeve",
-      "items": ["Great_Gildersleeve"],
-      "index": 32,
-      "tags": ["comedy"]
+      "playlists": ["Great_Gildersleeve"],
+      "index": 32
     },
     {
       "name": "Harold Peary Show",
-      "items": ["OTRR_Harold_Peary_Show_Singles"],
-      "index": 33,
-      "tags": ["comedy"]
+      "playlists": ["OTRR_Harold_Peary_Show_Singles"],
+      "index": 33
     },
     {
       "name": "Jack Benny",
-      "items": ["OTRR_Jack_Benny_Singles_1932-1934"],
-      "index": 34,
-      "tags": ["comedy"]
+      "playlists": ["OTRR_Jack_Benny_Singles_1932-1934"],
+      "index": 34
     },
     {
       "name": "The Phil Harris - Alice Faye Show",
-      "items": ["OTRR_Harris_Faye_Singles"],
-      "index": 35,
-      "tags": ["comedy"]
+      "playlists": ["OTRR_Harris_Faye_Singles"],
+      "index": 35
     },
     {
       "name": "Fibber McGee",
-      "items": ["FibberMcgeeAndMollyHq"],
-      "index": 36,
-      "tags": ["comedy"]
+      "playlists": ["FibberMcgeeAndMollyHq"],
+      "index": 36
+    }
+  ],
+  "channels" : [
+    {
+      "name" : "adverts",
+      "shows": [0]
+    },
+    {
+      "name" : "future",
+      "shows": [1,2,3,4,5,6,7,8,9]
+    },
+    {
+      "name" : "action",
+      "shows": [10,11,12,13,14,15,16]
+    },
+    {
+      "name" : "mystery",
+      "shows": [17,18,19,20,21,22,23,24]
+    },
+    {
+      "name" : "western",
+      "shows": [25,26,27,28,29,30]
+    },
+    {
+      "name" : "comedy",
+      "shows": [31,32,33,34,35,36]
     }
   ]
 }

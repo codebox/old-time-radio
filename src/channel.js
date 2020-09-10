@@ -44,7 +44,7 @@ module.exports.buildChannelManager = (clock = DEFAULT_CLOCK, playlistMinLengthIn
             next() {
                 return adverts[nextAdvertIndex++ % adverts.length];
             }
-        }
+        };
     })();
 
     return {
@@ -54,7 +54,7 @@ module.exports.buildChannelManager = (clock = DEFAULT_CLOCK, playlistMinLengthIn
                 remainingForEachShow = {};
 
             shows.forEach(show => {
-                remainingForEachShow[show.id] = {
+                remainingForEachShow[show.name] = {
                     startCount: show.files.length,
                     remaining: show.files.length
                 };
@@ -72,10 +72,10 @@ module.exports.buildChannelManager = (clock = DEFAULT_CLOCK, playlistMinLengthIn
                 }).sort((o1, o2) => o2.remainingFraction - o1.remainingFraction)[0].showId;
 
                 const remainingForNextShow = remainingForEachShow[nextShowId],
-                    nextShow = shows.find(s => s.id === nextShowId),
+                    nextShow = shows.find(s => s.name === nextShowId),
                     nextFile = nextShow.files[remainingForNextShow.startCount - remainingForNextShow.remaining],
                     nextEpisode = {
-                        url: `${nextShow.urlPrefixes[0]}${nextFile.file}`,
+                        url: `${nextFile.urlPrefixes[0]}${nextFile.file}`,
                         name: nextFile.name,
                         length: nextFile.length
                     };
