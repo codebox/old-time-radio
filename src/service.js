@@ -55,7 +55,7 @@ module.exports.service = {
     },
     getShows() {
         "use strict";
-        return showManager.getShows();
+        return showManager.getShowNamesAndIndexes();
     },
     getPlaylistId(indexes) {
         "use strict";

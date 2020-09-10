@@ -11,6 +11,14 @@ module.exports.buildShowManager = () => {
         getShows() {
             return shows;
         },
+        getShowNamesAndIndexes() {
+            return shows.map(show => {
+                return {
+                    name: show.name,
+                    index: show.index
+                };
+            });
+        },
         getShowForPlaylist(playlistId) {
             return shows.find(show => show.playlists.includes(playlistId));
         },

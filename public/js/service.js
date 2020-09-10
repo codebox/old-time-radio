@@ -6,7 +6,7 @@ const service = (() => {
                 .then(response => response.json());
         },
         getPlaylistForChannel(channelId, trimToNearest = false) {
-            return fetch(`/api/playlist/${channelId}${trimToNearest ? '?nearest' : ''}`)
+            return fetch(`/api/channel/${channelId}${trimToNearest ? '?nearest' : ''}`)
                 .then(response => response.json());
         }
     };

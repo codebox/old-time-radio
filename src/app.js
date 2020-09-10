@@ -27,7 +27,7 @@ app.get(`/api/channels`, (req, res) => {
     res.status(200).json(service.getChannels());
 });
 
-app.get(`/api/playlist/:channel`, (req, res) => {
+app.get(`/api/channel/:channel`, (req, res) => {
     const channelId = req.params.channel,
         trimToNearestBoundary = req.query.nearest !== undefined,
         channel = service.getListForChannel(channelId, trimToNearestBoundary);

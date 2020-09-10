@@ -6,7 +6,7 @@
       "index": 0
     },
     {
-      "name": "X-Minus One",
+      "name": "X Minus One",
       "playlists": ["OTRR_X_Minus_One_Singles"],
       "index": 1
     },
@@ -21,7 +21,7 @@
       "index": 3
     },
     {
-      "name": "Tom Corbett - Space Cadet",
+      "name": "Tom Corbett, Space Cadet",
       "playlists": ["SpaceCadet", "SpaceCadet2"],
       "index": 4
     },
@@ -51,13 +51,13 @@
       "index": 9
     },
     {
-      "name": "Superman",
+      "name": "The Adventures of Superman",
       "playlists": ["TheAdventuresOfSuperman_201805"],
       "index": 10
     },
     {
-      "name": "Tarzan",
-      "playlists": ["OTRR_Tarzan_Singles_TotA"],
+      "name": "Tarzan of the Apes",
+      "playlists": ["OTRR_Tarzan_Singles_TotA", "Tarzan1951"],
       "index": 11
     },
     {
@@ -71,12 +71,12 @@
       "index": 13
     },
     {
-      "name": "Speed Gibson",
+      "name": "Speed Gibson Of The International Secret Police",
       "playlists": ["Speed_Gibson_Of_The_International_Secret_Police"],
       "index": 14
     },
     {
-      "name": "Blue Beetle",
+      "name": "The Blue Beetle",
       "playlists": ["OTRR_Blue_Beetle_Singles"],
       "index": 15
     },
@@ -111,7 +111,7 @@
       "index": 21
     },
     {
-      "name": "Phillip Marlowe",
+      "name": "The Adventures of Philip Marlowe",
       "playlists": ["OTRR_Philip_Marlowe_Singles"],
       "index": 22
     },
@@ -121,7 +121,7 @@
       "index": 23
     },
     {
-      "name": "Sherlock Holmes",
+      "name": "The New Adventures of Sherlock Holmes",
       "playlists": ["sherlockholmes_otr"],
       "index": 24
     },
@@ -131,7 +131,7 @@
       "index": 25
     },
     {
-      "name": "Lone Ranger",
+      "name": "the Lone Ranger",
       "playlists": ["The_Lone_Ranger_Page_01", "The_Lone_Ranger_Page_02"],
       "index": 26
     },
@@ -161,17 +161,17 @@
       "index": 31
     },
     {
-      "name": "Great Gildersleeve",
+      "name": "The Great Gildersleeve",
       "playlists": ["Great_Gildersleeve"],
       "index": 32
     },
     {
-      "name": "Harold Peary Show",
+      "name": "The Harold Peary Show",
       "playlists": ["OTRR_Harold_Peary_Show_Singles"],
       "index": 33
     },
     {
-      "name": "Jack Benny",
+      "name": "The Jack Benny Show",
       "playlists": ["OTRR_Jack_Benny_Singles_1932-1934"],
       "index": 34
     },
@@ -181,9 +181,14 @@
       "index": 35
     },
     {
-      "name": "Fibber McGee",
+      "name": "Fibber McGee and Molly",
       "playlists": ["FibberMcgeeAndMollyHq"],
       "index": 36
+    },
+    {
+      "name": "Pat Novak, For Hire",
+      "playlists": ["PatNovakForHire"],
+      "index": 37
     }
   ],
   "channels" : [
@@ -197,7 +202,7 @@
     },
     {
       "name" : "action",
-      "shows": [10,11,12,13,14,15,16]
+      "shows": [10,11,12,13,14,15,16,37]
     },
     {
       "name" : "mystery",
