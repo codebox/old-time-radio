@@ -45,7 +45,6 @@ module.exports.service = {
                             const showsForChannel = channel.shows.map(id => showManager.getShowByIndex(id));
                             channelManager.addChannel(channel.name, showsForChannel);
                         });
-                        channelManager.mergeAdverts();
                     });
             });
     },

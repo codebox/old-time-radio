@@ -13,21 +13,18 @@ const
 module.exports.buildChannelManager = (clock = DEFAULT_CLOCK, playlistMinLengthInSeconds = PLAYLIST_MIN_LENGTH) => {
     const channels = {};
 
-    function mergeAdvertsWithChannel(channelId) {
+    function mergeAdvertsWithChannel(channel) {
         "use strict";
-        console.assert(channelId !== ADVERTS_CHANNEL);
-
-        const requestedChannel = channels[channelId],
-            combinedList = [];
+        const combinedList = [];
 
         let i = 0;
-        while(i < requestedChannel.list.length) {
-            combinedList.push(requestedChannel.list[i++]);
+        while(i < channel.list.length) {
+            combinedList.push(channel.list[i++]);
             combinedList.push(advertManager.next());
         }
 
         return {
-            title: requestedChannel.title,
+            title: channel.title,
             list: combinedList
         };
     }
@@ -47,65 +44,71 @@ module.exports.buildChannelManager = (clock = DEFAULT_CLOCK, playlistMinLengthIn
         };
     })();
 
+    function buildChannelEpisodeList(channelId, shows) {
+        "use strict";
+        const episodeCount = shows.flatMap(show => show.files).length,
+            remainingForEachShow = {};
+
+        shows.forEach(show => {
+            remainingForEachShow[show.name] = {
+                startCount: show.files.length,
+                remaining: show.files.length
+            };
+        });
+        winston.log('info', `Build '${channelId}' channel with ${episodeCount} episodes`);
+
+        const episodeList = [];
+
+        for (let i = 0; i < episodeCount; i++) {
+            const nextShowId = Object.entries(remainingForEachShow).map(kv => {
+                return {
+                    showId: kv[0],
+                    remainingFraction: (kv[1].remaining - 1) / kv[1].startCount
+                };
+            }).sort((o1, o2) => o2.remainingFraction - o1.remainingFraction)[0].showId;
+
+            const remainingForNextShow = remainingForEachShow[nextShowId],
+                nextShow = shows.find(s => s.name === nextShowId),
+                nextFile = nextShow.files[remainingForNextShow.startCount - remainingForNextShow.remaining],
+                nextEpisode = {
+                    url: `${nextFile.urlPrefixes[0]}${nextFile.file}`,
+                    name: nextFile.name,
+                    length: nextFile.length
+                };
+            remainingForNextShow.remaining--;
+            episodeList.push(nextEpisode);
+        }
+
+        return episodeList;
+    }
+
     return {
         addChannel(channelId, shows) {
             "use strict";
-            const episodeCount = shows.flatMap(show => show.files).length,
-                remainingForEachShow = {};
-
-            shows.forEach(show => {
-                remainingForEachShow[show.name] = {
-                    startCount: show.files.length,
-                    remaining: show.files.length
-                };
-            });
-            winston.log('info', `Build '${channelId}' channel with ${episodeCount} episodes`);
-
-            const episodeList = [];
-
-            for (let i = 0; i < episodeCount; i++) {
-                const nextShowId = Object.entries(remainingForEachShow).map(kv => {
-                    return {
-                        showId: kv[0],
-                        remainingFraction: (kv[1].remaining - 1) / kv[1].startCount
-                    };
-                }).sort((o1, o2) => o2.remainingFraction - o1.remainingFraction)[0].showId;
-
-                const remainingForNextShow = remainingForEachShow[nextShowId],
-                    nextShow = shows.find(s => s.name === nextShowId),
-                    nextFile = nextShow.files[remainingForNextShow.startCount - remainingForNextShow.remaining],
-                    nextEpisode = {
-                        url: `${nextFile.urlPrefixes[0]}${nextFile.file}`,
-                        name: nextFile.name,
-                        length: nextFile.length
-                    };
-                remainingForNextShow.remaining--;
-                episodeList.push(nextEpisode);
-            }
+            const episodeList = buildChannelEpisodeList(channelId, shows);
 
             if (channelId === ADVERTS_CHANNEL) {
                 advertManager.add(episodeList);
 
             } else {
-                channels[channelId] = {
+                channels[channelId] = mergeAdvertsWithChannel({
                     title: channelId,
                     list: episodeList
-                };
+                });
             }
-        },
-        mergeAdverts() {
-            "use strict";
-            Object.keys(channels).forEach(channelId => {
-                channels[channelId] = mergeAdvertsWithChannel(channelId);
-            });
         },
         getChannels() {
             "use strict";
             return Object.keys(channels);
         },
         getPlaylist(channelId, trimToNearestBoundary = false) {
-            const channel = channels[channelId],
-                playlistLength = channel.list.reduce((lengthSoFar, currentItem) => lengthSoFar + currentItem.length, 0),
+            const channel = channels[channelId];
+            if (!channel) {
+                return;
+            }
+            console.log(JSON.stringify(channel, null, 4))
+
+            const playlistLength = channel.list.reduce((lengthSoFar, currentItem) => lengthSoFar + currentItem.length, 0),
                 offsetSinceStartOfPlay = (clock.now() - START_TIME) % playlistLength;
             let i = 0, clientPlaylist = [], currentOffset = 0, currentProgrammeDuration, currentItem;
 
