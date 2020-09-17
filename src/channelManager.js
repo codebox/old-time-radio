@@ -9,7 +9,33 @@ module.exports.buildChannelManager = (showManager, playlistManager) => {
      */
     const predefinedChannels = {},
         QUARTET_SIZE = 4,
+        ADVERTS_CHANNEL = 'adverts',
         CHANNEL_CODE_REGEX = /^[0-9a-f]+$/i;
+
+    const advertManager = (() => {
+        "use strict";
+        const adverts = [], advertShowIds = [];
+
+        function hash(s){
+            return s.split('').reduce((a,b) => {
+                a = ((a<<5) - a) + b.charCodeAt(0);
+                return a&a
+            }, 0);
+        }
+
+        return {
+            setShowIds(showIds) {
+                advertShowIds.push(...showIds);
+            },
+            get(randomisationKey, offset) {
+                if (!adverts.length) {
+                    adverts.push(...buildEpisodeListForShowIds(advertShowIds, false));
+                }
+                const index = (Math.abs(hash(randomisationKey)) + offset) % adverts.length;
+                return adverts[index];
+            }
+        };
+    })();
 
     function parseCodeToIndexes(code) {
         const indexes = [];
@@ -25,7 +51,7 @@ module.exports.buildChannelManager = (showManager, playlistManager) => {
         return show.playlists.flatMap(playlistId => playlistManager.getPlaylist(playlistId).files);
     }
 
-    function buildEpisodeListForShowIds(showIndexes) {
+    function buildEpisodeListForShowIds(showIndexes, mergeAdverts) {
         "use strict";
         const shows = showIndexes.map(showManager.getShowByIndex).filter(s => s),
             episodeCount = shows.reduce((count, show) => getFilesForShow(show).length + count, 0),
@@ -39,7 +65,7 @@ module.exports.buildChannelManager = (showManager, playlistManager) => {
             };
         });
 
-        const episodeList = [];
+        const episodeList = [], advertRandomisationKey = showIndexes.join('.');
 
         for (let i = 0; i < episodeCount; i++) {
             const nextShowId = Object.entries(remainingForEachShow).map(kv => {
@@ -59,6 +85,9 @@ module.exports.buildChannelManager = (showManager, playlistManager) => {
                 };
             remainingForNextShow.remaining--;
             episodeList.push(nextEpisode);
+            if (mergeAdverts) {
+                episodeList.push(advertManager.get(advertRandomisationKey, i));
+            }
         }
 
         return episodeList;
@@ -66,15 +95,18 @@ module.exports.buildChannelManager = (showManager, playlistManager) => {
 
     return {
         addPredefinedChannel(predefinedChannel) {
-            console.log(predefinedChannel)
             "use strict";
-            predefinedChannels[predefinedChannel.name] = predefinedChannel;
+            if (predefinedChannel.name === ADVERTS_CHANNEL) {
+                advertManager.setShowIds(predefinedChannel.shows);
+            } else {
+                predefinedChannels[predefinedChannel.name] = predefinedChannel;
+            }
         },
         getPredefinedChannels() {
             "use strict";
             return Object.keys(predefinedChannels);
         },
-        getEpisodeList(channelId) {
+        getEpisodeList(channelId, mergeAdverts) {
             "use strict";
             const showIndexes = [];
 
@@ -85,7 +117,7 @@ module.exports.buildChannelManager = (showManager, playlistManager) => {
                 showIndexes.push(...parseCodeToIndexes(channelId))
             }
 
-            return buildEpisodeListForShowIds(showIndexes);
+            return buildEpisodeListForShowIds(showIndexes, mergeAdverts);
         }
     };
 };

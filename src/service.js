@@ -45,7 +45,7 @@ module.exports.service = {
     },
     getScheduleForChannel(channelId) {
         "use strict";
-        const episodeListForChannel = channelManager.getEpisodeList(channelId);
+        const episodeListForChannel = channelManager.getEpisodeList(channelId, true);
         if (episodeListForChannel) {
             return scheduleBuilder.buildScheduleForEpisodeList(episodeListForChannel);
         }

@@ -19,7 +19,6 @@ module.exports.buildShowManager = () => {
             return [...shows];
         },
         getShowByIndex(index) {
-            console.log(index)
             return shows.find(show => show.index === index);
         }
     };
