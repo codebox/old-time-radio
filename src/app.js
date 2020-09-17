@@ -24,26 +24,21 @@ app.get(`/api/shows`, (req, res) => {
 
 app.get(`/api/channels`, (req, res) => {
     "use strict";
-    res.status(200).json(service.getChannels());
+    res.status(200).json(service.getPredefinedChannels());
 });
 
 app.get(`/api/channel/:channel`, (req, res) => {
     const channelId = req.params.channel,
         trimToNearestBoundary = req.query.nearest !== undefined,
-        channel = service.getListForChannel(channelId, trimToNearestBoundary);
+        schedule = service.getScheduleForChannel(channelId, trimToNearestBoundary);
 
-    if (channel) {
-        res.status(200).json(channel);
+    if (schedule) {
+        res.status(200).json(schedule);
     } else {
         res.status(400).send('Unknown channel');
     }
 });
 
-app.get(`/api/playlist/generate/:indexes`, (req, res) => {
-    const indexes = req.params.indexes.split(',');
-
-    res.status(200).json(service.getPlaylistId(indexes));
-});
 
 service.init()
     .then(_ => {
