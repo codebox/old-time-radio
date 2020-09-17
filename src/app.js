@@ -39,7 +39,6 @@ app.get(`/api/channel/:channel`, (req, res) => {
     }
 });
 
-
 service.init()
     .then(_ => {
         app.listen(port, () => winston.log('info', `Initialisation complete, listening on port ${port}...`));
