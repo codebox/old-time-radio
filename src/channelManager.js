@@ -29,7 +29,9 @@ module.exports.buildChannelManager = (showManager, playlistManager) => {
             },
             get(randomisationKey, offset) {
                 if (!adverts.length) {
-                    adverts.push(...buildEpisodeListForShowIds(advertShowIds, false));
+                    const episodeListForAdverts = buildEpisodeListForShowIds(advertShowIds, false);
+                    episodeListForAdverts.forEach(episode => episode.commercial = true);
+                    adverts.push(...episodeListForAdverts);
                 }
                 const index = (Math.abs(hash(randomisationKey)) + offset) % adverts.length;
                 return adverts[index];
