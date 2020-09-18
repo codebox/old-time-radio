@@ -39,6 +39,12 @@ app.get(`/api/channel/:channel`, (req, res) => {
     }
 });
 
+app.get(`/api/channel/generate/:indexes`, (req, res) => {
+    "use strict";
+    const indexes = req.params.indexes.split(',').map(s => Number(s));
+    res.status(200).json(service.generateCodeForShowIndexes(indexes));
+});
+
 service.init()
     .then(_ => {
         app.listen(port, () => winston.log('info', `Initialisation complete, listening on port ${port}...`));

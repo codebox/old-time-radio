@@ -49,5 +49,9 @@ module.exports.service = {
         if (episodeListForChannel) {
             return scheduleBuilder.buildScheduleForEpisodeList(episodeListForChannel);
         }
+    },
+    generateCodeForShowIndexes(showIndexes) {
+        "use strict";
+        return channelManager.generateCodeForShowIndexes(showIndexes);
     }
 };

@@ -39,6 +39,20 @@ module.exports.buildChannelManager = (showManager, playlistManager) => {
         };
     })();
 
+    function buildCodeFromIndexes(indexes) {
+        const uniqueNumericIndexes = new Set(indexes.map(Number)),
+            shows = showManager.getShows();
+
+        const quartetTotals = new Array(Math.ceil(shows.length / QUARTET_SIZE)).fill(0);
+        for (let i=0; i<shows.length; i++) {
+            const quartetIndex = Math.floor(i / QUARTET_SIZE);
+            if (uniqueNumericIndexes.has(i)) {
+                quartetTotals[quartetIndex] += Math.pow(2, i - quartetIndex * QUARTET_SIZE);
+            }
+        }
+        return quartetTotals.map(t => Number(t).toString(16).toUpperCase()).join('');
+    }
+
     function parseCodeToIndexes(code) {
         const indexes = [];
         code.split('').forEach((c, charIndex) => {
@@ -120,6 +134,10 @@ module.exports.buildChannelManager = (showManager, playlistManager) => {
             }
 
             return buildEpisodeListForShowIds(showIndexes, mergeAdverts);
+        },
+        generateCodeForShowIndexes(showIndexes) {
+            "use strict";
+            return buildCodeFromIndexes(showIndexes);
         }
     };
 };
