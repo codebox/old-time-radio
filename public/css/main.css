@@ -156,9 +156,9 @@ html, body, div {
     border-width: 1px;
     border-style: solid;
     transition: all 1s ease;
-    margin: 10px;
     border-radius: 5px;
     overflow-y: scroll;
+    margin: 0 10px;
 }
 #menu.visible {
     height: 100%;
