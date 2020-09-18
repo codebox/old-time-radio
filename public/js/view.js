@@ -12,13 +12,17 @@ const view = (() => {
 
         elButtonContainer = document.getElementById('buttons'),
         elDownloadLink = document.getElementById('downloadLink'),
-        elMenuButton = document.getElementById('menuButton'),
+        elMenuOpenButton = document.getElementById('menuOpenButton'),
+        elMenuCloseButton = document.getElementById('menuCloseButton'),
         elMenuBox = document.getElementById('menu'),
 
         channelButtons = {};
 
-    elMenuButton.onclick = () => {
-        elMenuBox.classList.toggle('visible');
+    elMenuOpenButton.onclick = () => {
+        setMenuState(true);
+    };
+    elMenuCloseButton.onclick = () => {
+        setMenuState(false);
     };
 
     let model, onChannelSelectedHandler = () => {}, onChannelDeselectedHandler = () => {};
@@ -35,6 +39,12 @@ const view = (() => {
         } else {
             elDownloadLink.innerHTML = '';
         }
+    }
+
+    function setMenuState(isOpen) {
+        elMenuBox.classList.toggle('visible', isOpen);
+        elMenuOpenButton.style.display = isOpen ? 'none' : 'inline';
+        elMenuCloseButton.style.display = !isOpen ? 'none' : 'inline';
     }
 
     function setViewState(state) {
@@ -64,6 +74,8 @@ const view = (() => {
         updateDownloadLink();
         messageManager.updateStatus();
     }
+
+    setMenuState(false);
 
     return {
         init(_model) {
