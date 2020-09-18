@@ -40,3 +40,4 @@ Unfortunately there is a bug in iOS 13 which prevents this feature from working 
     * say goodnight
 * Add menu with links to github, contact details, settings
     * UI - how should the user access this 
+* Keep an eye on iOS visualiser problem, does it work again on iOS 14?    
