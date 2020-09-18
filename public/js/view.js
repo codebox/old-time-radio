@@ -11,6 +11,7 @@ const view = (() => {
         CLASS_ERROR = 'channelError',
 
         elButtonContainer = document.getElementById('buttons'),
+        elDownloadLink = document.getElementById('downloadLink'),
 
         channelButtons = {};
 
@@ -20,6 +21,14 @@ const view = (() => {
         Object.keys(channelButtons).forEach(channelId => {
             fn(channelId, channelButtons[channelId]);
         });
+    }
+
+    function updateDownloadLink() {
+        if (model.track) {
+            elDownloadLink.innerHTML = `<a href="${model.track.url}" target="_blank">Download this show as an MP3 file</a>`;
+        } else {
+            elDownloadLink.innerHTML = '';
+        }
     }
 
     function setViewState(state) {
@@ -39,12 +48,14 @@ const view = (() => {
                 el.classList.remove(CLASS_LOADING, CLASS_ERROR);
                 el.classList.toggle(CLASS_PLAYING, id === model.channel);
             });
+
         } else if (state === STATE_CONNECTION_ERROR) {
             forEachChannelButton((id, el) => {
                 el.classList.remove(CLASS_LOADING, CLASS_PLAYING);
                 el.classList.add(CLASS_ERROR);
             });
         }
+        updateDownloadLink();
         messageManager.updateStatus();
     }
 

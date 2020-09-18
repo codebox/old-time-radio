@@ -13,7 +13,7 @@ window.onload = () => {
         return playlist.getNext()
             .then(nextItem => {
                 const {url, name, offset} = nextItem;
-                model.track = name;
+                model.track = {name, url};
 
                 return audioPlayer.load(url, offset)
                     .then(() => {
@@ -39,7 +39,7 @@ window.onload = () => {
 
     view.onChannelDeselected(() => {
         "use strict";
-        model.channel = model.playlist = null;
+        model.track = model.channel = model.playlist = null;
         audioPlayer.stop();
         view.updatePlayState(model);
         setTimeout(() => {
