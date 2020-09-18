@@ -19,3 +19,24 @@ This allowed me to write some JavaScript to analyse the audio signal in real-tim
 [Visualisation Video](https://codebox.net/assets/video/old-time-radio/audio-visualisation.mp4)
 
 Unfortunately there is a bug in iOS 13 which prevents this feature from working on some Apple devices. Users on the affected platforms will see a placeholder animation until the issue is fixed by Apple.
+
+## TODO List
+
+* ~~Download link~~
+* Channel Builder
+    * Create a channel builder page/dialog where the user can select shows and generate a magic url that will allow them to play that channel
+    * Should we allow the user to name their channel? (how to handle long channel names, offensive words, script injection exploits)
+        * maybe give the user a 'frequency' for the new channel rather than naming it
+    * UI - how to include custom channels in channel list, current UI only just has room for 5 on mobile
+        * allow unlimited channels and re-think layout?
+        * keep max 5, replace predefined channels with custom ones
+        * when playing a custom channel we only show that one and hide other buttons
+* Low-CPU version
+    * no animations, hide visualiser
+* Sleep timer
+    * UI - somehow show that sleep timer is active and how much time left, and allow it to be cancelled or extended
+    * fade out audio
+    * fade page to black
+    * say goodnight
+* Add menu with links to github, contact details, settings
+    * UI - how should the user access this 
