@@ -12,8 +12,14 @@ const view = (() => {
 
         elButtonContainer = document.getElementById('buttons'),
         elDownloadLink = document.getElementById('downloadLink'),
+        elMenuButton = document.getElementById('menuButton'),
+        elMenuBox = document.getElementById('menu'),
 
         channelButtons = {};
+
+    elMenuButton.onclick = () => {
+        elMenuBox.classList.toggle('visible');
+    };
 
     let model, onChannelSelectedHandler = () => {}, onChannelDeselectedHandler = () => {};
 

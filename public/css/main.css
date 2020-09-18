@@ -110,7 +110,7 @@ html, body, div {
 #titleInner4 {
     animation-delay: 0.9s;
 }
-#title div {
+#title div.radioWave {
     position: absolute;
     margin-top: 10px;
     border-radius: 50%;
@@ -127,10 +127,52 @@ html, body, div {
     animation-duration: 3s;
     animation-iteration-count: infinite;
 }
+#menuButton {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    width: 32px;
+    height: 32px;
+    fill: white;
+    cursor: pointer;
+}
 #visualiser {
     display: flex;
     flex: 1 1 200px;
     min-height: 0;
+    position: relative;
+}
+#menu {
+    font-family: Bellerose;
+    font-size: 24px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(100% - 20px);
+    background-image: linear-gradient(to bottom right, #ddddddee, #666666ee);
+    text-align: center;
+    height: 0;
+    border-color: var(--msg-background);
+    border-width: 1px;
+    border-style: solid;
+    transition: all 1s ease;
+    margin: 10px;
+    border-radius: 5px;
+    overflow-y: scroll;
+}
+#menu.visible {
+    height: 100%;
+    border-color: var(--body-background);
+}
+#menu h2 {
+    font-size: 24px;
+    line-height: 32px;
+    margin: 8px;
+}
+#menu p {
+    font-size: 18px;
+    line-height: 24px;
+    margin: 8px 16px;
 }
 #buttons {
     display: flex;
