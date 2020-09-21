@@ -19,7 +19,12 @@ app.use(express.static('public'))
 
 app.get(`/api/shows`, (req, res) => {
     "use strict";
-    res.status(200).json(service.getShows());
+    res.status(200).json(service.getShows().map(show => {
+        return {
+            name: show.name,
+            index: show.index
+        };
+    }));
 });
 
 app.get(`/api/channels`, (req, res) => {
