@@ -12,6 +12,7 @@
     --msg-background: black;
     --divider-colour: #333;
     --body-background: #777;
+    --menu-font-color: black;
 }
 @font-face {
     font-family: 'Bellerose';
@@ -74,9 +75,9 @@ html, body, div {
     color: inherit;
     text-decoration: none;
 }
-
 #title {
     display: flex;
+    flex-direction: row;
     flex: 0 0 120px;
     align-items: center;
     justify-content: center;
@@ -90,6 +91,34 @@ html, body, div {
     overflow: hidden;
     position: relative;
 }
+#title h1 {
+    flex: 1 1 50%;
+    display: flex;
+    font-size: 48px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin: 0;
+    height: 100%;
+}
+#title .spacer {
+    flex: 0 0 40px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+#title svg {
+    margin-top: 20px;
+    fill: white;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+}
+#menuCloseButton {
+    display: none;
+}
+
 @keyframes growCircle{
     from {
         transform: translate3d(-50%, -50%, 0) scale(0) rotateZ(360deg);
@@ -127,18 +156,6 @@ html, body, div {
     animation-duration: 3s;
     animation-iteration-count: infinite;
 }
-#title svg {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    width: 32px;
-    height: 32px;
-    fill: white;
-    cursor: pointer;
-}
-#menuCloseButton {
-    display: none;
-}
 #visualiser {
     display: flex;
     flex: 1 1 200px;
@@ -167,12 +184,15 @@ html, body, div {
 #menu h2 {
     font-size: 24px;
     line-height: 32px;
-    margin: 8px;
+    margin: 16px 8px 8px 8px;
 }
 #menu p {
     font-size: 18px;
     line-height: 24px;
     margin: 8px 16px;
+}
+#menu a, #menu a:visited {
+    color: var(--menu-font-color)
 }
 #buttons {
     display: flex;
@@ -260,6 +280,10 @@ canvas {
     height: 100%;
 }
 @media screen and (max-width: 500px) {
+    #title h1 {
+        padding-top: 8px;
+        font-size: 36px;
+    }
     .buttonBox {
         display: flex;
         flex: 0 1 20%;
@@ -269,10 +293,18 @@ canvas {
         text-align: center;
         flex-basis: 50px;
     }
+    #menu p {
+        font-size: 18px;
+        line-height: 20px;
+        margin: 8px 16px;
+    }
 }
 @media screen and (min-width: 350px) and (max-width: 500px) {
     .buttonLabel {
         font-size: 20px;
+    }
+    #title svg {
+        margin-top: 28px;
     }
 }
 @media screen and (max-width: 349px) {
@@ -280,6 +312,9 @@ canvas {
         font-size: 36px;
         flex: 0 0 100px;
         margin-top: -16px;
+    }
+    #title h1 {
+        padding-top: 0;
     }
     .buttonLabel {
         font-size: 16px;
