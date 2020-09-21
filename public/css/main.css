@@ -194,6 +194,26 @@ html, body, div {
 #menu a, #menu a:visited {
     color: var(--menu-font-color)
 }
+#menu #showList {
+    padding: 0;
+    line-height: 36px;
+}
+#menu .showButton {
+    background-color: var(--font-color-dim);
+    border: 2px solid var(--divider-colour);
+    border-radius: 10px;
+    display: inline-block;
+    white-space: nowrap;
+    font-size: 16px;
+    line-height: 16px;
+    padding: 4px 12px 12px 12px;
+    cursor: pointer;
+    margin: 0px 4px;
+    user-select: none;
+}
+#menu .showButton.selected {
+    background-color: var(--font-color);
+}
 #buttons {
     display: flex;
     flex: 0 0 200px;

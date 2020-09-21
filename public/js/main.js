@@ -47,6 +47,13 @@ window.onload = () => {
         }, 2000);
     });
 
+    view.onBuildChannelRequest(showIndexes => {
+        "use strict";
+         service.getChannelCodeForShows(showIndexes).then(code => {
+             view.displayChannelCode(code);
+         });
+    });
+
     audioPlayer.onAudioEnded(() => {
         "use strict";
         playNextFromCurrentChannel();
@@ -57,4 +64,8 @@ window.onload = () => {
         view.setChannels(model.channels = channels);
     }).catch(err => messageManager.httpError());
 
+    service.getShowList().then(shows => {
+        model.shows = shows;
+        view.updateShowList();
+    });
 };

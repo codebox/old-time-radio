@@ -22,7 +22,8 @@ app.get(`/api/shows`, (req, res) => {
     res.status(200).json(service.getShows().map(show => {
         return {
             name: show.name,
-            index: show.index
+            index: show.index,
+            isCommercial: !! show.isCommercial
         };
     }));
 });

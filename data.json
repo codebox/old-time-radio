@@ -3,7 +3,8 @@
     {
       "name": "Commercials",
       "playlists": ["Old_Radio_Adverts_01"],
-      "index": 0
+      "index": 0,
+      "isCommercial": true
     },
     {
       "name": "X Minus One",
@@ -131,7 +132,7 @@
       "index": 25
     },
     {
-      "name": "the Lone Ranger",
+      "name": "The Lone Ranger",
       "playlists": ["The_Lone_Ranger_Page_01", "The_Lone_Ranger_Page_02"],
       "index": 26
     },
