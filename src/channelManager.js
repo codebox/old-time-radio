@@ -10,7 +10,7 @@ module.exports.buildChannelManager = (showManager, playlistManager) => {
     const predefinedChannels = {},
         SHOWS_PER_CHAR = 6,
         ADVERTS_CHANNEL = 'adverts',
-        CHANNEL_CODE_REGEX = /^[0-9a-zA-Z]+$/i;
+        CHANNEL_CODE_REGEX = /^[0-9a-zA-Z_-]+$/i;
 
     const advertManager = (() => {
         "use strict";
