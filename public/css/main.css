@@ -185,6 +185,7 @@ html, body, div {
     font-size: 24px;
     line-height: 32px;
     margin: 16px 8px 8px 8px;
+    text-decoration: underline;
 }
 #menu p {
     font-size: 18px;
@@ -219,6 +220,9 @@ html, body, div {
     padding: 0 8px 8px 8px;
     border-radius: 4px;
     cursor: pointer;
+}
+#menu hr {
+    margin-top: 32px;
 }
 #menu .showButton.selected {
     background-color: var(--font-color);
