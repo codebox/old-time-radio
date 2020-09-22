@@ -57,10 +57,15 @@ window.onload = () => {
         playNextFromCurrentChannel();
     });
 
-    service.getChannels().then(channels => {
-        "use strict";
-        view.setChannels(model.channels = channels);
-    }).catch(err => messageManager.httpError());
+    const channels = new URLSearchParams(window.location.search).get('channels');
+    if (channels) {
+        view.setChannels(model.channels = channels.split(','));
+    } else {
+        service.getChannels().then(channels => {
+            "use strict";
+            view.setChannels(model.channels = channels);
+        }).catch(err => messageManager.httpError());
+    }
 
     service.getShowList().then(shows => {
         channelBuilder.populate(model.shows = shows);

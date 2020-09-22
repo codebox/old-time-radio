@@ -74,8 +74,8 @@ const channelBuilder = (() => {
                     const selectedShowIndexes = model.filter(show => show.selected).map(show => show.index);
                     updateUiForState(STATE_CHANNEL_PENDING);
                     handler(selectedShowIndexes).then(code => {
-                        const url = `./?${code}`;
-                        elChannelUrl.innerHTML = `<a href="./?${code}">https://oldtime.radio/?${code}</a>`;
+                        const path = `?channels=${code}`;
+                        elChannelUrl.innerHTML = `<a href="./${path}">https://oldtime.radio/${path}</a>`;
                         updateUiForState(STATE_CHANNEL_CREATED);
 
                     }).catch(err => {
