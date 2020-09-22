@@ -63,7 +63,7 @@ const messageManager = (() => {
             };
         });
         function showChannelMessage(){
-            const messagesForThisChannel = CHANNEL_MESSAGES[(model.channel || '').toLowerCase()];
+            const messagesForThisChannel = CHANNEL_MESSAGES[(model.channel.id || '').toLowerCase()];
             if (messagesForThisChannel && messagesForThisChannel.messages.length) {
                 const nextIndex = messagesForThisChannel.nextIndex,
                     message = messagesForThisChannel.messages[nextIndex];
@@ -74,7 +74,7 @@ const messageManager = (() => {
         const MESSAGES = [
             'You are listening to audio from The Internet Archive. Find more at http://archive.org',
             'Please support The Internet Archive by donating at http://archive.org/donate',
-            'All audio on this site is hosted by The Internet Archive. Visit them at http://archive.org'
+            'Build your own channel with your favourite shows, click the menu ↗'
         ].map(textMessage => [showNext, textMessage]).flatMap(m => m);
 
         let nextIndex = 0;
@@ -143,7 +143,11 @@ const messageManager = (() => {
                 setMessage('Select a channel');
 
             } else if (!model.track) {
-                setMessage(`Tuning in to the ${model.channel} Channel...`);
+                if (model.channel.userChannel) {
+                    setMessage(`Tuning in to ${model.channel.name}...`);
+                } else {
+                    setMessage(`Tuning in to the ${model.channel.name} channel...`);
+                }
 
             } else {
                 setMessage(`${model.track.name}`);

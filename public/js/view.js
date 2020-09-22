@@ -58,13 +58,13 @@ const view = (() => {
         } else if (state === STATE_CHANNEL_LOADING) {
             forEachChannelButton((id, el) => {
                 el.classList.remove(CLASS_PLAYING, CLASS_ERROR);
-                el.classList.toggle(CLASS_LOADING, id === model.channel);
+                el.classList.toggle(CLASS_LOADING, id === model.channel.id);
             });
 
         } else if (state === STATE_CHANNEL_PLAYING) {
             forEachChannelButton((id, el) => {
                 el.classList.remove(CLASS_LOADING, CLASS_ERROR);
-                el.classList.toggle(CLASS_PLAYING, id === model.channel);
+                el.classList.toggle(CLASS_PLAYING, id === model.channel.id);
             });
 
         } else if (state === STATE_CONNECTION_ERROR) {
@@ -85,10 +85,12 @@ const view = (() => {
             messageManager.init(document.getElementById('message'), model);
             setViewState(STATE_INIT);
         },
-        setChannels(channelIds) {
+        setChannels(channels) {
             setViewState(STATE_NO_CHANNEL);
-            channelIds.forEach(channelId => {
-                const elButtonBox = document.createElement('div');
+            channels.forEach(channel => {
+                const channelId = channel.id,
+                    channelName = channel.name,
+                    elButtonBox = document.createElement('div');
                 elButtonBox.classList.add('buttonBox');
 
                 const elButtonIndicator = document.createElement('div'),
@@ -99,13 +101,13 @@ const view = (() => {
 
                 elButton.classList.add('button');
                 elButtonLabel.classList.add('buttonLabel');
-                elButtonLabel.innerText = channelId;
+                elButtonLabel.innerText = channelName;
 
                 elButton.onclick = () => {
-                    if (channelId === model.channel) {
-                        onChannelDeselectedHandler(channelId);
+                    if (model.channel && (channelId === model.channel.id)) {
+                        onChannelDeselectedHandler(channel);
                     } else {
-                        onChannelSelectedHandler(channelId);
+                        onChannelSelectedHandler(channel);
                     }
                 };
                 elButtonBox.appendChild(elButtonIndicator);

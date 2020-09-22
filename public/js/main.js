@@ -26,11 +26,11 @@ window.onload = () => {
             });
     }
 
-    view.onChannelSelected(channelId => {
+    view.onChannelSelected(channel => {
         "use strict";
         model.track = null;
         model.playlist = null;
-        model.channel = channelId;
+        model.channel = channel;
         view.updatePlayState(model);
         visualiser.activate();
         playNextFromCurrentChannel();
@@ -57,13 +57,29 @@ window.onload = () => {
         playNextFromCurrentChannel();
     });
 
-    const channels = new URLSearchParams(window.location.search).get('channels');
-    if (channels) {
-        view.setChannels(model.channels = channels.split(','));
-    } else {
-        service.getChannels().then(channels => {
+    const urlChannelCodes = new URLSearchParams(window.location.search).get('channels');
+    if (urlChannelCodes) {
+        model.channels = urlChannelCodes.split(',').map((code, i) => {
             "use strict";
-            view.setChannels(model.channels = channels);
+            return {
+                id: code,
+                name: `Channel ${i+1}`,
+                userChannel: true
+            };
+        });
+        view.setChannels(model.channels);
+
+    } else {
+        service.getChannels().then(channelIds => {
+            "use strict";
+            model.channels = channelIds;
+            view.setChannels(channelIds.map(channelId => {
+                return {
+                    id: channelId,
+                    name: channelId,
+                    userChannel: false
+                };
+            }));
         }).catch(err => messageManager.httpError());
     }
 

@@ -295,6 +295,7 @@ html, body, div {
     line-height: 24px;
     margin-top: -10px;
     border: none ! important;
+    white-space: nowrap;
 }
 canvas {
     width: 100%;
