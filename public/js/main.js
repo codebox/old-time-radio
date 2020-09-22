@@ -47,11 +47,9 @@ window.onload = () => {
         }, 2000);
     });
 
-    view.onBuildChannelRequest(showIndexes => {
+    channelBuilder.onChannelRequested(showIndexes => {
         "use strict";
-         service.getChannelCodeForShows(showIndexes).then(code => {
-             view.displayChannelCode(code);
-         });
+         return service.getChannelCodeForShows(showIndexes);
     });
 
     audioPlayer.onAudioEnded(() => {
@@ -65,7 +63,6 @@ window.onload = () => {
     }).catch(err => messageManager.httpError());
 
     service.getShowList().then(shows => {
-        model.shows = shows;
-        view.updateShowList();
+        channelBuilder.populate(model.shows = shows);
     });
 };

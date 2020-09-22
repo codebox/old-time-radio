@@ -15,10 +15,6 @@ const view = (() => {
         elMenuOpenButton = document.getElementById('menuOpenButton'),
         elMenuCloseButton = document.getElementById('menuCloseButton'),
         elMenuBox = document.getElementById('menu'),
-        elShowList = document.getElementById('showList'),
-        elShowsSelected = document.getElementById('showsSelected'),
-        elBuildChannelButton = document.getElementById('buildChannel'),
-        elChannelUrl = document.getElementById('channelUrl'),
 
         channelButtons = {};
 
@@ -31,8 +27,7 @@ const view = (() => {
 
     let model,
         onChannelSelectedHandler = () => {},
-        onChannelDeselectedHandler = () => {},
-        onBuildChannelRequestHandler = () => {};
+        onChannelDeselectedHandler = () => {};
 
     function forEachChannelButton(fn) {
         Object.keys(channelButtons).forEach(channelId => {
@@ -83,15 +78,6 @@ const view = (() => {
     }
 
     setMenuState(false);
-    channelBuilder.onSelectionChanged(channelSelectionModel => {
-        const selectionCount = channelSelectionModel.filter(item => item.selected).length;
-        elShowsSelected.innerHTML = `${selectionCount || 'No'} Show${selectionCount === 1? '' : 's'} Selected`;
-        elBuildChannelButton.disabled = !selectionCount;
-    });
-
-    elBuildChannelButton.onclick = () => {
-        onBuildChannelRequestHandler(channelBuilder.getSelectedIndexes());
-    };
 
     return {
         init(_model) {
@@ -156,12 +142,6 @@ const view = (() => {
         },
         updateShowList() {
             channelBuilder.init(elShowList, model.shows);
-        },
-        onBuildChannelRequest(handler) {
-            onBuildChannelRequestHandler = handler;
-        },
-        displayChannelCode(code) {
-            elChannelUrl.innerHTML = `https://oldtime.radio/?${code}`;
         }
     };
 })();
