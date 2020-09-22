@@ -197,6 +197,7 @@ html, body, div {
 #menu #showList {
     padding: 0;
     line-height: 36px;
+    margin-bottom: 0;
 }
 #menu .showButton {
     background-color: var(--font-color-dim);

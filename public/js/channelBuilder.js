@@ -75,7 +75,7 @@ const channelBuilder = (() => {
                     updateUiForState(STATE_CHANNEL_PENDING);
                     handler(selectedShowIndexes).then(code => {
                         const path = `?channels=${code}`;
-                        elChannelUrl.innerHTML = `<a href="./${path}">https://oldtime.radio/${path}</a>`;
+                        elChannelUrl.innerHTML = `Channel created. You can listen here:<br><a href="./${path}">https://oldtime.radio/${path}</a>`;
                         updateUiForState(STATE_CHANNEL_CREATED);
 
                     }).catch(err => {

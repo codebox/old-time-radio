@@ -8,9 +8,9 @@ module.exports.buildChannelManager = (showManager, playlistManager) => {
      }
      */
     const predefinedChannels = {},
-        QUARTET_SIZE = 4,
+        SHOWS_PER_CHAR = 6,
         ADVERTS_CHANNEL = 'adverts',
-        CHANNEL_CODE_REGEX = /^[0-9a-f]+$/i;
+        CHANNEL_CODE_REGEX = /^[0-9a-zA-Z]+$/i;
 
     const advertManager = (() => {
         "use strict";
@@ -39,25 +39,40 @@ module.exports.buildChannelManager = (showManager, playlistManager) => {
         };
     })();
 
+    const CHAR_MAP = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_';
+    function numToString(n) {
+        "use strict";
+        console.assert(n<64);
+        return CHAR_MAP.charAt(n);
+    }
+
+    function stringToNum(s) {
+        "use strict";
+        console.assert(s.length === 1);
+        const n = CHAR_MAP.indexOf(s);
+        console.assert(n >= 0);
+        return n;
+    }
+
     function buildCodeFromIndexes(indexes) {
         const uniqueNumericIndexes = new Set(indexes.map(Number)),
             shows = showManager.getShows();
 
-        const quartetTotals = new Array(Math.ceil(shows.length / QUARTET_SIZE)).fill(0);
+        const groupTotals = new Array(Math.ceil(shows.length / SHOWS_PER_CHAR)).fill(0);
         for (let i=0; i<shows.length; i++) {
-            const quartetIndex = Math.floor(i / QUARTET_SIZE);
+            const groupIndex = Math.floor(i / SHOWS_PER_CHAR);
             if (uniqueNumericIndexes.has(i)) {
-                quartetTotals[quartetIndex] += Math.pow(2, i - quartetIndex * QUARTET_SIZE);
+                groupTotals[groupIndex] += Math.pow(2, i - groupIndex * SHOWS_PER_CHAR);
             }
         }
-        return quartetTotals.map(t => Number(t).toString(16).toUpperCase()).join('');
+        return groupTotals.map(numToString).join('');
     }
 
     function parseCodeToIndexes(code) {
         const indexes = [];
         code.split('').forEach((c, charIndex) => {
-            const num = Number.parseInt(c, Math.pow(2, QUARTET_SIZE));
-            indexes.push(...[num & 1, num & 2, num & 4, num & 8].map((n,i) => n ? i + charIndex * QUARTET_SIZE : 0).filter(n=>n));
+            const num = stringToNum(c);
+            indexes.push(...[num & 1, num & 2, num & 4, num & 8, num & 16, num & 32].map((n,i) => n ? i + charIndex * SHOWS_PER_CHAR : 0).filter(n=>n));
         });
         return indexes;
     }
