@@ -190,6 +190,46 @@
       "name": "Pat Novak, For Hire",
       "playlists": ["PatNovakForHire"],
       "index": 37
+    },
+    {
+      "name": "Escape",
+      "playlists": ["otr_escape"],
+      "index": 38
+    },
+    {
+      "name": "The Lives of Harry Lime",
+      "playlists": ["TheLivesOfHarryLime"],
+      "index": 39
+    },
+    {
+      "name": "The Saint",
+      "playlists": ["TheSaintVincentPriceOTR"],
+      "index": 40
+    },
+    {
+      "name": "Broadway Is My Beat",
+      "playlists": ["OTRR_Broadway_Is_My_Beat_Singles"],
+      "index": 41
+    },
+    {
+      "name": "Bold Venture",
+      "playlists": ["BoldVenture57Episodes"],
+      "index": 42
+    },
+    {
+      "name": "Inner Sanctum Mysteries",
+      "playlists": ["OTRR_Inner_Sanctum_Mysteries_Singles"],
+      "index": 43
+    },
+    {
+      "name": "Lights Out",
+      "playlists": ["LightsOutoldTimeRadio"],
+      "index": 44
+    },
+    {
+      "name": "The Mysterious Traveler",
+      "playlists": ["TheMysteriousTraveler"],
+      "index": 45
     }
   ],
   "channels" : [
@@ -203,11 +243,11 @@
     },
     {
       "name" : "action",
-      "shows": [10,11,12,13,14,15,16,37]
+      "shows": [10,11,12,13,14,15,16,37,38,39,40,41]
     },
     {
       "name" : "mystery",
-      "shows": [17,18,19,20,21,22,23,24]
+      "shows": [17,18,19,20,21,22,23,24,42,43,44,45]
     },
     {
       "name" : "western",

@@ -436,12 +436,106 @@ const parsers = [
                 number = match[2];
             return `Fibber McGee and Molly HQ - Episode ${number}: ${title} [${date}]`;
         }
+    },
+    {
+        ids: ['otr_escape'],
+        regex: /Escape.([0-9\.]+)_(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = match[2].replace(/_/g, ' ');
+            return `Escape - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ['otr_escape'],
+        regex: /esca_([0-9]+)_(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = addSpacesBeforeCapitals(match[2]);
+            return `Escape - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ['TheLivesOfHarryLime'],
+        regex: /Harry_Lime_([-0-9]+)_([0-9]+)_(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = match[3].replace(/_/g, ' '),
+                number = match[2];
+            return `The Lives of Harry Lime ${number} - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ['TheSaintVincentPriceOTR'],
+        regex: /The_Saint_([0-9]+)_(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = match[2].replace(/_/g, ' ');
+            return `The Saint - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ['OTRR_Broadway_Is_My_Beat_Singles'],
+        regex: /BIMB ([-0-9]+) \(([0-9]+)\) (.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = match[3],
+                number = match[2];
+            return `Broadway Is My Beat ${number} - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ['BoldVenture57Episodes'],
+        regex: /BoldVenture([0-9]{6})([0-9]{2})(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = addSpacesBeforeCapitals(match[3]),
+                number = match[2];
+            return `BoldVenture ${number} - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ['OTRR_Inner_Sanctum_Mysteries_Singles'],
+        regex: /Inner Sanctum +([-0-9]+) (.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = match[2];
+            return `Inner Sanctum Mysteries - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ['LightsOutoldTimeRadio'],
+        regex: /LightsOut-([-0-9]+)(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = addSpacesBeforeCapitals(match[2]);
+            return `Lights Out - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ['TheMysteriousTraveler'],
+        regex: /([-0-9]{8})([0-9]{3})(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = addSpacesBeforeCapitals(match[3]),
+                number = match[2];
+            return `The Mysterious Traveler ${number} - ${title} [${date}]`;
+        }
     }
 ];
 
-module.exports.parseName = (showId, metadata) => {
+module.exports.parseName = (playlistId, metadata) => {
     "use strict";
-    const matchingParsers = parsers.filter(p => p.ids.includes(showId));
+    const matchingParsers = parsers.filter(p => p.ids.includes(playlistId));
 
     if (matchingParsers.length) {
         const matches = matchingParsers.map(parser => {
@@ -456,8 +550,10 @@ module.exports.parseName = (showId, metadata) => {
             }
         }).filter(o => o);
         if (matches.length) {
+            // console.log(playlistId, 'OK', matches[0]);
             return matches[0];
         }
     }
+    // console.log(playlistId, 'NOMATCH', metadata.name);
     return metadata.title || metadata.name;
 };
