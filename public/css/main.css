@@ -227,6 +227,9 @@ html, body, div {
 #menu .showButton.selected {
     background-color: var(--font-color);
 }
+#stationDetails {
+    height: auto;
+}
 #buttons {
     display: flex;
     flex: 0 0 200px;
