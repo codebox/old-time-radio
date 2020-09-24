@@ -22,9 +22,8 @@ Unfortunately there is a bug in iOS 13 which prevents this feature from working 
 
 ## TODO List
 
-* ~~Download link~~
 * Channel Builder
-    * Create a channel builder page/dialog where the user can select shows and generate a magic url that will allow them to play that channel
+    * ~~Create a channel builder page/dialog where the user can select shows and generate a magic url that will allow them to play that channel~~
     * Should we allow the user to name their channel? (how to handle long channel names, offensive words, script injection exploits)
         * maybe give the user a 'frequency' for the new channel rather than naming it
     * UI - how to include custom channels in channel list, current UI only just has room for 5 on mobile
