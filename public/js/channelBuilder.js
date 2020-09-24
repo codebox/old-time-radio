@@ -1,10 +1,9 @@
 const channelBuilder = (() => {
-    const model = [],
+    const model = {shows:[], savedChannelCodes: []},
         STATE_INITIAL = 0,
         STATE_NO_SELECTION = 1,
         STATE_SELECTION = 2,
-        STATE_CHANNEL_PENDING = 3,
-        STATE_CHANNEL_CREATED = 4;
+        STATE_CHANNEL_PENDING = 3;
 
     let channelRequestedHandler;
 
@@ -27,23 +26,61 @@ const channelBuilder = (() => {
             return el;
         }
 
+        const stateMachine = (onUpdate => {
+            let state;
+
+            function setState(newState) {
+                onUpdate(state = newState);
+            }
+
+            setState(STATE_INITIAL);
+            function operationNoAllowedInCurrentState(operationName) {
+                console.assert(false, `Operation ${operationName} not allowed in state ${state}`);
+            }
+            return {
+                get state() {
+                    return state;
+                },
+                reset() {
+                    setState(STATE_NO_SELECTION);
+                },
+                nothingSelected() {
+                    setState(STATE_NO_SELECTION);
+                },
+                somethingSelected() {
+                    if ([STATE_NO_SELECTION, STATE_SELECTION].includes(state)) {
+                        setState(STATE_SELECTION);
+                    } else if (state === STATE_CHANNEL_PENDING) {
+                        setState(STATE_SELECTION);
+                    } else {
+                        operationNoAllowedInCurrentState('somethingSelected');
+                    }
+                },
+                channelPending() {
+                    if (state === STATE_SELECTION) {
+                        setState(STATE_CHANNEL_PENDING);
+                    } else {
+                        operationNoAllowedInCurrentState('channelPending');
+                    }
+                }
+            };
+        })(updateUiForState);
+
         function updateUiForState(state) {
             const showButtons = state === STATE_INITIAL ? 'none' : 'inline';
             elShowsSelected.style.display = showButtons;
             elBuildChannelButton.style.display = showButtons;
             elResetChannelButton.style.display = showButtons;
-            elChannelUrl.style.display = state === STATE_CHANNEL_CREATED ? 'block' : 'none';
+            elChannelUrl.style.display = model.savedChannelCodes.length ? 'block' : 'none';
 
             elBuildChannelButton.disabled = state !== STATE_SELECTION;
             elResetChannelButton.disabled = [STATE_INITIAL, STATE_NO_SELECTION, STATE_CHANNEL_PENDING].includes(state);
         }
 
-        updateUiForState(STATE_INITIAL);
-
         const view = {
             populateShows() {
                 elShowList.innerHTML = '';
-                model.forEach(show => {
+                model.shows.forEach(show => {
                     const elShowButton = buildShowButtonElement(show);
                     elShowButton.onclick = () => {
                         showClickHandler(show);
@@ -52,16 +89,20 @@ const channelBuilder = (() => {
                 });
                 elBuildChannelButton.onclick = buildChannelClickHandler;
                 elResetChannelButton.onclick = resetClickHandler;
-                updateUiForState(STATE_NO_SELECTION);
+                stateMachine.reset();
             },
             updateShowSelections() {
-                model.forEach(show => {
+                model.shows.forEach(show => {
                     show.el.classList.toggle('selected', show.selected);
                 });
-                const selectedCount = model.filter(show => show.selected).length;
+                const selectedCount = model.shows.filter(show => show.selected).length;
                 elShowsSelected.innerHTML = `${selectedCount || 'No'} show${selectedCount === 1 ? '' : 's'} selected`;
 
-                updateUiForState(selectedCount ? STATE_SELECTION : STATE_NO_SELECTION);
+                if (selectedCount) {
+                    stateMachine.somethingSelected();
+                } else {
+                    stateMachine.nothingSelected();
+                }
             },
             onShowClick(handler) {
                 showClickHandler = handler;
@@ -71,15 +112,19 @@ const channelBuilder = (() => {
             },
             onBuildChannelClick(handler) {
                 buildChannelClickHandler = () => {
-                    const selectedShowIndexes = model.filter(show => show.selected).map(show => show.index);
-                    updateUiForState(STATE_CHANNEL_PENDING);
+                    const selectedShowIndexes = model.shows.filter(show => show.selected).map(show => show.index);
+                    stateMachine.channelPending();
                     handler(selectedShowIndexes).then(code => {
-                        const path = `?channels=${code}`;
-                        elChannelUrl.innerHTML = `Channel created. You can listen here:<br><a href="./${path}">https://oldtime.radio/${path}</a>`;
-                        updateUiForState(STATE_CHANNEL_CREATED);
+                        model.savedChannelCodes.push(code);
+                        model.shows.forEach(show => show.selected = false);
+                        const path = `?channels=${model.savedChannelCodes.join(',')}`;
+                        elChannelUrl.innerHTML = `${model.savedChannelCodes.length} channel${model.savedChannelCodes.length === 1 ? '' : 's'} created. You can listen here:<br><a href="./${path}">https://oldtime.radio/${path}</a>`;
+                        model.shows.forEach(show => show.selected = false);
+                        view.updateShowSelections();
+                        stateMachine.nothingSelected();
 
                     }).catch(err => {
-                        updateUiForState(STATE_SELECTION);
+                        stateMachine.somethingSelected();
                         console.error(err);
                     })
                 };
@@ -92,8 +137,8 @@ const channelBuilder = (() => {
     return {
         populate(shows) {
             "use strict";
-            model.length = 0;
-            model.push(...shows.filter(show => !show.isCommercial).map(show => {
+            model.shows.length = 0;
+            model.shows.push(...shows.filter(show => !show.isCommercial).map(show => {
                 return {
                     index: show.index,
                     name: show.name,
@@ -107,7 +152,8 @@ const channelBuilder = (() => {
             });
             view.onBuildChannelClick(channelRequestedHandler);
             view.onResetClick(() => {
-                model.forEach(show => show.selected = false);
+                model.savedChannelCodes.length = 0;
+                model.shows.forEach(show => show.selected = false);
                 view.updateShowSelections();
             });
             view.populateShows();
