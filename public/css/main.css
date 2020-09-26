@@ -23,7 +23,8 @@
     src: url('CourierPrime-Regular.ttf') format('truetype');
 }
 body {
-    background-color: var(--body-background)
+    background-color: var(--body-background);
+    min-width: 270px;
 }
 html, body, div {
     margin: 0;
@@ -352,12 +353,16 @@ canvas {
 }
 @media screen and (max-width: 349px) {
     #title {
-        font-size: 36px;
         flex: 0 0 100px;
         margin-top: -16px;
     }
+    #title .spacer {
+        flex: 0 0 30px;
+    }
     #title h1 {
         padding-top: 0;
+        white-space: nowrap;
+        font-size: 32px;
     }
     .buttonLabel {
         font-size: 16px;
@@ -368,5 +373,8 @@ canvas {
     .button, .buttonIndicator {
         height: 40px;
         width: 40px;
+    }
+    #downloadLink {
+        flex: 0 0 30px;
     }
 }
