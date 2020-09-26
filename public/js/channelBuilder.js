@@ -26,7 +26,16 @@ const channelBuilder = (() => {
             el.innerHTML = show.name;
             el.dataset.index = show.index;
             el.classList.add('showButton');
-            show.el = el;
+            if (!show.elements) {
+                show.elements = [];
+            }
+            show.elements.push(el);
+            return el;
+        }
+
+        function buildGenreTitleElement(genreName) {
+            const el = document.createElement('h3');
+            el.innerHTML = `${genreName} shows`;
             return el;
         }
 
@@ -77,16 +86,55 @@ const channelBuilder = (() => {
             elCreateChannelButton.disabled = state !== STATE_SELECTION;
         }
 
+        function buildGenreListForShows(shows) {
+            const unclassifiedShows = [],
+                genreMap = {};
+
+            function sortShowsByName(s1, s2) {
+                return s1.name > s2.name ? 1 : -1;
+            }
+            shows.forEach(show => {
+                if (show.channels.length) {
+                    show.channels.forEach(channelName => {
+                        if (!genreMap[channelName]) {
+                            genreMap[channelName] = [];
+                        }
+                        genreMap[channelName].push(show);
+                    });
+                } else {
+                    unclassifiedShows.push(show);
+                }
+            });
+
+            const genreList = [];
+            Object.keys(genreMap).sort().forEach(genreName => {
+                genreList.push({name: genreName, shows: genreMap[genreName].sort(sortShowsByName)});
+            });
+            genreList.push({name: 'other', shows: unclassifiedShows.sort(sortShowsByName)});
+
+            return genreList;
+        }
+
         const view = {
             populateShows() {
                 elShowList.innerHTML = '';
-                model.shows.forEach(show => {
-                    const elShowButton = buildShowButtonElement(show);
-                    elShowButton.onclick = () => {
-                        showClickHandler(show);
-                    };
-                    elShowList.appendChild(elShowButton);
+                const genreList = buildGenreListForShows(model.shows);
+
+                genreList.forEach(genre => {
+                    if (!genre.shows.length) {
+                        return;
+                    }
+                    elShowList.appendChild(buildGenreTitleElement(genre.name));
+                    genre.shows.forEach(show => {
+                        const elShowButton = buildShowButtonElement(show);
+                        elShowButton.onclick = () => {
+                            showClickHandler(show);
+                        };
+                        elShowList.appendChild(elShowButton);
+                    });
+
                 });
+
                 elCreateChannelButton.onclick = createChannelClickHandler;
                 elDeleteStationButton.onclick = deleteStationClickHandler;
                 elAddAnotherChannel.onclick = () => {
@@ -96,7 +144,9 @@ const channelBuilder = (() => {
             },
             updateShowSelections() {
                 model.shows.forEach(show => {
-                    show.el.classList.toggle('selected', show.selected);
+                    show.elements.forEach(el => {
+                        el.classList.toggle('selected', show.selected);
+                    });
                 });
                 const selectedCount = model.shows.filter(show => show.selected).length;
 
@@ -159,7 +209,8 @@ const channelBuilder = (() => {
                 return {
                     index: show.index,
                     name: show.name,
-                    selected: false
+                    selected: false,
+                    channels: show.channels
                 };
             }));
 

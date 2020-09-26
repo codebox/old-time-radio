@@ -137,6 +137,16 @@ module.exports.buildChannelManager = (showManager, playlistManager) => {
             "use strict";
             return Object.keys(predefinedChannels);
         },
+        getChannelsForShowId(showIndex) {
+            "use strict";
+            const channelsForShow = [];
+            Object.keys(predefinedChannels).forEach(channelId => {
+                if (predefinedChannels[channelId].shows.includes(showIndex)) {
+                    channelsForShow.push(channelId);
+                }
+            });
+            return channelsForShow;
+        },
         getEpisodeList(channelId, mergeAdverts) {
             "use strict";
             const showIndexes = [];

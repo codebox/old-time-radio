@@ -23,7 +23,8 @@ app.get(`/api/shows`, (req, res) => {
         return {
             name: show.name,
             index: show.index,
-            isCommercial: !! show.isCommercial
+            isCommercial: !! show.isCommercial,
+            channels: show.channels
         };
     }));
 });

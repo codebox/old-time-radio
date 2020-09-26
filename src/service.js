@@ -24,8 +24,12 @@ module.exports.service = {
                     channelList = json.channels;
                 winston.log('info', `Read ${showList.length} shows and ${channelList.length} channels from ${DATA_FILE}`);
 
-                showList.forEach(showManager.addShow);
                 channelList.forEach(channelManager.addPredefinedChannel);
+                showList.forEach(show => {
+                    const showChannels = channelManager.getChannelsForShowId(show.index);
+                    show.channels = showChannels;
+                    showManager.addShow(show);
+                });
 
                 const playlists = showManager.getShows().flatMap(show => show.playlists);
 

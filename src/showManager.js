@@ -8,7 +8,8 @@ module.exports.buildShowManager = () => {
         "playlists": [
             "Flash_Gordon1935"
         ],
-        "index": 5
+        "index": 5,
+        "channels" : ["future"]
      }
      */
     return {

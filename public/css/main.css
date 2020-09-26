@@ -199,6 +199,7 @@ html, body, div {
     padding: 0;
     line-height: 36px;
     margin-bottom: 0;
+    margin-top: 8px;
 }
 #menu .showButton {
     background-color: var(--font-color-dim);
@@ -223,6 +224,11 @@ html, body, div {
 }
 #menu hr {
     margin-top: 32px;
+}
+#menu h3 {
+    margin: 8px 0 4px 0;
+    text-transform: capitalize;
+    font-size: 20px;
 }
 #menu .showButton.selected {
     background-color: var(--font-color);
