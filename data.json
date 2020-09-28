@@ -230,6 +230,41 @@
       "name": "The Mysterious Traveler",
       "playlists": ["TheMysteriousTraveler"],
       "index": 45
+    },
+    {
+      "name": "Abbott and Costello",
+      "playlists": ["otr_abbottandcostello"],
+      "index": 46
+    },
+    {
+      "name": "The Red Skelton Show",
+      "playlists": ["RedSkeltonStrayAnimals", "RedSkeltonTraveltoHawaii", "RedSkeltonSaluteNationalPaperboyDay", "RedSkeltonTheSadTexan", "RedSkeltonDoctorsandHospitalsPart1"],
+      "index": 47
+    },
+    {
+      "name": "New Adventures of Nero Wolfe",
+      "playlists": ["OTRR_New_Adventures_of_Nero_Wolfe_Singles"],
+      "index": 48
+    },
+    {
+      "name": "The Black Museum",
+      "playlists": ["OTRR_Black_Museum_Singles"],
+      "index": 49
+    },
+    {
+      "name": "My Favorite Husband",
+      "playlists": ["MyFavoriteHusband"],
+      "index": 50
+    },
+    {
+      "name": "Command Performance",
+      "playlists": ["CommandPerformance"],
+      "index": 51
+    },
+    {
+      "name": "The Whistler",
+      "playlists": ["OTRR_Whistler_Singles"],
+      "index": 52
     }
   ],
   "channels" : [
@@ -243,11 +278,11 @@
     },
     {
       "name" : "action",
-      "shows": [10,11,12,13,14,15,16,37,38,39,40,41]
+      "shows": [10,11,12,13,14,15,16,37,38,39,40,41,48]
     },
     {
       "name" : "mystery",
-      "shows": [17,18,19,20,21,22,23,24,42,43,44,45]
+      "shows": [17,18,19,20,21,22,23,24,42,43,44,45,49,52]
     },
     {
       "name" : "western",
@@ -255,7 +290,7 @@
     },
     {
       "name" : "comedy",
-      "shows": [31,32,33,34,35,36]
+      "shows": [31,32,33,34,35,36,46,47,50]
     }
   ]
 }
