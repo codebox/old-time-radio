@@ -594,6 +594,84 @@ const parsers = [
                 number = match[2];
             return `The Whistler ${number} - ${title} [${date}]`;
         }
+    },
+    {
+        ids: ['OTRR_Calling_All_Cars_Singles'],
+        regex: /Calling_All_Cars_([-0-9]+)_ep([0-9]{3})_(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = match[3].replace(/_/g, ' '),
+                number = match[2];
+            return `Calling All Cars ${number} - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ['OTRR_Weird_Circle_Singles'],
+        regex: /Weird_Circle_4x-xx-xx_ep([0-9]{2})_?(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const title = match[2].replace(/_/g, ' '),
+                number = match[1];
+            return `Weird Circle ${number} - ${title}`;
+        }
+    },
+    {
+        ids: ['The_Hermits_Cave'],
+        regex: /HermitsCave_400000_([0-9]{2})_(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const title = match[2].replace(/_/g, ' '),
+                number = match[1];
+            return `The Hermit's Cave ${number} - ${title}`;
+        }
+    },
+    {
+        ids: ['HopalongCassidy'],
+        regex: /Hopalong_Cassidy_([0-9]{6})_([0-9]{4})_(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = match[3].replace(/_/g, ' '),
+                number = match[2];
+            return `Hopalong Cassidy ${number} - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ['CBSMTFantasy1', 'cbsmtfs2', 'cbsmtfs3', 'cbsmtfs4', 'cbsmtfs5', 'cbsmtfs6', 'cbsmtfs7', 'cbsmtfs8'],
+        regex: /([0-9]{2})(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const title = addSpacesBeforeCapitals(match[2]);
+            return `CBS Radio Mystery Theater - ${title}`;
+        }
+    },
+    {
+        ids: ['theoldonesarehardtokill_20191104_1301'],
+        regex: /([0-9]+)\.(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const title = match[2].trim();
+            return `CBS Radio Mystery Theater - ${title}`;
+        }
+    },
+    {
+        ids: ['CbsRadioMysteryTheater1975Page1'],
+        regex: /Cbsrmt([0-9]{6})([0-9]+)(.*)(_wuwm)(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const title = addSpacesBeforeCapitals(match[3]);
+            return `CBS Radio Mystery Theater - ${title}`;
+        }
+    },
+    {
+        ids: ['CbsRadioMysteryTheater1976Page1', 'CbsRadioMysteryTheater1976Page2', 'CbsRadioMysteryTheater1976Page3', 'CbsRadioMysteryTheater1976Page4', 'CbsRadioMysteryTheater1976Page5'],
+        regex: /Cbsrmt([0-9]{6})([0-9]+)(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const title = addSpacesBeforeCapitals(match[3]);
+            return `CBS Radio Mystery Theater - ${title}`;
+        }
     }
 ];
 

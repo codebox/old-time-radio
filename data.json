@@ -260,6 +260,36 @@
       "name": "The Whistler",
       "playlists": ["OTRR_Whistler_Singles"],
       "index": 51
+    },
+    {
+      "name": "Calling All Cars",
+      "playlists": ["OTRR_Calling_All_Cars_Singles"],
+      "index": 52
+    },
+    {
+      "name": "Weird Circle",
+      "playlists": ["OTRR_Weird_Circle_Singles"],
+      "index": 53
+    },
+    {
+      "name": "The Hermit's Cave",
+      "playlists": ["The_Hermits_Cave"],
+      "index": 54
+    },
+    {
+      "name": "Hopalong Cassidy",
+      "playlists": ["HopalongCassidy"],
+      "index": 55
+    },
+    {
+      "name": "CBS Radio Mystery Theater [Science Fiction]",
+      "playlists": ["CBSMTFantasy1", "cbsmtfs2", "cbsmtfs3", "cbsmtfs4", "cbsmtfs5", "cbsmtfs6", "cbsmtfs7", "cbsmtfs8"],
+      "index": 56
+    },
+    {
+      "name": "CBS Radio Mystery Theater",
+      "playlists": ["theoldonesarehardtokill_20191104_1301", "CbsRadioMysteryTheater1975Page1", "CbsRadioMysteryTheater1976Page1", "CbsRadioMysteryTheater1976Page2", "CbsRadioMysteryTheater1976Page3", "CbsRadioMysteryTheater1976Page4", "CbsRadioMysteryTheater1976Page5"],
+      "index": 57
     }
   ],
   "channels" : [
@@ -269,19 +299,19 @@
     },
     {
       "name" : "future",
-      "shows": [1,2,3,4,5,6,7,8,9]
+      "shows": [1,2,3,4,5,6,7,8,9,56]
     },
     {
       "name" : "action",
-      "shows": [10,11,12,13,14,15,16,37,38,39,40,41,47]
+      "shows": [10,11,12,13,14,15,16,37,38,39,40,41,47,52]
     },
     {
       "name" : "mystery",
-      "shows": [17,18,19,20,21,22,23,24,42,43,44,45,48,51]
+      "shows": [17,18,19,20,21,22,23,24,42,43,44,45,48,51,53,54,57]
     },
     {
       "name" : "western",
-      "shows": [25,26,27,28,29,30]
+      "shows": [25,26,27,28,29,30,55]
     },
     {
       "name" : "comedy",
