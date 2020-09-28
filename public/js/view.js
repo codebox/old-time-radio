@@ -15,6 +15,8 @@ const view = (() => {
         elMenuOpenButton = document.getElementById('menuOpenButton'),
         elMenuCloseButton = document.getElementById('menuCloseButton'),
         elMenuBox = document.getElementById('menu'),
+        elSleepTimerStatus = document.getElementById('sleepTimerStatus'),
+        elSleepTimerTime = document.getElementById('sleepTimerTime'),
 
         channelButtons = {};
 
@@ -144,6 +146,16 @@ const view = (() => {
         },
         updateShowList() {
             channelBuilder.init(elShowList, model.shows);
+        },
+        updateSleepTimer(timeRemainingSeconds) {
+            if (timeRemainingSeconds && timeRemainingSeconds > 0 ) {
+                elSleepTimerStatus.classList.add('active');
+                const minutes = Math.round(timeRemainingSeconds / 60),
+                    seconds = Math.round(timeRemainingSeconds % 60);
+                elSleepTimerTime.innerHTML = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            } else {
+                elSleepTimerStatus.classList.remove('active');
+            }
         }
     };
 })();

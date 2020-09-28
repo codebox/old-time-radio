@@ -86,4 +86,23 @@ window.onload = () => {
     service.getShowList().then(shows => {
         channelBuilder.populate(model.shows = shows);
     });
+
+    sleepTimer.onTimerStarted(timeInSeconds => {
+        "use strict";
+        view.updateSleepTimer(timeInSeconds);
+    });
+    sleepTimer.onTimerTick(timeInSeconds => {
+        "use strict";
+        view.updateSleepTimer(timeInSeconds);
+    });
+    sleepTimer.onTimerCancelled(() => {
+        "use strict";
+        view.updateSleepTimer();
+    });
+    sleepTimer.onTimerFinish(() => {
+        "use strict";
+        view.updateSleepTimer();
+        console.log('finished')
+    });
+    sleepTimer.start(10);
 };
