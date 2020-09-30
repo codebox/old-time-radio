@@ -40,6 +40,7 @@ Unfortunately there is a bug in iOS 13 which prevents this feature from working 
     * ~~UI - how should the user access this~~ 
 * Keep an eye on iOS visualiser problem, does it work again on iOS 14?
 * Is there any point adding a volume control?
+* Spacebar should pause audio, second press should resume last station
 
 ## Bugs
 * Canvas background turns grey if window resized and nothing is playing
