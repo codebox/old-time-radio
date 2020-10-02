@@ -25,7 +25,6 @@ Unfortunately there is a bug in iOS 13 which prevents this feature from working 
 * Channel Builder
     * ~~Create a channel builder page/dialog where the user can select shows and generate a magic url that will allow them to play that channel~~
     * Should we allow the user to name their channel? (how to handle long channel names, offensive words, script injection exploits)
-        * maybe give the user a 'frequency' for the new channel rather than naming it
     * UI - how to include custom channels in channel list, current UI only just has room for 5 on mobile
         * allow unlimited channels and re-think layout?
         * keep max 5, replace predefined channels with custom ones
@@ -39,4 +38,13 @@ Unfortunately there is a bug in iOS 13 which prevents this feature from working 
     * say goodnight
 * ~~Add menu with links to github, contact details~~
     * ~~UI - how should the user access this~~ 
-* Keep an eye on iOS visualiser problem, does it work again on iOS 14?    
+* Keep an eye on iOS visualiser problem, does it work again on iOS 14?
+* Is there any point adding a volume control?
+* Spacebar should pause audio, second press should resume last station
+
+## Bugs
+* Canvas background turns grey if window resized and nothing is playing
+* Not all info messages make sense if no audio playing (eg 'You can now listening to...')
+* User can add more than 5 custom channels which will break layout on small screens
+* Menu is ridiculously small on older phones with small screens
+
