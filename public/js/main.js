@@ -47,6 +47,16 @@ window.onload = () => {
         }, 2000);
     });
 
+    view.onSleepTimerCancelClicked(() => {
+        "use strict";
+        sleepTimer.stop();
+    });
+
+    view.onSetSleepTimerClicked(seconds => {
+        "use strict";
+        sleepTimer.start(seconds);
+    });
+
     channelBuilder.onChannelRequested(showIndexes => {
         "use strict";
          return service.getChannelCodeForShows(showIndexes);
@@ -104,5 +114,5 @@ window.onload = () => {
         view.updateSleepTimer();
         console.log('finished')
     });
-    sleepTimer.start(10);
+
 };

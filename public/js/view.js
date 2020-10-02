@@ -17,6 +17,9 @@ const view = (() => {
         elMenuBox = document.getElementById('menu'),
         elSleepTimerStatus = document.getElementById('sleepTimerStatus'),
         elSleepTimerTime = document.getElementById('sleepTimerTime'),
+        elSleepTimerButtons = document.getElementById('sleepTimerButtons'),
+        elCancelSleepTimer = document.getElementById('cancelSleepTimer'),
+        elCancelSleepTimerButton = document.getElementById('cancelSleepTimerButton'),
 
         channelButtons = {};
 
@@ -29,7 +32,13 @@ const view = (() => {
 
     let model,
         onChannelSelectedHandler = () => {},
-        onChannelDeselectedHandler = () => {};
+        onChannelDeselectedHandler = () => {},
+        onSetSleepTimerClickedHandler = () => {},
+        onSleepTimerCancelClickedHandler = () => {};
+
+    elSleepTimerStatus.onclick = () => {
+        onSleepTimerCancelClickedHandler();
+    };
 
     function forEachChannelButton(fn) {
         Object.keys(channelButtons).forEach(channelId => {
@@ -79,6 +88,34 @@ const view = (() => {
         messageManager.updateStatus();
     }
 
+    function buildSleepTimerButtons() {
+        const BUTTONS = [
+            [60, 'One Hour'],
+            [45, '45 minutes'],
+            [30, '30 minutes'],
+            [15, '15 minutes']
+        ];
+
+        elSleepTimerButtons.innerHTML = '';
+        BUTTONS.forEach(details => {
+            const [minutes, text] = details;
+            const button = document.createElement('button');
+            button.classList.add('sleepTimerButton');
+            button.innerHTML = text;
+
+            button.onclick = () => {
+                onSetSleepTimerClickedHandler(minutes * 60);
+            };
+
+            elSleepTimerButtons.appendChild(button);
+        });
+
+        elCancelSleepTimerButton.onclick = () => {
+            onSleepTimerCancelClickedHandler();
+        };
+    }
+
+    buildSleepTimerButtons();
     setMenuState(false);
 
     return {
@@ -148,14 +185,23 @@ const view = (() => {
             channelBuilder.init(elShowList, model.shows);
         },
         updateSleepTimer(timeRemainingSeconds) {
-            if (timeRemainingSeconds && timeRemainingSeconds > 0 ) {
+            const roundedTime = Math.round(timeRemainingSeconds || 0);
+            if (roundedTime > 0 ) {
                 elSleepTimerStatus.classList.add('active');
-                const minutes = Math.round(timeRemainingSeconds / 60),
-                    seconds = Math.round(timeRemainingSeconds % 60);
+                const minutes = Math.floor(roundedTime / 60),
+                    seconds = roundedTime % 60;
                 elSleepTimerTime.innerHTML = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
             } else {
                 elSleepTimerStatus.classList.remove('active');
             }
+
+            elCancelSleepTimer.classList.toggle('hidden', ! timeRemainingSeconds);
+        },
+        onSetSleepTimerClicked(handler) {
+            onSetSleepTimerClickedHandler = handler;
+        },
+        onSleepTimerCancelClicked(handler) {
+            onSleepTimerCancelClickedHandler = handler;
         }
     };
 })();

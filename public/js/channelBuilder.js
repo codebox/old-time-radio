@@ -22,7 +22,7 @@ const channelBuilder = (() => {
             let showClickHandler, createChannelClickHandler, deleteStationClickHandler;
 
         function buildShowButtonElement(show) {
-            const el = document.createElement('li');
+            const el = document.createElement('button');
             el.innerHTML = show.name;
             el.dataset.index = show.index;
             el.classList.add('showButton');
