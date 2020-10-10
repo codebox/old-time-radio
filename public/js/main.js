@@ -28,6 +28,7 @@ window.onload = () => {
 
     view.onChannelSelected(channel => {
         "use strict";
+        model.sleeping = false;
         model.track = null;
         model.playlist = null;
         model.channel = channel;
@@ -37,7 +38,7 @@ window.onload = () => {
         audioPlayer.play();
     });
 
-    view.onChannelDeselected(() => {
+    function deselectCurrentChannel(){
         "use strict";
         model.track = model.channel = model.playlist = null;
         audioPlayer.stop();
@@ -45,6 +46,10 @@ window.onload = () => {
         setTimeout(() => {
             visualiser.deactivate();
         }, 2000);
+    }
+    view.onChannelDeselected(() => {
+        "use strict";
+        deselectCurrentChannel();
     });
 
     view.onSleepTimerCancelClicked(() => {
@@ -112,7 +117,26 @@ window.onload = () => {
     sleepTimer.onTimerFinish(() => {
         "use strict";
         view.updateSleepTimer();
-        console.log('finished')
+        const FADE_OUT_INTERVAL_SECONDS = 30,
+            TICK_INTERVAL_MILLIS = 1000,
+            VOLUME_DELTA = TICK_INTERVAL_MILLIS / (FADE_OUT_INTERVAL_SECONDS * 1000);
+
+        model.sleeping = true;
+        let volume = 1;
+        const interval = setInterval(() => {
+            if (!model.sleeping) {
+                audioPlayer.setVolume(1);
+                clearInterval(interval);
+                return;
+            }
+            volume -= VOLUME_DELTA;
+            audioPlayer.setVolume(Math.max(volume, 0));
+            if (volume <= 0) {
+                clearInterval(interval);
+                deselectCurrentChannel();
+                messageManager.sayGoodnight();
+            }
+        }, TICK_INTERVAL_MILLIS);
     });
 
 };

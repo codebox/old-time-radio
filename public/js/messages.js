@@ -133,7 +133,11 @@ const messageManager = (() => {
         init(_el, _model) {
             el = _el;
             model = _model;
-            setInterval(showCannedMessage, TEMP_MESSAGE_INTERVAL);
+            setInterval(() => {
+                if (!model.sleeping) {
+                    showCannedMessage();
+                }
+            }, TEMP_MESSAGE_INTERVAL);
         },
         updateStatus() {
             if (!model.channels) {
@@ -152,6 +156,9 @@ const messageManager = (() => {
             } else {
                 setMessage(`${model.track.name}`);
             }
+        },
+        sayGoodnight() {
+            setMessage('Sweet dreams till sunbeams find you');
         },
         httpError() {
             setMessage('Unable to connect to the server');

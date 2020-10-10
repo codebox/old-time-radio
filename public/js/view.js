@@ -104,7 +104,7 @@ const view = (() => {
             button.innerHTML = text;
 
             button.onclick = () => {
-                onSetSleepTimerClickedHandler(minutes * 60);
+                onSetSleepTimerClickedHandler(minutes);
             };
 
             elSleepTimerButtons.appendChild(button);

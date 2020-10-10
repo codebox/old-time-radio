@@ -18,7 +18,7 @@ const audioPlayer = (() => {
     const CAN_PLAY_EVENT = isIOS() ? 'canplaythrough' : 'canplay';
 
     let onAudioEndedHandler = () => {},
-        analyser, audioInitialised;
+        analyser, audioInitialised, audioGain;
 
     function initAudio() {
         if (!audioInitialised) {
@@ -27,11 +27,13 @@ const audioPlayer = (() => {
                 // webkitAudioContext doesn't work for this on latest iOS
                 const audioCtx = new window.AudioContext(),
                     audioSrc = audioCtx.createMediaElementSource(audio);
+                audioGain = audioCtx.createGain();
                 analyser = audioCtx.createAnalyser();
                 analyser.fftSize = FFT_WINDOW_SIZE;
                 analyser.smoothingTimeConstant = SMOOTHING;
 
-                audioSrc.connect(analyser);
+                audioSrc.connect(audioGain);
+                audioGain.connect(analyser);
                 analyser.connect(audioCtx.destination);
             }
             audioInitialised = true;
@@ -119,11 +121,18 @@ const audioPlayer = (() => {
             dummyData.setAmplitude(0);
         },
         play() {
+            this.setVolume(1);
             audio.play();
         },
         stop() {
             dummyData.setAmplitude(0);
             audio.pause();
+        },
+        setVolume(volume) {
+            if (audioGain) {
+                console.log('vol', volume)
+                audioGain.gain.value = volume;
+            }
         },
         getData() {
             if (analyser) {
