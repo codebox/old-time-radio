@@ -61,7 +61,9 @@ const audioPlayer = (() => {
         },
         getData() {
             const dataArray = new Uint8Array(BUFFER_LENGTH);
-            analyser.getByteFrequencyData(dataArray);
+            if (analyser) {
+                analyser.getByteFrequencyData(dataArray);
+            }
             return dataArray;
         }
     };
