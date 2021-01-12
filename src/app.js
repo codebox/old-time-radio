@@ -6,9 +6,14 @@ const express = require('express'),
 
 const transports = [];
 try{
-    transports.push(new (winston.transports.File)({ filename: '/var/log/oldtimeradio/access.log', json : false }))
+    transports.push(new (winston.transports.File)({
+        filename: '/var/log/oldtimeradio/access.log',
+        format: winston.format.simple()
+    }))
 } catch (e) {
-    transports.push(new (winston.transports.Console)({json : false }))
+    transports.push(new (winston.transports.Console)({
+        format: winston.format.simple()
+    }))
 }
 
 winston.configure({
