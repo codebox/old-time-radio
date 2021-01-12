@@ -322,6 +322,7 @@ html, body, div {
 canvas {
     width: 100%;
     height: 100%;
+    background-color: var(--msg-background);
 }
 @media screen and (max-width: 500px) {
     #title h1 {
