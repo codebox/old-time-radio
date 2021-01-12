@@ -8,8 +8,7 @@ window.onload = () => {
     window.addEventListener('resize', visualiser.onResize());
     playlist.init(model);
 
-    function playNextFromCurrentChannel() {
-        "use strict";
+    function playNextFromCurrentChannel(onErrorRetryDelayMillis=0) {
         return playlist.getNext()
             .then(nextItem => {
                 const {url, name, offset} = nextItem;
@@ -21,7 +20,10 @@ window.onload = () => {
                         view.updatePlayState(model);
                     })
                     .catch(() => {
-                        return playNextFromCurrentChannel();
+                        setTimeout(() => {
+                            const delay = Math.min(onErrorRetryDelayMillis * 2 || 1000, 10000);
+                            playNextFromCurrentChannel(delay)
+                        }, onErrorRetryDelayMillis);
                     })
             });
     }
