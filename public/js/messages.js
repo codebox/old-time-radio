@@ -72,7 +72,8 @@ const messageManager = (() => {
             }
         }
         const MESSAGES = [
-            'You are listening to audio from The Internet Archive. Find more at http://archive.org',
+            'All audio hosted by The Internet Archive. Find more at http://archive.org',
+            'Streaming shows from the Golden Age of Radio, 24 hours a day',
             'Please support The Internet Archive by donating at http://archive.org/donate',
             'Build your own channel with your favourite shows, click the menu ↗'
         ].map(textMessage => [showNext, textMessage]).flatMap(m => m);
