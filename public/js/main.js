@@ -49,6 +49,11 @@ window.onload = () => {
         }, 2000);
     });
 
+    view.onVolumeChanged(() => {
+        "use strict";
+        audioPlayer.updateVolume();
+    });
+
     channelBuilder.onChannelRequested(showIndexes => {
         "use strict";
          return service.getChannelCodeForShows(showIndexes);

@@ -6,7 +6,7 @@ const audioPlayer = (() => {
         BUFFER_LENGTH = FFT_WINDOW_SIZE / 2;
 
     let onAudioEndedHandler = () => {},
-        analyser, audioInitialised;
+        analyser, audioInitialised, audioGain;
 
     function initAudio() {
         if (!audioInitialised) {
@@ -14,16 +14,25 @@ const audioPlayer = (() => {
             const AudioContext = window.AudioContext || window.webkitAudioContext,
                 audioCtx = new AudioContext(),
                 audioSrc = audioCtx.createMediaElementSource(audio);
+            audioGain = audioCtx.createGain();
             analyser = audioCtx.createAnalyser();
             analyser.fftSize = FFT_WINDOW_SIZE;
             analyser.smoothingTimeConstant = SMOOTHING;
 
-            audioSrc.connect(analyser);
+            setVolumeFromConfig();
+
+            audioSrc.connect(audioGain);
+            audioGain.connect(analyser);
             analyser.connect(audioCtx.destination);
             audioInitialised = true;
         }
     }
 
+    function setVolumeFromConfig() {
+        if (audioGain) {
+            audioGain.gain.value = Math.pow(config.volume / config.maxVolume, 2);
+        }
+    }
     return {
         load(url, offset = 0) {
             return new Promise((onLoaded, onError) => {
@@ -65,6 +74,9 @@ const audioPlayer = (() => {
                 analyser.getByteFrequencyData(dataArray);
             }
             return dataArray;
+        },
+        updateVolume() {
+            setVolumeFromConfig();
         }
     };
 })();

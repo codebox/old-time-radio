@@ -33,7 +33,6 @@ This allowed me to write some JavaScript to analyse the audio signal in real-tim
     * fade out audio
     * fade page to black
     * say goodnight
-* Is there any point adding a volume control?
 * Spacebar should pause audio, second press should resume last station
 
 ## Bugs

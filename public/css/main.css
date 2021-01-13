@@ -234,6 +234,42 @@ html, body, div {
 #menu .showButton.selected {
     background-color: var(--font-color);
 }
+#volumeControlContainer {
+    height: 50px;
+    margin: 0 auto;
+    display: inline-flex;
+    flex-direction: row;
+}
+#volumeUp, #volumeDown {
+    margin: 0 10px;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.button svg {
+    height: 25px;
+    width: 25px;
+    fill: var(--panel-background);
+}
+.button.disabled svg {
+    fill: var(--font-color-dim);
+}
+#volumeLevel {
+    display: flex;
+    width: 180px;
+    justify-content: space-around;
+    align-items: center;
+}
+.buttonIndicator.miniLed {
+    height: 10px;
+    width: 10px;
+}
+.buttonIndicator.miniLed.on {
+    background-color: var(--led-on);
+    box-shadow: rgba(255, 255, 255, 0.8) 0px 0px 7px 1px;
+}
+
 #stationDetails {
     height: auto;
 }
@@ -287,7 +323,7 @@ html, body, div {
     background-color: var(--led-error-on);
     box-shadow: var(--led-error-glow);
 }
-.button {
+.button, .button.disabled:active {
     display: flex;
     flex: 0 0 50px;
     width: 50px;

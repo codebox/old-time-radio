@@ -15,6 +15,9 @@ const view = (() => {
         elMenuOpenButton = document.getElementById('menuOpenButton'),
         elMenuCloseButton = document.getElementById('menuCloseButton'),
         elMenuBox = document.getElementById('menu'),
+        elVolumeUp = document.getElementById('volumeUp'),
+        elVolumeDown = document.getElementById('volumeDown'),
+        volumeLeds = Array.from(Array(10).keys()).map(i => document.getElementById(`vol${i+1}`)),
 
         channelButtons = {};
 
@@ -24,10 +27,19 @@ const view = (() => {
     elMenuCloseButton.onclick = () => {
         setMenuState(false);
     };
+    elVolumeUp.onclick = () => {
+        config.volume += 1;
+        onVolumeChanged();
+    };
+    elVolumeDown.onclick = () => {
+        config.volume -= 1;
+        onVolumeChanged();
+    };
 
     let model,
         onChannelSelectedHandler = () => {},
-        onChannelDeselectedHandler = () => {};
+        onChannelDeselectedHandler = () => {},
+        onVolumeChangedHandler = () => {};
 
     function forEachChannelButton(fn) {
         Object.keys(channelButtons).forEach(channelId => {
@@ -41,6 +53,13 @@ const view = (() => {
         } else {
             elDownloadLink.innerHTML = '';
         }
+    }
+
+    function onVolumeChanged() {
+        volumeLeds.forEach((el, i) => el.classList.toggle('on', (i + 1) <= config.volume));
+        elVolumeUp.classList.toggle('disabled', config.isVolumeMax());
+        elVolumeDown.classList.toggle('disabled', config.isVolumeMin());
+        onVolumeChangedHandler();
     }
 
     function setMenuState(isOpen) {
@@ -84,6 +103,7 @@ const view = (() => {
             model = _model;
             messageManager.init(document.getElementById('message'), model);
             setViewState(STATE_INIT);
+            onVolumeChanged();
         },
         setChannels(channels) {
             setViewState(STATE_NO_CHANNEL);
@@ -135,6 +155,9 @@ const view = (() => {
         },
         onChannelDeselected(handler) {
             onChannelDeselectedHandler = handler;
+        },
+        onVolumeChanged(handler) {
+            onVolumeChangedHandler = handler;
         },
         setVisualisationDataSource(source) {
             visualiser.setDataSource(source);
