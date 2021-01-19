@@ -36,7 +36,6 @@ This allowed me to write some JavaScript to analyse the audio signal in real-tim
 * Spacebar should pause audio, second press should resume last station
 
 ## Bugs
-* Not all info messages make sense if no audio playing (eg 'You can now listening to...')
 * User can add more than 5 custom channels which will break layout on small screens
 * Menu is ridiculously small on older phones with small screens
 * CSS rule for div height: 100% breaks some browser extensions
