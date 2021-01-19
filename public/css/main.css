@@ -76,6 +76,19 @@ html, body, div {
     color: inherit;
     text-decoration: none;
 }
+noscript {
+    font-family: 'Bellerose', monospace;
+    text-transform: uppercase;
+    font-size: 18px;
+    text-align: center;
+    color: var(--font-color);
+    background-color: var(--msg-background);
+    animation: textGlow 5s infinite;
+    padding: 0 10px;
+}
+noscript a, noscript a:visited {
+    color: var(--font-color);
+}
 #title {
     display: flex;
     flex-direction: row;
@@ -387,6 +400,9 @@ canvas {
     #title svg {
         margin-top: 28px;
     }
+    noscript {
+        line-height: 30px;
+    }
 }
 @media screen and (max-width: 349px) {
     #title {
@@ -413,5 +429,12 @@ canvas {
     }
     #downloadLink {
         flex: 0 0 30px;
+    }
+    noscript {
+        line-height: 20px;
+    }
+    noscript h2 {
+        line-height: 30px;
+        margin-top: 0;
     }
 }
