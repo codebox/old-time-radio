@@ -31,6 +31,8 @@ module.exports.service = {
                     showManager.addShow(show);
                 });
 
+                channelManager.addCommercialShows(showList.filter(show => show.isCommercial).map(show => show.index));
+
                 const playlists = showManager.getShows().flatMap(show => show.playlists);
 
                 return Promise.all(playlists.map(metaDataDownloader.download))
@@ -49,7 +51,7 @@ module.exports.service = {
     },
     getScheduleForChannel(channelId) {
         "use strict";
-        const episodeListForChannel = channelManager.getEpisodeList(channelId, true);
+        const episodeListForChannel = channelManager.getEpisodeList(channelId);
         if (episodeListForChannel) {
             return scheduleBuilder.buildScheduleForEpisodeList(episodeListForChannel);
         }

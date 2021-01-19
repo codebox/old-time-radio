@@ -1,5 +1,5 @@
 const channelBuilder = (() => {
-    const model = {shows:[], savedChannelCodes: []},
+    const model = {shows:[], savedChannelCodes: [], commercialShowIds:[], includeCommercials: true},
         STATE_INITIAL = 0,
         STATE_NO_SELECTION = 1,
         STATE_SELECTION = 2,
@@ -17,9 +17,10 @@ const channelBuilder = (() => {
             elAddAnotherChannel = document.getElementById('addAnotherChannel'),
             elChannelCount = document.getElementById('channelCount'),
             elDeleteStationButton = document.getElementById('deleteStation'),
-            elStationBuilderTitle = document.getElementById('stationBuilderTitle');
+            elStationBuilderTitle = document.getElementById('stationBuilderTitle'),
+            elIncludeCommercialsCheckbox = document.getElementById('adsInChannel');
 
-            let showClickHandler, createChannelClickHandler, deleteStationClickHandler;
+            let showClickHandler, createChannelClickHandler, deleteStationClickHandler, onIncludeCommercialsClickHandler;
 
         function buildShowButtonElement(show) {
             const el = document.createElement('li');
@@ -84,6 +85,7 @@ const channelBuilder = (() => {
             elStationDetails.style.display = model.savedChannelCodes.length ? 'block' : 'none';
 
             elCreateChannelButton.disabled = state !== STATE_SELECTION;
+            elIncludeCommercialsCheckbox.disabled = state !== STATE_SELECTION;
         }
 
         function buildGenreListForShows(shows) {
@@ -132,7 +134,6 @@ const channelBuilder = (() => {
                         };
                         elShowList.appendChild(elShowButton);
                     });
-
                 });
 
                 elCreateChannelButton.onclick = createChannelClickHandler;
@@ -140,6 +141,8 @@ const channelBuilder = (() => {
                 elAddAnotherChannel.onclick = () => {
                     elStationBuilderTitle.scrollIntoView({behavior: 'smooth'});
                 };
+                elIncludeCommercialsCheckbox.checked = true;
+                elIncludeCommercialsCheckbox.onclick = onIncludeCommercialsClickHandler;
                 stateMachine.reset();
             },
             updateShowSelections() {
@@ -174,9 +177,17 @@ const channelBuilder = (() => {
             onDeleteStationClick(handler) {
                 deleteStationClickHandler = handler;
             },
+            onIncludeCommercialsClick(handler) {
+                onIncludeCommercialsClickHandler = () => {
+                    handler(elIncludeCommercialsCheckbox.checked);
+                };
+            },
             onBuildChannelClick(handler) {
                 createChannelClickHandler = () => {
                     const selectedShowIndexes = model.shows.filter(show => show.selected).map(show => show.index);
+                    if (model.includeCommercials) {
+                        selectedShowIndexes.push(...model.commercialShowIds);
+                    }
                     stateMachine.channelPending();
                     handler(selectedShowIndexes).then(code => {
                         model.savedChannelCodes.push(code);
@@ -213,6 +224,7 @@ const channelBuilder = (() => {
                     channels: show.channels
                 };
             }));
+            model.commercialShowIds.push(...shows.filter(show => show.isCommercial).map(show => show.index));
 
             view.onShowClick(show => {
                 show.selected = !show.selected;
@@ -223,6 +235,9 @@ const channelBuilder = (() => {
                 model.savedChannelCodes.length = 0;
                 model.shows.forEach(show => show.selected = false);
                 view.updateShowSelections();
+            });
+            view.onIncludeCommercialsClick(isChecked => {
+                model.includeCommercials = isChecked;
             });
             view.populateShows();
             view.updateShowSelections();

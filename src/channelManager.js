@@ -9,28 +9,29 @@ module.exports.buildChannelManager = (showManager, playlistManager) => {
      */
     const predefinedChannels = {},
         episodeListCache = {},
+        commercialShowIds = [],
         SHOWS_PER_CHAR = 6,
-        ADVERTS_CHANNEL = 'adverts',
         CHANNEL_CODE_REGEX = /^[0-9a-zA-Z_-]+$/i;
 
-    const advertManager = (() => {
+    function buildAdvertManager(advertShows, randomisationKey) {
         "use strict";
-        const adverts = [], advertShowIds = [];
+        const adverts = [];
 
-        function hash(s){
+        function hash(s) {
             return s.split('').reduce((a,b) => {
                 a = ((a<<5) - a) + b.charCodeAt(0);
                 return a&a
             }, 0);
         }
 
+        function buildEpisodeList() {
+            return advertShows.flatMap(getFilesForShow).map(buildFileDetails);
+        }
+
         return {
-            setShowIds(showIds) {
-                advertShowIds.push(...showIds);
-            },
-            get(randomisationKey, offset) {
+            get(offset) {
                 if (!adverts.length) {
-                    const episodeListForAdverts = buildEpisodeListForShowIds(advertShowIds, false);
+                    const episodeListForAdverts = buildEpisodeList();
                     episodeListForAdverts.forEach(episode => episode.commercial = true);
                     adverts.push(...episodeListForAdverts);
                 }
@@ -38,7 +39,7 @@ module.exports.buildChannelManager = (showManager, playlistManager) => {
                 return adverts[index];
             }
         };
-    })();
+    };
 
     const CHAR_MAP = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_';
     function numToString(n) {
@@ -53,6 +54,15 @@ module.exports.buildChannelManager = (showManager, playlistManager) => {
         const n = CHAR_MAP.indexOf(s);
         console.assert(n >= 0);
         return n;
+    }
+
+    function buildFileDetails(file) {
+        "use strict";
+        return {
+            url: `${file.urlPrefixes[0]}${file.file}`,
+            name: file.name,
+            length: file.length
+        };
     }
 
     function buildCodeFromIndexes(indexes) {
@@ -73,7 +83,7 @@ module.exports.buildChannelManager = (showManager, playlistManager) => {
         const indexes = [];
         code.split('').forEach((c, charIndex) => {
             const num = stringToNum(c);
-            indexes.push(...[num & 1, num & 2, num & 4, num & 8, num & 16, num & 32].map((n,i) => n ? i + charIndex * SHOWS_PER_CHAR : 0).filter(n=>n));
+            indexes.push(...[num & 1, num & 2, num & 4, num & 8, num & 16, num & 32].map((n,i) => n ? i + charIndex * SHOWS_PER_CHAR : null).filter(n => n !== null));
         });
         return indexes;
     }
@@ -91,13 +101,18 @@ module.exports.buildChannelManager = (showManager, playlistManager) => {
         return `${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
     }
 
-    function buildEpisodeListForShowIds(showIndexes, mergeAdverts) {
+    function buildEpisodeListForShowIds(showIndexes) {
         "use strict";
-        const shows = showIndexes.map(showManager.getShowByIndex).filter(s => s),
-            episodeCount = shows.reduce((count, show) => getFilesForShow(show).length + count, 0),
-            remainingForEachShow = {};
+        const allShows = showIndexes.map(showManager.getShowByIndex).filter(s => s),
+            nonCommercialShows = allShows.filter(show => ! show.isCommercial),
+            commercialShows = allShows.filter(show => show.isCommercial),
+            episodeCount = nonCommercialShows.reduce((count, show) => getFilesForShow(show).length + count, 0),
+            remainingForEachShow = {},
+            advertRandomisationKey = nonCommercialShows.map(show => show.index).join('.'),
+            mergeAdverts = !! commercialShows.length,
+            advertManager = mergeAdverts && buildAdvertManager(commercialShows, advertRandomisationKey);
 
-        shows.forEach(show => {
+        nonCommercialShows.forEach(show => {
             const files = getFilesForShow(show);
             remainingForEachShow[show.name] = {
                 startCount: files.length,
@@ -105,7 +120,7 @@ module.exports.buildChannelManager = (showManager, playlistManager) => {
             };
         });
 
-        const episodeList = [], advertRandomisationKey = showIndexes.join('.');
+        const episodeList = [];
 
         let durationSeconds = 0;
 
@@ -118,18 +133,15 @@ module.exports.buildChannelManager = (showManager, playlistManager) => {
             }).sort((o1, o2) => o2.remainingFraction - o1.remainingFraction)[0].showId;
 
             const remainingForNextShow = remainingForEachShow[nextShowId],
-                nextShow = shows.find(s => s.name === nextShowId),
+                nextShow = nonCommercialShows.find(s => s.name === nextShowId),
                 nextFile = getFilesForShow(nextShow)[remainingForNextShow.startCount - remainingForNextShow.remaining],
-                nextEpisode = {
-                    url: `${nextFile.urlPrefixes[0]}${nextFile.file}`,
-                    name: nextFile.name,
-                    length: nextFile.length
-                };
+                nextEpisode = buildFileDetails(nextFile);
+
             durationSeconds += nextEpisode.length;
             remainingForNextShow.remaining--;
             episodeList.push(nextEpisode);
             if (mergeAdverts) {
-                episodeList.push(advertManager.get(advertRandomisationKey, i));
+                episodeList.push(advertManager.get(i));
             }
         }
 
@@ -141,11 +153,11 @@ module.exports.buildChannelManager = (showManager, playlistManager) => {
     return {
         addPredefinedChannel(predefinedChannel) {
             "use strict";
-            if (predefinedChannel.name === ADVERTS_CHANNEL) {
-                advertManager.setShowIds(predefinedChannel.shows);
-            } else {
-                predefinedChannels[predefinedChannel.name] = predefinedChannel;
-            }
+            predefinedChannels[predefinedChannel.name] = predefinedChannel;
+        },
+        addCommercialShows(showIds) {
+            "use strict";
+            commercialShowIds.push(...showIds);
         },
         getPredefinedChannels() {
             "use strict";
@@ -161,10 +173,10 @@ module.exports.buildChannelManager = (showManager, playlistManager) => {
             });
             return channelsForShow;
         },
-        getEpisodeList(channelId, mergeAdverts) {
+        getEpisodeList(channelId) {
             "use strict";
             if (!episodeListCache[channelId]) {
-                const showIndexes = [];
+                let showIndexes = [];
 
                 if (channelId in predefinedChannels) {
                     showIndexes.push(...predefinedChannels[channelId].shows);
@@ -173,7 +185,7 @@ module.exports.buildChannelManager = (showManager, playlistManager) => {
                     showIndexes.push(...parseCodeToIndexes(channelId))
                 }
 
-                episodeListCache[channelId] = buildEpisodeListForShowIds(showIndexes, mergeAdverts);
+                episodeListCache[channelId] = buildEpisodeListForShowIds(showIndexes);
             }
             return episodeListCache[channelId];
         },
