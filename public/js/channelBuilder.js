@@ -1,5 +1,5 @@
 const channelBuilder = (() => {
-    const model = {shows:[], savedChannelCodes: [], commercialShowIds:[], includeCommercials: true},
+    const model = {shows:[], savedChannelCodes: [], commercialShowIds:[], includeCommercials: false},
         STATE_INITIAL = 0,
         STATE_NO_SELECTION = 1,
         STATE_SELECTION = 2,
@@ -18,7 +18,8 @@ const channelBuilder = (() => {
             elChannelCount = document.getElementById('channelCount'),
             elDeleteStationButton = document.getElementById('deleteStation'),
             elStationBuilderTitle = document.getElementById('stationBuilderTitle'),
-            elIncludeCommercialsCheckbox = document.getElementById('adsInChannel');
+            elIncludeAdsInChannelButton = document.getElementById('adsInChannel'),
+            cssClassSelected = 'selected';
 
             let showClickHandler, createChannelClickHandler, deleteStationClickHandler, onIncludeCommercialsClickHandler;
 
@@ -79,13 +80,13 @@ const channelBuilder = (() => {
         })(updateUiForState);
 
         function updateUiForState(state) {
-            elShowsSelected.style.display = state === STATE_INITIAL ? 'none' : 'inline';
+            elShowsSelected.style.display = state === STATE_INITIAL ? 'none' : 'block';
             elCreateChannelButton.style.display = [STATE_INITIAL, STATE_NO_SELECTION].includes(state) ? 'none' : 'inline';
 
             elStationDetails.style.display = model.savedChannelCodes.length ? 'block' : 'none';
 
             elCreateChannelButton.disabled = state !== STATE_SELECTION;
-            elIncludeCommercialsCheckbox.disabled = state !== STATE_SELECTION;
+            elIncludeAdsInChannelButton.disabled = state !== STATE_SELECTION;
         }
 
         function buildGenreListForShows(shows) {
@@ -141,27 +142,31 @@ const channelBuilder = (() => {
                 elAddAnotherChannel.onclick = () => {
                     elStationBuilderTitle.scrollIntoView({behavior: 'smooth'});
                 };
-                elIncludeCommercialsCheckbox.checked = true;
-                elIncludeCommercialsCheckbox.onclick = onIncludeCommercialsClickHandler;
+                elIncludeAdsInChannelButton.classList.toggle(cssClassSelected, model.includeCommercials);
+                elIncludeAdsInChannelButton.onclick = () => {
+                    model.includeCommercials = elIncludeAdsInChannelButton.classList.toggle(cssClassSelected);
+                    onIncludeCommercialsClickHandler();
+                };
                 stateMachine.reset();
             },
             updateShowSelections() {
                 model.shows.forEach(show => {
                     show.elements.forEach(el => {
-                        el.classList.toggle('selected', show.selected);
+                        el.classList.toggle(cssClassSelected, show.selected);
                     });
                 });
-                const selectedCount = model.shows.filter(show => show.selected).length;
+                const selectedCount = model.shows.filter(show => show.selected).length,
+                    commercialsStatus = model.includeCommercials ? 'Commercials will play between programmes' : 'No commercials between programmes';
 
                 if (selectedCount === 0) {
                     elShowsSelected.innerHTML = 'Pick some shows to add to a new channel';
 
                 } else if (selectedCount === 1) {
-                    elShowsSelected.innerHTML = '1 show selected';
+                    elShowsSelected.innerHTML = `1 show selected<br>${commercialsStatus}`;
                     elCreateChannelButton.innerHTML = 'Create a new channel with just this show';
 
                 } else {
-                    elShowsSelected.innerHTML = `${selectedCount} shows selected`;
+                    elShowsSelected.innerHTML = `${selectedCount} shows selected<br>${commercialsStatus}`;
                     elCreateChannelButton.innerHTML = `Create a new channel with these ${selectedCount} shows`;
                 }
 
@@ -179,7 +184,8 @@ const channelBuilder = (() => {
             },
             onIncludeCommercialsClick(handler) {
                 onIncludeCommercialsClickHandler = () => {
-                    handler(elIncludeCommercialsCheckbox.checked);
+                    view.updateShowSelections();
+                    handler(model.includeCommercials);
                 };
             },
             onBuildChannelClick(handler) {

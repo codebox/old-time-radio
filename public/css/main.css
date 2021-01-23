@@ -227,6 +227,12 @@ noscript a, noscript a:visited {
     cursor: pointer;
     margin: 0px 4px;
     user-select: none;
+    outline: none;
+}
+#menu .showButton:disabled {
+    border-color: var(--font-color-dim);
+    background-color: var(--font-color-dim) ! important;
+    cursor: default;
 }
 #menu button {
     font-family: Bellerose;
@@ -282,7 +288,25 @@ noscript a, noscript a:visited {
     background-color: var(--led-on);
     box-shadow: rgba(255, 255, 255, 0.8) 0px 0px 7px 1px;
 }
-
+#menu p#showsSelected {
+    margin-bottom: 20px;
+}
+#channelSettings {
+    height: auto;
+}
+#channelSettings h3 {
+    text-decoration: underline;
+}
+#channelSettings ul {
+    display: flex;
+    padding: 0;
+    justify-content: center;
+    margin: 10px 0 0 0;
+}
+#channelSettings li {
+    display: flex;
+    flex-direction: row;
+}
 #stationDetails {
     height: auto;
 }
@@ -394,6 +418,9 @@ canvas {
     }
 }
 @media screen and (min-width: 350px) and (max-width: 500px) {
+    #title {
+        flex: 0 0 100px;
+    }
     .buttonLabel {
         font-size: 20px;
     }
