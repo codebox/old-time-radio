@@ -290,6 +290,41 @@
       "name": "CBS Radio Mystery Theater",
       "playlists": ["theoldonesarehardtokill_20191104_1301", "CbsRadioMysteryTheater1975Page1", "CbsRadioMysteryTheater1976Page1", "CbsRadioMysteryTheater1976Page2", "CbsRadioMysteryTheater1976Page3", "CbsRadioMysteryTheater1976Page4", "CbsRadioMysteryTheater1976Page5"],
       "index": 57
+    },
+    {
+      "name": "Richard Diamond, Private Detective",
+      "playlists": ["OTRR_Richard_Diamond_Private_Detective_Singles"],
+      "index": 58
+    },
+    {
+      "name": "Ranger Bill",
+      "playlists": ["OTRR_Ranger_Bill_Singles"],
+      "index": 59
+    },
+    {
+      "name": "Let George Do It",
+      "playlists": ["OTRR_Let_George_Do_It_Singles"],
+      "index": 60
+    },
+    {
+      "name": "Father Knows Best",
+      "playlists": ["FatherKnowsBest45Episodes"],
+      "index": 61
+    },
+    {
+      "name": "Secrets of Scotland Yard",
+      "playlists": ["OTRR_Secrets_Of_Scotland_Yard_Singles"],
+      "index": 62
+    },
+    {
+      "name": "Mr District Attorney",
+      "playlists": ["OTRR_Mr_District_Attorney_Singles"],
+      "index": 63
+    },
+    {
+      "name": "The Life of Riley",
+      "playlists": ["TheLifeOfRiley"],
+      "index": 64
     }
   ],
   "channels" : [
@@ -299,7 +334,7 @@
     },
     {
       "name" : "action",
-      "shows": [0,10,11,12,13,14,15,16,37,38,39,40,41,47,52]
+      "shows": [0,10,11,12,13,14,15,16,37,38,39,40,41,47,52,58,60,62,63]
     },
     {
       "name" : "mystery",
@@ -307,11 +342,11 @@
     },
     {
       "name" : "western",
-      "shows": [0,25,26,27,28,29,30,55]
+      "shows": [0,25,26,27,28,29,30,55,59]
     },
     {
       "name" : "comedy",
-      "shows": [0,31,32,33,34,35,36,46,49]
+      "shows": [0,31,32,33,34,35,36,46,49,61,64]
     }
   ]
 }

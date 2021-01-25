@@ -672,6 +672,104 @@ const parsers = [
             const title = addSpacesBeforeCapitals(match[3]);
             return `CBS Radio Mystery Theater - ${title}`;
         }
+    },
+    {
+        ids: ['OTRR_Richard_Diamond_Private_Detective_Singles'],
+        regex: /Richard Diamond ([-0-9]{8}) \(([0-9]+)\) (.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = match[3],
+                number = match[2];
+            return `Richard Diamond, Private Detective ${number} - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ['OTRR_Ranger_Bill_Singles'],
+        regex: /Ranger_Bill_(.{8})_ep([0-9x]{3})_(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                hasDate = (date !== 'xx-xx-xx'),
+                title = match[3].replace(/_/g, ' '),
+                number = match[2],
+                hasNumber = (number !== 'xxx');
+
+            return `Ranger Bill ${hasNumber ? number + ' ' : ''}- ${title}${hasDate ? ' [' + date + ']' : ''}`;
+        }
+    },
+    {
+        ids: ['OTRR_Let_George_Do_It_Singles'],
+        regex: /LGDI - \[HSG_Synd.#([0-9]+)\] - (.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const title = match[2],
+                number = match[1];
+
+            return `Let George Do It ${number} - ${title}`;
+        }
+    },
+    {
+        ids: ['OTRR_Let_George_Do_It_Singles'],
+        regex: /LGDI (.{8}) \(([0-9]{3})\) (.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = match[3],
+                number = match[2];
+
+            return `Let George Do It ${number} - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ['FatherKnowsBest45Episodes'],
+        regex: /Fkb([-0-9]{10})([0-9]{3})(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = addSpacesBeforeCapitals(match[3]),
+                number = match[2];
+
+            return `Father Knows Best ${number} - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ['OTRR_Secrets_Of_Scotland_Yard_Singles'],
+        regex: /SecretsOfScotlandYard(.{8})_(.{3})_(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = addSpacesBeforeCapitals(match[3]),
+                number = match[2];
+
+            return `Secrets of Scotland Yard - ${title}`;
+        }
+    },
+    {
+        ids: ['OTRR_Mr_District_Attorney_Singles'],
+        regex: /Mr_District_Attorney_(.{8})_(.{3})_(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                hasDate = !date.includes('x'),
+                title = match[3].replace(/_/g, ' '),
+                number = match[2],
+                hasNumber = !number.includes('x');
+
+            return `Mr District Attorney ${hasNumber ? number + ' ' : ''}- ${title}${hasDate ? ' [' + date + ']' : ''}`;
+        }
+    },
+    {
+        ids: ['TheLifeOfRiley'],
+        regex: /Lor([-0-9]{10})([0-9]{3})(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = addSpacesBeforeCapitals(match[3]),
+                number = match[2];
+
+            return `The Life of Riley ${number} - ${title} [${date}]`;
+        }
     }
 ];
 
