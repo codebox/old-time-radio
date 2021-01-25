@@ -49,11 +49,11 @@ module.exports.service = {
         "use strict";
         return channelManager.getPredefinedChannels();
     },
-    getScheduleForChannel(channelId) {
+    getScheduleForChannel(channelId, length) {
         "use strict";
         const episodeListForChannel = channelManager.getEpisodeList(channelId);
         if (episodeListForChannel) {
-            return scheduleBuilder.buildScheduleForEpisodeList(episodeListForChannel);
+            return scheduleBuilder.buildScheduleForEpisodeList(episodeListForChannel, length);
         }
     },
     generateCodeForShowIndexes(showIndexes) {

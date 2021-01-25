@@ -41,8 +41,8 @@ app.get(`/api/channels`, (req, res) => {
 
 app.get(`/api/channel/:channel`, (req, res) => {
     const channelId = req.params.channel,
-        trimToNearestBoundary = req.query.nearest !== undefined,
-        schedule = service.getScheduleForChannel(channelId, trimToNearestBoundary);
+        length = req.query.length,
+        schedule = service.getScheduleForChannel(channelId, length);
 
     if (schedule) {
         res.status(200).json(schedule);
