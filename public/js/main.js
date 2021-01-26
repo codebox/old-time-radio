@@ -54,6 +54,13 @@ window.onload = () => {
         audioPlayer.updateVolume();
     });
 
+    view.onScheduleRequested(channelId => {
+        "use strict";
+        service.getPlaylistForChannel(channelId, 12 * 60 * 60).then(schedule => {
+            view.updateSchedule(channelId, schedule);
+        })
+    });
+
     channelBuilder.onChannelRequested(showIndexes => {
         "use strict";
          return service.getChannelCodeForShows(showIndexes);

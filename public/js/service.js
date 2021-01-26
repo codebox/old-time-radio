@@ -5,8 +5,8 @@ const service = (() => {
             return fetch('/api/channels')
                 .then(response => response.json());
         },
-        getPlaylistForChannel(channelId) {
-            return fetch(`/api/channel/${channelId}`)
+        getPlaylistForChannel(channelId, length) {
+            return fetch(`/api/channel/${channelId}${length ? '?length=' + length : ''}`)
                 .then(response => response.json());
         },
         getShowList() {

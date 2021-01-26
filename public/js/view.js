@@ -21,6 +21,72 @@ const view = (() => {
 
         channelButtons = {};
 
+    const scheduleManager = (() => {
+        const elChannelLinks = document.getElementById('channelScheduleLinks'),
+            elScheduleList = document.getElementById('scheduleList'),
+            scheduleModel = [],
+            CSS_CLASS_SELECTED = 'selected';
+
+        function render() {
+            scheduleModel.forEach(channelDetails => {
+                channelDetails.el.classList.toggle(CSS_CLASS_SELECTED, channelDetails.selected);
+            });
+            const selectedChannelDetails = scheduleModel.find(channelDetails => channelDetails.selected);
+            elScheduleList.innerHTML = '';
+            if (selectedChannelDetails) {
+                selectedChannelDetails.schedule.forEach(scheduleItem => {
+                    const el = document.createElement('li');
+                    el.innerHTML = `${scheduleItem.time} ${scheduleItem.name}`;
+                    elScheduleList.appendChild(el);
+                });
+            }
+        }
+
+        function setSelectedChannel(selectedChannel) {
+            scheduleModel.forEach(channelDetails => {
+                channelDetails.selected = (channelDetails.channel.id === selectedChannel.id);
+            });
+            render();
+            onScheduleRequestedHandler(selectedChannel.id);
+        }
+
+        return {
+            addChannel(channel) {
+                const li = document.createElement('li');
+                li.innerHTML = channel.name;
+                li.onclick = () => {
+                    setSelectedChannel(channel);
+                };
+                elChannelLinks.appendChild(li);
+                scheduleModel.push({channel, el:li, selected: false, schedule: []});
+            },
+            updateSchedule(channelId, schedule) {
+                const channelDetailsToUpdate = scheduleModel.find(channelDetails => channelDetails.channel.id === channelId);
+                const playingNow = schedule.list.shift(),
+                    timeNow = Date.now() / 1000;
+                let nextShowStartOffsetFromNow = playingNow.length - schedule.initialOffset;
+
+                channelDetailsToUpdate.schedule = [{time: 'NOW', name: playingNow.name}];
+                channelDetailsToUpdate.schedule.push(...schedule.list.map(item => {
+                    const ts = nextShowStartOffsetFromNow + timeNow,
+                        date = new Date(ts * 1000),
+                        hh = date.getHours().toString().padStart(2,'0'),
+                        mm = date.getMinutes().toString().padStart(2,'0');
+                    const result = {
+                        time: `${hh}:${mm}`,
+                        name: item.name,
+                        commercial: item.commercial
+                    };
+                    nextShowStartOffsetFromNow += item.length;
+                    return result;
+                }).filter(item => !item.commercial));
+                if (channelDetailsToUpdate.selected) {
+                    render();
+                }
+            }
+        };
+    })();
+
     elMenuOpenButton.onclick = () => {
         setMenuState(true);
     };
@@ -39,7 +105,8 @@ const view = (() => {
     let model,
         onChannelSelectedHandler = () => {},
         onChannelDeselectedHandler = () => {},
-        onVolumeChangedHandler = () => {};
+        onVolumeChangedHandler = () => {},
+        onScheduleRequestedHandler = () => {};
 
     function forEachChannelButton(fn) {
         Object.keys(channelButtons).forEach(channelId => {
@@ -135,6 +202,8 @@ const view = (() => {
                 elButtonBox.appendChild(elButtonLabel);
                 elButtonContainer.appendChild(elButtonBox);
                 channelButtons[channelId] = elButtonBox;
+
+                scheduleManager.addChannel(channel);
             });
         },
         updatePlayState() {
@@ -159,6 +228,9 @@ const view = (() => {
         onVolumeChanged(handler) {
             onVolumeChangedHandler = handler;
         },
+        onScheduleRequested(handler) {
+            onScheduleRequestedHandler = handler;
+        },
         setVisualisationDataSource(source) {
             visualiser.setDataSource(source);
         },
@@ -167,6 +239,9 @@ const view = (() => {
         },
         updateShowList() {
             channelBuilder.init(elShowList, model.shows);
+        },
+        updateSchedule(channelId, schedule) {
+            scheduleManager.updateSchedule(channelId, schedule);
         }
     };
 })();

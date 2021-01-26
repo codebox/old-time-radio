@@ -307,6 +307,26 @@ noscript a, noscript a:visited {
     display: flex;
     flex-direction: row;
 }
+#channelScheduleLinks li {
+    display: inline;
+    text-transform: capitalize;
+    margin: 5px;
+    cursor: pointer;
+}
+#channelScheduleLinks li:hover {
+    font-weight: bold;
+}
+#channelScheduleLinks li.selected {
+    font-weight: bold;
+    text-decoration: underline;
+}
+#scheduleList li {
+    display: block;
+    text-align: left;
+    font-size: 16px;
+    line-height: 18px;
+    font-family: 'Courier Prime', monospace;
+}
 #stationDetails {
     height: auto;
 }
