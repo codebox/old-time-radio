@@ -10,6 +10,8 @@ const view = (() => {
         CLASS_PLAYING = 'channelPlaying',
         CLASS_ERROR = 'channelError',
 
+        SCHEDULE_UPDATE_INTERVAL_MILLIS = 60 * 1000,
+
         elButtonContainer = document.getElementById('buttons'),
         elDownloadLink = document.getElementById('downloadLink'),
         elMenuOpenButton = document.getElementById('menuOpenButton'),
@@ -29,14 +31,14 @@ const view = (() => {
 
         function render() {
             scheduleModel.forEach(channelDetails => {
-                channelDetails.el.classList.toggle(CSS_CLASS_SELECTED, channelDetails.selected);
+                channelDetails.el.classList.toggle(CSS_CLASS_SELECTED, !! channelDetails.selected);
             });
             const selectedChannelDetails = scheduleModel.find(channelDetails => channelDetails.selected);
             elScheduleList.innerHTML = '';
             if (selectedChannelDetails) {
                 selectedChannelDetails.schedule.forEach(scheduleItem => {
                     const el = document.createElement('li');
-                    el.innerHTML = `${scheduleItem.time} ${scheduleItem.name}`;
+                    el.innerHTML = `<div class="scheduleItemTime">${scheduleItem.time}</div><div class="scheduleItemName">${scheduleItem.name}</div>`;
                     elScheduleList.appendChild(el);
                 });
             }
@@ -44,18 +46,29 @@ const view = (() => {
 
         function setSelectedChannel(selectedChannel) {
             scheduleModel.forEach(channelDetails => {
-                channelDetails.selected = (channelDetails.channel.id === selectedChannel.id);
+                channelDetails.selected = selectedChannel && (channelDetails.channel.id === selectedChannel.id);
             });
             render();
-            onScheduleRequestedHandler(selectedChannel.id);
+            if (selectedChannel) {
+                onScheduleRequestedHandler(selectedChannel.id);
+            }
+        }
+
+        function getSelectedChannel() {
+            return scheduleModel.find(channelDetails => channelDetails.selected);
+        }
+
+        function isSelectedChannel(channel) {
+            return scheduleModel.find(channelDetails => channelDetails.channel.id === channel.id).selected;
         }
 
         return {
             addChannel(channel) {
                 const li = document.createElement('li');
                 li.innerHTML = channel.name;
+                li.classList.add('showButton');
                 li.onclick = () => {
-                    setSelectedChannel(channel);
+                    setSelectedChannel(isSelectedChannel(channel) ? null : channel);
                 };
                 elChannelLinks.appendChild(li);
                 scheduleModel.push({channel, el:li, selected: false, schedule: []});
@@ -66,7 +79,7 @@ const view = (() => {
                     timeNow = Date.now() / 1000;
                 let nextShowStartOffsetFromNow = playingNow.length - schedule.initialOffset;
 
-                channelDetailsToUpdate.schedule = [{time: 'NOW', name: playingNow.name}];
+                channelDetailsToUpdate.schedule = [{time: 'NOW &gt;', name: playingNow.name}];
                 channelDetailsToUpdate.schedule.push(...schedule.list.map(item => {
                     const ts = nextShowStartOffsetFromNow + timeNow,
                         date = new Date(ts * 1000),
@@ -82,6 +95,15 @@ const view = (() => {
                 }).filter(item => !item.commercial));
                 if (channelDetailsToUpdate.selected) {
                     render();
+                }
+            },
+            setSelectedChannel(channel) {
+                setSelectedChannel(channel);
+            },
+            updateSelectedChannel() {
+                const selectedChannel = getSelectedChannel();
+                if (selectedChannel) {
+                    onScheduleRequestedHandler(selectedChannel.channel.id);
                 }
             }
         };
@@ -103,6 +125,7 @@ const view = (() => {
     };
 
     let model,
+        scheduleUpdateInterval,
         onChannelSelectedHandler = () => {},
         onChannelDeselectedHandler = () => {},
         onVolumeChangedHandler = () => {},
@@ -133,6 +156,14 @@ const view = (() => {
         elMenuBox.classList.toggle('visible', isOpen);
         elMenuOpenButton.style.display = isOpen ? 'none' : 'inline';
         elMenuCloseButton.style.display = !isOpen ? 'none' : 'inline';
+        scheduleManager.setSelectedChannel(isOpen ? model.channel : undefined); //TODO move this out of here
+        if (isOpen) {
+            scheduleUpdateInterval = setInterval(() => {
+                scheduleManager.updateSelectedChannel();
+            }, SCHEDULE_UPDATE_INTERVAL_MILLIS);
+        } else {
+            clearInterval(scheduleUpdateInterval);
+        }
     }
 
     function setViewState(state) {

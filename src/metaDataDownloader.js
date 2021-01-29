@@ -49,7 +49,7 @@ module.exports = {
                         // archive.org returns 200 even if it doesn't recognise the id
                         return Promise.reject(`No file list returned for id '${itemId}'`);
                     }
-                    return fs.promises.writeFile(cachedFileName, JSON.stringify(response.data, 4), {encoding: ENCODING})
+                    return fs.promises.writeFile(cachedFileName, JSON.stringify(response.data, null, 4), {encoding: ENCODING})
                         .then(() => processResponse(itemId, response.data));
                 });
             });

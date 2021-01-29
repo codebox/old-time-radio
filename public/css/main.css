@@ -313,19 +313,27 @@ noscript a, noscript a:visited {
     margin: 5px;
     cursor: pointer;
 }
-#channelScheduleLinks li:hover {
-    font-weight: bold;
+#scheduleList, #channelScheduleLinks {
+    padding: 0 40px;
 }
-#channelScheduleLinks li.selected {
-    font-weight: bold;
-    text-decoration: underline;
+#scheduleList {
+    margin: 20px 0 0 0;
+}
+#channelScheduleLinks {
+    margin: -10px 0 0 0;
 }
 #scheduleList li {
-    display: block;
+    display: flex;
+    flex-direction: row;
     text-align: left;
-    font-size: 16px;
-    line-height: 18px;
+    font-size: 14px;
     font-family: 'Courier Prime', monospace;
+}
+#scheduleList li .scheduleItemTime {
+    flex: 0 0 60px;
+}
+#scheduleList li .scheduleItemName{
+    flex-grow: 1;
 }
 #stationDetails {
     height: auto;
@@ -450,6 +458,9 @@ canvas {
     noscript {
         line-height: 30px;
     }
+    #scheduleList, #channelScheduleLinks {
+        margin: 10px;
+    }
 }
 @media screen and (max-width: 349px) {
     #title {
@@ -483,5 +494,8 @@ canvas {
     noscript h2 {
         line-height: 30px;
         margin-top: 0;
+    }
+    #scheduleList, #channelScheduleLinks {
+        margin: 10px;
     }
 }
