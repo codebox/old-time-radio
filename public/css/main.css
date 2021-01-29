@@ -307,20 +307,22 @@ noscript a, noscript a:visited {
     display: flex;
     flex-direction: row;
 }
-#channelScheduleLinks li {
-    display: inline;
-    text-transform: capitalize;
-    margin: 5px;
-    cursor: pointer;
-}
 #scheduleList, #channelScheduleLinks {
     padding: 0 40px;
 }
 #scheduleList {
-    margin: 20px 0 0 0;
+    margin: 10px 0 0 0;
 }
 #channelScheduleLinks {
-    margin: -10px 0 0 0;
+    margin: 10px 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+#channelScheduleLinks li.showButton {
+    text-transform: capitalize;
+    margin: 5px;
+    cursor: pointer;
 }
 #scheduleList li {
     display: flex;
@@ -459,16 +461,17 @@ canvas {
         line-height: 30px;
     }
     #scheduleList, #channelScheduleLinks {
+        padding: 0;
         margin: 10px;
     }
 }
 @media screen and (max-width: 349px) {
     #title {
-        flex: 0 0 100px;
+        flex: 0 0 80px;
         margin-top: -16px;
     }
     #title .spacer {
-        flex: 0 0 30px;
+        flex: 0 0 40px;
     }
     #title h1 {
         padding-top: 0;
@@ -496,6 +499,10 @@ canvas {
         margin-top: 0;
     }
     #scheduleList, #channelScheduleLinks {
+        padding: 0;
         margin: 10px;
+    }
+    #buttons {
+        flex: 0 0 160px;
     }
 }
