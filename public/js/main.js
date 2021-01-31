@@ -54,6 +54,25 @@ window.onload = () => {
         audioPlayer.updateVolume();
     });
 
+    view.onSetSleepTimerClicked(minutes => {
+        "use strict";
+        sleepTimer.start(minutes);
+    });
+
+    view.onSleepTimerCancelClicked(() => {
+        "use strict";
+        sleepTimer.stop();
+    });
+
+    sleepTimer.onSleep(() => {
+        "use strict";
+        view.sleep();
+    });
+    sleepTimer.onTick(minutesRemaining => {
+        "use strict";
+        view.updateSleepTimer(minutesRemaining);
+    });
+
     view.onScheduleRequested(channelId => {
         "use strict";
         service.getPlaylistForChannel(channelId, 12 * 60 * 60).then(schedule => {

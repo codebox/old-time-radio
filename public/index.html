@@ -38,6 +38,23 @@
         </noscript>
         <div id="visualiser">
             <div id="menu">
+                <h2>Sleep Timer</h2>
+                <p>
+                    Set the Sleep Timer to stop playing shows after:
+                </p>
+                <div id="sleepTimerButtons" class="sleepTimerButtonContainer">
+                </div>
+                <div id="cancelSleepTimer" class="hidden">
+                    <p>
+                        Sleeping in <span id="sleepTimerTime"></span>
+                    </p>
+                    <div class="sleepTimerButtonContainer">
+                        <button id="cancelSleepTimerButton">Cancel Sleep Timer Countdown</button>
+                    </div>
+                </div>
+
+                <hr>
+
                 <h2>Schedule</h2>
                 <p>
                     Select a channel to see what shows are coming up
@@ -128,6 +145,7 @@
     <script src="js/playlist.js"></script>
     <script src="js/visualiser.js"></script>
     <script src="js/channelBuilder.js"></script>
+    <script src="js/sleepTimer.js"></script>
     <script src="js/view.js"></script>
     <script src="js/service.js"></script>
     <script src="js/main.js"></script>

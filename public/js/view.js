@@ -19,6 +19,10 @@ const view = (() => {
         elMenuBox = document.getElementById('menu'),
         elVolumeUp = document.getElementById('volumeUp'),
         elVolumeDown = document.getElementById('volumeDown'),
+        elSleepTimerButtons = document.getElementById('sleepTimerButtons'),
+        elCancelSleepTimer = document.getElementById('cancelSleepTimer'),
+        elCancelSleepTimerButton = document.getElementById('cancelSleepTimerButton'),
+
         volumeLeds = Array.from(Array(10).keys()).map(i => document.getElementById(`vol${i+1}`)),
 
         channelButtons = {};
@@ -109,6 +113,18 @@ const view = (() => {
         };
     })();
 
+    const sleepTimerView = (() => {
+        const elSleepTimerTime = document.getElementById('sleepTimerTime'),
+            elCancelSleepTimer = document.getElementById('cancelSleepTimer');
+
+        return {
+            render(minutes) {
+                elCancelSleepTimer.style.display = minutes ? 'block' : 'none';
+                elSleepTimerTime.innerHTML = minutes ? `${minutes} minute${minutes === 1 ? '' : 's'}` : '';
+            }
+        };
+    })();
+
     elMenuOpenButton.onclick = () => {
         setMenuState(true);
     };
@@ -129,6 +145,8 @@ const view = (() => {
         onChannelSelectedHandler = () => {},
         onChannelDeselectedHandler = () => {},
         onVolumeChangedHandler = () => {},
+        onSetSleepTimerClickedHandler = () => {},
+        onSleepTimerCancelClickedHandler = () => {},
         onScheduleRequestedHandler = () => {};
 
     function forEachChannelButton(fn) {
@@ -194,6 +212,35 @@ const view = (() => {
         messageManager.updateStatus();
     }
 
+    function buildSleepTimerButtons() {
+        const BUTTONS = [
+            [90, '90 Minutes'],
+            [60, '60 Minutes'],
+            [45, '45 minutes'],
+            [30, '30 minutes'],
+            [15, '15 minutes']
+        ];
+
+        elSleepTimerButtons.innerHTML = '';
+        BUTTONS.forEach(details => {
+            const [minutes, text] = details;
+            const button = document.createElement('button');
+            button.classList.add('sleepTimerButton');
+            button.innerHTML = text;
+
+            button.onclick = () => {
+                onSetSleepTimerClickedHandler(minutes);
+            };
+
+            elSleepTimerButtons.appendChild(button);
+        });
+
+        elCancelSleepTimerButton.onclick = () => {
+            onSleepTimerCancelClickedHandler();
+        };
+    }
+
+    buildSleepTimerButtons();
     setMenuState(false);
 
     return {
@@ -273,6 +320,19 @@ const view = (() => {
         },
         updateSchedule(channelId, schedule) {
             scheduleManager.updateSchedule(channelId, schedule);
+        },
+        onSetSleepTimerClicked(handler) {
+            onSetSleepTimerClickedHandler = handler;
+        },
+        onSleepTimerCancelClicked(handler) {
+            onSleepTimerCancelClickedHandler = handler;
+        },
+        sleep() {
+            setMenuState(false);
+            console.log('view sleep');
+        },
+        updateSleepTimer(minutes) {
+            sleepTimerView.render(minutes);
         }
     };
 })();

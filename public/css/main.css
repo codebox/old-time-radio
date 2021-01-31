@@ -337,6 +337,9 @@ noscript a, noscript a:visited {
 #scheduleList li .scheduleItemName{
     flex-grow: 1;
 }
+#sleepTimerButtons, #cancelSleepTimer {
+    height: 50px;
+}
 #stationDetails {
     height: auto;
 }
