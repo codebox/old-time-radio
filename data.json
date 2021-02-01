@@ -325,6 +325,31 @@
       "name": "The Life of Riley",
       "playlists": ["TheLifeOfRiley"],
       "index": 64
+    },
+    {
+      "name": "Lux Radio Theatre",
+      "playlists": ["OTRR_Lux_Radio_Theater_Singles"],
+      "index": 65
+    },
+    {
+      "name": "The Campbell Playhouse",
+      "playlists": ["otr_campbellplayhouse"],
+      "index": 66
+    },
+    {
+      "name": "Mercury Theatre",
+      "playlists": ["OrsonWelles-MercuryTheater-1938Recordings"],
+      "index": 67
+    },
+    {
+      "name": "On Stage",
+      "playlists": ["OTRR_On_Stage_Singles_201901"],
+      "index": 68
+    },
+    {
+      "name": "Screen Guild Theater",
+      "playlists": ["ScreenGuildTheater"],
+      "index": 69
     }
   ],
   "channels" : [
