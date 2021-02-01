@@ -147,7 +147,8 @@ const view = (() => {
         onVolumeChangedHandler = () => {},
         onSetSleepTimerClickedHandler = () => {},
         onSleepTimerCancelClickedHandler = () => {},
-        onScheduleRequestedHandler = () => {};
+        onScheduleRequestedHandler = () => {},
+        onWakeHandler = () => {};
 
     function forEachChannelButton(fn) {
         Object.keys(channelButtons).forEach(channelId => {
@@ -243,6 +244,12 @@ const view = (() => {
     buildSleepTimerButtons();
     setMenuState(false);
 
+    document.body.addEventListener('mousemove', () => {
+        if (model.sleeping) {
+            document.body.classList.remove('sleeping');
+            onWakeHandler();
+        }
+    });
     return {
         init(_model) {
             model = _model;
@@ -327,9 +334,12 @@ const view = (() => {
         onSleepTimerCancelClicked(handler) {
             onSleepTimerCancelClickedHandler = handler;
         },
+        onWake(handler) {
+            onWakeHandler = handler;
+        },
         sleep() {
             setMenuState(false);
-            console.log('view sleep');
+            document.body.classList.add('sleeping');
         },
         updateSleepTimer(minutes) {
             sleepTimerView.render(minutes);

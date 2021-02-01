@@ -25,6 +25,7 @@
 body {
     background-color: var(--body-background);
     min-width: 270px;
+    transition: background-color 3s;
 }
 html, body, div {
     margin: 0;
@@ -139,6 +140,14 @@ noscript a, noscript a:visited {
     }
     to {
         transform: translate3d(-50%, -50%, 0) scale(1) rotateZ(360deg);
+    }
+}
+@keyframes growLargeCircle{
+    from {
+        transform: translate3d(-50%, -50%, 0) scale(0) rotateZ(360deg);
+    }
+    to {
+        transform: translate3d(-50%, -50%, 0) scale(2) rotateZ(360deg);
     }
 }
 #titleInner1 {
@@ -430,6 +439,42 @@ canvas {
     height: 100%;
     background-color: var(--msg-background);
 }
+/* Styles for after sleep timer is triggered*/
+body.sleeping {
+    background-color: #111;
+}
+body.sleeping #title div.radioWave {
+    animation-name: growLargeCircle;
+    animation-duration: 10s;
+    border: 1px solid #444;
+}
+body.sleeping #titleInner2 {
+    animation-delay: 1s;
+}
+body.sleeping #titleInner3 {
+    animation-delay: 2s;
+}
+body.sleeping #titleInner4 {
+    animation-delay: 3s;
+}
+body.sleeping #buttons {
+    display: none;
+}
+body.sleeping #visualiser {
+    display: none;
+}
+body.sleeping #title {
+    background: var(--msg-background);
+    flex-grow: 1;
+    transition: flex-grow 3s;
+}
+body.sleeping #downloadLink {
+    display: none;
+}
+body.sleeping #title .spacer {
+    display: none;
+}
+
 @media screen and (max-width: 500px) {
     #title h1 {
         padding-top: 8px;

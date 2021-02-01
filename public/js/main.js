@@ -66,7 +66,12 @@ window.onload = () => {
 
     sleepTimer.onSleep(() => {
         "use strict";
+        model.sleeping = true;
         view.sleep();
+    });
+    view.onWake(() => {
+        "use strict";
+        model.sleeping = false;
     });
     sleepTimer.onTick(minutesRemaining => {
         "use strict";
