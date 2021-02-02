@@ -342,10 +342,32 @@ noscript a, noscript a:visited {
 }
 #buttons {
     display: flex;
+    flex: 0 0 400px;
+    flex-direction: row;
+    overflow-x: scroll;
+    scroll-snap-type: x mandatory;
+    border-width: 0;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-style: solid;
+    border-color: var(--divider-colour);
+}
+#buttonsContainer {
+    display: flex;
     flex: 0 0 200px;
     flex-direction: row;
     justify-content: center;
     background: var(--panel-background);
+}
+.buttonContainerPadding {
+    flex: 1 0 10px;
+    z-index: 1;
+}
+#buttonContainerPaddingLeft {
+    box-shadow: 5px 0px 5px 0px rgba(0,0,0,0.5);
+}
+#buttonContainerPaddingRight {
+    box-shadow: -5px 0px 5px 0px rgba(0,0,0,0.5);
 }
 .buttonBox {
     display: flex;
@@ -357,6 +379,7 @@ noscript a, noscript a:visited {
     border-width: 0 1px;
     border-style: solid;
     margin: 0 -1px 0 0;
+    scroll-snap-align: center;
 }
 @keyframes blinkGreen {
     from {
