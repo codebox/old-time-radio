@@ -455,10 +455,6 @@ canvas {
         padding-top: 8px;
         font-size: 36px;
     }
-    .buttonBox {
-        display: flex;
-        flex: 0 1 20%;
-    }
     #message {
         white-space: normal;
         text-align: center;
@@ -468,6 +464,15 @@ canvas {
         font-size: 18px;
         line-height: 20px;
         margin: 8px 16px;
+    }
+    #buttonsContainer {
+        flex: 0 0 180px;
+    }
+    .buttonBox {
+        flex: 0 0 80px;
+    }
+    #buttons {
+        flex: 0 0 90%;
     }
 }
 @media screen and (min-width: 350px) and (max-width: 500px) {
@@ -487,6 +492,9 @@ canvas {
         padding: 0;
         margin: 10px;
     }
+    #buttons {
+        flex: 0 0 90%;
+    }
 }
 @media screen and (max-width: 349px) {
     #title {
@@ -500,6 +508,9 @@ canvas {
         padding-top: 0;
         white-space: nowrap;
         font-size: 32px;
+    }
+    #buttonsContainer {
+        flex: 0 0 150px;
     }
     .buttonLabel {
         font-size: 16px;
@@ -526,6 +537,6 @@ canvas {
         margin: 10px;
     }
     #buttons {
-        flex: 0 0 160px;
+        flex: 0 0 100%;
     }
 }
