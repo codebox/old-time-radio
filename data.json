@@ -350,6 +350,31 @@
       "name": "Screen Guild Theater",
       "playlists": ["ScreenGuildTheater"],
       "index": 69
+    },
+    {
+      "name": "Academy Award",
+      "playlists": ["OTRR_Academy_Award_Theater_Singles"],
+      "index": 70
+    },
+    {
+      "name": "First Nighter",
+      "playlists": ["first-nighter"],
+      "index": 71
+    },
+    {
+      "name": "Screen Director's Playhouse",
+      "playlists": ["ScreenDirectorsPlayhouse"],
+      "index": 72
+    },
+    {
+      "name": "NBC University Theater",
+      "playlists": ["NBC_University_Theater"],
+      "index": 73
+    },
+    {
+      "name": "Dr. Kildare",
+      "playlists": ["OTRR_Dr_Kildare_Singles"],
+      "index": 74
     }
   ],
   "channels" : [

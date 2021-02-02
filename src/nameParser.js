@@ -861,6 +861,66 @@ const parsers = [
 
             return `Screen Guild Theater ${number} - ${title} [${date}]`;
         }
+    },
+    {
+        ids: ['OTRR_Academy_Award_Theater_Singles'],
+        regex: /Academy Award ([-0-9]{8}) \(([0-9]+)\) (.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = match[3],
+                number = match[2];
+
+            return `Academy Award Theater ${number} - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ['first-nighter'],
+        regex: /First Nighter ([-0-9]{10}) \(([0-9]+)\) (.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = match[3],
+                number = match[2];
+
+            return `First Nighter ${number} - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ['ScreenDirectorsPlayhouse'],
+        regex: /SDP_([-0-9]{8})_ep([0-9]+)-(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = match[3].replace(/_/g, ' '),
+                number = match[2];
+
+            return `Screen Director's Playhouse ${number} - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ['NBC_University_Theater'],
+        regex: /NBC_University_Theater_([0-9]{6})_([0-9]{3})_(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = match[3].replace(/_/g, ' '),
+                number = match[2];
+
+            return `NBC University Theater ${number} - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ['OTRR_Dr_Kildare_Singles'],
+        regex: /Dr_Kildare_([-0-9]{8})__([0-9]+)__(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = match[3].replace(/_/g, ' '),
+                number = match[2];
+
+            return `Dr Kildare ${number} - ${title} [${date}]`;
+        }
     }
 ];
 
@@ -881,10 +941,10 @@ module.exports.parseName = (playlistId, metadata) => {
             }
         }).filter(o => o);
         if (matches.length) {
-             // console.log(playlistId, 'OK', matches[0]);
+            // console.log(playlistId, 'OK', matches[0]);
             return matches[0];
         }
     }
-     // console.log(playlistId, 'NOMATCH', metadata.name);
+    // console.log(playlistId, 'NOMATCH', metadata.name);
     return metadata.title || metadata.name;
 };
