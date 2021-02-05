@@ -21,12 +21,19 @@ module.exports.service = {
             .then(data => {
                 const json = JSON.parse(data),
                     showList = json.shows,
-                    channelList = json.channels;
+                    channelList = json.channels,
+                    uniqueIndexes = new Set();
                 winston.log('info', `Read ${showList.length} shows and ${channelList.length} channels from ${DATA_FILE}`);
 
                 channelList.forEach(channelManager.addPredefinedChannel);
                 showList.forEach(show => {
-                    const showChannels = channelManager.getChannelsForShowId(show.index);
+                    const index = show.index,
+                        showChannels = channelManager.getChannelsForShowId(index);
+                    if (uniqueIndexes.has(index)) {
+                        throw new Error(`Duplicate index value ${index} in ${DATA_FILE}`);
+                    }
+                    uniqueIndexes.add(index);
+
                     show.channels = showChannels;
                     showManager.addShow(show);
                 });

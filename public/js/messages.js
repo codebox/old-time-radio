@@ -1,6 +1,6 @@
 const messageManager = (() => {
     "use strict";
-    const PRINT_INTERVAL = 50,
+    const PRINT_INTERVAL = 40,
         TEMP_MESSAGE_INTERVAL = 60 * 1000,
         TEMP_MESSAGE_DURATION = 5 * 1000,
         STATE_SHOWING_PERSIST = 'showingPersistentMsg',
@@ -73,7 +73,9 @@ const messageManager = (() => {
         }
         const MESSAGES = [
             'All audio hosted by The Internet Archive. Find more at http://archive.org',
+            'To check the channel schedules, click the menu ↗',
             'Streaming shows from the Golden Age of Radio, 24 hours a day',
+            'Volume too loud? You can turn it down, click the menu ↗',
             'Please support The Internet Archive by donating at http://archive.org/donate',
             'Build your own channel with your favourite shows, click the menu ↗'
         ].map(textMessage => [showNext, textMessage]).flatMap(m => m);

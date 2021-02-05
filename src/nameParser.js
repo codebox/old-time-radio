@@ -770,6 +770,157 @@ const parsers = [
 
             return `The Life of Riley ${number} - ${title} [${date}]`;
         }
+    },
+    {
+        ids: ['OTRR_Lux_Radio_Theater_Singles'],
+        regex: /LuxRadioTheatre([-0-9]{8})([0-9]+)(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = addSpacesBeforeCapitals(match[3]),
+                number = match[2];
+
+            return `Lux Radio Theatre ${number} - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ['OTRR_Lux_Radio_Theater_Singles'],
+        regex: /Lux_Radio_Theatre_([-0-9]{8})_([0-9]+R?)_(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = match[3].replace(/_/g, ' '),
+                number = match[2];
+
+            return `Lux Radio Theatre ${number} - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ['otr_campbellplayhouse'],
+        regex: /([0-9]{6})_(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = addSpacesBeforeCapitals(match[2]);
+
+            return `Campbell Playhouse - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ['otr_campbellplayhouse'],
+        regex: /CampbellPlayhouse([-0-9]{8})(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = addSpacesBeforeCapitals(match[2]);
+
+            return `Campbell Playhouse - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ['otr_campbellplayhouse'],
+        regex: /([a-zA-Z]+).mp3/i,
+        getName(match) {
+            "use strict";
+            const title = addSpacesBeforeCapitals(match[1]);
+
+            return `Campbell Playhouse - ${title}`;
+        }
+    },
+    {
+        ids: ['OrsonWelles-MercuryTheater-1938Recordings'],
+        regex: /MercuryTheater([-0-9]{8})(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = addSpacesBeforeCapitals(match[2]);
+
+            return `Mercury Theatre - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ['OTRR_On_Stage_Singles_201901'],
+        regex: /On Stage ([-0-9]{8}) \(([0-9]+)\) (.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = match[3],
+                number = match[2];
+
+            return `On Stage ${number} - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ['ScreenGuildTheater'],
+        regex: /Sgt_([-0-9]{8})_ep([0-9]+)_(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = match[3].replace(/_/g, ' '),
+                number = match[2];
+
+            return `Screen Guild Theater ${number} - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ['OTRR_Academy_Award_Theater_Singles'],
+        regex: /Academy Award ([-0-9]{8}) \(([0-9]+)\) (.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = match[3],
+                number = match[2];
+
+            return `Academy Award Theater ${number} - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ['first-nighter'],
+        regex: /First Nighter ([-0-9]{10}) \(([0-9]+)\) (.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = match[3],
+                number = match[2];
+
+            return `First Nighter ${number} - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ['ScreenDirectorsPlayhouse'],
+        regex: /SDP_([-0-9]{8})_ep([0-9]+)-(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = match[3].replace(/_/g, ' '),
+                number = match[2];
+
+            return `Screen Director's Playhouse ${number} - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ['NBC_University_Theater'],
+        regex: /NBC_University_Theater_([0-9]{6})_([0-9]{3})_(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = match[3].replace(/_/g, ' '),
+                number = match[2];
+
+            return `NBC University Theater ${number} - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ['OTRR_Dr_Kildare_Singles'],
+        regex: /Dr_Kildare_([-0-9]{8})__([0-9]+)__(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = match[3].replace(/_/g, ' '),
+                number = match[2];
+
+            return `Dr Kildare ${number} - ${title} [${date}]`;
+        }
     }
 ];
 

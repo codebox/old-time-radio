@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Old Time Radio</title>
-    <meta name="viewport" content="initial-scale = 1.0,maximum-scale = 1.0" />
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,width=device-width" />
     <meta name="description" content="This station broadcasts Old Time Radio shows 24/7 for free. Listen to Superman, X-Minus One, Tarzan, Philip Marlowe, Gunsmoke, Jack Benny and many more" />
     <link rel="icon" type="image/png" href="/favicon.png"/>
     <meta property="og:title" content="Old Time Radio" />
@@ -136,7 +136,10 @@
             <canvas id="canvas"></canvas>
         </div>
         <div id="downloadLink"></div>
-        <div id="buttons">
+        <div id="buttonsContainer">
+            <div id="buttonContainerPaddingLeft" class="buttonContainerPadding"></div>
+            <div id="buttons"></div>
+            <div id="buttonContainerPaddingRight" class="buttonContainerPadding"></div>
         </div>
     </div>
     <script src="js/config.js"></script>

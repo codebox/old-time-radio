@@ -354,10 +354,32 @@ noscript a, noscript a:visited {
 }
 #buttons {
     display: flex;
+    flex: 0 0 430px;
+    flex-direction: row;
+    overflow-x: scroll;
+    scroll-snap-type: x mandatory;
+    border-width: 0;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-style: solid;
+    border-color: var(--divider-colour);
+}
+#buttonsContainer {
+    display: flex;
     flex: 0 0 200px;
     flex-direction: row;
     justify-content: center;
     background: var(--panel-background);
+}
+.buttonContainerPadding {
+    flex: 1 0 10px;
+    z-index: 1;
+}
+#buttonContainerPaddingLeft {
+    box-shadow: 5px 0px 5px 0px rgba(0,0,0,0.5);
+}
+#buttonContainerPaddingRight {
+    box-shadow: -5px 0px 5px 0px rgba(0,0,0,0.5);
 }
 .buttonBox {
     display: flex;
@@ -369,6 +391,7 @@ noscript a, noscript a:visited {
     border-width: 0 1px;
     border-style: solid;
     margin: 0 -1px 0 0;
+    scroll-snap-align: center;
 }
 @keyframes blinkGreen {
     from {
@@ -480,10 +503,6 @@ body.sleeping #title .spacer {
         padding-top: 8px;
         font-size: 36px;
     }
-    .buttonBox {
-        display: flex;
-        flex: 0 1 20%;
-    }
     #message {
         white-space: normal;
         text-align: center;
@@ -493,6 +512,18 @@ body.sleeping #title .spacer {
         font-size: 18px;
         line-height: 20px;
         margin: 8px 16px;
+    }
+    #buttonsContainer {
+        flex: 0 0 180px;
+    }
+    .buttonBox {
+        flex: 0 0 80px;
+    }
+    #buttons {
+        flex: 0 0 90%;
+    }
+    #scheduleList li .scheduleItemTime {
+        flex: 0 0 50px;
     }
 }
 @media screen and (min-width: 350px) and (max-width: 500px) {
@@ -512,6 +543,9 @@ body.sleeping #title .spacer {
         padding: 0;
         margin: 10px;
     }
+    #buttons {
+        flex: 0 0 90%;
+    }
 }
 @media screen and (max-width: 349px) {
     #title {
@@ -525,6 +559,9 @@ body.sleeping #title .spacer {
         padding-top: 0;
         white-space: nowrap;
         font-size: 32px;
+    }
+    #buttonsContainer {
+        flex: 0 0 150px;
     }
     .buttonLabel {
         font-size: 16px;
@@ -551,6 +588,9 @@ body.sleeping #title .spacer {
         margin: 10px;
     }
     #buttons {
-        flex: 0 0 160px;
+        flex: 0 0 90%;
+    }
+    .buttonBox {
+        flex: 0 0 70px;
     }
 }

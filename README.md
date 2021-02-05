@@ -22,10 +22,6 @@ This allowed me to write some JavaScript to analyse the audio signal in real-tim
 
 * Channel Builder
     * Should we allow the user to name their channel? (how to handle long channel names, offensive words, script injection exploits)
-    * UI - how to include custom channels in channel list, current UI only just has room for 5 on mobile
-        * allow unlimited channels and re-think layout?
-        * keep max 5, replace predefined channels with custom ones
-        * when playing a custom channel we only show that one and hide other buttons
 * Low-CPU version
     * no animations, hide visualiser
 * Sleep timer
@@ -34,9 +30,9 @@ This allowed me to write some JavaScript to analyse the audio signal in real-tim
     * fade page to black
     * say goodnight
 * Spacebar should pause audio, second press should resume last station
+* Left/Right cursor keys should scroll channel list
 
 ## Bugs
-* User can add more than 5 custom channels which will break layout on small screens
 * Menu is ridiculously small on older phones with small screens
 * CSS rule for div height: 100% breaks some browser extensions
 

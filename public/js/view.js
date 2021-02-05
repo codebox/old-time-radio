@@ -290,6 +290,8 @@ const view = (() => {
 
                 scheduleManager.addChannel(channel);
             });
+            elButtonContainer.scroll({left: 1000});
+            elButtonContainer.scroll({behavior:'smooth', left: 0});
         },
         updatePlayState() {
             if (!model.channel) {

@@ -325,28 +325,90 @@
       "name": "The Life of Riley",
       "playlists": ["TheLifeOfRiley"],
       "index": 64
+    },
+    {
+      "name": "Lux Radio Theatre",
+      "playlists": ["OTRR_Lux_Radio_Theater_Singles"],
+      "index": 65
+    },
+    {
+      "name": "The Campbell Playhouse",
+      "playlists": ["otr_campbellplayhouse"],
+      "index": 66
+    },
+    {
+      "name": "Mercury Theatre",
+      "playlists": ["OrsonWelles-MercuryTheater-1938Recordings"],
+      "index": 67
+    },
+    {
+      "name": "On Stage",
+      "playlists": ["OTRR_On_Stage_Singles_201901"],
+      "index": 68
+    },
+    {
+      "name": "Screen Guild Theater",
+      "playlists": ["ScreenGuildTheater"],
+      "index": 69
+    },
+    {
+      "name": "Academy Award",
+      "playlists": ["OTRR_Academy_Award_Theater_Singles"],
+      "index": 70
+    },
+    {
+      "name": "First Nighter",
+      "playlists": ["first-nighter"],
+      "index": 71
+    },
+    {
+      "name": "Screen Director's Playhouse",
+      "playlists": ["ScreenDirectorsPlayhouse"],
+      "index": 72
+    },
+    {
+      "name": "NBC University Theater",
+      "playlists": ["NBC_University_Theater"],
+      "index": 73
+    },
+    {
+      "name": "Dr. Kildare",
+      "playlists": ["OTRR_Dr_Kildare_Singles"],
+      "index": 74
     }
   ],
   "channels" : [
     {
       "name" : "future",
-      "shows": [0,1,2,3,4,5,6,7,8,9,56]
+      "shows": [0,1,2,3,4,5,6,7,8,9]
     },
     {
       "name" : "action",
-      "shows": [0,10,11,12,13,14,15,16,37,38,39,40,41,47,52,58,60,62,63]
+      "shows": [0,10,11,14,15,16,18,39,40,42,59]
     },
     {
-      "name" : "mystery",
-      "shows": [0,17,18,19,20,21,22,23,24,42,43,44,45,48,51,53,54,57]
+      "name" : "crime",
+      "shows": [0,12,13,22,23,24,37,41,47,48,52,58,60,62,63]
+    },
+    {
+      "name" : "horror",
+      "shows": [0,17,43,44,53,54]
+    },
+    {
+      "name" : "suspense",
+      "shows": [0,19,20,21,38,45,51,56,57]
     },
     {
       "name" : "western",
-      "shows": [0,25,26,27,28,29,30,55,59]
+      "shows": [0,25,26,27,28,29,30,55]
     },
     {
       "name" : "comedy",
       "shows": [0,31,32,33,34,35,36,46,49,61,64]
+    },
+    {
+      "name" : "drama",
+      "shows": [0,65,66,67,68,69,70,71,72,73,74]
     }
   ]
 }
