@@ -342,7 +342,7 @@ noscript a, noscript a:visited {
 }
 #buttons {
     display: flex;
-    flex: 0 0 400px;
+    flex: 0 0 430px;
     flex-direction: row;
     overflow-x: scroll;
     scroll-snap-type: x mandatory;
@@ -474,6 +474,9 @@ canvas {
     #buttons {
         flex: 0 0 90%;
     }
+    #scheduleList li .scheduleItemTime {
+        flex: 0 0 50px;
+    }
 }
 @media screen and (min-width: 350px) and (max-width: 500px) {
     #title {
@@ -537,6 +540,9 @@ canvas {
         margin: 10px;
     }
     #buttons {
-        flex: 0 0 100%;
+        flex: 0 0 90%;
+    }
+    .buttonBox {
+        flex: 0 0 70px;
     }
 }
