@@ -245,12 +245,17 @@ const view = (() => {
     buildSleepTimerButtons();
     setMenuState(false);
 
-    document.body.addEventListener('mousemove', () => {
-        if (model.sleeping) {
+    function wakeFromSleep(){
+        if (model && model.sleeping) {
             document.body.classList.remove('sleeping');
             onWakeHandler();
         }
-    });
+    }
+
+    document.body.addEventListener('mousemove', wakeFromSleep);
+    document.body.addEventListener('touchstart', wakeFromSleep);
+    document.body.addEventListener('keydown', wakeFromSleep);
+
     return {
         init(_model) {
             model = _model;

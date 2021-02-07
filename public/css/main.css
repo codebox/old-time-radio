@@ -483,7 +483,7 @@ body.sleeping #titleInner3 {
 body.sleeping #titleInner4 {
     animation-delay: 3s;
 }
-body.sleeping #buttons {
+body.sleeping #buttonsContainer {
     display: none;
 }
 body.sleeping #visualiser {

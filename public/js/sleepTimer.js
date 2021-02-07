@@ -9,7 +9,7 @@ const sleepTimer = (() => {
             endTimeMillis = Date.now() + minutes *  MILLIS_PER_SECOND;
             if (!interval) {
                 interval = setInterval(() => {
-                    const secondsRemaining = Math.floor((endTimeMillis - Date.now()) / MILLIS_PER_SECOND);
+                    const secondsRemaining = Math.round((endTimeMillis - Date.now()) / MILLIS_PER_SECOND);
                     if (secondsRemaining > 0) {
                         onTickHandler(secondsRemaining);
                     } else {

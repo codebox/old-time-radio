@@ -29,10 +29,20 @@ const audioPlayer = (() => {
     }
 
     function setVolumeFromConfig() {
+        setVolume(Math.pow(config.volume / config.maxVolume, 2));
+    }
+    function getVolume() {
         if (audioGain) {
-            audioGain.gain.value = Math.pow(config.volume / config.maxVolume, 2);
+            return audioGain.gain.value;
         }
     }
+    function setVolume(newValue) {
+        if (audioGain) {
+            console.log(newValue)
+            audioGain.gain.value = newValue;
+        }
+    }
+
     return {
         load(url, offset = 0) {
             return new Promise((onLoaded, onError) => {
@@ -77,6 +87,11 @@ const audioPlayer = (() => {
         },
         updateVolume() {
             setVolumeFromConfig();
+        },
+        adjustVolume(factor) {
+            const newVolume = getVolume() * factor;
+            setVolume(newVolume);
+            return newVolume;
         }
     };
 })();

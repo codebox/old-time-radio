@@ -139,7 +139,10 @@ const messageManager = (() => {
             setInterval(showCannedMessage, TEMP_MESSAGE_INTERVAL);
         },
         updateStatus() {
-            if (!model.channels) {
+            if (model.sleeping) {
+                setMessage('Sleeping');
+
+            } else if (!model.channels) {
                 setMessage('Loading channels...');
 
             } else if (!model.channel) {

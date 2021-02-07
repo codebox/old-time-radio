@@ -39,7 +39,7 @@ window.onload = () => {
         audioPlayer.play();
     });
 
-    view.onChannelDeselected(() => {
+    function deselectChannel() {
         "use strict";
         model.track = model.channel = model.playlist = null;
         audioPlayer.stop();
@@ -47,6 +47,10 @@ window.onload = () => {
         setTimeout(() => {
             visualiser.deactivate();
         }, 2000);
+    }
+    view.onChannelDeselected(() => {
+        "use strict";
+        deselectChannel();
     });
 
     view.onVolumeChanged(() => {
@@ -68,10 +72,24 @@ window.onload = () => {
         "use strict";
         model.sleeping = true;
         view.sleep();
+        messageManager.updateStatus();
+        const interval = setInterval(() => {
+            if (model.sleeping) {
+                const volume = audioPlayer.adjustVolume(0.99);
+                if (volume < 0.01) {
+                    deselectChannel();
+                    clearInterval(interval);
+                }
+            } else {
+                clearInterval(interval);
+            }
+        }, 100);
     });
     view.onWake(() => {
         "use strict";
         model.sleeping = false;
+        messageManager.updateStatus();
+        audioPlayer.updateVolume();
     });
     sleepTimer.onTick(minutesRemaining => {
         "use strict";
