@@ -381,6 +381,9 @@ noscript a, noscript a:visited {
     margin: 0 -1px 0 0;
     scroll-snap-align: center;
 }
+#buttons.fewerChannels {
+    justify-content: center;
+}
 @keyframes blinkGreen {
     from {
         background-color: var(--led-off);

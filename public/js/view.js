@@ -11,6 +11,7 @@ const view = (() => {
         CLASS_ERROR = 'channelError',
 
         SCHEDULE_UPDATE_INTERVAL_MILLIS = 60 * 1000,
+        FEW_CHANNELS_LIMIT = 4,
 
         elButtonContainer = document.getElementById('buttons'),
         elDownloadLink = document.getElementById('downloadLink'),
@@ -236,6 +237,9 @@ const view = (() => {
 
                 scheduleManager.addChannel(channel);
             });
+            if (channels.length <= FEW_CHANNELS_LIMIT) {
+                elButtonContainer.classList.add('fewerChannels');
+            }
             elButtonContainer.scroll({left: 1000});
             elButtonContainer.scroll({behavior:'smooth', left: 0});
         },
