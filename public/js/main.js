@@ -61,11 +61,13 @@ window.onload = () => {
     view.onSetSleepTimerClicked(minutes => {
         "use strict";
         sleepTimer.start(minutes);
+        view.setSleepTimerRunning(true);
     });
 
     view.onSleepTimerCancelClicked(() => {
         "use strict";
         sleepTimer.stop();
+        view.setSleepTimerRunning(false);
     });
 
     sleepTimer.onSleep(() => {

@@ -20,9 +20,6 @@ const view = (() => {
         elMenuBox = document.getElementById('menu'),
         elVolumeUp = document.getElementById('volumeUp'),
         elVolumeDown = document.getElementById('volumeDown'),
-        elSleepTimerButtons = document.getElementById('sleepTimerButtons'),
-        elCancelSleepTimer = document.getElementById('cancelSleepTimer'),
-        elCancelSleepTimerButton = document.getElementById('cancelSleepTimerButton'),
 
         volumeLeds = Array.from(Array(10).keys()).map(i => document.getElementById(`vol${i+1}`)),
 
@@ -116,12 +113,43 @@ const view = (() => {
 
     const sleepTimerView = (() => {
         const elSleepTimerTime = document.getElementById('sleepTimerTime'),
-            elCancelSleepTimer = document.getElementById('cancelSleepTimer');
+            elSleepTimerRunningDisplay = document.getElementById('sleepTimerRunningDisplay'),
+            elSleepTimerButtons = document.getElementById('sleepTimerButtons'),
+            elCancelSleepTimerButton = document.getElementById('cancelSleepTimerButton'),
+
+            HIDDEN_CSS_CLASS = 'hidden',
+            BUTTONS = [
+                [90, '90 Minutes'],
+                [60, '60 Minutes'],
+                [45, '45 minutes'],
+                [30, '30 minutes'],
+                [15, '15 minutes']
+            ];
 
         return {
+            init() {
+                elSleepTimerButtons.innerHTML = '';
+                BUTTONS.forEach(details => {
+                    const [minutes, text] = details;
+                    const button = document.createElement('button');
+                    button.classList.add('sleepTimerButton');
+                    button.innerHTML = text;
+
+                    button.onclick = () => {
+                        onSetSleepTimerClickedHandler(minutes);
+                    };
+
+                    elSleepTimerButtons.appendChild(button);
+                });
+                elCancelSleepTimerButton.onclick = () => {
+                    onSleepTimerCancelClickedHandler();
+                };
+            },
             render(minutes) {
-                elCancelSleepTimer.style.display = minutes ? 'block' : 'none';
                 elSleepTimerTime.innerHTML = minutes ? `${minutes} minute${minutes === 1 ? '' : 's'}` : '';
+            },
+            setRunState(isRunning) {
+                elSleepTimerRunningDisplay.classList.toggle(HIDDEN_CSS_CLASS, !isRunning);
             }
         };
     })();
@@ -214,35 +242,6 @@ const view = (() => {
         messageManager.updateStatus();
     }
 
-    function buildSleepTimerButtons() {
-        const BUTTONS = [
-            [90, '90 Minutes'],
-            [60, '60 Minutes'],
-            [45, '45 minutes'],
-            [30, '30 minutes'],
-            [15, '15 minutes']
-        ];
-
-        elSleepTimerButtons.innerHTML = '';
-        BUTTONS.forEach(details => {
-            const [minutes, text] = details;
-            const button = document.createElement('button');
-            button.classList.add('sleepTimerButton');
-            button.innerHTML = text;
-
-            button.onclick = () => {
-                onSetSleepTimerClickedHandler(minutes);
-            };
-
-            elSleepTimerButtons.appendChild(button);
-        });
-
-        elCancelSleepTimerButton.onclick = () => {
-            onSleepTimerCancelClickedHandler();
-        };
-    }
-
-    buildSleepTimerButtons();
     setMenuState(false);
 
     function wakeFromSleep(){
@@ -260,6 +259,7 @@ const view = (() => {
         init(_model) {
             model = _model;
             messageManager.init(document.getElementById('message'), model);
+            sleepTimerView.init();
             setViewState(STATE_INIT);
             onVolumeChanged();
         },
@@ -350,10 +350,14 @@ const view = (() => {
         },
         sleep() {
             setMenuState(false);
+            sleepTimerView.setRunState(false);
             document.body.classList.add('sleeping');
         },
         updateSleepTimer(minutes) {
             sleepTimerView.render(minutes);
+        },
+        setSleepTimerRunning(isRunning) {
+            sleepTimerView.setRunState(isRunning);
         }
     };
 })();

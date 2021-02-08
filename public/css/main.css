@@ -262,6 +262,9 @@ noscript a, noscript a:visited {
 #menu .showButton.selected {
     background-color: var(--font-color);
 }
+#menu .hidden {
+    display: none;
+}
 #volumeControlContainer {
     height: 50px;
     margin: 0 auto;
