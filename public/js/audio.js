@@ -38,7 +38,6 @@ const audioPlayer = (() => {
     }
     function setVolume(newValue) {
         if (audioGain) {
-            console.log(newValue)
             audioGain.gain.value = newValue;
         }
     }

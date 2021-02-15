@@ -319,7 +319,7 @@ noscript a, noscript a:visited {
     display: flex;
     flex-direction: row;
 }
-#scheduleList, #channelScheduleLinks {
+#scheduleList, #channelScheduleLinks, #sleepTimerButtons {
     padding: 0 40px;
 }
 #scheduleList {
@@ -349,8 +349,25 @@ noscript a, noscript a:visited {
 #scheduleList li .scheduleItemName{
     flex-grow: 1;
 }
-#sleepTimerButtons, #cancelSleepTimer {
-    height: 50px;
+#sleepTimerRunningDisplay {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+#sleepTimerButtons {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+    flex-wrap: wrap;
+}
+#sleepTimerButtons .showButton, #cancelSleepTimerButton.showButton {
+    background-color: var(--font-color);
+    margin: 5px;
+}
+#sleepTimerTime {
+    font-family: 'Courier Prime', monospace;
 }
 #stationDetails {
     height: auto;

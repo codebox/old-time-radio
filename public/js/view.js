@@ -126,13 +126,17 @@ const view = (() => {
                 [15, '15 minutes']
             ];
 
+        function formatTimePart(value) {
+            return (value < 10 ? '0' : '') + value;
+        }
+
         return {
             init() {
                 elSleepTimerButtons.innerHTML = '';
                 BUTTONS.forEach(details => {
                     const [minutes, text] = details;
-                    const button = document.createElement('button');
-                    button.classList.add('sleepTimerButton');
+                    const button = document.createElement('li');
+                    button.classList.add('showButton');
                     button.innerHTML = text;
 
                     button.onclick = () => {
@@ -145,8 +149,11 @@ const view = (() => {
                     onSleepTimerCancelClickedHandler();
                 };
             },
-            render(minutes) {
-                elSleepTimerTime.innerHTML = minutes ? `${minutes} minute${minutes === 1 ? '' : 's'}` : '';
+            render(totalSeconds) {
+                const hours = Math.floor(totalSeconds / 3600),
+                    minutes = Math.floor((totalSeconds % 3600) / 60),
+                    seconds = totalSeconds % 60;
+                elSleepTimerTime.innerHTML = `${formatTimePart(hours)}:${formatTimePart(minutes)}:${formatTimePart(seconds)}`;
             },
             setRunState(isRunning) {
                 elSleepTimerRunningDisplay.classList.toggle(HIDDEN_CSS_CLASS, !isRunning);
@@ -353,8 +360,8 @@ const view = (() => {
             sleepTimerView.setRunState(false);
             document.body.classList.add('sleeping');
         },
-        updateSleepTimer(minutes) {
-            sleepTimerView.render(minutes);
+        updateSleepTimer(seconds) {
+            sleepTimerView.render(seconds);
         },
         setSleepTimerRunning(isRunning) {
             sleepTimerView.setRunState(isRunning);

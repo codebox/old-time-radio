@@ -127,7 +127,7 @@ const messageManager = (() => {
 
     function showCannedMessage() {
         let nextMessage;
-        if (!interval && (nextMessage = cannedMessages.next())) {
+        if (!interval && !model.sleeping && (nextMessage = cannedMessages.next())) {
             setMessage(nextMessage, true);
         }
     }

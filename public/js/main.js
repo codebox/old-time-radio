@@ -93,9 +93,9 @@ window.onload = () => {
         messageManager.updateStatus();
         audioPlayer.updateVolume();
     });
-    sleepTimer.onTick(minutesRemaining => {
+    sleepTimer.onTick(secondsRemaining => {
         "use strict";
-        view.updateSleepTimer(minutesRemaining);
+        view.updateSleepTimer(secondsRemaining);
     });
 
     view.onScheduleRequested(channelId => {
