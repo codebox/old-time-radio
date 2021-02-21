@@ -20,15 +20,8 @@ This allowed me to write some JavaScript to analyse the audio signal in real-tim
 
 ## TODO List
 
-* Channel Builder
-    * Should we allow the user to name their channel? (how to handle long channel names, offensive words, script injection exploits)
 * Low-CPU version
     * no animations, hide visualiser
-* Sleep timer
-    * UI - somehow show that sleep timer is active and how much time left, and allow it to be cancelled or extended
-    * fade out audio
-    * fade page to black
-    * say goodnight
 * Spacebar should pause audio, second press should resume last station
 * Left/Right cursor keys should scroll channel list
 
@@ -36,3 +29,30 @@ This allowed me to write some JavaScript to analyse the audio signal in real-tim
 * Menu is ridiculously small on older phones with small screens
 * CSS rule for div height: 100% breaks some browser extensions
 
+Visualiser Improvements
+https://ia800301.us.archive.org/31/items/ScreenGuildTheater/Sgt_47-11-03_ep360_The_Secret_Life_of_Walter_Mitty.mp3
+
+MVC
+---
+View Events
+- channel button click
+- menu icon click
+- sleep timer button click
+- sleep timer cancel click
+- schedule button click
+- volume up click
+- volume down click
+- station builder station click
+- station builder commercials button click
+- station builder new channel click
+- station builder listen now click
+- station builder another channel click
+- station builder delete station click
+
+Model
+- channel
+- playlist
+- track
+- sleeping
+- channels
+- shows

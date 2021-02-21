@@ -12,6 +12,7 @@ const view = (() => {
 
         SCHEDULE_UPDATE_INTERVAL_MILLIS = 60 * 1000,
         FEW_CHANNELS_LIMIT = 4,
+        eventTarget = new EventTarget(),
 
         elButtonContainer = document.getElementById('buttons'),
         elDownloadLink = document.getElementById('downloadLink'),
@@ -161,12 +162,17 @@ const view = (() => {
         };
     })();
 
+    function trigger(eventName) {
+        console.log('EVENT ' + eventName);
+        eventTarget.dispatchEvent(new Event(eventName));
+    }
     elMenuOpenButton.onclick = () => {
-        setMenuState(true);
+        trigger('menuOpenClick');
     };
     elMenuCloseButton.onclick = () => {
-        setMenuState(false);
+        trigger('menuCloseClick');
     };
+
     elVolumeUp.onclick = () => {
         config.volume += 1;
         onVolumeChanged();
@@ -208,9 +214,9 @@ const view = (() => {
     }
 
     function setMenuState(isOpen) {
-        elMenuBox.classList.toggle('visible', isOpen);
-        elMenuOpenButton.style.display = isOpen ? 'none' : 'inline';
-        elMenuCloseButton.style.display = !isOpen ? 'none' : 'inline';
+        // elMenuBox.classList.toggle('visible', isOpen);
+        // elMenuOpenButton.style.display = isOpen ? 'none' : 'inline';
+        // elMenuCloseButton.style.display = !isOpen ? 'none' : 'inline';
         scheduleManager.setSelectedChannel(isOpen ? model.channel : undefined); //TODO move this out of here
         if (isOpen) {
             scheduleUpdateInterval = setInterval(() => {
@@ -365,6 +371,20 @@ const view = (() => {
         },
         setSleepTimerRunning(isRunning) {
             sleepTimerView.setRunState(isRunning);
+        },
+
+        on(eventName, handler) {
+            eventTarget.addEventListener(eventName, handler);
+        },
+        openMenu() {
+            elMenuBox.classList.add('visible');
+            elMenuOpenButton.style.display = 'none';
+            elMenuCloseButton.style.display = 'inline';
+        },
+        closeMenu() {
+            elMenuBox.classList.remove('visible');
+            elMenuOpenButton.style.display = 'inline';
+            elMenuCloseButton.style.display = 'none';
         }
     };
 })();

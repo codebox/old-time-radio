@@ -105,6 +105,15 @@ window.onload = () => {
         })
     });
 
+    view.on('menuOpenClick', () => {
+        "use strict";
+        view.openMenu();
+    });
+    view.on('menuCloseClick', () => {
+        "use strict";
+        view.closeMenu();
+    });
+
     channelBuilder.onChannelRequested(showIndexes => {
         "use strict";
          return service.getChannelCodeForShows(showIndexes);
