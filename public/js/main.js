@@ -1,12 +1,14 @@
 window.onload = () => {
     const model = {};
 
+    model2.load();
     view.init(model);
 
     view.setVisualisationDataSource(audioPlayer.getData);
     visualiser.init(view.getCanvas());
     window.addEventListener('resize', visualiser.onResize());
     playlist.init(model);
+
 
     function playNextFromCurrentChannel(onErrorRetryDelayMillis=0) {
         return playlist.getNext()
@@ -51,11 +53,6 @@ window.onload = () => {
     view.onChannelDeselected(() => {
         "use strict";
         deselectChannel();
-    });
-
-    view.onVolumeChanged(() => {
-        "use strict";
-        audioPlayer.updateVolume();
     });
 
     view.onSetSleepTimerClicked(minutes => {
@@ -112,6 +109,23 @@ window.onload = () => {
     view.on('menuCloseClick', () => {
         "use strict";
         view.closeMenu();
+    });
+
+    function afterVolumeChange() {
+        "use strict";
+        view.updateVolume();
+        model2.save();
+        audioPlayer.updateVolume();
+    }
+    view.on('volumeUpClick', () => {
+        "use strict";
+        model2.volume++;
+        afterVolumeChange();
+    });
+    view.on('volumeDownClick', () => {
+        "use strict";
+        model2.volume--;
+        afterVolumeChange();
     });
 
     channelBuilder.onChannelRequested(showIndexes => {

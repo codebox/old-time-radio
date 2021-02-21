@@ -166,6 +166,7 @@ const view = (() => {
         console.log('EVENT ' + eventName);
         eventTarget.dispatchEvent(new Event(eventName));
     }
+
     elMenuOpenButton.onclick = () => {
         trigger('menuOpenClick');
     };
@@ -174,19 +175,16 @@ const view = (() => {
     };
 
     elVolumeUp.onclick = () => {
-        config.volume += 1;
-        onVolumeChanged();
+        trigger('volumeUpClick');
     };
     elVolumeDown.onclick = () => {
-        config.volume -= 1;
-        onVolumeChanged();
+        trigger('volumeDownClick');
     };
 
     let model,
         scheduleUpdateInterval,
         onChannelSelectedHandler = () => {},
         onChannelDeselectedHandler = () => {},
-        onVolumeChangedHandler = () => {},
         onSetSleepTimerClickedHandler = () => {},
         onSleepTimerCancelClickedHandler = () => {},
         onScheduleRequestedHandler = () => {},
@@ -204,13 +202,6 @@ const view = (() => {
         } else {
             elDownloadLink.innerHTML = '';
         }
-    }
-
-    function onVolumeChanged() {
-        volumeLeds.forEach((el, i) => el.classList.toggle('on', (i + 1) <= config.volume));
-        elVolumeUp.classList.toggle('disabled', config.isVolumeMax());
-        elVolumeDown.classList.toggle('disabled', config.isVolumeMin());
-        onVolumeChangedHandler();
     }
 
     function setMenuState(isOpen) {
@@ -274,7 +265,7 @@ const view = (() => {
             messageManager.init(document.getElementById('message'), model);
             sleepTimerView.init();
             setViewState(STATE_INIT);
-            onVolumeChanged();
+            this.updateVolume();
         },
         setChannels(channels) {
             setViewState(STATE_NO_CHANNEL);
@@ -334,9 +325,6 @@ const view = (() => {
         onChannelDeselected(handler) {
             onChannelDeselectedHandler = handler;
         },
-        onVolumeChanged(handler) {
-            onVolumeChangedHandler = handler;
-        },
         onScheduleRequested(handler) {
             onScheduleRequestedHandler = handler;
         },
@@ -385,6 +373,11 @@ const view = (() => {
             elMenuBox.classList.remove('visible');
             elMenuOpenButton.style.display = 'inline';
             elMenuCloseButton.style.display = 'none';
+        },
+        updateVolume() {
+            volumeLeds.forEach((el, i) => el.classList.toggle('on', (i + 1) <= model2.volume));
+            elVolumeUp.classList.toggle('disabled', model2.volume === model2.maxVolume);
+            elVolumeDown.classList.toggle('disabled', model2.volume === model2.minVolume);
         }
     };
 })();

@@ -19,7 +19,7 @@ const audioPlayer = (() => {
             analyser.fftSize = FFT_WINDOW_SIZE;
             analyser.smoothingTimeConstant = SMOOTHING;
 
-            setVolumeFromConfig();
+            setVolumeFromModel();
 
             audioSrc.connect(audioGain);
             audioGain.connect(analyser);
@@ -28,8 +28,8 @@ const audioPlayer = (() => {
         }
     }
 
-    function setVolumeFromConfig() {
-        setVolume(Math.pow(config.volume / config.maxVolume, 2));
+    function setVolumeFromModel() {
+        setVolume(Math.pow(model2.volume / model2.maxVolume, 2));
     }
     function getVolume() {
         if (audioGain) {
@@ -85,7 +85,7 @@ const audioPlayer = (() => {
             return dataArray;
         },
         updateVolume() {
-            setVolumeFromConfig();
+            setVolumeFromModel();
         },
         adjustVolume(factor) {
             const newVolume = getVolume() * factor;
