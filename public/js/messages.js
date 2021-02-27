@@ -63,7 +63,7 @@ const messageManager = (() => {
             };
         });
         function showChannelMessage(){
-            const messagesForThisChannel = CHANNEL_MESSAGES[(model.channel.id || '').toLowerCase()];
+            const messagesForThisChannel = CHANNEL_MESSAGES[(model2.channel.id || '').toLowerCase()];
             if (messagesForThisChannel && messagesForThisChannel.messages.length) {
                 const nextIndex = messagesForThisChannel.nextIndex,
                     message = messagesForThisChannel.messages[nextIndex];
@@ -145,14 +145,14 @@ const messageManager = (() => {
             } else if (!model.channels) {
                 setMessage('Loading channels...');
 
-            } else if (!model.channel) {
+            } else if (!model2.channel) {
                 setMessage('Select a channel');
 
             } else if (!model.track) {
-                if (model.channel.userChannel) {
-                    setMessage(`Tuning in to ${model.channel.name}...`);
+                if (model2.channel.userChannel) {
+                    setMessage(`Tuning in to ${model2.channel.name}...`);
                 } else {
-                    setMessage(`Tuning in to the ${model.channel.name} channel...`);
+                    setMessage(`Tuning in to the ${model2.channel.name} channel...`);
                 }
 
             } else {

@@ -17,19 +17,19 @@ const playlist = (() => {
             model = _model;
         },
         getPlaylistForChannel() {
-            return service.getPlaylistForChannel(model.channel.id);
+            return service.getPlaylistForChannel(model2.channel.id);
         },
         getNext() {
             if (!model.playlist) {
                 // we just changed channel, start playing at the initial offset
-                return service.getPlaylistForChannel(model.channel.id).then(playlist => {
+                return service.getPlaylistForChannel(model2.channel.id).then(playlist => {
                     model.playlist = playlist.list;
                     return shiftPlaylist(playlist.initialOffset);
                 });
 
             } else if (!model.playlist.length) {
                 // channel has not changed but we've run out of tracks, start playing without an offset
-                return service.getPlaylistForChannel(model.channel.id).then(playlist => {
+                return service.getPlaylistForChannel(model2.channel.id).then(playlist => {
                     model.playlist.push(...playlist.list);
                     return shiftPlaylist();
                 });

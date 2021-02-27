@@ -6,7 +6,7 @@ const model2 = (() => {
             'volume': MAX_VOLUME
         };
 
-    let volume;
+    let volume, channelSchedules = {};
 
     const model = {
         load() {
@@ -31,6 +31,21 @@ const model2 = (() => {
         },
         set volume(value) {
             volume = Math.max(Math.min(value, MAX_VOLUME), MIN_VOLUME);
+        },
+        getChannelSchedule(channelId) {
+            const item = channelSchedules[channelId];
+            if (item) {
+                return {
+                    schedule: item.schedule,
+                    ageInSeconds: Math.round((Date.now() - item.ts) / 1000)
+                };
+            }
+        },
+        setChannelSchedule(channelId, schedule) {
+            channelSchedules[channelId] = {
+                ts: Date.now(),
+                schedule
+            };
         }
     };
     return model;

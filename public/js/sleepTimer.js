@@ -17,7 +17,7 @@ const sleepTimer = (() => {
 
     const timer = {
         start(minutes) {
-            endTimeMillis = Date.now() + minutes * SECONDS_PER_MINUTE *  MILLIS_PER_SECOND;
+            endTimeMillis = Date.now() + minutes  *  MILLIS_PER_SECOND;
             onTick();
             if (!interval) {
                 interval = setInterval(onTick, MILLIS_PER_SECOND);
