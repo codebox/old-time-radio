@@ -375,6 +375,11 @@
       "name": "Dr. Kildare",
       "playlists": ["OTRR_Dr_Kildare_Singles"],
       "index": 74
+    },
+    {
+      "name": "Yours Truly, Johnny Dollar",
+      "playlists": ["OTRR_YoursTrulyJohnnyDollar_Singles"],
+      "index": 75
     }
   ],
   "channels" : [
@@ -388,7 +393,7 @@
     },
     {
       "name" : "crime",
-      "shows": [0,12,13,22,23,24,37,41,47,48,52,58,60,62,63]
+      "shows": [0,12,13,22,23,24,37,41,47,48,52,58,60,62,63,75]
     },
     {
       "name" : "horror",

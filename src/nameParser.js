@@ -921,6 +921,18 @@ const parsers = [
 
             return `Dr Kildare ${number} - ${title} [${date}]`;
         }
+    },
+    {
+        ids: ['OTRR_YoursTrulyJohnnyDollar_Singles'],
+        regex: /YTJD ([-0-9]{10}) ([0-9]+) (.*)( \[AFRTS\])?.mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = match[3],
+                number = match[2];
+
+            return `Yours Truly, Johnny Dollar ${number} - ${title} [${date}]`;
+        }
     }
 ];
 
