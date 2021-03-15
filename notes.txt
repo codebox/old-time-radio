@@ -1,0 +1,40 @@
+model
+
+view
+    on: channelButtonClick
+    setChannels
+    setChannelLoading
+    setChannelLoaded
+    setNoChannelSelected
+
+    on: menuOpenClick
+    on: menuCloseClick
+    openMenu
+    closeMenu
+
+    on: volumeUpClick
+    on: volumeDownClick
+    setVolume
+
+    on: wake
+    on: setSleepTimerClick
+    on: cancelSleepTimerClick
+    wakeUp
+    sleep
+    startSleepTimer
+    updateSleepTimer
+    clearSleepTimer
+
+    on: scheduleButtonClick
+    showSchedule
+    clearSchedule
+
+    on: stationBuilderShowClick
+    on: stationBuilderPlayCommercialsClick
+    on: stationBuilderCreateChannelClick
+    on: stationBuilderAnotherChannelClick
+    on: stationBuilderDeleteStationClick
+    setStationBuilderShowSelections
+    toggleStationBuilderCommercialsButton
+    toggleStationBuilderCreateChannelButton
+    toggleStationBuilderOptionsButtons
