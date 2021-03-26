@@ -1,19 +1,31 @@
 model
+    channels [{id,name,userChannel}]
+    selectedChannelId ''
+    playlist [{}]
+
+audioPlayer
+    load(url,offset)
+    play
+    stop
+    setVolume
+    on: trackLoaded
+    on: trackEnded
+    on: error
 
 view
-    on: channelButtonClick
-    setChannels
-    setChannelLoading
-    setChannelLoaded
-    setNoChannelSelected
+    ✓ on: channelButtonClick
+    ✓ setChannels
+    ✓ setChannelLoading
+    ✓ setChannelLoaded
+    ✓ setNoChannelSelected
 
-    on: menuOpenClick
-    on: menuCloseClick
-    openMenu
-    closeMenu
+    ✓ on: menuOpenClick
+    ✓ on: menuCloseClick
+    ✓ openMenu
+    ✓ closeMenu
 
-    on: volumeUpClick
-    on: volumeDownClick
+    ✓ on: volumeUpClick
+    ✓ on: volumeDownClick
     setVolume
 
     on: wake
@@ -38,3 +50,14 @@ view
     toggleStationBuilderCommercialsButton
     toggleStationBuilderCreateChannelButton
     toggleStationBuilderOptionsButtons
+
+Tests
+-----
+Channel Buttons
+
+Volume Control
+- Volume is at max on first visit
+- Volume + button is disabled on first visit
+- Volume +/- are disabled/enabled correctly
+- Volume is saved between page refreshes
+- Adjusting volume before playing audio works correctly
