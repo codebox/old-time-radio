@@ -5,4 +5,6 @@ const EVENT_CHANNEL_BUTTON_CLICK = 'channelButtonClick',
     EVENT_MENU_OPEN_CLICK = 'menuOpenClick',
     EVENT_MENU_CLOSE_CLICK = 'menuCloseClick',
     EVENT_VOLUME_UP_CLICK = 'volumeUpClick',
-    EVENT_VOLUME_DOWN_CLICK = 'volumeDownClick';
+    EVENT_VOLUME_DOWN_CLICK = 'volumeDownClick',
+    EVENT_NEW_MESSAGE = 'newMessage',
+    EVENT_MESSAGE_PRINTING_COMPLETE = 'messagePrintingComplete';

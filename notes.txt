@@ -1,7 +1,8 @@
 model
-    channels [{id,name,userChannel}]
+    channels [{id, name, userChannel}]
     selectedChannelId ''
-    playlist [{}]
+    playlist [{name, url, length, commercial}]
+    track {name, url, length, commercial}
 
 audioPlayer
     load(url,offset)
@@ -26,7 +27,10 @@ view
 
     ✓ on: volumeUpClick
     ✓ on: volumeDownClick
-    setVolume
+    ✓ setVolume
+
+    on: messagePrintingComplete
+    showMessage
 
     on: wake
     on: setSleepTimerClick

@@ -13,6 +13,7 @@ function buildView() {
         elMenuBox = document.getElementById('menu'),
         elVolumeUp = document.getElementById('volumeUp'),
         elVolumeDown = document.getElementById('volumeDown'),
+        elMessage = document.getElementById('message'),
         volumeLeds = Array.from(Array(10).keys()).map(i => document.getElementById(`vol${i+1}`)),
 
         elButtonContainer = document.getElementById('buttons');
@@ -56,6 +57,37 @@ function buildView() {
         elButtonContainer.appendChild(elButtonBox);
         channelButtons[channelId] = elButtonBox;
     }
+
+    const messagePrinter = (() => {
+        const PRINT_INTERVAL = 40;
+        let interval;
+
+        function stopPrinting() {
+            clearInterval(interval);
+            interval = 0;
+        }
+
+        return {
+            print(msg) {
+                if (interval) {
+                    stopPrinting();
+                }
+                const msgLen = msg.length;
+                let i = 1;
+                interval = setInterval(() => {
+                    elMessage.innerText = (msg.substr(0,i) + (i < msgLen ? '█' : '')).padEnd(msgLen, ' ');
+                    const messageComplete = i === msgLen;
+                    if (messageComplete) {
+                        stopPrinting();
+                        trigger(EVENT_MESSAGE_PRINTING_COMPLETE);
+                    } else {
+                        i += 1;
+                    }
+
+                }, PRINT_INTERVAL);
+            }
+        };
+    })();
 
     elMenuOpenButton.onclick = () => {
         trigger(EVENT_MENU_OPEN_CLICK);
@@ -122,6 +154,10 @@ function buildView() {
             volumeLeds.forEach((el, i) => el.classList.toggle('on', (i + 1) <= volume));
             elVolumeDown.classList.toggle('disabled', volume === minVolume);
             elVolumeUp.classList.toggle('disabled', volume === maxVolume);
+        },
+
+        showMessage(message, isTempMessage) {
+            messagePrinter.print(message);
         }
 
     };
