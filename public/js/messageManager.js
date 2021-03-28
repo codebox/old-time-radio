@@ -80,6 +80,9 @@ function buildMessageManager(model) {
             if (msgText) {
                 triggerNewMessage(msgText, true);
             }
+        },
+        showSleeping() {
+            triggerNewMessage('Sleeping');
         }
     };
 }

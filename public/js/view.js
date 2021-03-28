@@ -89,6 +89,60 @@ function buildView() {
         };
     })();
 
+    const sleepTimerView = (() => {
+        const elSleepTimerTime = document.getElementById('sleepTimerTime'),
+            elSleepTimerRunningDisplay = document.getElementById('sleepTimerRunningDisplay'),
+            elSleepTimerButtons = document.getElementById('sleepTimerButtons'),
+            elCancelSleepTimerButton = document.getElementById('cancelSleepTimerButton'),
+
+            HIDDEN_CSS_CLASS = 'hidden',
+            BUTTONS = [
+                [90, '90 Minutes'],
+                [60, '60 Minutes'],
+                [45, '45 minutes'],
+                [30, '30 minutes'],
+                [15, '15 minutes']
+            ];
+
+        function formatTimePart(value) {
+            return (value < 10 ? '0' : '') + value;
+        }
+
+        return {
+            init() {
+                elSleepTimerButtons.innerHTML = '';
+                BUTTONS.forEach(details => {
+                    const [minutes, text] = details;
+                    const button = document.createElement('li');
+                    button.classList.add('showButton');
+                    button.innerHTML = text;
+
+                    button.onclick = () => {
+                        trigger(EVENT_SET_SLEEP_TIMER_CLICK, minutes);
+                    };
+
+                    elSleepTimerButtons.appendChild(button);
+                });
+                elCancelSleepTimerButton.onclick = () => {
+                    trigger(EVENT_CANCEL_SLEEP_TIMER_CLICK);
+                };
+            },
+            render(totalSeconds) {
+                const hours = Math.floor(totalSeconds / 3600),
+                    minutes = Math.floor((totalSeconds % 3600) / 60),
+                    seconds = totalSeconds % 60;
+                elSleepTimerTime.innerHTML = `${formatTimePart(hours)}:${formatTimePart(minutes)}:${formatTimePart(seconds)}`;
+            },
+            setRunState(isRunning) {
+                elSleepTimerRunningDisplay.classList.toggle(HIDDEN_CSS_CLASS, !isRunning);
+            }
+        };
+    })();
+
+    function triggerWake() {
+        trigger(EVENT_WAKE_UP);
+    }
+
     elMenuOpenButton.onclick = () => {
         trigger(EVENT_MENU_OPEN_CLICK);
     };
@@ -102,6 +156,8 @@ function buildView() {
     elVolumeDown.onclick = () => {
         trigger(EVENT_VOLUME_DOWN_CLICK);
     };
+
+    sleepTimerView.init();
 
     return {
         on(eventName, handler) {
@@ -156,8 +212,32 @@ function buildView() {
             elVolumeUp.classList.toggle('disabled', volume === maxVolume);
         },
 
-        showMessage(message, isTempMessage) {
+        showMessage(message) {
             messagePrinter.print(message);
+        },
+
+        startSleepTimer() {
+            sleepTimerView.setRunState(true);
+        },
+        updateSleepTimer(seconds) {
+            sleepTimerView.render(seconds);
+        },
+        clearSleepTimer() {
+            sleepTimerView.setRunState(false);
+        },
+        sleep() {
+            this.closeMenu();
+            sleepTimerView.setRunState(false);
+            document.body.classList.add('sleeping');
+            document.body.addEventListener('mousemove', triggerWake);
+            document.body.addEventListener('touchstart', triggerWake);
+            document.body.addEventListener('keydown', triggerWake);
+        },
+        wakeUp() {
+            document.body.classList.remove('sleeping');
+            document.body.removeEventListener('mousemove', triggerWake);
+            document.body.removeEventListener('touchstart', triggerWake);
+            document.body.removeEventListener('keydown', triggerWake);
         }
 
     };

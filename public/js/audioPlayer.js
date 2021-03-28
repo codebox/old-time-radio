@@ -38,6 +38,15 @@ function buildAudioPlayer(maxVolume) {
         eventTarget.dispatchEvent(event);
     }
 
+    /* 'Volume' describes the user-value (0-10) which is saved in browser storage and indicated by the UI
+    volume control. 'Gain' describes the internal value used by the WebAudio API (0-1). */
+    function convertVolumeToGain(volume) {
+        return Math.pow(volume / maxVolume, 2);
+    }
+    function convertGainToVolume(gain) {
+        return maxVolume * Math.sqrt(gain);
+    }
+
     audio.addEventListener('canplaythrough', () => {
         if (loadingTrack) {
             trigger(EVENT_AUDIO_TRACK_LOADED);
@@ -64,8 +73,12 @@ function buildAudioPlayer(maxVolume) {
         stop() {
             audio.pause();
         },
+        getVolume() {
+            const gainValue = audioGain ? audioGain.gain.value : initialAudioGainValue;
+            return convertGainToVolume(gainValue);
+        },
         setVolume(volume) {
-            const gainValue = Math.pow(volume / maxVolume, 2);
+            const gainValue = convertVolumeToGain(volume);
             if (audioGain) {
                 audioGain.gain.value = gainValue;
             } else {

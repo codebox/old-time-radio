@@ -3,15 +3,22 @@ model
     selectedChannelId ''
     playlist [{name, url, length, commercial}]
     track {name, url, length, commercial}
+    sleeping
 
 audioPlayer
-    load(url,offset)
-    play
-    stop
-    setVolume
-    on: trackLoaded
-    on: trackEnded
-    on: error
+    ✓ load(url,offset)
+    ✓ play
+    ✓ stop
+    ✓ setVolume
+    ✓ on: trackLoaded
+    ✓ on: trackEnded
+    ✓ on: error
+
+sleepTimer
+    ✓ start(minutes)
+    ✓ stop
+    ✓ on: sleepTimerTick
+    ✓ on: sleepTimerDone
 
 view
     ✓ on: channelButtonClick
@@ -29,17 +36,18 @@ view
     ✓ on: volumeDownClick
     ✓ setVolume
 
-    on: messagePrintingComplete
-    showMessage
+    ✓ on: newMessage
+    ✓ on: messagePrintingComplete
+    ✓ showMessage
 
-    on: wake
-    on: setSleepTimerClick
-    on: cancelSleepTimerClick
-    wakeUp
-    sleep
-    startSleepTimer
-    updateSleepTimer
-    clearSleepTimer
+    ✓ on: wake
+    ✓ on: setSleepTimerClick
+    ✓ on: cancelSleepTimerClick
+    ✓ wakeUp
+    ✓ sleep
+    ✓ startSleepTimer
+    ✓ updateSleepTimer
+    ✓ clearSleepTimer
 
     on: scheduleButtonClick
     showSchedule
@@ -65,3 +73,14 @@ Volume Control
 - Volume +/- are disabled/enabled correctly
 - Volume is saved between page refreshes
 - Adjusting volume before playing audio works correctly
+
+Sleep
+- Sleeping message is displayed
+- Periodic messages stop
+- Volume fades out
+- Triggering wake before sleep volume decrease completes, resets volume to pre-sleep level
+
+Wake
+- Volume restored to pre-sleep level
+- Select channel message shown
+- Periodic messages resume

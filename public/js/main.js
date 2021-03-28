@@ -5,7 +5,8 @@ window.onload = () => {
         view = buildView(),
         service = buildService(),
         audioPlayer = buildAudioPlayer(model.maxVolume),
-        messageManager = buildMessageManager(model);
+        messageManager = buildMessageManager(model),
+        sleepTimer = buildSleepTimer();
 
     function loadNextFromPlaylist() {
         if (model.playlist && model.playlist.length) {
@@ -36,17 +37,21 @@ window.onload = () => {
         loadNextFromPlaylist();
     });
 
+    function deselectChannel() {
+        model.selectedChannelId = null;
+        model.playlist = null;
+        model.track = null;
+
+        audioPlayer.stop();
+
+        view.setNoChannelSelected();
+    }
+
     view.on(EVENT_CHANNEL_BUTTON_CLICK, event => {
         const channelId = event.data;
 
         if (channelId === model.selectedChannelId) {
-            model.selectedChannelId = null;
-            model.playlist = null;
-            model.track = null;
-
-            audioPlayer.stop();
-
-            view.setNoChannelSelected();
+            deselectChannel();
             messageManager.showSelectChannel();
 
         } else {
@@ -87,8 +92,8 @@ window.onload = () => {
     applyModelVolume();
 
     messageManager.on(EVENT_NEW_MESSAGE, event => {
-        const {text, isTemp} = event.data;
-        view.showMessage(text, isTemp);
+        const {text} = event.data;
+        view.showMessage(text);
     });
 
     messageManager.showLoadingChannels();
@@ -105,7 +110,49 @@ window.onload = () => {
     });
 
     setInterval(() => {
-        messageManager.showTempMessage();
+        if (!model.sleeping) {
+            messageManager.showTempMessage();
+        }
     }, 10000)
 
+    view.on(EVENT_SET_SLEEP_TIMER_CLICK, event => {
+        const minutes = event.data;
+        sleepTimer.start(minutes);
+        view.startSleepTimer();
+    });
+
+    view.on(EVENT_CANCEL_SLEEP_TIMER_CLICK, () => {
+        sleepTimer.stop();
+        view.clearSleepTimer();
+    });
+
+    sleepTimer.on(EVENT_SLEEP_TIMER_TICK, event => {
+        const secondsLeft = event.data;
+        view.updateSleepTimer(secondsLeft);
+    });
+
+    sleepTimer.on(EVENT_SLEEP_TIMER_DONE, () => {
+        model.sleeping = true;
+        messageManager.showSleeping();
+        view.sleep();
+        const interval = setInterval(() => {
+            if (model.sleeping) {
+                const newVolume = audioPlayer.getVolume() - 0.02;
+                if (newVolume > 0) {
+                    audioPlayer.setVolume(newVolume);
+                } else {
+                    deselectChannel();
+                    clearInterval(interval);
+                }
+            } else {
+                clearInterval(interval);
+            }
+        }, 100);
+    });
+
+    view.on(EVENT_WAKE_UP, () => {
+        model.sleeping = false;
+        audioPlayer.setVolume(model.volume);
+        view.wakeUp();
+    });
 };
