@@ -69,10 +69,19 @@ window.onload = () => {
 
     view.on(EVENT_MENU_OPEN_CLICK, () => {
         view.openMenu();
+        if (model.selectedChannelId) {
+            model.selectedScheduleChannelId = model.selectedChannelId;
+            view.updateScheduleChannelSelection(model.selectedScheduleChannelId);
+            scheduleRefresher.start();
+        }
     });
 
     view.on(EVENT_MENU_CLOSE_CLICK, () => {
         view.closeMenu();
+        model.selectedScheduleChannelId = null;
+        view.updateScheduleChannelSelection();
+        view.hideSchedule();
+        scheduleRefresher.stop();
     });
 
     function applyModelVolume() {
@@ -156,12 +165,37 @@ window.onload = () => {
         view.wakeUp();
     });
 
-    function getChannelSchedule(channelId, length) {
-        const cachedChannelSchedule = model.channelSchedules[channelId];
-        if (cachedChannelSchedule) {
+    const scheduleRefresher = (() => {
+        const REFRESH_INTERVAL_SECONDS = 5;
 
-        }
-    }
+        let interval;
+
+        const refresher = {
+            start() {
+                refresher.refreshNow();
+                if (!interval) {
+                    interval = setInterval(() => {
+                        refresher.refreshNow();
+                    }, REFRESH_INTERVAL_SECONDS * 1000);
+                }
+            },
+            refreshNow() {
+                const channelId = model.selectedScheduleChannelId;
+                service.getPlaylistForChannel(channelId, 12 * 60 * 60).then(schedule => {
+                    if (channelId === model.selectedScheduleChannelId) {
+                        view.displaySchedule(schedule);
+                    }
+                });
+            },
+            stop() {
+                if (interval) {
+                    clearInterval(interval);
+                    interval = null;
+                }
+            }
+        };
+        return refresher;
+    })();
 
     view.on(EVENT_SCHEDULE_BUTTON_CLICK, event => {
         const channelId = event.data,
@@ -173,14 +207,11 @@ window.onload = () => {
         view.updateScheduleChannelSelection(selectedChannel);
 
         if (selectedChannel) {
-            service.getPlaylistForChannel(channelId, 12 * 60 * 60).then(schedule => {
-                if (channelId === model.selectedScheduleChannelId) {
-                    view.displaySchedule(schedule);
-                }
-            });
+            scheduleRefresher.start();
 
         } else {
             view.hideSchedule();
+            scheduleRefresher.stop();
         }
     });
 };

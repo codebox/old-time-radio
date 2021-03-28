@@ -22,7 +22,7 @@ function buildService() {
                     if (lengthOfCurrentPlaylistItem > initialOffsetInSecondsNow) {
                         return {
                             initialOffset: initialOffsetInSecondsNow,
-                            list: [...entry.playlist.list] // defensive copy
+                            list: [...entry.playlist.list] // defensive copy, the playlist object will get mutated by other code
                         }
                     } else {
                         delete cache[key];
@@ -33,7 +33,7 @@ function buildService() {
                 const key = buildKeyName(channelId, length);
                 cache[key] = {
                     ts: now(),
-                    playlist: { // defensive copy, the playlist object will get mutated by other code
+                    playlist: { // defensive copy
                         initialOffset: playlist.initialOffset,
                         list: [...playlist.list]
                     }

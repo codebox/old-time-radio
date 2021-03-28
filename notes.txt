@@ -90,3 +90,4 @@ Wake
 
 Schedule
 - Schedule for playing channel is auto-selected when menu is opened
+- Schedule is updated automatically if left open
