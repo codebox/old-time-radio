@@ -155,4 +155,32 @@ window.onload = () => {
         audioPlayer.setVolume(model.volume);
         view.wakeUp();
     });
+
+    function getChannelSchedule(channelId, length) {
+        const cachedChannelSchedule = model.channelSchedules[channelId];
+        if (cachedChannelSchedule) {
+
+        }
+    }
+
+    view.on(EVENT_SCHEDULE_BUTTON_CLICK, event => {
+        const channelId = event.data,
+            selectedChannelWasClicked = model.selectedScheduleChannelId === channelId;
+
+        // clicking the channel that was already selected should de-select it, leaving no channel selected
+        const selectedChannel = selectedChannelWasClicked ? null : channelId;
+        model.selectedScheduleChannelId = selectedChannel;
+        view.updateScheduleChannelSelection(selectedChannel);
+
+        if (selectedChannel) {
+            service.getPlaylistForChannel(channelId, 12 * 60 * 60).then(schedule => {
+                if (channelId === model.selectedScheduleChannelId) {
+                    view.displaySchedule(schedule);
+                }
+            });
+
+        } else {
+            view.hideSchedule();
+        }
+    });
 };

@@ -4,6 +4,8 @@ model
     playlist [{name, url, length, commercial}]
     track {name, url, length, commercial}
     sleeping
+    selectedScheduleChannelId
+    channelSchedules {channelId+length:{timestamp,schedule}}
 
 audioPlayer
     ✓ load(url,offset)
@@ -49,7 +51,8 @@ view
     ✓ updateSleepTimer
     ✓ clearSleepTimer
 
-    on: scheduleButtonClick
+    ✓ on: scheduleButtonClick
+    updateScheduleChannelSelection
     showSchedule
     clearSchedule
 
@@ -84,3 +87,6 @@ Wake
 - Volume restored to pre-sleep level
 - Select channel message shown
 - Periodic messages resume
+
+Schedule
+- Schedule for playing channel is auto-selected when menu is opened

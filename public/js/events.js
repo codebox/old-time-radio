@@ -12,4 +12,5 @@ const EVENT_CHANNEL_BUTTON_CLICK = 'channelButtonClick',
     EVENT_CANCEL_SLEEP_TIMER_CLICK = 'cancelSleepTimerClick',
     EVENT_SLEEP_TIMER_TICK = 'sleepTimerTick',
     EVENT_SLEEP_TIMER_DONE = 'sleepTimerDone',
-    EVENT_WAKE_UP = 'wakeUp';
+    EVENT_WAKE_UP = 'wakeUp',
+    EVENT_SCHEDULE_BUTTON_CLICK = 'scheduleButtonClick';
