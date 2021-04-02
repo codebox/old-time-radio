@@ -216,16 +216,8 @@ function buildView() {
         addAnotherStationBuilderChannel() {
             stationBuilderView.addAnotherChannel();
         },
-
         setVisualiser(audioVisualiser) {
-            visualiser = audioVisualiser;
-            visualiser.init(elVisualiserCanvas);
-        },
-        activateVisualiser() {
-            visualiser.activate();
-        },
-        deactivateVisualiser() {
-            visualiser.deactivate();
+            audioVisualiser.init(elVisualiserCanvas);
         },
         showDownloadLink(mp3Url) {
             elDownloadLink.innerHTML = `<a href="${mp3Url}" target="_blank">Download this show as an MP3 file</a>`;

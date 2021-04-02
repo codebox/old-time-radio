@@ -11,22 +11,14 @@ window.onload = () => {
         stateMachine = buildStateMachine();
 
     function loadNextFromPlaylist() {
-        function playNextFromPlaylist() {
-            const nextItem = model.playlist.shift();
-            model.track = nextItem;
-            stateMachine.trackRequested();
-            audioPlayer.load(nextItem.url);
-        }
-
         if (model.playlist && model.playlist.length) {
-            playNextFromPlaylist();
+            stateMachine.trackRequested();
 
         } else {
             service.getPlaylistForChannel(model.selectedChannelId).then(playlist => {
                 model.playlist = playlist.list;
                 model.nextTrackOffset = playlist.initialOffset;
                 stateMachine.playlistSuccess();
-                playNextFromPlaylist();
 
             }).catch(err => {
                 console.error(err);
@@ -35,12 +27,14 @@ window.onload = () => {
         }
     }
 
-    audioPlayer.on(EVENT_AUDIO_TRACK_LOADED, () => {
-        visualiser.activate();
-        audioPlayer.play(model.nextTrackOffset);
-        model.nextTrackOffset = 0;
-        view.showDownloadLink(model.track.url);
+    // Message Manager event handler
+    messageManager.on(EVENT_NEW_MESSAGE, event => {
+        const {text} = event.data;
+        view.showMessage(text);
+    });
 
+    // Audio Player event handlers
+    audioPlayer.on(EVENT_AUDIO_TRACK_LOADED, () => {
         stateMachine.trackLoadSuccess();
     });
 
@@ -57,6 +51,17 @@ window.onload = () => {
         stateMachine.trackLoadFailure();
     });
 
+    // Sleep Timer event handlers
+    sleepTimer.on(EVENT_SLEEP_TIMER_TICK, event => {
+        const secondsLeft = event.data;
+        view.updateSleepTimer(secondsLeft);
+    });
+
+    sleepTimer.on(EVENT_SLEEP_TIMER_DONE, () => {
+        stateMachine.sleepTimerTriggers();
+    });
+
+    // View event handlers
     view.on(EVENT_CHANNEL_BUTTON_CLICK, event => {
         const channelId = event.data;
 
@@ -103,11 +108,6 @@ window.onload = () => {
         applyModelVolume();
     });
 
-    messageManager.on(EVENT_NEW_MESSAGE, event => {
-        const {text} = event.data;
-        view.showMessage(text);
-    });
-
     const tempMessageTimer = (() => {
         let interval;
 
@@ -136,15 +136,6 @@ window.onload = () => {
     view.on(EVENT_CANCEL_SLEEP_TIMER_CLICK, () => {
         sleepTimer.stop();
         view.clearSleepTimer();
-    });
-
-    sleepTimer.on(EVENT_SLEEP_TIMER_TICK, event => {
-        const secondsLeft = event.data;
-        view.updateSleepTimer(secondsLeft);
-    });
-
-    sleepTimer.on(EVENT_SLEEP_TIMER_DONE, () => {
-        stateMachine.sleepTimerTriggers();
     });
 
     view.on(EVENT_WAKE_UP, () => {
@@ -268,6 +259,7 @@ window.onload = () => {
         }
     }
 
+    // State Machine event handlers
     stateMachine.on(EVENT_STATE_CHANGED_TO_INITIALISING, () => {
         applyModelVolume();
         view.setVisualiser(visualiser);
@@ -289,6 +281,7 @@ window.onload = () => {
                 model.stationBuilder.commercialShowIds.push(...shows.filter(show => show.isCommercial).map(show => show.index));
 
                 view.populateStationBuilderShows(model.stationBuilder);
+                tempMessageTimer.start();
 
                 stateMachine.channelListSuccess();
             });
@@ -307,15 +300,9 @@ window.onload = () => {
 
         audioPlayer.stop();
 
-        tempMessageTimer.start();
-
         view.setNoChannelSelected();
         view.hideDownloadLink();
-        setTimeout(() => {
-            if (stateMachine.isIdle()) {
-                view.deactivateVisualiser();
-            }
-        }, config.visualiser.fadeOutIntervalMillis);
+        visualiser.stop(config.visualiser.fadeOutIntervalMillis);
 
         messageManager.showSelectChannel();
     });
@@ -333,13 +320,22 @@ window.onload = () => {
         loadNextFromPlaylist();
     });
 
+    stateMachine.on(EVENT_STATE_CHANGED_TO_TUNED_IN_IDLE, () => {
+
+    });
+
     stateMachine.on(EVENT_STATE_CHANGED_TO_LOADING_TRACK, () => {
-        console.assert(model.track);
-        console.assert(model.selectedChannelId);
+        const nextItem = model.playlist.shift();
+        model.track = nextItem;
+        stateMachine.trackRequested();
+        audioPlayer.load(nextItem.url);
     });
 
     stateMachine.on(EVENT_STATE_CHANGED_TO_PLAYING, () => {
-
+        visualiser.start();
+        audioPlayer.play(model.nextTrackOffset);
+        model.nextTrackOffset = 0;
+        view.showDownloadLink(model.track.url);
     });
 
     stateMachine.on(EVENT_STATE_CHANGED_TO_GOING_TO_SLEEP, () => {
@@ -369,14 +365,14 @@ window.onload = () => {
         model.selectedChannelId = model.track = model.playlist = null;
         tempMessageTimer.stop();
         messageManager.showSleeping();
-        visualiser.deactivate();
+        visualiser.stop();
         scheduleRefresher.stop();
     });
 
     stateMachine.on(EVENT_STATE_CHANGED_TO_ERROR, () => {
         model.selectedChannelId = model.playlist = model.track = null;
         audioPlayer.stop();
-        visualiser.deactivate();
+        visualiser.stop();
         tempMessageTimer.stop();
         scheduleRefresher.stop();
         view.showError(model.lastError);

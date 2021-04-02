@@ -3,7 +3,7 @@ function buildVisualiser(dataSource) {
     const BACKGROUND_COLOUR = 'black',
         MAX_FREQ_DATA_VALUE = 255;
 
-    let activationCount = 0, elCanvas, ctx, width, height
+    let isStarted, elCanvas, ctx, width, height, fadeOutTimeout;
 
     function updateCanvasSize() {
         width = elCanvas.width = elCanvas.offsetWidth;
@@ -18,7 +18,7 @@ function buildVisualiser(dataSource) {
     let step = 0;
     function paintSineWave() {
         "use strict";
-        if (activationCount) {
+        if (isStarted) {
             const data = dataSource(),
                 WAVE_SPEED = config.visualiser.waveSpeed,
                 PADDING = width > 500 ? 50 : 25,
@@ -78,12 +78,20 @@ function buildVisualiser(dataSource) {
         setDataSource(source) {
             dataSource = source;
         },
-        activate() {
-            activationCount++; //TODO fix this
+        start() {
+            if (fadeOutTimeout) {
+                clearTimeout(fadeOutTimeout);
+                fadeOutTimeout = null;
+            }
+            isStarted = true;
         },
-        deactivate() {
-            clearCanvas();
-            activationCount--;
+        stop(delayMillis = 0) {
+            if (!fadeOutTimeout) {
+                fadeOutTimeout = setTimeout(() => {
+                    isStarted = false;
+                    clearCanvas();
+                }, delayMillis);
+            }
         },
         onResize() {
             return updateCanvasSize;
