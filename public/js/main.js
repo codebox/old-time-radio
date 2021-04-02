@@ -143,6 +143,16 @@ window.onload = () => {
         view.updateSleepTimer(secondsLeft);
     });
 
+    sleepTimer.on(EVENT_SLEEP_TIMER_DONE, () => {
+        stateMachine.sleepTimerTriggers();
+    });
+
+    view.on(EVENT_WAKE_UP, () => {
+        audioPlayer.setVolume(model.volume);
+        view.wakeUp();
+        stateMachine.wakeAction();
+    });
+
     const scheduleRefresher = (() => {
         let interval;
 
@@ -329,22 +339,12 @@ window.onload = () => {
     });
 
     stateMachine.on(EVENT_STATE_CHANGED_TO_PLAYING, () => {
-    });
 
-    sleepTimer.on(EVENT_SLEEP_TIMER_DONE, () => {
-        stateMachine.sleepTimerTriggers();
-    });
-
-    view.on(EVENT_WAKE_UP, () => {
-        audioPlayer.setVolume(model.volume);
-        view.wakeUp();
-        stateMachine.wakeAction();
     });
 
     stateMachine.on(EVENT_STATE_CHANGED_TO_GOING_TO_SLEEP, () => {
         view.sleep();
         tempMessageTimer.stop();
-        messageManager.showSleeping();
 
         const interval = setInterval(() => {
             if (stateMachine.isSleeping()) {
@@ -364,6 +364,7 @@ window.onload = () => {
     });
 
     stateMachine.on(EVENT_STATE_CHANGED_TO_SLEEPING, () => {
+        view.sleep();
         audioPlayer.stop();
         model.selectedChannelId = model.track = model.playlist = null;
         tempMessageTimer.stop();

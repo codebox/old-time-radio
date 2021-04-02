@@ -12,7 +12,7 @@ Things to update on state change:
 
 app states:
 
-    Initialising, Idle, Tuning In, Tuned In Idle, Loading Track, Playing, Sleeping, Error
+    Initialising, Idle, Tuning In, Tuned In Idle, Loading Track, Playing, Going To Sleep, Sleeping, Error
 
     Initialising    --[ CODE channel codes in url ]--> Idle
     Initialising    --[ CODE get channel list OK ]--> Idle
@@ -31,6 +31,37 @@ app states:
     Playing         --[ CODE sleep timer ]--> Sleeping
     Playing         --[ CODE track ends ]--> Tuned In Idle
     Sleeping        --[ USER mouse/keyboard action ]--> Idle
+
+Initialising
+    from START
+
+Idle
+    from INITIALISING
+    from TUNING_IN, PLAYING, TUNED_IN_IDLE, LOADING_TRACK (user deselects channel)
+    from SLEEPING (wake action)
+
+Tuning In
+    from IDLE, TUNING_IN, PLAYING, TUNED_IN_IDLE, LOADING_TRACK (user selects channel)
+
+Tuned In Idle
+    from TUNING_IN (playlist success)
+    from PLAYING (track ends)
+
+Loading Track
+    from TUNED_IN_IDLE
+
+Playing
+    from LOADING_TRACK
+    from GOING_TO_SLEEP (wake action)
+
+Going To Sleep
+    from PLAYING
+
+Sleeping
+    from IDLE, TUNING_IN, TUNED_IN_IDLE, LOADING_TRACK, ERROR
+    from GOING_TO_SLEEP
+
+Error
 
 model
     channels [{id, name, userChannel}]

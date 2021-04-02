@@ -4,7 +4,7 @@ function buildEventSource(name) {
 
     return {
         trigger(eventName, eventData) {
-            console.debug(`=== EVENT ${name + ' ' || ''}: ${eventName} ${JSON.stringify(eventData) || ''}`);
+            //console.debug(`=== EVENT ${name + ' ' || ''}: ${eventName} ${JSON.stringify(eventData) || ''}`);
             const event = new Event(eventName);
             event.data = eventData;
             eventTarget.dispatchEvent(event);

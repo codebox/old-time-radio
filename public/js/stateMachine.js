@@ -32,7 +32,7 @@ function buildStateMachine() {
                 if (validStates.includes(state)) {
                     changeState(newState);
                 } else {
-                    console.warn(`Unexpected state transition requested: ${state} -> ${newState}`);
+                    console.warn(`Unexpected state transition requested: ${state.name} -> ${newState.name}`);
                 }
             }
         }
