@@ -1,10 +1,10 @@
 function buildAudioPlayer(maxVolume) {
     "use strict";
     const audio = new Audio(),
-        SMOOTHING = 0.8,
-        FFT_WINDOW_SIZE = 1024,
+        SMOOTHING = config.audio.smoothing,
+        FFT_WINDOW_SIZE = config.audio.fftWindowSize,
         BUFFER_LENGTH = FFT_WINDOW_SIZE / 2,
-        eventTarget = new EventTarget();
+        eventSource = buildEventSource('audio');
 
     let analyser, audioInitialised, audioGain, loadingTrack, initialAudioGainValue;
 
@@ -31,13 +31,6 @@ function buildAudioPlayer(maxVolume) {
         }
     }
 
-    function trigger(eventName, eventData) {
-        console.log('EVENT audio' + eventName);
-        const event = new Event(eventName);
-        event.data = eventData;
-        eventTarget.dispatchEvent(event);
-    }
-
     /* 'Volume' describes the user-value (0-10) which is saved in browser storage and indicated by the UI
     volume control. 'Gain' describes the internal value used by the WebAudio API (0-1). */
     function convertVolumeToGain(volume) {
@@ -49,16 +42,17 @@ function buildAudioPlayer(maxVolume) {
 
     audio.addEventListener('canplaythrough', () => {
         if (loadingTrack) {
-            trigger(EVENT_AUDIO_TRACK_LOADED);
+            eventSource.trigger(EVENT_AUDIO_TRACK_LOADED);
         }
     });
-    audio.addEventListener('ended', () => trigger(EVENT_AUDIO_TRACK_ENDED, event));
-    audio.addEventListener('error', () => trigger(EVENT_AUDIO_ERROR, event));
+    audio.addEventListener('playing', () => {
+        eventSource.trigger(EVENT_AUDIO_PLAY_STARTED);
+    });
+    audio.addEventListener('ended', () => eventSource.trigger(EVENT_AUDIO_TRACK_ENDED, event));
+    audio.addEventListener('error', () => eventSource.trigger(EVENT_AUDIO_ERROR, event));
 
     return {
-        on(eventName, handler) {
-            eventTarget.addEventListener(eventName, handler);
-        },
+        on: eventSource.on,
         load(url) {
             initAudio();
             loadingTrack = true;
@@ -84,6 +78,13 @@ function buildAudioPlayer(maxVolume) {
             } else {
                 initialAudioGainValue = gainValue;
             }
+        },
+        getData() {
+            const dataArray = new Uint8Array(BUFFER_LENGTH);
+            if (analyser) {
+                analyser.getByteFrequencyData(dataArray);
+            }
+            return dataArray;
         }
     };
 }

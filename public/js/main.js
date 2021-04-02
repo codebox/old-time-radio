@@ -5,30 +5,46 @@ window.onload = () => {
         view = buildView(),
         service = buildService(),
         audioPlayer = buildAudioPlayer(model.maxVolume),
+        visualiser = buildVisualiser(audioPlayer.getData),
         messageManager = buildMessageManager(model),
-        sleepTimer = buildSleepTimer();
+        sleepTimer = buildSleepTimer(),
+        stateMachine = buildStateMachine();
 
     function loadNextFromPlaylist() {
-        if (model.playlist && model.playlist.length) {
+        function playNextFromPlaylist() {
             const nextItem = model.playlist.shift();
             model.track = nextItem;
+            stateMachine.trackRequested();
             audioPlayer.load(nextItem.url);
+        }
+
+        if (model.playlist && model.playlist.length) {
+            playNextFromPlaylist();
 
         } else {
             service.getPlaylistForChannel(model.selectedChannelId).then(playlist => {
                 model.playlist = playlist.list;
                 model.nextTrackOffset = playlist.initialOffset;
+                stateMachine.playlistSuccess();
+                playNextFromPlaylist();
 
-                const nextItem = model.playlist.shift();
-                model.track = nextItem;
-                audioPlayer.load(nextItem.url);
+            }).catch(err => {
+                console.error(err);
+                stateMachine.playlistFailure();
             });
         }
     }
 
     audioPlayer.on(EVENT_AUDIO_TRACK_LOADED, () => {
+        visualiser.activate();
         audioPlayer.play(model.nextTrackOffset);
         model.nextTrackOffset = 0;
+        view.showDownloadLink(model.track.url);
+
+        stateMachine.trackLoadSuccess();
+    });
+
+    audioPlayer.on(EVENT_AUDIO_PLAY_STARTED, () => {
         view.setChannelLoaded(model.selectedChannelId);
         messageManager.showNowPlaying(model.track.name);
     });
@@ -37,33 +53,20 @@ window.onload = () => {
         loadNextFromPlaylist();
     });
 
-    function deselectChannel() {
-        model.selectedChannelId = null;
-        model.playlist = null;
-        model.track = null;
-
-        audioPlayer.stop();
-
-        view.setNoChannelSelected();
-    }
+    audioPlayer.on(EVENT_AUDIO_ERROR, () => {
+        stateMachine.trackLoadFailure();
+    });
 
     view.on(EVENT_CHANNEL_BUTTON_CLICK, event => {
         const channelId = event.data;
 
         if (channelId === model.selectedChannelId) {
-            deselectChannel();
-            messageManager.showSelectChannel();
+            model.selectedChannelId = null;
+            stateMachine.userDeselectsChannel();
 
         } else {
-            model.track = null;
-            model.playlist = null;
             model.selectedChannelId = channelId;
-
-            view.setChannelLoading(channelId);
-            const channel = model.getChannelFromId(channelId);
-            messageManager.showTuningInToChannel(channel.name);
-
-            loadNextFromPlaylist();
+            stateMachine.userSelectsNewChannel();
         }
     });
 
@@ -87,42 +90,42 @@ window.onload = () => {
     function applyModelVolume() {
         view.updateVolume(model.volume, model.minVolume, model.maxVolume);
         audioPlayer.setVolume(model.volume, model.maxVolume);
+        model.save();
     }
 
     view.on(EVENT_VOLUME_UP_CLICK, () => {
         model.volume++;
         applyModelVolume();
     });
+
     view.on(EVENT_VOLUME_DOWN_CLICK, () => {
         model.volume--;
         applyModelVolume();
     });
-
-    applyModelVolume();
 
     messageManager.on(EVENT_NEW_MESSAGE, event => {
         const {text} = event.data;
         view.showMessage(text);
     });
 
-    messageManager.showLoadingChannels();
-    service.getChannels().then(channelIds => {
-        model.channels = channelIds.map(channelId => {
-            return {
-                id: channelId,
-                name: channelId,
-                userChannel: false
-            };
-        });
-        view.setChannels(model.channels);
-        messageManager.showSelectChannel();
-    });
+    const tempMessageTimer = (() => {
+        let interval;
 
-    setInterval(() => {
-        if (!model.sleeping) {
-            messageManager.showTempMessage();
+        return {
+            start(){
+                if (!interval) {
+                    interval = setInterval(() => {
+                        messageManager.showTempMessage();
+                    }, config.messages.tempMessageIntervalMillis);
+                }
+            },
+            stop() {
+                if (interval) {
+                    clearInterval(interval);
+                }
+            }
         }
-    }, 10000)
+    })();
 
     view.on(EVENT_SET_SLEEP_TIMER_CLICK, event => {
         const minutes = event.data;
@@ -140,48 +143,21 @@ window.onload = () => {
         view.updateSleepTimer(secondsLeft);
     });
 
-    sleepTimer.on(EVENT_SLEEP_TIMER_DONE, () => {
-        model.sleeping = true;
-        messageManager.showSleeping();
-        view.sleep();
-        const interval = setInterval(() => {
-            if (model.sleeping) {
-                const newVolume = audioPlayer.getVolume() - 0.02;
-                if (newVolume > 0) {
-                    audioPlayer.setVolume(newVolume);
-                } else {
-                    deselectChannel();
-                    clearInterval(interval);
-                }
-            } else {
-                clearInterval(interval);
-            }
-        }, 100);
-    });
-
-    view.on(EVENT_WAKE_UP, () => {
-        model.sleeping = false;
-        audioPlayer.setVolume(model.volume);
-        view.wakeUp();
-    });
-
     const scheduleRefresher = (() => {
-        const REFRESH_INTERVAL_SECONDS = 5;
-
         let interval;
 
         const refresher = {
             start() {
-                refresher.refreshNow();
+                this.refreshNow();
                 if (!interval) {
                     interval = setInterval(() => {
                         refresher.refreshNow();
-                    }, REFRESH_INTERVAL_SECONDS * 1000);
+                    }, config.schedule.refreshIntervalMillis);
                 }
             },
             refreshNow() {
                 const channelId = model.selectedScheduleChannelId;
-                service.getPlaylistForChannel(channelId, 12 * 60 * 60).then(schedule => {
+                service.getPlaylistForChannel(channelId, config.schedule.lengthInSeconds).then(schedule => {
                     if (channelId === model.selectedScheduleChannelId) {
                         view.displaySchedule(schedule);
                     }
@@ -214,4 +190,201 @@ window.onload = () => {
             scheduleRefresher.stop();
         }
     });
+
+    view.on(EVENT_STATION_BUILDER_SHOW_CLICK, event => {
+        const clickedShow = event.data;
+        model.stationBuilder.shows.filter(show => show.index === clickedShow.index).forEach(show => show.selected = !show.selected);
+        view.updateStationBuilderShowSelections(model.stationBuilder);
+    });
+
+    view.on(EVENT_STATION_BUILDER_PLAY_COMMERCIALS_CLICK, () => {
+        const includeCommercials = !model.stationBuilder.includeCommercials;
+        model.stationBuilder.includeCommercials = includeCommercials;
+        view.updateStationBuilderIncludeCommercials(model.stationBuilder);
+    });
+
+    view.on(EVENT_STATION_BUILDER_CREATE_CHANNEL_CLICK, () => {
+        const selectedShowIndexes = model.stationBuilder.shows.filter(show => show.selected).map(show => show.index);
+        if (model.stationBuilder.includeCommercials) {
+            selectedShowIndexes.push(...model.stationBuilder.commercialShowIds);
+        }
+
+        model.stationBuilder.shows.forEach(show => show.selected = false);
+        view.updateStationBuilderShowSelections(model.stationBuilder);
+
+        service.getChannelCodeForShows(selectedShowIndexes).then(channelCode => {
+            model.stationBuilder.savedChannelCodes.push(channelCode);
+            view.updateStationBuilderStationDetails(model.stationBuilder);
+        });
+    });
+
+    view.on(EVENT_STATION_BUILDER_GO_TO_CHANNEL_CLICK, () => {
+        window.location.href = `?channels=${model.stationBuilder.savedChannelCodes.join(',')}`;
+    });
+
+    view.on(EVENT_STATION_BUILDER_ADD_CHANNEL_CLICK, () => {
+        view.addAnotherStationBuilderChannel();
+    });
+
+    view.on(EVENT_STATION_BUILDER_DELETE_STATION_CLICK, () => {
+        model.stationBuilder.savedChannelCodes.length = 0;
+        view.updateStationBuilderStationDetails(model.stationBuilder);
+    });
+
+    function getChannels() {
+        messageManager.showLoadingChannels();
+
+        const urlChannelCodes = new URLSearchParams(window.location.search).get('channels');
+        if (urlChannelCodes) {
+            const channels = urlChannelCodes.split(',').map((code, i) => {
+                return {
+                    id: code,
+                    name: `Channel ${i + 1}`,
+                    userChannel: true
+                };
+            });
+            return Promise.resolve(channels);
+
+        } else {
+            return service.getChannels().then(channelIds => {
+                return channelIds.map(channelId => {
+                    return {
+                        id: channelId,
+                        name: channelId,
+                        userChannel: false
+                    };
+                });
+            });
+        }
+    }
+
+    stateMachine.on(EVENT_STATE_CHANGED_TO_INITIALISING, () => {
+        applyModelVolume();
+        view.setVisualiser(visualiser);
+
+        getChannels().then(channels => {
+            model.channels = channels;
+            view.setChannels(model.channels);
+
+        }).then(() => {
+            service.getShowList().then(shows => {
+                model.stationBuilder.shows = [...shows.filter(show => !show.isCommercial).map(show => {
+                    return {
+                        index: show.index,
+                        name: show.name,
+                        selected: false,
+                        channels: show.channels
+                    };
+                })];
+                model.stationBuilder.commercialShowIds.push(...shows.filter(show => show.isCommercial).map(show => show.index));
+
+                view.populateStationBuilderShows(model.stationBuilder);
+
+                stateMachine.channelListSuccess();
+            });
+
+        }).catch(err => {
+            model.lastError = err;
+            stateMachine.channelListFailure();
+        });
+    });
+
+    stateMachine.on(EVENT_STATE_CHANGED_TO_IDLE, () => {
+        model.selectedChannelId = null;
+        model.playlist = null;
+        model.track = null;
+        model.nextTrackOffset = null;
+
+        audioPlayer.stop();
+
+        tempMessageTimer.start();
+
+        view.setNoChannelSelected();
+        view.hideDownloadLink();
+        setTimeout(() => {
+            if (stateMachine.isIdle()) {
+                view.deactivateVisualiser();
+            }
+        }, config.visualiser.fadeOutIntervalMillis);
+
+        messageManager.showSelectChannel();
+    });
+
+    stateMachine.on(EVENT_STATE_CHANGED_TO_TUNING_IN, () => {
+        console.assert(model.selectedChannelId);
+        model.playlist = null;
+        model.track = null;
+        model.nextTrackOffset = null;
+
+        view.setChannelLoading(model.selectedChannelId);
+        const channel = model.channels.find(channel => channel.id === model.selectedChannelId);
+        messageManager.showTuningInToChannel(channel.name);
+
+        loadNextFromPlaylist();
+    });
+
+    stateMachine.on(EVENT_STATE_CHANGED_TO_LOADING_TRACK, () => {
+        console.assert(model.track);
+        console.assert(model.selectedChannelId);
+    });
+
+    stateMachine.on(EVENT_STATE_CHANGED_TO_PLAYING, () => {
+    });
+
+    sleepTimer.on(EVENT_SLEEP_TIMER_DONE, () => {
+        stateMachine.sleepTimerTriggers();
+    });
+
+    view.on(EVENT_WAKE_UP, () => {
+        audioPlayer.setVolume(model.volume);
+        view.wakeUp();
+        stateMachine.wakeAction();
+    });
+
+    stateMachine.on(EVENT_STATE_CHANGED_TO_GOING_TO_SLEEP, () => {
+        view.sleep();
+        tempMessageTimer.stop();
+        messageManager.showSleeping();
+
+        const interval = setInterval(() => {
+            if (stateMachine.isSleeping()) {
+                const newVolume = audioPlayer.getVolume() - config.sleepTimer.fadeOutDelta;
+                if (newVolume > 0) {
+                    audioPlayer.setVolume(newVolume);
+                } else {
+                    clearInterval(interval);
+                    stateMachine.goingToSleepComplete();
+                }
+            } else {
+                clearInterval(interval);
+                // wake event received before timer completes
+                audioPlayer.setVolume(model.volume);
+            }
+        }, config.sleepTimer.fadeOutIntervalMillis);
+    });
+
+    stateMachine.on(EVENT_STATE_CHANGED_TO_SLEEPING, () => {
+        audioPlayer.stop();
+        model.selectedChannelId = model.track = model.playlist = null;
+        tempMessageTimer.stop();
+        messageManager.showSleeping();
+        visualiser.deactivate();
+        scheduleRefresher.stop();
+    });
+
+    stateMachine.on(EVENT_STATE_CHANGED_TO_ERROR, () => {
+        model.selectedChannelId = model.playlist = model.track = null;
+        audioPlayer.stop();
+        visualiser.deactivate();
+        tempMessageTimer.stop();
+        scheduleRefresher.stop();
+        view.showError(model.lastError);
+        messageManager.httpError();
+    });
+
+    stateMachine.on(EVENT_STATE_CHANGED_TO_INITIALISING, () => {
+        console.assert(!model.channels);
+    });
+
+    stateMachine.initialise();
 };

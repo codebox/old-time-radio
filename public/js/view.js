@@ -1,7 +1,7 @@
 function buildView() {
     "use strict";
     const FEW_CHANNELS_LIMIT = 4,
-        eventTarget = new EventTarget(),
+        eventSource = buildEventSource('sleeview'),
         channelButtons = {},
 
         CLASS_LOADING = 'channelLoading',
@@ -14,16 +14,16 @@ function buildView() {
         elVolumeUp = document.getElementById('volumeUp'),
         elVolumeDown = document.getElementById('volumeDown'),
         elMessage = document.getElementById('message'),
-        volumeLeds = Array.from(Array(10).keys()).map(i => document.getElementById(`vol${i+1}`)),
+        elDownloadLink = document.getElementById('downloadLink'),
+        elButtonContainer = document.getElementById('buttons'),
+        elVolumeLeds = Array.from(Array(10).keys()).map(i => document.getElementById(`vol${i+1}`)),
+        elVisualiserCanvas = document.getElementById('canvas'),
 
-        elButtonContainer = document.getElementById('buttons');
+        sleepTimerView = buildSleepTimerView(eventSource),
+        scheduleView = buildScheduleView(eventSource),
+        stationBuilderView = buildStationBuilderView(eventSource);
 
-    function trigger(eventName, eventData) {
-        console.log('EVENT view' + eventName);
-        const event = new Event(eventName);
-        event.data = eventData;
-        eventTarget.dispatchEvent(event);
-    }
+    let visualiser;
 
     function forEachChannelButton(fn) {
         Object.keys(channelButtons).forEach(channelId => {
@@ -48,7 +48,7 @@ function buildView() {
         elButtonLabel.innerText = channelName;
 
         elButton.onclick = () => {
-            trigger(EVENT_CHANNEL_BUTTON_CLICK, channelId);
+            eventSource.trigger(EVENT_CHANNEL_BUTTON_CLICK, channelId);
         };
         elButtonBox.appendChild(elButtonIndicator);
         elButtonBox.appendChild(elButton);
@@ -59,7 +59,7 @@ function buildView() {
     }
 
     const messagePrinter = (() => {
-        const PRINT_INTERVAL = 40;
+        const PRINT_INTERVAL = config.messages.charPrintIntervalMillis;
         let interval;
 
         function stopPrinting() {
@@ -79,7 +79,7 @@ function buildView() {
                     const messageComplete = i === msgLen;
                     if (messageComplete) {
                         stopPrinting();
-                        trigger(EVENT_MESSAGE_PRINTING_COMPLETE);
+                        eventSource.trigger(EVENT_MESSAGE_PRINTING_COMPLETE);
                     } else {
                         i += 1;
                     }
@@ -89,143 +89,33 @@ function buildView() {
         };
     })();
 
-    const sleepTimerView = (() => {
-        const elSleepTimerTime = document.getElementById('sleepTimerTime'),
-            elSleepTimerRunningDisplay = document.getElementById('sleepTimerRunningDisplay'),
-            elSleepTimerButtons = document.getElementById('sleepTimerButtons'),
-            elCancelSleepTimerButton = document.getElementById('cancelSleepTimerButton'),
-
-            HIDDEN_CSS_CLASS = 'hidden',
-            BUTTONS = [
-                [90, '90 Minutes'],
-                [60, '60 Minutes'],
-                [45, '45 minutes'],
-                [30, '30 minutes'],
-                [15, '15 minutes']
-            ];
-
-        function formatTimePart(value) {
-            return (value < 10 ? '0' : '') + value;
-        }
-
-        return {
-            init() {
-                elSleepTimerButtons.innerHTML = '';
-                BUTTONS.forEach(details => {
-                    const [minutes, text] = details;
-                    const button = document.createElement('li');
-                    button.classList.add('showButton');
-                    button.innerHTML = text;
-
-                    button.onclick = () => {
-                        trigger(EVENT_SET_SLEEP_TIMER_CLICK, minutes);
-                    };
-
-                    elSleepTimerButtons.appendChild(button);
-                });
-                elCancelSleepTimerButton.onclick = () => {
-                    trigger(EVENT_CANCEL_SLEEP_TIMER_CLICK);
-                };
-            },
-            render(totalSeconds) {
-                const hours = Math.floor(totalSeconds / 3600),
-                    minutes = Math.floor((totalSeconds % 3600) / 60),
-                    seconds = totalSeconds % 60;
-                elSleepTimerTime.innerHTML = `${formatTimePart(hours)}:${formatTimePart(minutes)}:${formatTimePart(seconds)}`;
-            },
-            setRunState(isRunning) {
-                elSleepTimerRunningDisplay.classList.toggle(HIDDEN_CSS_CLASS, !isRunning);
-            }
-        };
-    })();
-
-    const viewSchedule = (() => {
-        "use strict";
-
-        const elChannelLinks = document.getElementById('channelScheduleLinks'),
-            elScheduleList = document.getElementById('scheduleList'),
-            channelToElement = {},
-            CSS_CLASS_SELECTED = 'selected';
-
-        return {
-            addChannel(channel) {
-                const li = document.createElement('li');
-                li.innerHTML = channel.name;
-                li.classList.add('showButton');
-                li.onclick = () => {
-                    trigger(EVENT_SCHEDULE_BUTTON_CLICK, channel.id);
-                };
-                elChannelLinks.appendChild(li);
-                channelToElement[channel.id] = li;
-            },
-            setSelectedChannel(selectedChannelId) {
-                Object.keys(channelToElement).forEach(channelId => {
-                    const el = channelToElement[channelId];
-                    el.classList.toggle(CSS_CLASS_SELECTED, selectedChannelId === channelId);
-                });
-            },
-            displaySchedule(schedule) {
-                const playingNow = schedule.list.shift(),
-                    timeNow = Date.now() / 1000;
-                let nextShowStartOffsetFromNow = playingNow.length - schedule.initialOffset;
-
-                const scheduleList = [{time: 'NOW &gt;', name: playingNow.name}];
-                scheduleList.push(...schedule.list.filter(item => !item.commercial).map(item => {
-                    const ts = nextShowStartOffsetFromNow + timeNow,
-                        date = new Date(ts * 1000),
-                        hh = date.getHours().toString().padStart(2,'0'),
-                        mm = date.getMinutes().toString().padStart(2,'0');
-                    const result = {
-                        time: `${hh}:${mm}`,
-                        name: item.name,
-                        commercial: item.commercial
-                    };
-                    nextShowStartOffsetFromNow += item.length;
-                    return result;
-                }));
-
-                elScheduleList.innerHTML = '';
-                scheduleList.forEach(scheduleItem => {
-                    const el = document.createElement('li');
-                    el.innerHTML = `<div class="scheduleItemTime">${scheduleItem.time}</div><div class="scheduleItemName">${scheduleItem.name}</div>`;
-                    elScheduleList.appendChild(el);
-                });
-            },
-            hideSchedule() {
-                elScheduleList.innerHTML = '';
-            }
-        };
-    })();
-
     function triggerWake() {
-        trigger(EVENT_WAKE_UP);
+        eventSource.trigger(EVENT_WAKE_UP);
     }
 
     elMenuOpenButton.onclick = () => {
-        trigger(EVENT_MENU_OPEN_CLICK);
+        eventSource.trigger(EVENT_MENU_OPEN_CLICK);
     };
     elMenuCloseButton.onclick = () => {
-        trigger(EVENT_MENU_CLOSE_CLICK);
+        eventSource.trigger(EVENT_MENU_CLOSE_CLICK);
     };
 
     elVolumeUp.onclick = () => {
-        trigger(EVENT_VOLUME_UP_CLICK);
+        eventSource.trigger(EVENT_VOLUME_UP_CLICK);
     };
     elVolumeDown.onclick = () => {
-        trigger(EVENT_VOLUME_DOWN_CLICK);
+        eventSource.trigger(EVENT_VOLUME_DOWN_CLICK);
     };
 
     sleepTimerView.init();
 
     return {
-        on(eventName, handler) {
-            eventTarget.addEventListener(eventName, handler);
-        },
+        on: eventSource.on,
 
         setChannels(channels) {
             channels.forEach(channel => {
                 buildChannelButton(channel);
-                viewSchedule.addChannel(channel);
+                scheduleView.addChannel(channel);
             });
 
             if (channels.length <= FEW_CHANNELS_LIMIT) {
@@ -268,7 +158,7 @@ function buildView() {
         },
 
         updateVolume(volume, minVolume, maxVolume) {
-            volumeLeds.forEach((el, i) => el.classList.toggle('on', (i + 1) <= volume));
+            elVolumeLeds.forEach((el, i) => el.classList.toggle('on', (i + 1) <= volume));
             elVolumeDown.classList.toggle('disabled', volume === minVolume);
             elVolumeUp.classList.toggle('disabled', volume === maxVolume);
         },
@@ -300,16 +190,51 @@ function buildView() {
             document.body.removeEventListener('touchstart', triggerWake);
             document.body.removeEventListener('keydown', triggerWake);
         },
+
         updateScheduleChannelSelection(channelId) {
-            viewSchedule.setSelectedChannel(channelId);
+            scheduleView.setSelectedChannel(channelId);
         },
         displaySchedule(schedule) {
-            viewSchedule.displaySchedule(schedule);
+            scheduleView.displaySchedule(schedule);
         },
         hideSchedule() {
-            viewSchedule.hideSchedule();
+            scheduleView.hideSchedule();
+        },
+
+        populateStationBuilderShows(stationBuilderModel) {
+            stationBuilderView.populate(stationBuilderModel);
+        },
+        updateStationBuilderShowSelections(stationBuilderModel) {
+            stationBuilderView.updateShowSelections(stationBuilderModel);
+        },
+        updateStationBuilderIncludeCommercials(stationBuilderModel) {
+            stationBuilderView.updateIncludeCommercials(stationBuilderModel);
+        },
+        updateStationBuilderStationDetails(stationBuilderModel) {
+            stationBuilderView.updateStationDetails(stationBuilderModel);
+        },
+        addAnotherStationBuilderChannel() {
+            stationBuilderView.addAnotherChannel();
+        },
+
+        setVisualiser(audioVisualiser) {
+            visualiser = audioVisualiser;
+            visualiser.init(elVisualiserCanvas);
+        },
+        activateVisualiser() {
+            visualiser.activate();
+        },
+        deactivateVisualiser() {
+            visualiser.deactivate();
+        },
+        showDownloadLink(mp3Url) {
+            elDownloadLink.innerHTML = `<a href="${mp3Url}" target="_blank">Download this show as an MP3 file</a>`;
+        },
+        hideDownloadLink() {
+            elDownloadLink.innerHTML = '';
+        },
+        showError(errorMsg) {
+            //TODO
         }
-
-
     };
 }

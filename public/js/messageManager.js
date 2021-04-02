@@ -1,16 +1,9 @@
 function buildMessageManager(model) {
     "use strict";
-    const eventTarget = new EventTarget(),
-        TEMP_MESSAGE_DURATION = 5 * 1000;
+    const eventSource = buildEventSource('msg'),
+        TEMP_MESSAGE_DURATION = config.messages.tempMessageDurationMillis;
 
     let persistentMessage, temporaryMessage;
-
-    function trigger(eventName, eventData) {
-        console.log('EVENT msg' + eventName);
-        const event = new Event(eventName);
-        event.data = eventData;
-        eventTarget.dispatchEvent(event);
-    }
 
     function triggerNewMessage(text, isTemp) {
         if (isTemp) {
@@ -28,24 +21,18 @@ function buildMessageManager(model) {
             temporaryMessage = null;
             persistentMessage = text;
         }
-        trigger(EVENT_NEW_MESSAGE, {text, isTemp});
+        eventSource.trigger(EVENT_NEW_MESSAGE, {text, isTemp});
     }
 
     const cannedMessages = (() => {
         function showNext() {
-            if (model.playlist && model.playlist[0]){
-                return `Up next: ${model.playlist.filter(item => !item.commercial)[0].name}`;
+            const nonCommercials = (model.playlist || []).filter(item => !item.commercial);
+            if (nonCommercials.length){
+                return `Up next: ${nonCommercials[0].name}`;
             }
         }
 
-        const MESSAGES = [
-            'All audio hosted by The Internet Archive. Find more at http://archive.org',
-            'To check the channel schedules, click the menu ↗',
-            'Streaming shows from the Golden Age of Radio, 24 hours a day',
-            'Volume too loud? You can turn it down, click the menu ↗',
-            'Please support The Internet Archive by donating at http://archive.org/donate',
-            'Build your own channel with your favourite shows, click the menu ↗'
-        ].map(textMessage => [showNext, textMessage]).flatMap(m => m);
+        const MESSAGES = config.messages.canned.map(textMessage => [showNext, textMessage]).flatMap(m => m);
 
         let nextIndex = 0;
         return {
@@ -57,9 +44,7 @@ function buildMessageManager(model) {
     })();
 
     return {
-        on(eventName, handler) {
-            eventTarget.addEventListener(eventName, handler);
-        },
+        on: eventSource.on,
         showLoadingChannels() {
             triggerNewMessage('Loading Channels...');
         },

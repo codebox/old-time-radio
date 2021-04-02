@@ -1,11 +1,53 @@
+TODO
+----
+* error handling for AJAX calls - test each one
+* check/document model, make sure all changes are correct and things get cleared out when they should
+* make list of everything (eg timers) that needs starting/stopping when states change
+* ui for error
+
+Things to update on state change:
+
+
+
+
+app states:
+
+    Initialising, Idle, Tuning In, Tuned In Idle, Loading Track, Playing, Sleeping, Error
+
+    Initialising    --[ CODE channel codes in url ]--> Idle
+    Initialising    --[ CODE get channel list OK ]--> Idle
+    Initialising    --[ CODE get channel list ERR ]--> Error
+    Idle            --[ USER selects channel ]--> Tuning In
+    Idle            --[ CODE sleep timer ]--> Sleeping
+    Tuning In       --[ CODE get channel playlist OK ]--> Tuned In Idle
+    Tuning In       --[ CODE get channel playlist ERR ]--> Error
+    Tuning In       --[ CODE sleep timer ]--> Sleeping
+    Tuned In Idle   --[ CODE track requested ]--> Loading Track
+    Loading Track   --[ CODE load track OK ]--> Playing
+    Loading Track   --[ CODE load track ERR ]--> Error
+    Loading Track   --[ CODE sleep timer ]--> Sleeping
+    Playing         --[ USER selects same channel ]--> Idle
+    Playing         --[ USER selects new channel ]--> Tuning In
+    Playing         --[ CODE sleep timer ]--> Sleeping
+    Playing         --[ CODE track ends ]--> Tuned In Idle
+    Sleeping        --[ USER mouse/keyboard action ]--> Idle
+
 model
     channels [{id, name, userChannel}]
-    selectedChannelId ''
+    selectedChannelId
     playlist [{name, url, length, commercial}]
+    nextTrackOffset
     track {name, url, length, commercial}
-    sleeping
+    volume
+    minVolume
+    maxVolume
     selectedScheduleChannelId
-    channelSchedules {channelId+length:{timestamp,schedule}}
+    stationBuilder
+        shows   [{name,index,isCommercial,channels}]
+        commercialShowIds
+        includeCommercials
+        savedChannelCodes
+
 
 audioPlayer
     ✓ load(url,offset)
@@ -52,23 +94,27 @@ view
     ✓ clearSleepTimer
 
     ✓ on: scheduleButtonClick
-    updateScheduleChannelSelection
-    showSchedule
-    clearSchedule
+    ✓ updateScheduleChannelSelection
+    ✓ showSchedule
+    ✓ clearSchedule
 
-    on: stationBuilderShowClick
-    on: stationBuilderPlayCommercialsClick
-    on: stationBuilderCreateChannelClick
-    on: stationBuilderAnotherChannelClick
-    on: stationBuilderDeleteStationClick
-    setStationBuilderShowSelections
-    toggleStationBuilderCommercialsButton
-    toggleStationBuilderCreateChannelButton
-    toggleStationBuilderOptionsButtons
+    ✓ on: stationBuilderShowClick
+    ✓ on: stationBuilderPlayCommercialsClick
+    ✓ on: stationBuilderCreateChannelClick
+    ✓ on: stationBuilderAnotherChannelClick
+    ✓ on: stationBuilderDeleteStationClick
+    ✓ populateStationBuilderShows
+    ✓ updateStationBuilderShowSelections
+    ✓ updateStationBuilderIncludeCommercials
 
 Tests
 -----
-Channel Buttons
+
+- When everything on current playlist has been played, the API is queried again and playback continues
+- When playing a show the Download as MP3 link is visible
+- When not playing a show the Download as MP3 link is not visible
+- Stop/start playing resumes at correct point
+- Interrupting going to sleep process does not interrupt playback
 
 Volume Control
 - Volume is at max on first visit
@@ -76,6 +122,7 @@ Volume Control
 - Volume +/- are disabled/enabled correctly
 - Volume is saved between page refreshes
 - Adjusting volume before playing audio works correctly
+- Volume is saved in browser storage and set next time site is opened
 
 Sleep
 - Sleeping message is displayed
@@ -87,7 +134,11 @@ Wake
 - Volume restored to pre-sleep level
 - Select channel message shown
 - Periodic messages resume
+- Message set to 'Select a Channel'
 
 Schedule
 - Schedule for playing channel is auto-selected when menu is opened
 - Schedule is updated automatically if left open
+
+Station Builder
+- When listening to a custom station, schedule should show correct channels

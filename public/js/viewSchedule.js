@@ -1,4 +1,4 @@
-const viewSchedule = (() => {
+function buildScheduleView(eventSource) {
     "use strict";
 
     const elChannelLinks = document.getElementById('channelScheduleLinks'),
@@ -6,18 +6,13 @@ const viewSchedule = (() => {
         channelToElement = {},
         CSS_CLASS_SELECTED = 'selected';
 
-    let trigger;
-
     return {
-        init(_trigger) {
-            trigger = _trigger;
-        },
         addChannel(channel) {
             const li = document.createElement('li');
             li.innerHTML = channel.name;
             li.classList.add('showButton');
             li.onclick = () => {
-                trigger('scheduleButtonClick', channel.id);
+                eventSource.trigger(EVENT_SCHEDULE_BUTTON_CLICK, channel.id);
             };
             elChannelLinks.appendChild(li);
             channelToElement[channel.id] = li;
@@ -59,4 +54,4 @@ const viewSchedule = (() => {
             elScheduleList.innerHTML = '';
         }
     };
-})();
+}

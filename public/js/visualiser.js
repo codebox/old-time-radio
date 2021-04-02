@@ -1,8 +1,9 @@
-const visualiser = (() => {
+function buildVisualiser(dataSource) {
+    "use strict";
     const BACKGROUND_COLOUR = 'black',
         MAX_FREQ_DATA_VALUE = 255;
 
-    let dataSource, activationCount = 0, elCanvas, ctx, width, height
+    let activationCount = 0, elCanvas, ctx, width, height
 
     function updateCanvasSize() {
         width = elCanvas.width = elCanvas.offsetWidth;
@@ -19,10 +20,10 @@ const visualiser = (() => {
         "use strict";
         if (activationCount) {
             const data = dataSource(),
-                WAVE_SPEED = 0.5,
+                WAVE_SPEED = config.visualiser.waveSpeed,
                 PADDING = width > 500 ? 50 : 25,
-                MIN_WAVE_LIGHTNESS = 10,
-                BUCKET_COUNT = 30,
+                MIN_WAVE_LIGHTNESS = config.visualiser.minWaveLightness,
+                BUCKET_COUNT = config.visualiser.bucketCount,
                 TWO_PI = Math.PI * 2,
                 startX = PADDING,
                 endX = width - PADDING;
@@ -78,7 +79,7 @@ const visualiser = (() => {
             dataSource = source;
         },
         activate() {
-            activationCount++;
+            activationCount++; //TODO fix this
         },
         deactivate() {
             clearCanvas();
@@ -88,4 +89,4 @@ const visualiser = (() => {
             return updateCanvasSize;
         }
     };
-})();
+}
