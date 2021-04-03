@@ -68,6 +68,9 @@ function buildMessageManager(model) {
         },
         showSleeping() {
             triggerNewMessage('Sleeping');
+        },
+        showError(details) {
+            triggerNewMessage(`There was a problem, please adjust your aerial: ${details}`);
         }
     };
 }

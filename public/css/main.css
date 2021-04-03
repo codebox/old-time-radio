@@ -2,8 +2,6 @@
     --led-off: #808080;
     --led-on: #ffffff;
     --led-glow: rgba(0, 0, 0, 0.2) 0px 0px 7px 1px, inset #404040 0 0 10px, #ffffff 0 0 12px;
-    --led-error-on: #F00;
-    --led-error-glow: rgba(0, 0, 0, 0.2) 0px 0px 7px 1px, inset #404040 0 0 10px, #f00 0 0 12px;
     --led-on-edge: #999999;
     --font-color: white;
     --font-color-dim: #888;
@@ -443,10 +441,6 @@ noscript a, noscript a:visited {
 .buttonBox.channelPlaying .buttonIndicator {
     background-color: var(--led-on);
     box-shadow: var(--led-glow);
-}
-.buttonBox.channelError .buttonIndicator {
-    background-color: var(--led-error-on);
-    box-shadow: var(--led-error-glow);
 }
 .button, .button.disabled:active {
     display: flex;

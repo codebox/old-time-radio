@@ -1,3 +1,5 @@
+const stateMachine = buildStateMachine(); //TODO
+
 window.onload = () => {
     "use strict";
 
@@ -7,75 +9,144 @@ window.onload = () => {
         audioPlayer = buildAudioPlayer(model.maxVolume),
         visualiser = buildVisualiser(audioPlayer.getData),
         messageManager = buildMessageManager(model),
-        sleepTimer = buildSleepTimer(),
-        stateMachine = buildStateMachine();
+        sleepTimer = buildSleepTimer();
+
+    function onError(error) {
+        stateMachine.error();
+        model.selectedChannelId = model.playlist = model.track = null;
+        audioPlayer.stop();
+        visualiser.stop();
+        tempMessageTimer.stop();
+        scheduleRefresher.stop();
+        view.setNoChannelSelected();
+        view.showError(error);
+        messageManager.showError(error);
+    }
 
     function loadNextFromPlaylist() {
+        function playNextFromPlaylist() {
+            const nextItem = model.playlist.shift();
+            model.track = nextItem;
+            audioPlayer.load(nextItem.url);
+            stateMachine.loadingTrack();
+        }
+
         if (model.playlist && model.playlist.length) {
-            stateMachine.trackRequested();
+            playNextFromPlaylist();
 
         } else {
+            stateMachine.tuningIn();
             service.getPlaylistForChannel(model.selectedChannelId).then(playlist => {
                 model.playlist = playlist.list;
                 model.nextTrackOffset = playlist.initialOffset;
-                stateMachine.playlistSuccess();
+                playNextFromPlaylist();
 
-            }).catch(err => {
-                console.error(err);
-                stateMachine.playlistFailure();
-            });
+            }).catch(onError);
         }
     }
 
     // Message Manager event handler
-    messageManager.on(EVENT_NEW_MESSAGE, event => {
+    messageManager.on(EVENT_NEW_MESSAGE).then(event => {
         const {text} = event.data;
         view.showMessage(text);
     });
 
     // Audio Player event handlers
-    audioPlayer.on(EVENT_AUDIO_TRACK_LOADED, () => {
-        stateMachine.trackLoadSuccess();
+    audioPlayer.on(EVENT_AUDIO_TRACK_LOADED).ifState(STATE_LOADING_TRACK).then(() => {
+        visualiser.start();
+        audioPlayer.play(model.nextTrackOffset);
+        model.nextTrackOffset = 0;
+        view.showDownloadLink(model.track.url);
     });
 
-    audioPlayer.on(EVENT_AUDIO_PLAY_STARTED, () => {
+    audioPlayer.on(EVENT_AUDIO_PLAY_STARTED).ifState(STATE_LOADING_TRACK).then(() => {
+        stateMachine.playing();
         view.setChannelLoaded(model.selectedChannelId);
         messageManager.showNowPlaying(model.track.name);
     });
 
-    audioPlayer.on(EVENT_AUDIO_TRACK_ENDED, () => {
+    audioPlayer.on(EVENT_AUDIO_TRACK_ENDED).ifState(STATE_PLAYING).then(() => {
         loadNextFromPlaylist();
     });
 
-    audioPlayer.on(EVENT_AUDIO_ERROR, () => {
-        stateMachine.trackLoadFailure();
+    audioPlayer.on(EVENT_AUDIO_ERROR).ifState(STATE_LOADING_TRACK).then(event => {
+        onError(event.data);
     });
 
     // Sleep Timer event handlers
-    sleepTimer.on(EVENT_SLEEP_TIMER_TICK, event => {
+    sleepTimer.on(EVENT_SLEEP_TIMER_TICK).then(event => {
         const secondsLeft = event.data;
         view.updateSleepTimer(secondsLeft);
     });
 
-    sleepTimer.on(EVENT_SLEEP_TIMER_DONE, () => {
-        stateMachine.sleepTimerTriggers();
+    sleepTimer.on(EVENT_SLEEP_TIMER_DONE).ifState(STATE_PLAYING).then(() => {
+        view.sleep();
+        tempMessageTimer.stop();
+        messageManager.showSleeping();
+        visualiser.stop();
+        scheduleRefresher.stop();
+
+        const interval = setInterval(() => {
+            if (stateMachine.state === STATE_GOING_TO_SLEEP) {
+                const newVolume = audioPlayer.getVolume() - config.sleepTimer.fadeOutDelta;
+                if (newVolume > 0) {
+                    audioPlayer.setVolume(newVolume);
+                } else {
+                    model.selectedChannelId = model.track = model.playlist = null;
+                    audioPlayer.stop();
+                    view.setNoChannelSelected();
+                    stateMachine.sleeping();
+                }
+            } else {
+                clearInterval(interval);
+            }
+        }, config.sleepTimer.fadeOutIntervalMillis);
+
+        stateMachine.goingToSleep();
+    });
+
+    sleepTimer.on(EVENT_SLEEP_TIMER_DONE).ifState(STATE_IDLE, STATE_TUNING_IN, STATE_LOADING_TRACK, STATE_ERROR).then(() => {
+        view.sleep();
+        model.selectedChannelId = model.track = model.playlist = null;
+        view.setNoChannelSelected();
+        tempMessageTimer.stop();
+        messageManager.showSleeping();
+        visualiser.stop();
+        scheduleRefresher.stop();
+
+        stateMachine.sleeping();
     });
 
     // View event handlers
-    view.on(EVENT_CHANNEL_BUTTON_CLICK, event => {
+    view.on(EVENT_CHANNEL_BUTTON_CLICK).then(event => {
         const channelId = event.data;
 
         if (channelId === model.selectedChannelId) {
-            model.selectedChannelId = null;
-            stateMachine.userDeselectsChannel();
+            model.selectedChannelId = model.playlist = model.track = model.nextTrackOffset = null;
+
+            audioPlayer.stop();
+
+            view.setNoChannelSelected();
+            view.hideDownloadLink();
+            visualiser.stop(config.visualiser.fadeOutIntervalMillis);
+
+            messageManager.showSelectChannel();
+
+            stateMachine.idle();
 
         } else {
             model.selectedChannelId = channelId;
-            stateMachine.userSelectsNewChannel();
+            model.playlist = model.track = model.nextTrackOffset = null;
+
+            view.setChannelLoading(model.selectedChannelId);
+            const channel = model.channels.find(channel => channel.id === model.selectedChannelId);
+            messageManager.showTuningInToChannel(channel.name);
+
+            loadNextFromPlaylist();
         }
     });
 
-    view.on(EVENT_MENU_OPEN_CLICK, () => {
+    view.on(EVENT_MENU_OPEN_CLICK).then(() => {
         view.openMenu();
         if (model.selectedChannelId) {
             model.selectedScheduleChannelId = model.selectedChannelId;
@@ -84,7 +155,7 @@ window.onload = () => {
         }
     });
 
-    view.on(EVENT_MENU_CLOSE_CLICK, () => {
+    view.on(EVENT_MENU_CLOSE_CLICK).then(() => {
         view.closeMenu();
         model.selectedScheduleChannelId = null;
         view.updateScheduleChannelSelection();
@@ -98,12 +169,12 @@ window.onload = () => {
         model.save();
     }
 
-    view.on(EVENT_VOLUME_UP_CLICK, () => {
+    view.on(EVENT_VOLUME_UP_CLICK).then(() => {
         model.volume++;
         applyModelVolume();
     });
 
-    view.on(EVENT_VOLUME_DOWN_CLICK, () => {
+    view.on(EVENT_VOLUME_DOWN_CLICK).then(() => {
         model.volume--;
         applyModelVolume();
     });
@@ -127,21 +198,34 @@ window.onload = () => {
         }
     })();
 
-    view.on(EVENT_SET_SLEEP_TIMER_CLICK, event => {
+    view.on(EVENT_SET_SLEEP_TIMER_CLICK).then(event => {
         const minutes = event.data;
         sleepTimer.start(minutes);
         view.startSleepTimer();
     });
 
-    view.on(EVENT_CANCEL_SLEEP_TIMER_CLICK, () => {
+    view.on(EVENT_CANCEL_SLEEP_TIMER_CLICK).then(() => {
         sleepTimer.stop();
         view.clearSleepTimer();
     });
 
-    view.on(EVENT_WAKE_UP, () => {
-        audioPlayer.setVolume(model.volume);
+    view.on(EVENT_WAKE_UP).ifState(STATE_GOING_TO_SLEEP).then(() => {
         view.wakeUp();
-        stateMachine.wakeAction();
+        audioPlayer.setVolume(model.volume);
+        tempMessageTimer.start();
+        visualiser.start();
+
+        messageManager.showNowPlaying(model.track.name);
+        stateMachine.playing();
+    });
+
+    view.on(EVENT_WAKE_UP).ifState(STATE_SLEEPING).then(() => {
+        view.wakeUp();
+        audioPlayer.setVolume(model.volume);
+        tempMessageTimer.start();
+
+        messageManager.showSelectChannel();
+        stateMachine.idle();
     });
 
     const scheduleRefresher = (() => {
@@ -174,7 +258,7 @@ window.onload = () => {
         return refresher;
     })();
 
-    view.on(EVENT_SCHEDULE_BUTTON_CLICK, event => {
+    view.on(EVENT_SCHEDULE_BUTTON_CLICK).then(event => {
         const channelId = event.data,
             selectedChannelWasClicked = model.selectedScheduleChannelId === channelId;
 
@@ -192,19 +276,19 @@ window.onload = () => {
         }
     });
 
-    view.on(EVENT_STATION_BUILDER_SHOW_CLICK, event => {
+    view.on(EVENT_STATION_BUILDER_SHOW_CLICK).then(event => {
         const clickedShow = event.data;
         model.stationBuilder.shows.filter(show => show.index === clickedShow.index).forEach(show => show.selected = !show.selected);
         view.updateStationBuilderShowSelections(model.stationBuilder);
     });
 
-    view.on(EVENT_STATION_BUILDER_PLAY_COMMERCIALS_CLICK, () => {
+    view.on(EVENT_STATION_BUILDER_PLAY_COMMERCIALS_CLICK).then(() => {
         const includeCommercials = !model.stationBuilder.includeCommercials;
         model.stationBuilder.includeCommercials = includeCommercials;
         view.updateStationBuilderIncludeCommercials(model.stationBuilder);
     });
 
-    view.on(EVENT_STATION_BUILDER_CREATE_CHANNEL_CLICK, () => {
+    view.on(EVENT_STATION_BUILDER_CREATE_CHANNEL_CLICK).then(() => {
         const selectedShowIndexes = model.stationBuilder.shows.filter(show => show.selected).map(show => show.index);
         if (model.stationBuilder.includeCommercials) {
             selectedShowIndexes.push(...model.stationBuilder.commercialShowIds);
@@ -219,15 +303,15 @@ window.onload = () => {
         });
     });
 
-    view.on(EVENT_STATION_BUILDER_GO_TO_CHANNEL_CLICK, () => {
+    view.on(EVENT_STATION_BUILDER_GO_TO_CHANNEL_CLICK).then(() => {
         window.location.href = `?channels=${model.stationBuilder.savedChannelCodes.join(',')}`;
     });
 
-    view.on(EVENT_STATION_BUILDER_ADD_CHANNEL_CLICK, () => {
+    view.on(EVENT_STATION_BUILDER_ADD_CHANNEL_CLICK).then(() => {
         view.addAnotherStationBuilderChannel();
     });
 
-    view.on(EVENT_STATION_BUILDER_DELETE_STATION_CLICK, () => {
+    view.on(EVENT_STATION_BUILDER_DELETE_STATION_CLICK).then(() => {
         model.stationBuilder.savedChannelCodes.length = 0;
         view.updateStationBuilderStationDetails(model.stationBuilder);
     });
@@ -260,16 +344,17 @@ window.onload = () => {
     }
 
     // State Machine event handlers
-    stateMachine.on(EVENT_STATE_CHANGED_TO_INITIALISING, () => {
+    function startUp(){
+        stateMachine.initialising();
+        model.channels = model.selectedChannelId = model.playlist = model.track = null;
+
         applyModelVolume();
         view.setVisualiser(visualiser);
 
         getChannels().then(channels => {
-            model.channels = channels;
-            view.setChannels(model.channels);
-
-        }).then(() => {
             service.getShowList().then(shows => {
+                model.channels = channels;
+                view.setChannels(model.channels);
                 model.stationBuilder.shows = [...shows.filter(show => !show.isCommercial).map(show => {
                     return {
                         index: show.index,
@@ -282,106 +367,14 @@ window.onload = () => {
 
                 view.populateStationBuilderShows(model.stationBuilder);
                 tempMessageTimer.start();
+                messageManager.showSelectChannel();
 
-                stateMachine.channelListSuccess();
+                stateMachine.idle();
             });
 
-        }).catch(err => {
-            model.lastError = err;
-            stateMachine.channelListFailure();
-        });
-    });
+        }).catch(onError);
+    }
+    startUp();
 
-    stateMachine.on(EVENT_STATE_CHANGED_TO_IDLE, () => {
-        model.selectedChannelId = null;
-        model.playlist = null;
-        model.track = null;
-        model.nextTrackOffset = null;
 
-        audioPlayer.stop();
-
-        view.setNoChannelSelected();
-        view.hideDownloadLink();
-        visualiser.stop(config.visualiser.fadeOutIntervalMillis);
-
-        messageManager.showSelectChannel();
-    });
-
-    stateMachine.on(EVENT_STATE_CHANGED_TO_TUNING_IN, () => {
-        console.assert(model.selectedChannelId);
-        model.playlist = null;
-        model.track = null;
-        model.nextTrackOffset = null;
-
-        view.setChannelLoading(model.selectedChannelId);
-        const channel = model.channels.find(channel => channel.id === model.selectedChannelId);
-        messageManager.showTuningInToChannel(channel.name);
-
-        loadNextFromPlaylist();
-    });
-
-    stateMachine.on(EVENT_STATE_CHANGED_TO_TUNED_IN_IDLE, () => {
-
-    });
-
-    stateMachine.on(EVENT_STATE_CHANGED_TO_LOADING_TRACK, () => {
-        const nextItem = model.playlist.shift();
-        model.track = nextItem;
-        stateMachine.trackRequested();
-        audioPlayer.load(nextItem.url);
-    });
-
-    stateMachine.on(EVENT_STATE_CHANGED_TO_PLAYING, () => {
-        visualiser.start();
-        audioPlayer.play(model.nextTrackOffset);
-        model.nextTrackOffset = 0;
-        view.showDownloadLink(model.track.url);
-    });
-
-    stateMachine.on(EVENT_STATE_CHANGED_TO_GOING_TO_SLEEP, () => {
-        view.sleep();
-        tempMessageTimer.stop();
-
-        const interval = setInterval(() => {
-            if (stateMachine.isSleeping()) {
-                const newVolume = audioPlayer.getVolume() - config.sleepTimer.fadeOutDelta;
-                if (newVolume > 0) {
-                    audioPlayer.setVolume(newVolume);
-                } else {
-                    clearInterval(interval);
-                    stateMachine.goingToSleepComplete();
-                }
-            } else {
-                clearInterval(interval);
-                // wake event received before timer completes
-                audioPlayer.setVolume(model.volume);
-            }
-        }, config.sleepTimer.fadeOutIntervalMillis);
-    });
-
-    stateMachine.on(EVENT_STATE_CHANGED_TO_SLEEPING, () => {
-        view.sleep();
-        audioPlayer.stop();
-        model.selectedChannelId = model.track = model.playlist = null;
-        tempMessageTimer.stop();
-        messageManager.showSleeping();
-        visualiser.stop();
-        scheduleRefresher.stop();
-    });
-
-    stateMachine.on(EVENT_STATE_CHANGED_TO_ERROR, () => {
-        model.selectedChannelId = model.playlist = model.track = null;
-        audioPlayer.stop();
-        visualiser.stop();
-        tempMessageTimer.stop();
-        scheduleRefresher.stop();
-        view.showError(model.lastError);
-        messageManager.httpError();
-    });
-
-    stateMachine.on(EVENT_STATE_CHANGED_TO_INITIALISING, () => {
-        console.assert(!model.channels);
-    });
-
-    stateMachine.initialise();
 };

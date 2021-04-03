@@ -9,8 +9,24 @@ function buildEventSource(name) {
             event.data = eventData;
             eventTarget.dispatchEvent(event);
         },
-        on(eventName, handler) {
-            eventTarget.addEventListener(eventName, handler);
+        on(eventName) {
+            return {
+                then(handler) {
+                    eventTarget.addEventListener(eventName, handler);
+                },
+                ifState(...states) {
+                    return {
+                        then(handler) {
+                            eventTarget.addEventListener(eventName, event => {
+                                if (states.includes(stateMachine.state)) {
+                                    handler(event);
+                                }
+                            });
+                        }
+                    };
+                }
+            };
+
         }
     };
 }

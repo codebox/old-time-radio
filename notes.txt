@@ -4,25 +4,18 @@ TODO
 * check/document model, make sure all changes are correct and things get cleared out when they should
 * make list of everything (eg timers) that needs starting/stopping when states change
 * ui for error
+* put config values back to normal
 
-Things to update on state change:
-
-
-
-
-app states:
-
-    Initialising, Idle, Tuning In, Tuned In Idle, Loading Track, Playing, Going To Sleep, Sleeping, Error
+STATE_INITIALISING, STATE_IDLE, STATE_TUNING_IN, STATE_LOADING_TRACK, STATE_PLAYING, STATE_GOING_TO_SLEEP, STATE_SLEEPING, STATE_ERROR
 
     Initialising    --[ CODE channel codes in url ]--> Idle
     Initialising    --[ CODE get channel list OK ]--> Idle
     Initialising    --[ CODE get channel list ERR ]--> Error
     Idle            --[ USER selects channel ]--> Tuning In
     Idle            --[ CODE sleep timer ]--> Sleeping
-    Tuning In       --[ CODE get channel playlist OK ]--> Tuned In Idle
+    Tuning In       --[ CODE get channel playlist OK ]--> Loading Track
     Tuning In       --[ CODE get channel playlist ERR ]--> Error
     Tuning In       --[ CODE sleep timer ]--> Sleeping
-    Tuned In Idle   --[ CODE track requested ]--> Loading Track
     Loading Track   --[ CODE load track OK ]--> Playing
     Loading Track   --[ CODE load track ERR ]--> Error
     Loading Track   --[ CODE sleep timer ]--> Sleeping
@@ -32,36 +25,6 @@ app states:
     Playing         --[ CODE track ends ]--> Tuned In Idle
     Sleeping        --[ USER mouse/keyboard action ]--> Idle
 
-Initialising
-    from START
-
-Idle
-    from INITIALISING
-    from TUNING_IN, PLAYING, TUNED_IN_IDLE, LOADING_TRACK (user deselects channel)
-    from SLEEPING (wake action)
-
-Tuning In
-    from IDLE, TUNING_IN, PLAYING, TUNED_IN_IDLE, LOADING_TRACK (user selects channel)
-
-Tuned In Idle
-    from TUNING_IN (playlist success)
-    from PLAYING (track ends)
-
-Loading Track
-    from TUNED_IN_IDLE
-
-Playing
-    from LOADING_TRACK
-    from GOING_TO_SLEEP (wake action)
-
-Going To Sleep
-    from PLAYING
-
-Sleeping
-    from IDLE, TUNING_IN, TUNED_IN_IDLE, LOADING_TRACK, ERROR
-    from GOING_TO_SLEEP
-
-Error
 
 model
     channels [{id, name, userChannel}]

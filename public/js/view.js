@@ -226,7 +226,11 @@ function buildView() {
             elDownloadLink.innerHTML = '';
         },
         showError(errorMsg) {
-            //TODO
+            forEachChannelButton((id, el) => {
+                el.classList.remove(CLASS_PLAYING, CLASS_ERROR);
+                el.classList.toggle(CLASS_LOADING, true);
+            });
+
         }
     };
 }
