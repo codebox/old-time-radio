@@ -1,190 +1,28 @@
-const view = (() => {
+function buildView(eventSource) {
     "use strict";
-    const STATE_INIT = 'initialising',
-        STATE_NO_CHANNEL = 'nochannel',
-        STATE_CHANNEL_LOADING = 'channelLoading',
-        STATE_CHANNEL_PLAYING = 'channelPlaying',
-        STATE_CONNECTION_ERROR = 'connectionError',
+    const FEW_CHANNELS_LIMIT = 4,
+        channelButtons = {},
 
         CLASS_LOADING = 'channelLoading',
         CLASS_PLAYING = 'channelPlaying',
         CLASS_ERROR = 'channelError',
 
-        SCHEDULE_UPDATE_INTERVAL_MILLIS = 60 * 1000,
-        FEW_CHANNELS_LIMIT = 4,
-
-        elButtonContainer = document.getElementById('buttons'),
-        elDownloadLink = document.getElementById('downloadLink'),
         elMenuOpenButton = document.getElementById('menuOpenButton'),
         elMenuCloseButton = document.getElementById('menuCloseButton'),
         elMenuBox = document.getElementById('menu'),
         elVolumeUp = document.getElementById('volumeUp'),
         elVolumeDown = document.getElementById('volumeDown'),
+        elMessage = document.getElementById('message'),
+        elDownloadLink = document.getElementById('downloadLink'),
+        elButtonContainer = document.getElementById('buttons'),
+        elVolumeLeds = Array.from(Array(10).keys()).map(i => document.getElementById(`vol${i+1}`)),
+        elVisualiserCanvas = document.getElementById('canvas'),
 
-        volumeLeds = Array.from(Array(10).keys()).map(i => document.getElementById(`vol${i+1}`)),
+        sleepTimerView = buildSleepTimerView(eventSource),
+        scheduleView = buildScheduleView(eventSource),
+        stationBuilderView = buildStationBuilderView(eventSource);
 
-        channelButtons = {};
-
-    const scheduleManager = (() => {
-        const elChannelLinks = document.getElementById('channelScheduleLinks'),
-            elScheduleList = document.getElementById('scheduleList'),
-            scheduleModel = [],
-            CSS_CLASS_SELECTED = 'selected';
-
-        function render() {
-            scheduleModel.forEach(channelDetails => {
-                channelDetails.el.classList.toggle(CSS_CLASS_SELECTED, !! channelDetails.selected);
-            });
-            const selectedChannelDetails = scheduleModel.find(channelDetails => channelDetails.selected);
-            elScheduleList.innerHTML = '';
-            if (selectedChannelDetails) {
-                selectedChannelDetails.schedule.forEach(scheduleItem => {
-                    const el = document.createElement('li');
-                    el.innerHTML = `<div class="scheduleItemTime">${scheduleItem.time}</div><div class="scheduleItemName">${scheduleItem.name}</div>`;
-                    elScheduleList.appendChild(el);
-                });
-            }
-        }
-
-        function setSelectedChannel(selectedChannel) {
-            scheduleModel.forEach(channelDetails => {
-                channelDetails.selected = selectedChannel && (channelDetails.channel.id === selectedChannel.id);
-            });
-            render();
-            if (selectedChannel) {
-                onScheduleRequestedHandler(selectedChannel.id);
-            }
-        }
-
-        function getSelectedChannel() {
-            return scheduleModel.find(channelDetails => channelDetails.selected);
-        }
-
-        function isSelectedChannel(channel) {
-            return scheduleModel.find(channelDetails => channelDetails.channel.id === channel.id).selected;
-        }
-
-        return {
-            addChannel(channel) {
-                const li = document.createElement('li');
-                li.innerHTML = channel.name;
-                li.classList.add('showButton');
-                li.onclick = () => {
-                    setSelectedChannel(isSelectedChannel(channel) ? null : channel);
-                };
-                elChannelLinks.appendChild(li);
-                scheduleModel.push({channel, el:li, selected: false, schedule: []});
-            },
-            updateSchedule(channelId, schedule) {
-                const channelDetailsToUpdate = scheduleModel.find(channelDetails => channelDetails.channel.id === channelId);
-                const playingNow = schedule.list.shift(),
-                    timeNow = Date.now() / 1000;
-                let nextShowStartOffsetFromNow = playingNow.length - schedule.initialOffset;
-
-                channelDetailsToUpdate.schedule = [{time: 'NOW &gt;', name: playingNow.name}];
-                channelDetailsToUpdate.schedule.push(...schedule.list.map(item => {
-                    const ts = nextShowStartOffsetFromNow + timeNow,
-                        date = new Date(ts * 1000),
-                        hh = date.getHours().toString().padStart(2,'0'),
-                        mm = date.getMinutes().toString().padStart(2,'0');
-                    const result = {
-                        time: `${hh}:${mm}`,
-                        name: item.name,
-                        commercial: item.commercial
-                    };
-                    nextShowStartOffsetFromNow += item.length;
-                    return result;
-                }).filter(item => !item.commercial));
-                if (channelDetailsToUpdate.selected) {
-                    render();
-                }
-            },
-            setSelectedChannel(channel) {
-                setSelectedChannel(channel);
-            },
-            updateSelectedChannel() {
-                const selectedChannel = getSelectedChannel();
-                if (selectedChannel) {
-                    onScheduleRequestedHandler(selectedChannel.channel.id);
-                }
-            }
-        };
-    })();
-
-    const sleepTimerView = (() => {
-        const elSleepTimerTime = document.getElementById('sleepTimerTime'),
-            elSleepTimerRunningDisplay = document.getElementById('sleepTimerRunningDisplay'),
-            elSleepTimerButtons = document.getElementById('sleepTimerButtons'),
-            elCancelSleepTimerButton = document.getElementById('cancelSleepTimerButton'),
-
-            HIDDEN_CSS_CLASS = 'hidden',
-            BUTTONS = [
-                [90, '90 Minutes'],
-                [60, '60 Minutes'],
-                [45, '45 minutes'],
-                [30, '30 minutes'],
-                [15, '15 minutes']
-            ];
-
-        function formatTimePart(value) {
-            return (value < 10 ? '0' : '') + value;
-        }
-
-        return {
-            init() {
-                elSleepTimerButtons.innerHTML = '';
-                BUTTONS.forEach(details => {
-                    const [minutes, text] = details;
-                    const button = document.createElement('li');
-                    button.classList.add('showButton');
-                    button.innerHTML = text;
-
-                    button.onclick = () => {
-                        onSetSleepTimerClickedHandler(minutes);
-                    };
-
-                    elSleepTimerButtons.appendChild(button);
-                });
-                elCancelSleepTimerButton.onclick = () => {
-                    onSleepTimerCancelClickedHandler();
-                };
-            },
-            render(totalSeconds) {
-                const hours = Math.floor(totalSeconds / 3600),
-                    minutes = Math.floor((totalSeconds % 3600) / 60),
-                    seconds = totalSeconds % 60;
-                elSleepTimerTime.innerHTML = `${formatTimePart(hours)}:${formatTimePart(minutes)}:${formatTimePart(seconds)}`;
-            },
-            setRunState(isRunning) {
-                elSleepTimerRunningDisplay.classList.toggle(HIDDEN_CSS_CLASS, !isRunning);
-            }
-        };
-    })();
-
-    elMenuOpenButton.onclick = () => {
-        setMenuState(true);
-    };
-    elMenuCloseButton.onclick = () => {
-        setMenuState(false);
-    };
-    elVolumeUp.onclick = () => {
-        config.volume += 1;
-        onVolumeChanged();
-    };
-    elVolumeDown.onclick = () => {
-        config.volume -= 1;
-        onVolumeChanged();
-    };
-
-    let model,
-        scheduleUpdateInterval,
-        onChannelSelectedHandler = () => {},
-        onChannelDeselectedHandler = () => {},
-        onVolumeChangedHandler = () => {},
-        onSetSleepTimerClickedHandler = () => {},
-        onSleepTimerCancelClickedHandler = () => {},
-        onScheduleRequestedHandler = () => {},
-        onWakeHandler = () => {};
+    let visualiser;
 
     function forEachChannelButton(fn) {
         Object.keys(channelButtons).forEach(channelId => {
@@ -192,179 +30,206 @@ const view = (() => {
         });
     }
 
-    function updateDownloadLink() {
-        if (model.track) {
-            elDownloadLink.innerHTML = `<a href="${model.track.url}" target="_blank">Download this show as an MP3 file</a>`;
-        } else {
-            elDownloadLink.innerHTML = '';
+    function buildChannelButton(channel) {
+        const channelId = channel.id,
+            channelName = channel.name,
+            elButtonBox = document.createElement('div');
+        elButtonBox.classList.add('buttonBox');
+
+        const elButtonIndicator = document.createElement('div'),
+            elButton = document.createElement('div'),
+            elButtonLabel = document.createElement('div');
+
+        elButtonIndicator.classList.add('buttonIndicator');
+
+        elButton.classList.add('button');
+        elButtonLabel.classList.add('buttonLabel');
+        elButtonLabel.innerText = channelName;
+
+        elButton.onclick = () => {
+            eventSource.trigger(EVENT_CHANNEL_BUTTON_CLICK, channelId);
+        };
+        elButtonBox.appendChild(elButtonIndicator);
+        elButtonBox.appendChild(elButton);
+        elButtonBox.appendChild(elButtonLabel);
+
+        elButtonContainer.appendChild(elButtonBox);
+        channelButtons[channelId] = elButtonBox;
+    }
+
+    const messagePrinter = (() => {
+        const PRINT_INTERVAL = config.messages.charPrintIntervalMillis;
+        let interval;
+
+        function stopPrinting() {
+            clearInterval(interval);
+            interval = 0;
         }
+
+        return {
+            print(msg) {
+                if (interval) {
+                    stopPrinting();
+                }
+                const msgLen = msg.length;
+                let i = 1;
+                interval = setInterval(() => {
+                    elMessage.innerText = (msg.substr(0,i) + (i < msgLen ? '█' : '')).padEnd(msgLen, ' ');
+                    const messageComplete = i === msgLen;
+                    if (messageComplete) {
+                        stopPrinting();
+                        eventSource.trigger(EVENT_MESSAGE_PRINTING_COMPLETE);
+                    } else {
+                        i += 1;
+                    }
+
+                }, PRINT_INTERVAL);
+            }
+        };
+    })();
+
+    function triggerWake() {
+        eventSource.trigger(EVENT_WAKE_UP);
     }
 
-    function onVolumeChanged() {
-        volumeLeds.forEach((el, i) => el.classList.toggle('on', (i + 1) <= config.volume));
-        elVolumeUp.classList.toggle('disabled', config.isVolumeMax());
-        elVolumeDown.classList.toggle('disabled', config.isVolumeMin());
-        onVolumeChangedHandler();
-    }
+    elMenuOpenButton.onclick = () => {
+        eventSource.trigger(EVENT_MENU_OPEN_CLICK);
+    };
+    elMenuCloseButton.onclick = () => {
+        eventSource.trigger(EVENT_MENU_CLOSE_CLICK);
+    };
 
-    function setMenuState(isOpen) {
-        elMenuBox.classList.toggle('visible', isOpen);
-        elMenuOpenButton.style.display = isOpen ? 'none' : 'inline';
-        elMenuCloseButton.style.display = !isOpen ? 'none' : 'inline';
-        scheduleManager.setSelectedChannel(isOpen ? model.channel : undefined); //TODO move this out of here
-        if (isOpen) {
-            scheduleUpdateInterval = setInterval(() => {
-                scheduleManager.updateSelectedChannel();
-            }, SCHEDULE_UPDATE_INTERVAL_MILLIS);
-        } else {
-            clearInterval(scheduleUpdateInterval);
-        }
-    }
+    elVolumeUp.onclick = () => {
+        eventSource.trigger(EVENT_VOLUME_UP_CLICK);
+    };
+    elVolumeDown.onclick = () => {
+        eventSource.trigger(EVENT_VOLUME_DOWN_CLICK);
+    };
 
-    function setViewState(state) {
-        if (state === STATE_NO_CHANNEL) {
-            forEachChannelButton((id, el) => {
-                el.classList.remove(CLASS_LOADING, CLASS_PLAYING, CLASS_ERROR);
-            });
-
-        } else if (state === STATE_CHANNEL_LOADING) {
-            forEachChannelButton((id, el) => {
-                el.classList.remove(CLASS_PLAYING, CLASS_ERROR);
-                el.classList.toggle(CLASS_LOADING, id === model.channel.id);
-            });
-
-        } else if (state === STATE_CHANNEL_PLAYING) {
-            forEachChannelButton((id, el) => {
-                el.classList.remove(CLASS_LOADING, CLASS_ERROR);
-                el.classList.toggle(CLASS_PLAYING, id === model.channel.id);
-            });
-
-        } else if (state === STATE_CONNECTION_ERROR) {
-            forEachChannelButton((id, el) => {
-                el.classList.remove(CLASS_LOADING, CLASS_PLAYING);
-                el.classList.add(CLASS_ERROR);
-            });
-        }
-        updateDownloadLink();
-        messageManager.updateStatus();
-    }
-
-    setMenuState(false);
-
-    function wakeFromSleep(){
-        if (model && model.sleeping) {
-            document.body.classList.remove('sleeping');
-            onWakeHandler();
-        }
-    }
-
-    document.body.addEventListener('mousemove', wakeFromSleep);
-    document.body.addEventListener('touchstart', wakeFromSleep);
-    document.body.addEventListener('keydown', wakeFromSleep);
+    sleepTimerView.init();
 
     return {
-        init(_model) {
-            model = _model;
-            messageManager.init(document.getElementById('message'), model);
-            sleepTimerView.init();
-            setViewState(STATE_INIT);
-            onVolumeChanged();
-        },
+        on: eventSource.on,
+
         setChannels(channels) {
-            setViewState(STATE_NO_CHANNEL);
             channels.forEach(channel => {
-                const channelId = channel.id,
-                    channelName = channel.name,
-                    elButtonBox = document.createElement('div');
-                elButtonBox.classList.add('buttonBox');
-
-                const elButtonIndicator = document.createElement('div'),
-                    elButton = document.createElement('div'),
-                    elButtonLabel = document.createElement('div');
-
-                elButtonIndicator.classList.add('buttonIndicator');
-
-                elButton.classList.add('button');
-                elButtonLabel.classList.add('buttonLabel');
-                elButtonLabel.innerText = channelName;
-
-                elButton.onclick = () => {
-                    if (model.channel && (channelId === model.channel.id)) {
-                        onChannelDeselectedHandler(channel);
-                    } else {
-                        onChannelSelectedHandler(channel);
-                    }
-                };
-                elButtonBox.appendChild(elButtonIndicator);
-                elButtonBox.appendChild(elButton);
-                elButtonBox.appendChild(elButtonLabel);
-                elButtonContainer.appendChild(elButtonBox);
-                channelButtons[channelId] = elButtonBox;
-
-                scheduleManager.addChannel(channel);
+                buildChannelButton(channel);
+                scheduleView.addChannel(channel);
             });
+
             if (channels.length <= FEW_CHANNELS_LIMIT) {
                 elButtonContainer.classList.add('fewerChannels');
             }
+
             elButtonContainer.scroll({left: 1000});
             elButtonContainer.scroll({behavior:'smooth', left: 0});
         },
-        updatePlayState() {
-            if (!model.channel) {
-                setViewState(STATE_NO_CHANNEL);
-            } else if (!model.track) {
-                setViewState(STATE_CHANNEL_LOADING);
-            } else {
-                setViewState(STATE_CHANNEL_PLAYING);
-            }
+
+        setNoChannelSelected() {
+            forEachChannelButton((id, el) => {
+                el.classList.remove(CLASS_LOADING, CLASS_PLAYING, CLASS_ERROR);
+            });
         },
-        connectionError() {
-            setViewState(STATE_CONNECTION_ERROR);
-            messageManager.httpError();
+
+        setChannelLoading(channelId) {
+            forEachChannelButton((id, el) => {
+                el.classList.remove(CLASS_PLAYING, CLASS_ERROR);
+                el.classList.toggle(CLASS_LOADING, id === channelId);
+            });
         },
-        onChannelSelected(handler) {
-            onChannelSelectedHandler = handler;
+
+        setChannelLoaded(channelId) {
+            forEachChannelButton((id, el) => {
+                el.classList.remove(CLASS_LOADING, CLASS_ERROR);
+                el.classList.toggle(CLASS_PLAYING, id === channelId);
+            });
         },
-        onChannelDeselected(handler) {
-            onChannelDeselectedHandler = handler;
+
+        openMenu() {
+            elMenuBox.classList.add('visible');
+            elMenuOpenButton.style.display = 'none';
+            elMenuCloseButton.style.display = 'inline';
         },
-        onVolumeChanged(handler) {
-            onVolumeChangedHandler = handler;
+        closeMenu() {
+            elMenuBox.classList.remove('visible');
+            elMenuOpenButton.style.display = 'inline';
+            elMenuCloseButton.style.display = 'none';
         },
-        onScheduleRequested(handler) {
-            onScheduleRequestedHandler = handler;
+
+        updateVolume(volume, minVolume, maxVolume) {
+            elVolumeLeds.forEach((el, i) => el.classList.toggle('on', (i + 1) <= volume));
+            elVolumeDown.classList.toggle('disabled', volume === minVolume);
+            elVolumeUp.classList.toggle('disabled', volume === maxVolume);
         },
-        setVisualisationDataSource(source) {
-            visualiser.setDataSource(source);
+
+        showMessage(message) {
+            messagePrinter.print(message);
         },
-        getCanvas() {
-            return document.getElementById('canvas');
-        },
-        updateShowList() {
-            channelBuilder.init(elShowList, model.shows);
-        },
-        updateSchedule(channelId, schedule) {
-            scheduleManager.updateSchedule(channelId, schedule);
-        },
-        onSetSleepTimerClicked(handler) {
-            onSetSleepTimerClickedHandler = handler;
-        },
-        onSleepTimerCancelClicked(handler) {
-            onSleepTimerCancelClickedHandler = handler;
-        },
-        onWake(handler) {
-            onWakeHandler = handler;
-        },
-        sleep() {
-            setMenuState(false);
-            sleepTimerView.setRunState(false);
-            document.body.classList.add('sleeping');
+
+        startSleepTimer() {
+            sleepTimerView.setRunState(true);
         },
         updateSleepTimer(seconds) {
             sleepTimerView.render(seconds);
         },
-        setSleepTimerRunning(isRunning) {
-            sleepTimerView.setRunState(isRunning);
+        clearSleepTimer() {
+            sleepTimerView.setRunState(false);
+        },
+        sleep() {
+            this.closeMenu();
+            sleepTimerView.setRunState(false);
+            document.body.classList.add('sleeping');
+            document.body.addEventListener('mousemove', triggerWake);
+            document.body.addEventListener('touchstart', triggerWake);
+            document.body.addEventListener('keydown', triggerWake);
+        },
+        wakeUp() {
+            document.body.classList.remove('sleeping');
+            document.body.removeEventListener('mousemove', triggerWake);
+            document.body.removeEventListener('touchstart', triggerWake);
+            document.body.removeEventListener('keydown', triggerWake);
+        },
+
+        updateScheduleChannelSelection(channelId) {
+            scheduleView.setSelectedChannel(channelId);
+        },
+        displaySchedule(schedule) {
+            scheduleView.displaySchedule(schedule);
+        },
+        hideSchedule() {
+            scheduleView.hideSchedule();
+        },
+
+        populateStationBuilderShows(stationBuilderModel) {
+            stationBuilderView.populate(stationBuilderModel);
+        },
+        updateStationBuilderShowSelections(stationBuilderModel) {
+            stationBuilderView.updateShowSelections(stationBuilderModel);
+        },
+        updateStationBuilderIncludeCommercials(stationBuilderModel) {
+            stationBuilderView.updateIncludeCommercials(stationBuilderModel);
+        },
+        updateStationBuilderStationDetails(stationBuilderModel) {
+            stationBuilderView.updateStationDetails(stationBuilderModel);
+        },
+        addAnotherStationBuilderChannel() {
+            stationBuilderView.addAnotherChannel();
+        },
+        setVisualiser(audioVisualiser) {
+            audioVisualiser.init(elVisualiserCanvas);
+        },
+        showDownloadLink(mp3Url) {
+            elDownloadLink.innerHTML = `<a href="${mp3Url}" target="_blank">Download this show as an MP3 file</a>`;
+        },
+        hideDownloadLink() {
+            elDownloadLink.innerHTML = '';
+        },
+        showError(errorMsg) {
+            forEachChannelButton((id, el) => {
+                el.classList.remove(CLASS_PLAYING, CLASS_ERROR);
+                el.classList.toggle(CLASS_LOADING, true);
+            });
+
         }
     };
-})();
+}

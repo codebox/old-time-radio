@@ -1,23 +1,24 @@
-const sleepTimer = (() => {
+function buildSleepTimer(eventSource) {
     "use strict";
 
     const MILLIS_PER_SECOND = 1000, SECONDS_PER_MINUTE = 60;
 
-    let endTimeMillis, interval, onSleepHandler = () => {}, onTickHandler = () => {};
+    let endTimeMillis, interval;
 
     function onTick() {
         const secondsRemaining = Math.round((endTimeMillis - Date.now()) / MILLIS_PER_SECOND);
         if (secondsRemaining > 0) {
-            onTickHandler(secondsRemaining);
+            eventSource.trigger(EVENT_SLEEP_TIMER_TICK, secondsRemaining);
         } else {
             timer.stop();
-            onSleepHandler();
+            eventSource.trigger(EVENT_SLEEP_TIMER_DONE);
         }
     }
 
     const timer = {
+        on: eventSource.on,
         start(minutes) {
-            endTimeMillis = Date.now() + minutes * SECONDS_PER_MINUTE *  MILLIS_PER_SECOND;
+            endTimeMillis = Date.now() + minutes *  MILLIS_PER_SECOND * SECONDS_PER_MINUTE;
             onTick();
             if (!interval) {
                 interval = setInterval(onTick, MILLIS_PER_SECOND);
@@ -26,16 +27,8 @@ const sleepTimer = (() => {
         stop() {
             clearInterval(interval);
             interval = null;
-        },
-        isStarted() {
-            return !!interval;
-        },
-        onTick(handler) {
-            onTickHandler = handler;
-        },
-        onSleep(handler) {
-            onSleepHandler = handler;
         }
     };
+
     return timer;
-})();
+}

@@ -1,0 +1,35 @@
+Tests
+-----
+
+- When everything on current playlist has been played, the API is queried again and playback continues
+- When playing a show the Download as MP3 link is visible
+- When not playing a show the Download as MP3 link is not visible
+- Stop/start playing resumes at correct point
+- Interrupting going to sleep process does not interrupt playback
+
+Volume Control
+- Volume is at max on first visit
+- Volume + button is disabled on first visit
+- Volume +/- are disabled/enabled correctly
+- Volume is saved between page refreshes
+- Adjusting volume before playing audio works correctly
+- Volume is saved in browser storage and set next time site is opened
+
+Sleep
+- Sleeping message is displayed
+- Periodic messages stop
+- Volume fades out
+- Triggering wake before sleep volume decrease completes, resets volume to pre-sleep level
+
+Wake
+- Volume restored to pre-sleep level
+- Select channel message shown
+- Periodic messages resume
+- Message set to 'Select a Channel'
+
+Schedule
+- Schedule for playing channel is auto-selected when menu is opened
+- Schedule is updated automatically if left open
+
+Station Builder
+- When listening to a custom station, schedule should show correct channels
