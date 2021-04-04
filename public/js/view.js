@@ -1,7 +1,6 @@
-function buildView() {
+function buildView(eventSource) {
     "use strict";
     const FEW_CHANNELS_LIMIT = 4,
-        eventSource = buildEventSource('sleeview'),
         channelButtons = {},
 
         CLASS_LOADING = 'channelLoading',

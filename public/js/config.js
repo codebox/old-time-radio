@@ -29,6 +29,6 @@ const config = {
         ],
         charPrintIntervalMillis: 40,
         tempMessageDurationMillis: 5000,
-        tempMessageIntervalMillis: 10000
+        tempMessageIntervalMillis: 60 * 1000
     }
 };

@@ -1,4 +1,4 @@
-function buildEventSource(name) {
+function buildEventSource(name, stateMachine) {
     "use strict";
     const eventTarget = new EventTarget();
 

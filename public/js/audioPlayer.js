@@ -1,10 +1,9 @@
-function buildAudioPlayer(maxVolume) {
+function buildAudioPlayer(maxVolume, eventSource) {
     "use strict";
     const audio = new Audio(),
         SMOOTHING = config.audio.smoothing,
         FFT_WINDOW_SIZE = config.audio.fftWindowSize,
-        BUFFER_LENGTH = FFT_WINDOW_SIZE / 2,
-        eventSource = buildEventSource('audio');
+        BUFFER_LENGTH = FFT_WINDOW_SIZE / 2;
 
     let analyser, audioInitialised, audioGain, loadingTrack, initialAudioGainValue;
 

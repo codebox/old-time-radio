@@ -1,17 +1,21 @@
-const stateMachine = buildStateMachine(); //TODO
-
 window.onload = () => {
     "use strict";
 
     const model = buildModel(),
-        view = buildView(),
+        stateMachine = buildStateMachine(),
+        view = buildView(eventSource('view')),
         service = buildService(),
-        audioPlayer = buildAudioPlayer(model.maxVolume),
+        audioPlayer = buildAudioPlayer(model.maxVolume, eventSource('audio')),
         visualiser = buildVisualiser(audioPlayer.getData),
-        messageManager = buildMessageManager(model),
-        sleepTimer = buildSleepTimer();
+        messageManager = buildMessageManager(model, eventSource('msg')),
+        sleepTimer = buildSleepTimer(eventSource('sleep'));
+
+    function eventSource(name) {
+        return buildEventSource(name, stateMachine);
+    }
 
     function onError(error) {
+        console.error(error);
         stateMachine.error();
         model.selectedChannelId = model.playlist = model.track = null;
         audioPlayer.stop();
@@ -19,8 +23,9 @@ window.onload = () => {
         tempMessageTimer.stop();
         scheduleRefresher.stop();
         view.setNoChannelSelected();
+        view.hideDownloadLink();
         view.showError(error);
-        messageManager.showError(error);
+        messageManager.showError();
     }
 
     function loadNextFromPlaylist() {
@@ -83,7 +88,6 @@ window.onload = () => {
         view.sleep();
         tempMessageTimer.stop();
         messageManager.showSleeping();
-        visualiser.stop();
         scheduleRefresher.stop();
 
         const interval = setInterval(() => {
@@ -94,6 +98,8 @@ window.onload = () => {
                 } else {
                     model.selectedChannelId = model.track = model.playlist = null;
                     audioPlayer.stop();
+                    visualiser.stop();
+                    view.hideDownloadLink();
                     view.setNoChannelSelected();
                     stateMachine.sleeping();
                 }
@@ -109,6 +115,7 @@ window.onload = () => {
         view.sleep();
         model.selectedChannelId = model.track = model.playlist = null;
         view.setNoChannelSelected();
+        view.hideDownloadLink();
         tempMessageTimer.stop();
         messageManager.showSleeping();
         visualiser.stop();
@@ -141,6 +148,7 @@ window.onload = () => {
             view.setChannelLoading(model.selectedChannelId);
             const channel = model.channels.find(channel => channel.id === model.selectedChannelId);
             messageManager.showTuningInToChannel(channel.name);
+            view.hideDownloadLink();
 
             loadNextFromPlaylist();
         }
@@ -213,7 +221,6 @@ window.onload = () => {
         view.wakeUp();
         audioPlayer.setVolume(model.volume);
         tempMessageTimer.start();
-        visualiser.start();
 
         messageManager.showNowPlaying(model.track.name);
         stateMachine.playing();
@@ -351,30 +358,27 @@ window.onload = () => {
         applyModelVolume();
         view.setVisualiser(visualiser);
 
-        getChannels().then(channels => {
-            service.getShowList().then(shows => {
-                model.channels = channels;
-                view.setChannels(model.channels);
-                model.stationBuilder.shows = [...shows.filter(show => !show.isCommercial).map(show => {
-                    return {
-                        index: show.index,
-                        name: show.name,
-                        selected: false,
-                        channels: show.channels
-                    };
-                })];
-                model.stationBuilder.commercialShowIds.push(...shows.filter(show => show.isCommercial).map(show => show.index));
+        Promise.all([getChannels(), service.getShowList()]).then(values => {
+           const [channels, shows] = values;
+            model.channels = channels;
+            view.setChannels(model.channels);
+            model.stationBuilder.shows = [...shows.filter(show => !show.isCommercial).map(show => {
+                return {
+                    index: show.index,
+                    name: show.name,
+                    selected: false,
+                    channels: show.channels
+                };
+            })];
+            model.stationBuilder.commercialShowIds.push(...shows.filter(show => show.isCommercial).map(show => show.index));
 
-                view.populateStationBuilderShows(model.stationBuilder);
-                tempMessageTimer.start();
-                messageManager.showSelectChannel();
+            view.populateStationBuilderShows(model.stationBuilder);
+            tempMessageTimer.start();
+            messageManager.showSelectChannel();
 
-                stateMachine.idle();
-            });
-
+            stateMachine.idle();
         }).catch(onError);
     }
     startUp();
-
 
 };

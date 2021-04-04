@@ -1,7 +1,6 @@
-function buildMessageManager(model) {
+function buildMessageManager(model, eventSource) {
     "use strict";
-    const eventSource = buildEventSource('msg'),
-        TEMP_MESSAGE_DURATION = config.messages.tempMessageDurationMillis;
+    const TEMP_MESSAGE_DURATION = config.messages.tempMessageDurationMillis;
 
     let persistentMessage, temporaryMessage;
 
@@ -69,8 +68,8 @@ function buildMessageManager(model) {
         showSleeping() {
             triggerNewMessage('Sleeping');
         },
-        showError(details) {
-            triggerNewMessage(`There was a problem, please adjust your aerial: ${details}`);
+        showError() {
+            triggerNewMessage(`There is a reception problem, please adjust your aerial`);
         }
     };
 }

@@ -1,13 +1,12 @@
-function buildSleepTimer() {
+function buildSleepTimer(eventSource) {
     "use strict";
 
-    const MILLIS_PER_SECOND = 1000, SECONDS_PER_MINUTE = 60,
-        eventSource = buildEventSource('sleep');
+    const MILLIS_PER_SECOND = 1000, SECONDS_PER_MINUTE = 60;
 
     let endTimeMillis, interval;
 
     function onTick() {
-        const secondsRemaining = Math.round((endTimeMillis - Date.now()) / MILLIS_PER_SECOND); //TODO
+        const secondsRemaining = Math.round((endTimeMillis - Date.now()) / MILLIS_PER_SECOND);
         if (secondsRemaining > 0) {
             eventSource.trigger(EVENT_SLEEP_TIMER_TICK, secondsRemaining);
         } else {
@@ -19,7 +18,7 @@ function buildSleepTimer() {
     const timer = {
         on: eventSource.on,
         start(minutes) {
-            endTimeMillis = Date.now() + minutes *  MILLIS_PER_SECOND;
+            endTimeMillis = Date.now() + minutes *  MILLIS_PER_SECOND * SECONDS_PER_MINUTE;
             onTick();
             if (!interval) {
                 interval = setInterval(onTick, MILLIS_PER_SECOND);
