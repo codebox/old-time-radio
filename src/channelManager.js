@@ -59,7 +59,7 @@ module.exports.buildChannelManager = (showManager, playlistManager) => {
     function buildFileDetails(file) {
         "use strict";
         return {
-            url: `${file.urlPrefixes[0]}${file.file}`,
+            url: `https://archive.org/download/${file.itemId}/${file.file}`,
             name: file.name,
             length: file.length
         };
