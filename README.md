@@ -28,6 +28,7 @@ This allowed me to write some JavaScript to analyse the audio signal in real-tim
 ## Bugs
 * Menu is ridiculously small on older phones with small screens
 * CSS rule for div height: 100% breaks some browser extensions
+* Very long show titles don't wrap in message div
 
 Visualiser Improvements
 https://ia800301.us.archive.org/31/items/ScreenGuildTheater/Sgt_47-11-03_ep360_The_Secret_Life_of_Walter_Mitty.mp3
