@@ -1,6 +1,25 @@
+function getEventTarget() {
+    "use strict";
+    try {
+        return new EventTarget();
+    } catch(err) {
+        const listeners = [];
+        return {
+            dispatchEvent(event) {
+                listeners.filter(listener => listener.name === event.type).forEach(listener => {
+                    listener.handler(event);
+                });
+            },
+            addEventListener(name, handler) {
+                listeners.push({name, handler});
+            }
+        };
+    }
+}
+
 function buildEventSource(name, stateMachine) {
     "use strict";
-    const eventTarget = new EventTarget();
+    const eventTarget = getEventTarget();
 
     return {
         trigger(eventName, eventData) {
