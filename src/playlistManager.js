@@ -5,6 +5,10 @@ module.exports.buildPlaylistManager = () => {
      {
         id: "PatNovakForHire",
         title: "Pat Novak for Hire",
+        urlPrefixes: [
+            "https://ia800206.us.archive.org/30/items/PatNovakForHire/",
+            "https://ia800207.us.archive.org/30/items/PatNovakForHire/"
+        ]
         files: [
             {
                 "file": "46-11-24-DixieGilian.mp3",
@@ -21,7 +25,10 @@ module.exports.buildPlaylistManager = () => {
             const playlist = {
                 id: playlistMetadata.id,
                 title: playlistMetadata.title,
-                files: playlistMetadata.files
+                files: playlistMetadata.files.map(file => {
+                    file.urlPrefixes = [...playlistMetadata.urlPrefixes];
+                    return file;
+                })
             };
             playlists[playlistMetadata.id] = playlist;
         },

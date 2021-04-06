@@ -5,7 +5,9 @@ const axios = require('axios'),
 
 function processResponse(itemId, data) {
     "use strict";
-    const title = data.metadata.title || itemId;
+    const servers = data['workable_servers'],
+        title = data.metadata.title || itemId,
+        dir = data.dir;
 
     const files = data.files.filter(f => f.name.toLowerCase().endsWith('.mp3')).filter(f => f.length).map(f => {
         if (f.length.match(/^[0-9]+:[0-9]+$/)) {
@@ -25,6 +27,7 @@ function processResponse(itemId, data) {
     return {
         id: itemId,
         title,
+        urlPrefixes: servers.map(server => `https://${server}${dir}/`),
         files
     }
 }
