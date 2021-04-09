@@ -162,15 +162,11 @@ const parsers = [
         ids: ['The_Lone_Ranger_Page_01', 'The_Lone_Ranger_Page_02', 'The_Lone_Ranger_Page_03'],
         getName(metadata) {
             "use strict";
-            const match = metadata.name.match(/Lone_Ranger_([-0-9]+)_ep([0-9]+)_(.*).mp3/i);
+            const match = metadata.name.match(/Lone_Ranger_([-0-9]+)(.*?)[-_](.*).mp3/i);
 
-            if (match) {
-                const date = match[1],
-                    title = match[3].replace(/_/g, ' ');
-                return `The Lone Ranger - ${title} [${date}]`;
-            } else {
-                return `The Lone Ranger - ${metadata.title}`;
-            }
+            const date = match[1],
+                title = match[3].replace(/_/g, ' ');
+            return `The Lone Ranger - ${title} [${date}]`;
         }
     },
     {

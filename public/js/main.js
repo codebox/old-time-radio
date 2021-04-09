@@ -148,7 +148,11 @@ window.onload = () => {
 
             view.setChannelLoading(model.selectedChannelId);
             const channel = model.channels.find(channel => channel.id === model.selectedChannelId);
-            messageManager.showTuningInToChannel(channel.name);
+            if (channel.userChannel) {
+                messageManager.showTuningInToUserChannel(channel.name);
+            } else {
+                messageManager.showTuningInToChannel(channel.name);
+            }
             view.hideDownloadLink();
 
             loadNextFromPlaylist();

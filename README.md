@@ -26,7 +26,6 @@ This allowed me to write some JavaScript to analyse the audio signal in real-tim
 * Different visualisers
 
 ## Bugs
-* Menu is ridiculously small on older phones with small screens
 * CSS rule for div height: 100% breaks some browser extensions
 * Very long show titles don't wrap in message div
 
