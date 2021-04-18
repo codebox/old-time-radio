@@ -5,9 +5,11 @@ const config = {
     },
     visualiser: {
         fadeOutIntervalMillis: 2000,
-        bucketCount: 20,
-        waveSpeed: 0.5,
-        minWaveLightness: 10
+        sineWaves: {
+            bucketCount: 20,
+            waveSpeed: 0.5,
+            minWaveLightness: 10
+        }
     },
     sleepTimer: {
         fadeOutDelta: 0.02,

@@ -95,14 +95,14 @@ function buildVisualiser(dataSource) {
     }
 
     function sineWaves() {
-        const WAVE_SPEED = config.visualiser.waveSpeed,
+        const WAVE_SPEED = config.visualiser.sineWaves.waveSpeed,
             PADDING = width > 500 ? 50 : 25,
-            MIN_WAVE_LIGHTNESS = config.visualiser.minWaveLightness,
+            MIN_WAVE_LIGHTNESS = config.visualiser.sineWaves.minWaveLightness,
             TWO_PI = Math.PI * 2,
             startX = PADDING,
             endX = width - PADDING;
 
-        const dataBuckets = sortDataIntoBuckets(config.visualiser.bucketCount);
+        const dataBuckets = sortDataIntoBuckets(config.visualiser.sineWaves.bucketCount);
 
         clearCanvas();
         dataBuckets.filter(v=>v).forEach((v, i) => {
