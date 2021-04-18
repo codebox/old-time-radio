@@ -73,13 +73,4 @@ const EVENT_CHANNEL_BUTTON_CLICK = 'channelButtonClick',
     EVENT_STATION_BUILDER_GO_TO_CHANNEL_CLICK  = 'stationBuilderGoToChannelClick',
     EVENT_STATION_BUILDER_ADD_CHANNEL_CLICK = 'stationBuilderAddChannelClick',
     EVENT_STATION_BUILDER_DELETE_STATION_CLICK = 'stationBuilderDeleteStationClick',
-    EVENT_STATE_CHANGED_TO_INITIALISING = 'stateChangeInitialising',
-    EVENT_STATE_CHANGED_TO_IDLE = 'stateChangeIdle',
-    EVENT_STATE_CHANGED_TO_TUNING_IN = 'stateChangeTuningIn',
-    EVENT_STATE_CHANGED_TO_TUNED_IN_IDLE = 'stateChangeTunedInIdle',
-    EVENT_STATE_CHANGED_TO_LOADING_TRACK = 'stateChangeLoadingTrack',
-    EVENT_STATE_CHANGED_TO_PLAYING = 'stateChangePlaying',
-    EVENT_STATE_CHANGED_TO_GOING_TO_SLEEP = 'stateChangeGoingToSleep',
-    EVENT_STATE_CHANGED_TO_SLEEPING = 'stateChangeSleeping',
-    EVENT_STATE_CHANGED_TO_ERROR = 'stateChangeError';
-
+    EVENT_VISUALISER_BUTTON_CLICK = 'visualiserButtonClick';

@@ -3,7 +3,8 @@ function buildModel() {
     const MIN_VOLUME = 1,
         MAX_VOLUME = 10,
         STORED_PROPS = {
-            'volume': MAX_VOLUME
+            'volume': MAX_VOLUME,
+            'visualiserId': 'Sine Waves'
         };
 
     let volume = 10, stationBuilderModel = {
@@ -17,7 +18,7 @@ function buildModel() {
         load() {
             Object.keys(STORED_PROPS).forEach(propName => {
                 const propDefaultValue = STORED_PROPS[propName];
-                model[propName] = Number(localStorage.getItem(propName)) || propDefaultValue;
+                model[propName] = Number(localStorage.getItem(propName)) || localStorage.getItem(propName) || propDefaultValue;
             });
         },
         save() {
