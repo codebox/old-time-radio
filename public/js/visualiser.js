@@ -71,6 +71,46 @@ function buildVisualiser(dataSource) {
         });
     }
 
+    const timelapseHistory = [];
+    function timelapse() {
+        const maxHistory = 20,
+            historyLag = 5,
+            minWidth = 0.3 * width,
+            maxWidth = 0.9 * width,
+            barWidthFraction = 0.2,
+            borderY = 50,
+            rowGap = (height - 2 * borderY) / (maxHistory - 1),
+            dataBuckets = sortDataIntoBuckets(100, 1.5);
+
+        timelapseHistory.push(dataBuckets);
+        if (timelapseHistory.length > maxHistory * historyLag) {
+            timelapseHistory.shift();
+        }
+        clearCanvas();
+        timelapseHistory.filter((row, rowIndex) => (maxHistory * historyLag - rowIndex) % historyLag === 0).forEach((row, rowIndex) => {
+            const rowWidth = minWidth + (maxWidth - minWidth) * rowIndex / (maxHistory - 1),
+                rowScale = rowWidth / maxWidth,
+                rowXStart = (width - rowWidth) / 2,
+                rowBarAndGapWidth = rowWidth / row.length,
+                rowBarWidth = rowBarAndGapWidth * barWidthFraction,
+                rowMaxHeight = 100 * rowScale,
+                rowYBase = borderY + rowGap * rowIndex,
+                colourPart = Math.round(255 * (0.2 + 0.8 * rowIndex / (maxHistory - 1)));
+
+            ctx.fillStyle = `rgb(${colourPart}, ${colourPart}, ${colourPart})`;
+            row.forEach((value, valIndex) => {
+                const x = rowXStart + valIndex * rowBarAndGapWidth,
+                    y = rowYBase - rowMaxHeight * value,
+                    w = rowBarWidth,
+                    h = rowMaxHeight * value || 1;
+                ctx.fillRect(x, y, w, h);
+                // ctx.strokeStyle = 'black';
+                // ctx.rect(x,y,w,h);
+                // ctx.stroke();
+            });
+        });
+    }
+
     function experimental() {
         const maxBucketCount = 10,
             xBorderWidth = 50,
@@ -92,6 +132,108 @@ function buildVisualiser(dataSource) {
             ctx.fillRect(x, y, w, h);
             xBarStart += (barSeparation + barWidth);
         });
+    }
+
+    let startTs = Date.now(), dataBucketNonZeroTimestamps, dataBucketShuffleIndexes, snapshots = [], lastSnapshotTs = Date.now();
+    function circles() {
+        function shuffleBuckets(buckets) {
+            const shuffled = [];
+            dataBucketShuffleIndexes.forEach((newIndex, oldIndex) => {
+                shuffled[newIndex] = buckets[oldIndex];
+            });
+            return shuffled;
+        }
+        const cx = width / 2,
+            cy = height / 2,
+            maxBucketCount = 100,
+            minRadius = 30,
+            maxRadius = height / 2,
+            unshuffledBuckets = sortDataIntoBuckets(maxBucketCount,1.2),
+            bucketCount = unshuffledBuckets.length;
+            if (!dataBucketShuffleIndexes) {
+                dataBucketShuffleIndexes = Array.from(Array(bucketCount).keys());
+                for (let i = bucketCount - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [dataBucketShuffleIndexes[i], dataBucketShuffleIndexes[j]] = [dataBucketShuffleIndexes[j], dataBucketShuffleIndexes[i]];
+                }
+            }
+
+            const dataBuckets = shuffleBuckets(unshuffledBuckets),
+            now = Date.now();
+
+        if (!dataBucketNonZeroTimestamps) {
+            dataBucketNonZeroTimestamps = new Array(bucketCount).fill(0);
+        }
+        clearCanvas();
+
+        dataBuckets.forEach((value, i) => {
+            if (value) {
+                dataBucketNonZeroTimestamps[i] = now;
+            }
+        });
+
+        const dataBucketsToDisplay = dataBuckets.filter((value, i) => {
+            return (now - dataBucketNonZeroTimestamps[i]) < 1000 * 5;
+        });
+
+        const gapTotal = Math.PI;
+        const anglePerBucket = Math.PI * 2 / dataBucketsToDisplay.length;
+
+        const offset = Math.PI * 2 * (Date.now() - startTs) / 100000,
+            createNewSnapshot = now - lastSnapshotTs > 1000,
+            snapshotData = [],
+            gradient = ctx.createRadialGradient(cx,cy,minRadius/2, cx,cy,maxRadius);
+
+        gradient.addColorStop(0, 'rgb(10,10,10)');
+        gradient.addColorStop(1, 'white');
+
+        if (createNewSnapshot) {
+            lastSnapshotTs = now;
+        }
+
+        snapshots.forEach(snapshot => {
+            const v = Math.max(0, 200 - 200 * (snapshot.distance / (maxRadius * 2)));
+            const snapshotGradient = ctx.createRadialGradient(cx,cy,minRadius/2, cx,cy,maxRadius*2);
+            snapshotGradient.addColorStop(0, 'black');
+            snapshotGradient.addColorStop(1, `rgb(${v},${v},${v})`);
+            ctx.beginPath();
+            ctx.strokeStyle = snapshotGradient;
+            snapshot.data.forEach(data => {
+                ctx.moveTo(cx, cy);
+                ctx.arc(cx, cy, data.radius + snapshot.distance, data.startAngle + offset, data.endAngle + offset);
+                ctx.lineTo(cx, cy);
+            });
+            ctx.stroke();
+        });
+
+        dataBucketsToDisplay.forEach((value, i) => {
+            const startAngle = offset + anglePerBucket * i + gapTotal / dataBucketsToDisplay.length,
+                endAngle = offset + anglePerBucket * (i + 1),
+                radius = minRadius + value * (maxRadius - minRadius);
+
+            ctx.fillStyle = gradient;
+
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.arc(cx, cy, radius, startAngle, endAngle);
+            ctx.lineTo(cx, cy);
+            ctx.fill();
+
+            if (createNewSnapshot) {
+                snapshotData.unshift({radius, startAngle, endAngle});
+            }
+        });
+
+        snapshots.forEach(s => s.distance += 1);
+        snapshots = snapshots.filter(s => s.distance < maxRadius * 2);
+
+        if (createNewSnapshot) {
+            snapshots.push({
+                distance: 0,
+                data: snapshotData
+            });
+        }
+
     }
 
     function sineWaves() {
@@ -132,6 +274,8 @@ function buildVisualiser(dataSource) {
     const visualiserLookup = {
         "None": () => {},
         "Sine Waves": sineWaves,
+        "Time Lapse": timelapse,
+        "Circles": circles,
         "Experimental": experimental
     };
 
