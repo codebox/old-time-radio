@@ -5,10 +5,25 @@ const config = {
     },
     visualiser: {
         fadeOutIntervalMillis: 2000,
-        sineWaves: {
+        oscillograph: {
             bucketCount: 20,
             waveSpeed: 0.5,
             minWaveLightness: 10
+        },
+        phonograph:{
+            bucketCount: 100,
+            bucketSpread: 1.2,
+            minRadius: 30,
+            silenceThresholdMillis: 5 * 1000,
+            gapTotal: Math.PI,
+            offsetRate: 1 / 100000,
+            snapshotIntervalMillis: 1000,
+            gradientStartColour: 10,
+            gradientStopColour: 255,
+            snapshotStartColour: 100,
+            snapshotStopColour: 0,
+            snapshotSpeed: 1,
+            snapshotFadeOutFactor: 2
         }
     },
     sleepTimer: {

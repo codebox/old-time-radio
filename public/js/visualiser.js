@@ -135,7 +135,7 @@ function buildVisualiser(dataSource) {
     }
 
     let startTs = Date.now(), dataBucketNonZeroTimestamps, dataBucketShuffleIndexes, snapshots = [], lastSnapshotTs = Date.now();
-    function circles() {
+    function phonograph() {
         function shuffleBuckets(buckets) {
             const shuffled = [];
             dataBucketShuffleIndexes.forEach((newIndex, oldIndex) => {
@@ -145,10 +145,10 @@ function buildVisualiser(dataSource) {
         }
         const cx = width / 2,
             cy = height / 2,
-            maxBucketCount = 100,
-            minRadius = 30,
-            maxRadius = height / 2,
-            unshuffledBuckets = sortDataIntoBuckets(maxBucketCount,1.2),
+            maxBucketCount = config.visualiser.phonograph.bucketCount,
+            minRadius = config.visualiser.phonograph.minRadius,
+            maxRadius = Math.min(height, width) / 2,
+            unshuffledBuckets = sortDataIntoBuckets(maxBucketCount, config.visualiser.phonograph.bucketSpread),
             bucketCount = unshuffledBuckets.length;
             if (!dataBucketShuffleIndexes) {
                 dataBucketShuffleIndexes = Array.from(Array(bucketCount).keys());
@@ -173,36 +173,44 @@ function buildVisualiser(dataSource) {
         });
 
         const dataBucketsToDisplay = dataBuckets.filter((value, i) => {
-            return (now - dataBucketNonZeroTimestamps[i]) < 1000 * 5;
+            return (now - dataBucketNonZeroTimestamps[i]) < config.visualiser.phonograph.silenceThresholdMillis;
         });
 
-        const gapTotal = Math.PI;
+        const gapTotal = config.visualiser.phonograph.gapTotal;
         const anglePerBucket = Math.PI * 2 / dataBucketsToDisplay.length;
 
-        const offset = Math.PI * 2 * (Date.now() - startTs) / 100000,
-            createNewSnapshot = now - lastSnapshotTs > 1000,
+        const offset = Math.PI * 2 * (Date.now() - startTs) * config.visualiser.phonograph.offsetRate,
+            createNewSnapshot = now - lastSnapshotTs > config.visualiser.phonograph.snapshotIntervalMillis,
             snapshotData = [],
             gradient = ctx.createRadialGradient(cx,cy,minRadius/2, cx,cy,maxRadius);
 
-        gradient.addColorStop(0, 'rgb(10,10,10)');
-        gradient.addColorStop(1, 'white');
+        function makeRgb(v) {
+            return `rgb(${v},${v},${v})`;
+        }
+        gradient.addColorStop(0, makeRgb(config.visualiser.phonograph.gradientStartColour));
+        gradient.addColorStop(1, makeRgb(config.visualiser.phonograph.gradientStopColour));
 
         if (createNewSnapshot) {
             lastSnapshotTs = now;
         }
 
+        const snapshotStartColour = config.visualiser.phonograph.snapshotStartColour,
+            snapshotStopColour = config.visualiser.phonograph.snapshotStopColour,
+            snapshotFadeOutDistance = maxRadius * config.visualiser.phonograph.snapshotFadeOutFactor;
         snapshots.forEach(snapshot => {
-            const v = Math.max(0, 200 - 200 * (snapshot.distance / (maxRadius * 2)));
+            const v = Math.max(0, snapshotStopColour + snapshotStartColour * (1 - snapshot.distance / snapshotFadeOutDistance));
             const snapshotGradient = ctx.createRadialGradient(cx,cy,minRadius/2, cx,cy,maxRadius*2);
-            snapshotGradient.addColorStop(0, 'black');
-            snapshotGradient.addColorStop(1, `rgb(${v},${v},${v})`);
+            snapshotGradient.addColorStop(0, makeRgb(0));
+            snapshotGradient.addColorStop(1, makeRgb(v));
             ctx.beginPath();
-            ctx.strokeStyle = snapshotGradient;
+            ctx.strokeStyle = 'black';
+            ctx.fillStyle = snapshotGradient;
             snapshot.data.forEach(data => {
                 ctx.moveTo(cx, cy);
-                ctx.arc(cx, cy, data.radius + snapshot.distance, data.startAngle + offset, data.endAngle + offset);
+                ctx.arc(cx, cy, data.radius + snapshot.distance, data.startAngle , data.endAngle );
                 ctx.lineTo(cx, cy);
             });
+            ctx.fill();
             ctx.stroke();
         });
 
@@ -224,8 +232,8 @@ function buildVisualiser(dataSource) {
             }
         });
 
-        snapshots.forEach(s => s.distance += 1);
-        snapshots = snapshots.filter(s => s.distance < maxRadius * 2);
+        snapshots.forEach(s => s.distance += config.visualiser.phonograph.snapshotSpeed);
+        snapshots = snapshots.filter(s => s.distance < snapshotFadeOutDistance);
 
         if (createNewSnapshot) {
             snapshots.push({
@@ -236,15 +244,15 @@ function buildVisualiser(dataSource) {
 
     }
 
-    function sineWaves() {
-        const WAVE_SPEED = config.visualiser.sineWaves.waveSpeed,
+    function oscillograph() {
+        const WAVE_SPEED = config.visualiser.oscillograph.waveSpeed,
             PADDING = width > 500 ? 50 : 25,
-            MIN_WAVE_LIGHTNESS = config.visualiser.sineWaves.minWaveLightness,
+            MIN_WAVE_LIGHTNESS = config.visualiser.oscillograph.minWaveLightness,
             TWO_PI = Math.PI * 2,
             startX = PADDING,
             endX = width - PADDING;
 
-        const dataBuckets = sortDataIntoBuckets(config.visualiser.sineWaves.bucketCount);
+        const dataBuckets = sortDataIntoBuckets(config.visualiser.oscillograph.bucketCount);
 
         clearCanvas();
         dataBuckets.filter(v=>v).forEach((v, i) => {
@@ -273,9 +281,9 @@ function buildVisualiser(dataSource) {
 
     const visualiserLookup = {
         "None": () => {},
-        "Sine Waves": sineWaves,
+        "Oscillograph": oscillograph,
         "Time Lapse": timelapse,
-        "Circles": circles,
+        "Phonograph": phonograph,
         "Experimental": experimental
     };
 
