@@ -134,8 +134,9 @@ function buildVisualiser(dataSource) {
         });
     }
 
-    let startTs = Date.now(), dataBucketNonZeroTimestamps, dataBucketShuffleIndexes, snapshots = [], lastSnapshotTs = Date.now();
-    function phonograph() {
+    const phonograph = (() => {
+        let startTs = Date.now(), dataBucketNonZeroTimestamps, dataBucketShuffleIndexes, snapshots = [], lastSnapshotTs = Date.now();
+
         function shuffleBuckets(buckets) {
             const shuffled = [];
             dataBucketShuffleIndexes.forEach((newIndex, oldIndex) => {
@@ -143,106 +144,117 @@ function buildVisualiser(dataSource) {
             });
             return shuffled;
         }
-        const cx = width / 2,
-            cy = height / 2,
-            maxBucketCount = config.visualiser.phonograph.bucketCount,
-            minRadius = config.visualiser.phonograph.minRadius,
-            maxRadius = Math.min(height, width) / 2,
-            unshuffledBuckets = sortDataIntoBuckets(maxBucketCount, config.visualiser.phonograph.bucketSpread),
-            bucketCount = unshuffledBuckets.length;
-            if (!dataBucketShuffleIndexes) {
-                dataBucketShuffleIndexes = Array.from(Array(bucketCount).keys());
-                for (let i = bucketCount - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [dataBucketShuffleIndexes[i], dataBucketShuffleIndexes[j]] = [dataBucketShuffleIndexes[j], dataBucketShuffleIndexes[i]];
-                }
-            }
-
-            const dataBuckets = shuffleBuckets(unshuffledBuckets),
-            now = Date.now();
-
-        if (!dataBucketNonZeroTimestamps) {
-            dataBucketNonZeroTimestamps = new Array(bucketCount).fill(0);
-        }
-        clearCanvas();
-
-        dataBuckets.forEach((value, i) => {
-            if (value) {
-                dataBucketNonZeroTimestamps[i] = now;
-            }
-        });
-
-        const dataBucketsToDisplay = dataBuckets.filter((value, i) => {
-            return (now - dataBucketNonZeroTimestamps[i]) < config.visualiser.phonograph.silenceThresholdMillis;
-        });
-
-        const gapTotal = config.visualiser.phonograph.gapTotal;
-        const anglePerBucket = Math.PI * 2 / dataBucketsToDisplay.length;
-
-        const offset = Math.PI * 2 * (Date.now() - startTs) * config.visualiser.phonograph.offsetRate,
-            createNewSnapshot = now - lastSnapshotTs > config.visualiser.phonograph.snapshotIntervalMillis,
-            snapshotData = [],
-            gradient = ctx.createRadialGradient(cx,cy,minRadius/2, cx,cy,maxRadius);
 
         function makeRgb(v) {
             return `rgb(${v},${v},${v})`;
         }
-        gradient.addColorStop(0, makeRgb(config.visualiser.phonograph.gradientStartColour));
-        gradient.addColorStop(1, makeRgb(config.visualiser.phonograph.gradientStopColour));
 
-        if (createNewSnapshot) {
-            lastSnapshotTs = now;
+        function shuffle(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
         }
 
-        const snapshotStartColour = config.visualiser.phonograph.snapshotStartColour,
-            snapshotStopColour = config.visualiser.phonograph.snapshotStopColour,
-            snapshotFadeOutDistance = maxRadius * config.visualiser.phonograph.snapshotFadeOutFactor;
-        snapshots.forEach(snapshot => {
-            const v = Math.max(0, snapshotStopColour + snapshotStartColour * (1 - snapshot.distance / snapshotFadeOutDistance));
-            const snapshotGradient = ctx.createRadialGradient(cx,cy,minRadius/2, cx,cy,maxRadius*2);
-            snapshotGradient.addColorStop(0, makeRgb(0));
-            snapshotGradient.addColorStop(1, makeRgb(v));
-            ctx.beginPath();
-            ctx.strokeStyle = 'black';
-            ctx.fillStyle = snapshotGradient;
-            snapshot.data.forEach(data => {
-                ctx.moveTo(cx, cy);
-                ctx.arc(cx, cy, data.radius + snapshot.distance, data.startAngle , data.endAngle );
-                ctx.lineTo(cx, cy);
+        const phonographConfig = config.visualiser.phonograph,
+            maxBucketCount = phonographConfig.bucketCount,
+            minRadius = phonographConfig.minRadius,
+            gapTotal = phonographConfig.gapTotal,
+            snapshotStartColour = phonographConfig.snapshotStartColour,
+            snapshotStopColour = phonographConfig.snapshotStopColour;
+
+        return () => {
+            const cx = width / 2,
+                cy = height / 2,
+                maxRadius = Math.min(height, width) / 2,
+                unshuffledBuckets = sortDataIntoBuckets(maxBucketCount, phonographConfig.bucketSpread),
+                bucketCount = unshuffledBuckets.length,
+                now = Date.now();
+
+            if (!dataBucketShuffleIndexes) {
+                dataBucketShuffleIndexes = shuffle(Array.from(Array(bucketCount).keys()));
+            }
+
+            const dataBuckets = shuffleBuckets(unshuffledBuckets);
+
+            if (!dataBucketNonZeroTimestamps) {
+                dataBucketNonZeroTimestamps = new Array(bucketCount).fill(0);
+            }
+            clearCanvas();
+
+            dataBuckets.forEach((value, i) => {
+                if (value) {
+                    dataBucketNonZeroTimestamps[i] = now;
+                }
             });
-            ctx.fill();
-            ctx.stroke();
-        });
 
-        dataBucketsToDisplay.forEach((value, i) => {
-            const startAngle = offset + anglePerBucket * i + gapTotal / dataBucketsToDisplay.length,
-                endAngle = offset + anglePerBucket * (i + 1),
-                radius = minRadius + value * (maxRadius - minRadius);
+            const dataBucketsToDisplay = dataBuckets.filter((value, i) => {
+                return (now - dataBucketNonZeroTimestamps[i]) < phonographConfig.silenceThresholdMillis;
+            });
 
-            ctx.fillStyle = gradient;
+            const anglePerBucket = Math.PI * 2 / dataBucketsToDisplay.length;
 
-            ctx.beginPath();
-            ctx.moveTo(cx, cy);
-            ctx.arc(cx, cy, radius, startAngle, endAngle);
-            ctx.lineTo(cx, cy);
-            ctx.fill();
+            const offset = Math.PI * 2 * (now - startTs) * phonographConfig.offsetRate,
+                createNewSnapshot = now - lastSnapshotTs > phonographConfig.snapshotIntervalMillis,
+                snapshotData = [],
+                gradient = ctx.createRadialGradient(cx, cy, minRadius / 2, cx, cy, maxRadius);
+
+            gradient.addColorStop(0, makeRgb(phonographConfig.gradientStartColour));
+            gradient.addColorStop(1, makeRgb(phonographConfig.gradientStopColour));
 
             if (createNewSnapshot) {
-                snapshotData.unshift({radius, startAngle, endAngle});
+                lastSnapshotTs = now;
             }
-        });
 
-        snapshots.forEach(s => s.distance += config.visualiser.phonograph.snapshotSpeed);
-        snapshots = snapshots.filter(s => s.distance < snapshotFadeOutDistance);
+            const snapshotFadeOutDistance = maxRadius * phonographConfig.snapshotFadeOutFactor;
 
-        if (createNewSnapshot) {
-            snapshots.push({
-                distance: 0,
-                data: snapshotData
+            snapshots.forEach(snapshot => {
+                const v = Math.max(0, snapshotStopColour + snapshotStartColour * (1 - snapshot.distance / snapshotFadeOutDistance));
+                const snapshotGradient = ctx.createRadialGradient(cx, cy, minRadius / 2, cx, cy, snapshotFadeOutDistance);
+                snapshotGradient.addColorStop(0, makeRgb(0));
+                snapshotGradient.addColorStop(1, makeRgb(v));
+                ctx.beginPath();
+                ctx.strokeStyle = 'black';
+                ctx.fillStyle = snapshotGradient;
+                snapshot.data.forEach(data => {
+                    ctx.moveTo(cx, cy);
+                    ctx.arc(cx, cy, data.radius + snapshot.distance, data.startAngle, data.endAngle);
+                    ctx.lineTo(cx, cy);
+                });
+                ctx.fill();
+                ctx.stroke();
             });
-        }
 
-    }
+            dataBucketsToDisplay.forEach((value, i) => {
+                const startAngle = offset + anglePerBucket * i + gapTotal / dataBucketsToDisplay.length,
+                    endAngle = offset + anglePerBucket * (i + 1),
+                    radius = minRadius + value * (maxRadius - minRadius);
+
+                ctx.fillStyle = gradient;
+
+                ctx.beginPath();
+                ctx.moveTo(cx, cy);
+                ctx.arc(cx, cy, radius, startAngle, endAngle);
+                ctx.lineTo(cx, cy);
+                ctx.fill();
+
+                if (createNewSnapshot) {
+                    snapshotData.unshift({radius, startAngle, endAngle});
+                }
+            });
+
+            snapshots.forEach(s => s.distance += phonographConfig.snapshotSpeed);
+            snapshots = snapshots.filter(s => s.distance < snapshotFadeOutDistance);
+
+            if (createNewSnapshot) {
+                snapshots.push({
+                    distance: 0,
+                    data: snapshotData
+                });
+            }
+        };
+    })();
 
     function oscillograph() {
         const WAVE_SPEED = config.visualiser.oscillograph.waveSpeed,
