@@ -42,7 +42,8 @@ const config = {
             'Streaming shows from the Golden Age of Radio, 24 hours a day',
             'Volume too loud? You can turn it down, click the menu ↗',
             'Please support The Internet Archive by donating at http://archive.org/donate',
-            'Build your own channel with your favourite shows, click the menu ↗'
+            'Build your own channel with your favourite shows, click the menu ↗',
+            'To change the visualiser or turn it off, click the menu ↗'
         ],
         charPrintIntervalMillis: 40,
         tempMessageDurationMillis: 5000,

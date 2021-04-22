@@ -1,13 +1,7 @@
-function buildVisualiser(dataSource) {
+function buildVisualiser(visualiserData) {
     "use strict";
-    const BACKGROUND_COLOUR = 'black',
-        MAX_FREQ_DATA_VALUE = 255;
+    const BACKGROUND_COLOUR = 'black';
 
-    /*
-        dataSource is a function which returns an array of values representing the audio being played at the current instant
-        the length of the array is config.audio.fftWindowSize / 2 (i.e. 512)
-        each value in the array is an integer in the range 0-255 representing the volume of a given frequency bucket in the audio sample
-     */
     let isStarted, elCanvas, ctx, width, height, fadeOutTimeout, visualiserId;
 
     function updateCanvasSize() {
@@ -20,55 +14,8 @@ function buildVisualiser(dataSource) {
         ctx.fillRect(0, 0, width, height);
     }
 
-    function sortDataIntoBuckets(bucketCount, p=1) {
-        function bucketIndexes(valueCount, bucketCount, p) {
-            /*
-             Each time we sample the audio we get 512 separate values, each one representing the volume for a certain part of the
-             audio frequency range. In order to visualise this data nicely we usually want to aggregate the data into 'buckets' before
-             displaying it (for example, if we want to display a frequency bar graph we probably don't want it to have 512 bars).
-             The simplest way to do this is by dividing the range up into equal sized sections (eg aggregating the 512 values
-             into 16 buckets of size 32), however for the audio played by this site this tends to give lop-sided visualisations because
-             low frequencies are much more common.
-
-             This function calculates a set of bucket sizes which distribute the frequency values in a more interesting way, spreading the
-             low frequency values over a larger number of buckets, so they are more prominent in the visualisation, without discarding any
-             of the less common high frequency values (they just get squashed into fewer buckets, giving less 'dead space' in the visualisaton).
-
-             The parameter 'p' determines how much redistribution is performed. A 'p' value of 1 gives uniformly sized buckets (ie no
-             redistribution), as 'p' is increased more and more redistribution is performed.
-
-             Note that the function may return fewer than the requested number of buckets. Bucket sizes are calculated as floating-point values,
-             but since non-integer bucket sizes make no sense, these values get rounded up and then de-duplicated which may result in some getting
-             discarded.
-             */
-            "use strict";
-            let unroundedBucketSizes;
-
-            if (p===1) {
-                unroundedBucketSizes = new Array(bucketCount).fill(valueCount / bucketCount);
-
-            } else {
-                const total = (1 - Math.pow(p, bucketCount)) / (1 - p);
-                unroundedBucketSizes = new Array(bucketCount).fill(0).map((_,i) => valueCount * Math.pow(p, i) / total);
-            }
-
-            let total = 0, indexes = unroundedBucketSizes.map(size => {
-                return Math.floor(total += size);
-            });
-
-            return [...new Set(indexes)]; // de-duplicate indexes
-        }
-
-        const data = dataSource(),
-            indexes = bucketIndexes(data.length, bucketCount, p);
-
-        let currentIndex = 0;
-        return indexes.map(maxIndexForThisBucket => {
-            const v = data.slice(currentIndex, maxIndexForThisBucket+1).reduce((total, value) => total + value, 0),
-                w = maxIndexForThisBucket - currentIndex + 1;
-            currentIndex = maxIndexForThisBucket+1;
-            return v / (w * MAX_FREQ_DATA_VALUE);
-        });
+    function makeRgb(v) {
+        return `rgb(${v},${v},${v})`;
     }
 
     const timelapseHistory = [];
@@ -80,7 +27,7 @@ function buildVisualiser(dataSource) {
             barWidthFraction = 0.2,
             borderY = 50,
             rowGap = (height - 2 * borderY) / (maxHistory - 1),
-            dataBuckets = sortDataIntoBuckets(100, 1.5);
+            dataBuckets = visualiserData.getBuckets(100, 1.5);
 
         timelapseHistory.push(dataBuckets);
         if (timelapseHistory.length > maxHistory * historyLag) {
@@ -104,9 +51,6 @@ function buildVisualiser(dataSource) {
                     w = rowBarWidth,
                     h = rowMaxHeight * value || 1;
                 ctx.fillRect(x, y, w, h);
-                // ctx.strokeStyle = 'black';
-                // ctx.rect(x,y,w,h);
-                // ctx.stroke();
             });
         });
     }
@@ -116,7 +60,7 @@ function buildVisualiser(dataSource) {
             xBorderWidth = 50,
             yBorderWidth = 20,
             maxHeight = height - 2 * yBorderWidth,
-            dataBuckets = sortDataIntoBuckets(maxBucketCount,2),
+            dataBuckets = visualiserData.getBuckets(maxBucketCount,2),
             bucketCount = dataBuckets.length,
             barSeparation = 5,
             barWidth = (width - 2 * xBorderWidth - (bucketCount-1) * barSeparation) / bucketCount;
@@ -135,27 +79,7 @@ function buildVisualiser(dataSource) {
     }
 
     const phonograph = (() => {
-        let startTs = Date.now(), dataBucketNonZeroTimestamps, dataBucketShuffleIndexes, snapshots = [], lastSnapshotTs = Date.now();
-
-        function shuffleBuckets(buckets) {
-            const shuffled = [];
-            dataBucketShuffleIndexes.forEach((newIndex, oldIndex) => {
-                shuffled[newIndex] = buckets[oldIndex];
-            });
-            return shuffled;
-        }
-
-        function makeRgb(v) {
-            return `rgb(${v},${v},${v})`;
-        }
-
-        function shuffle(arr) {
-            for (let i = arr.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [arr[i], arr[j]] = [arr[j], arr[i]];
-            }
-            return arr;
-        }
+        let startTs = Date.now(), snapshots = [], lastSnapshotTs = Date.now();
 
         const phonographConfig = config.visualiser.phonograph,
             maxBucketCount = phonographConfig.bucketCount,
@@ -168,32 +92,14 @@ function buildVisualiser(dataSource) {
             const cx = width / 2,
                 cy = height / 2,
                 maxRadius = Math.min(height, width) / 2,
-                unshuffledBuckets = sortDataIntoBuckets(maxBucketCount, phonographConfig.bucketSpread),
-                bucketCount = unshuffledBuckets.length,
                 now = Date.now();
 
-            if (!dataBucketShuffleIndexes) {
-                dataBucketShuffleIndexes = shuffle(Array.from(Array(bucketCount).keys()));
-            }
-
-            const dataBuckets = shuffleBuckets(unshuffledBuckets);
-
-            if (!dataBucketNonZeroTimestamps) {
-                dataBucketNonZeroTimestamps = new Array(bucketCount).fill(0);
-            }
             clearCanvas();
 
-            dataBuckets.forEach((value, i) => {
-                if (value) {
-                    dataBucketNonZeroTimestamps[i] = now;
-                }
-            });
+            const dataBuckets = visualiserData.getActiveBucketsShuffled(maxBucketCount,
+                phonographConfig.silenceThresholdMillis, phonographConfig.bucketSpread);
 
-            const dataBucketsToDisplay = dataBuckets.filter((value, i) => {
-                return (now - dataBucketNonZeroTimestamps[i]) < phonographConfig.silenceThresholdMillis;
-            });
-
-            const anglePerBucket = Math.PI * 2 / dataBucketsToDisplay.length;
+            const anglePerBucket = Math.PI * 2 / dataBuckets.length;
 
             const offset = Math.PI * 2 * (now - startTs) * phonographConfig.offsetRate,
                 createNewSnapshot = now - lastSnapshotTs > phonographConfig.snapshotIntervalMillis,
@@ -226,8 +132,8 @@ function buildVisualiser(dataSource) {
                 ctx.stroke();
             });
 
-            dataBucketsToDisplay.forEach((value, i) => {
-                const startAngle = offset + anglePerBucket * i + gapTotal / dataBucketsToDisplay.length,
+            dataBuckets.forEach((value, i) => {
+                const startAngle = offset + anglePerBucket * i + gapTotal / dataBuckets.length,
                     endAngle = offset + anglePerBucket * (i + 1),
                     radius = minRadius + value * (maxRadius - minRadius);
 
@@ -264,10 +170,10 @@ function buildVisualiser(dataSource) {
             startX = PADDING,
             endX = width - PADDING;
 
-        const dataBuckets = sortDataIntoBuckets(config.visualiser.oscillograph.bucketCount);
+        const dataBuckets = visualiserData.getActiveBuckets(config.visualiser.oscillograph.bucketCount);
 
         clearCanvas();
-        dataBuckets.filter(v=>v).forEach((v, i) => {
+        dataBuckets.forEach((v, i) => {
             function calcY(x) {
                 const scaledX = TWO_PI * (x - startX) / (endX - startX);
                 return (height / 2) + Math.sin(scaledX * (i + 1)) * v * height / 2;
@@ -291,8 +197,33 @@ function buildVisualiser(dataSource) {
         step = (step + WAVE_SPEED);
     }
 
+    function circular() {
+        const dataBuckets = visualiserData.getBuckets(20);
+
+        clearCanvas();
+        const minRadius = 100,
+            bucketCount = dataBuckets.length,
+            angleDiff = Math.PI * 2 / bucketCount,
+            cx = width / 2,
+            cy = height / 2,
+            maxRadius = 150;//Math.min(width, height) / 2;
+
+        ctx.fillStyle = 'white';
+        dataBuckets.forEach((value, i) => {
+            const radius = minRadius + (maxRadius - minRadius) * value,
+                angle = i * angleDiff,
+                x = cx + Math.sin(angle) * radius,
+                y = cy + Math.cos(angle) * radius;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.arc(x, y, 5, 0, 2 * Math.PI, false);
+            ctx.fill();
+        });
+    }
+
     const visualiserLookup = {
         "None": () => {},
+        "Circular": circular,
         "Oscillograph": oscillograph,
         "Time Lapse": timelapse,
         "Phonograph": phonograph,
@@ -323,9 +254,6 @@ function buildVisualiser(dataSource) {
         setVisualiserId(id) {
             clearCanvas();
             visualiserId = id;
-        },
-        setDataSource(source) {
-            dataSource = source;
         },
         start() {
             if (fadeOutTimeout) {

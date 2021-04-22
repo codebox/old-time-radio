@@ -6,7 +6,8 @@ window.onload = () => {
         view = buildView(eventSource('view')),
         service = buildService(),
         audioPlayer = buildAudioPlayer(model.maxVolume, eventSource('audio')),
-        visualiser = buildVisualiser(audioPlayer.getData),
+        visualiserData = buildVisualiserData(audioPlayer.getData),
+        visualiser = buildVisualiser(visualiserData),
         messageManager = buildMessageManager(model, eventSource('msg')),
         sleepTimer = buildSleepTimer(eventSource('sleep'));
 
