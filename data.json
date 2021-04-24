@@ -380,6 +380,11 @@
       "name": "Yours Truly, Johnny Dollar",
       "playlists": ["OTRR_YoursTrulyJohnnyDollar_Singles"],
       "index": 75
+    },
+    {
+      "name": "Vic and Sade",
+      "playlists": ["VicSade1937-1939", "VicSade1940-1941", "VicSade1942-1947"],
+      "index": 76
     }
   ],
   "channels" : [
@@ -409,7 +414,7 @@
     },
     {
       "name" : "comedy",
-      "shows": [0,31,32,33,34,35,36,46,49,61,64]
+      "shows": [0,31,32,33,34,35,36,46,49,61,64,76]
     },
     {
       "name" : "drama",

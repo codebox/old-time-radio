@@ -929,6 +929,17 @@ const parsers = [
 
             return `Yours Truly, Johnny Dollar ${number} - ${title} [${date}]`;
         }
+    },
+    {
+        ids: ["VicSade1937-1939", "VicSade1940-1941", "VicSade1942-1947"],
+        regex: /Vs([-0-9]+(xx)?)(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = addSpacesBeforeCapitals(match[3]);
+
+            return `Vic and Sade - ${title} [${date}]`;
+        }
     }
 ];
 
@@ -949,10 +960,8 @@ module.exports.parseName = (playlistId, metadata) => {
             }
         }).filter(o => o);
         if (matches.length) {
-            // console.log(playlistId, 'OK', matches[0]);
             return matches[0];
         }
     }
-    // console.log(playlistId, 'NOMATCH', metadata.name);
     return metadata.title || metadata.name;
 };
