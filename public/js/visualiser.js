@@ -51,7 +51,7 @@ function buildVisualiser(dataFactory) {
                     rowYBase = borderY + rowGap * rowIndex,
                     colourPart = Math.round(255 * (0.2 + 0.8 * rowIndex / (maxHistory - 1)));
 
-                ctx.fillStyle = `rgb(${colourPart}, ${colourPart}, ${colourPart})`;
+                ctx.fillStyle = makeRgb(colourPart);
                 row.forEach((value, valIndex) => {
                     const x = rowXStart + valIndex * rowBarAndGapWidth,
                         y = rowYBase - rowMaxHeight * value,
@@ -222,42 +222,53 @@ function buildVisualiser(dataFactory) {
         }
     })();
 
-    const circular = (() => {
+    const spirograph = (() => {
         const audioData = dataFactory.audioDataSource()
-            .withBucketCount(30)
+            .withBucketCount(100)
             .withRedistribution(1.5)
             .withShuffling()
             .withFiltering(5000)
-            .build();
-
+            .build(),
+        history = [];
+        let t = 0;
         return () => {
             const dataBuckets = audioData.get();
 
             clearCanvas();
-            const minRadius = 100,
-                bucketCount = dataBuckets.length,
+            const bucketCount = dataBuckets.length,
                 angleDiff = Math.PI * 2 / bucketCount,
                 cx = width / 2,
                 cy = height / 2,
-                maxRadius = 150;//Math.min(width, height) / 2;
+                minRadius = 50,
+                maxRadius = 200,
+                rotBase = 0.001;
 
-            ctx.fillStyle = 'white';
-            dataBuckets.forEach((value, i) => {
-                const radius = minRadius + (maxRadius - minRadius) * value,
-                    angle = i * angleDiff,
-                    x = cx + Math.sin(angle) * radius,
-                    y = cy + Math.cos(angle) * radius;
-                ctx.beginPath();
-                ctx.moveTo(x, y);
-                ctx.arc(x, y, 5, 0, 2 * Math.PI, false);
-                ctx.fill();
-            });
+            history.push(dataBuckets);
+            if (history.length > 10) {
+                history.shift();
+            }
+
+            let c = 0, d;
+            t+=1;
+            history.forEach(p => {
+                c += 1 / history.length;
+                ctx.strokeStyle = `rgba(255,255,255,${c/4}`;
+                d = 1;
+                p.forEach((value, i) => {
+                    const xRadius = minRadius + (maxRadius - minRadius) * value;
+                    ctx.beginPath();
+                    ctx.ellipse(cx, cy, xRadius, xRadius / 2, (angleDiff * i + t * rotBase * (i+1) + c * value) * d, 0, Math.PI * 2);
+                    ctx.stroke();
+                    d *= -1;
+                });
+
+            })
         };
     })();
 
     const visualiserLookup = {
         "None": () => {},
-        "Circular": circular,
+        "Spirograph": spirograph,
         "Oscillograph": oscillograph,
         "Time Lapse": timelapse,
         "Phonograph": phonograph,
