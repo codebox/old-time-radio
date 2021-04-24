@@ -1,8 +1,9 @@
-function buildVisualiserData(dataSource) {
+function buildVisualiserDataFactory(dataSource) {
     "use strict";
+
     const MAX_FREQ_DATA_VALUE = 255;
 
-    function sortDataIntoBuckets(bucketCount, p=1) {
+    function sortDataIntoBuckets(data, bucketCount, p=1) {
         function bucketIndexes(valueCount, bucketCount, p) {
             /*
              Each time we sample the audio we get 512 separate values, each one representing the volume for a certain part of the
@@ -41,8 +42,7 @@ function buildVisualiserData(dataSource) {
             return [...new Set(indexes)]; // de-duplicate indexes
         }
 
-        const data = dataSource(),
-            indexes = bucketIndexes(data.length, bucketCount, p);
+        const indexes = bucketIndexes(data.length, bucketCount, p);
 
         let currentIndex = 0;
         return indexes.map(maxIndexForThisBucket => {
@@ -61,51 +61,74 @@ function buildVisualiserData(dataSource) {
         return arr;
     }
 
-    let bucketNonZeroTimestamps = [], bucketShuffleIndexes = [];
+    function sortArrayUsingIndexes(arr, indexes) {
+        const filteredIndexes = indexes.filter(i => i < arr.length);
+        return arr.map((v,i) => {
+            return arr[filteredIndexes[i]];
+        });
+    }
+
+    function buildAudioDataSource(bucketCount, redistribution, activityThresholdMillis, shuffleBuckets) {
+        const shuffledIndexes = shuffle(Array.from(Array(bucketCount).keys())),
+            activityTimestamps = new Array(bucketCount).fill(0);
+
+        return {
+            get() {
+                const rawData = dataSource(),
+                    now = Date.now();
+                let bucketedData;
+
+                if (bucketCount) {
+                    bucketedData = sortDataIntoBuckets(rawData, bucketCount, redistribution);
+                } else {
+                    bucketedData = rawData.map(v => v / MAX_FREQ_DATA_VALUE);
+                }
+
+                if (shuffleBuckets) {
+                    bucketedData = sortArrayUsingIndexes(bucketedData, shuffledIndexes);
+                }
+
+                if (activityThresholdMillis) {
+                    bucketedData.forEach((value, i) => {
+                        if (value) {
+                            activityTimestamps[i] = now;
+                        }
+                    });
+                    bucketedData = bucketedData.filter((v,i) => {
+                        return now - activityTimestamps[i] < activityThresholdMillis;
+                    });
+                }
+
+                return bucketedData;
+            }
+        };
+    }
 
     return {
-        get() {
-            /*
-             'dataSource' is a function which returns an array of values representing the audio being played at the current instant
-             the length of the array is config.audio.fftWindowSize / 2 (i.e. 512)
-             each value in the array is an integer in the range 0-255 representing the volume of a given frequency bucket in the audio sample
-             */
-            return dataSource();
-        },
+        audioDataSource() {
+            let bucketCount, redistribution = 1, activityThresholdMillis, shuffleBuckets;
 
-        getBuckets(max, p=1) {
-            return sortDataIntoBuckets(max, p);
-        },
-
-        getActiveBuckets(max, activityThresholdMillis=5000, p=1) {
-            const allBuckets = this.getBuckets(max, p),
-                now = Date.now();
-
-            if (bucketNonZeroTimestamps.length !== allBuckets.length) {
-                bucketNonZeroTimestamps = new Array(allBuckets.length).fill(0)
-            }
-
-            allBuckets.forEach((value, i) => {
-                if (value) {
-                    bucketNonZeroTimestamps[i] = now;
+            return {
+                withBucketCount(count) {
+                    bucketCount = count;
+                    return this;
+                },
+                withRedistribution(p) {
+                    redistribution = p;
+                    return this;
+                },
+                withFiltering(threshold) {
+                    activityThresholdMillis = threshold;
+                    return this;
+                },
+                withShuffling() {
+                    shuffleBuckets = true;
+                    return this;
+                },
+                build() {
+                    return buildAudioDataSource(bucketCount, redistribution, activityThresholdMillis, shuffleBuckets);
                 }
-            });
-
-            return allBuckets.filter((value, i) => {
-                return (now - bucketNonZeroTimestamps[i]) < activityThresholdMillis;
-            });
-        },
-
-        getActiveBucketsShuffled(max, activityThresholdMillis=5000, p=1) {
-            const activeBuckets = this.getActiveBuckets(max, activityThresholdMillis, p);
-            if (bucketShuffleIndexes.length !== activeBuckets.length) {
-                bucketShuffleIndexes = shuffle(Array.from(Array(activeBuckets.length).keys()));
             }
-            const shuffled = [];
-            bucketShuffleIndexes.forEach((newIndex, oldIndex) => {
-                shuffled[newIndex] = activeBuckets[oldIndex];
-            });
-            return shuffled;
         }
-    }
+    };
 }

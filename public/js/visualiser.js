@@ -1,4 +1,4 @@
-function buildVisualiser(visualiserData) {
+function buildVisualiser(dataFactory) {
     "use strict";
     const BACKGROUND_COLOUR = 'black';
 
@@ -18,7 +18,12 @@ function buildVisualiser(visualiserData) {
         return `rgb(${v},${v},${v})`;
     }
 
-    const timelapseHistory = [];
+    const timelapseHistory = [], timelapseData = dataFactory.audioDataSource()
+        .withBucketCount(100)
+        .withRedistribution(1.5)
+        .withShuffling()
+        .withFiltering(5000)
+        .build();
     function timelapse() {
         const maxHistory = 20,
             historyLag = 5,
@@ -27,7 +32,7 @@ function buildVisualiser(visualiserData) {
             barWidthFraction = 0.2,
             borderY = 50,
             rowGap = (height - 2 * borderY) / (maxHistory - 1),
-            dataBuckets = visualiserData.getBuckets(100, 1.5);
+            dataBuckets = timelapseData.get();
 
         timelapseHistory.push(dataBuckets);
         if (timelapseHistory.length > maxHistory * historyLag) {
@@ -55,12 +60,12 @@ function buildVisualiser(visualiserData) {
         });
     }
 
+    const experimentalDataSource = dataFactory.audioDataSource().withBucketCount(10).withRedistribution(2).build();
     function experimental() {
-        const maxBucketCount = 10,
-            xBorderWidth = 50,
+        const xBorderWidth = 50,
             yBorderWidth = 20,
             maxHeight = height - 2 * yBorderWidth,
-            dataBuckets = visualiserData.getBuckets(maxBucketCount,2),
+            dataBuckets = experimentalDataSource.get(),
             bucketCount = dataBuckets.length,
             barSeparation = 5,
             barWidth = (width - 2 * xBorderWidth - (bucketCount-1) * barSeparation) / bucketCount;
@@ -78,11 +83,18 @@ function buildVisualiser(visualiserData) {
         });
     }
 
+    const phonographConfig = config.visualiser.phonograph,
+        phonographDataSource = dataFactory.audioDataSource()
+            .withBucketCount(phonographConfig.bucketCount)
+            .withRedistribution(phonographConfig.bucketSpread)
+            .withFiltering(phonographConfig.silenceThresholdMillis)
+            .withShuffling()
+            .build();
+
     const phonograph = (() => {
         let startTs = Date.now(), snapshots = [], lastSnapshotTs = Date.now();
 
         const phonographConfig = config.visualiser.phonograph,
-            maxBucketCount = phonographConfig.bucketCount,
             minRadius = phonographConfig.minRadius,
             gapTotal = phonographConfig.gapTotal,
             snapshotStartColour = phonographConfig.snapshotStartColour,
@@ -96,8 +108,7 @@ function buildVisualiser(visualiserData) {
 
             clearCanvas();
 
-            const dataBuckets = visualiserData.getActiveBucketsShuffled(maxBucketCount,
-                phonographConfig.silenceThresholdMillis, phonographConfig.bucketSpread);
+            const dataBuckets = phonographDataSource.get();
 
             const anglePerBucket = Math.PI * 2 / dataBuckets.length;
 
@@ -162,6 +173,11 @@ function buildVisualiser(visualiserData) {
         };
     })();
 
+
+    const oscillographDataSource = dataFactory.audioDataSource()
+            .withBucketCount(config.visualiser.oscillograph.bucketCount)
+            .withFiltering(5000)
+            .build();
     function oscillograph() {
         const WAVE_SPEED = config.visualiser.oscillograph.waveSpeed,
             PADDING = width > 500 ? 50 : 25,
@@ -170,7 +186,7 @@ function buildVisualiser(visualiserData) {
             startX = PADDING,
             endX = width - PADDING;
 
-        const dataBuckets = visualiserData.getActiveBuckets(config.visualiser.oscillograph.bucketCount);
+        const dataBuckets = oscillographDataSource.get();
 
         clearCanvas();
         dataBuckets.forEach((v, i) => {
@@ -197,8 +213,15 @@ function buildVisualiser(visualiserData) {
         step = (step + WAVE_SPEED);
     }
 
+    const circularDataSource = dataFactory.audioDataSource()
+        .withBucketCount(30)
+        .withRedistribution(1.5)
+        .withShuffling()
+        .withFiltering(5000)
+        .build();
+
     function circular() {
-        const dataBuckets = visualiserData.getBuckets(20);
+        const dataBuckets = circularDataSource.get();
 
         clearCanvas();
         const minRadius = 100,
