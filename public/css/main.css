@@ -317,14 +317,14 @@ noscript a, noscript a:visited {
     display: flex;
     flex-direction: row;
 }
-#scheduleList, #channelScheduleLinks, #sleepTimerButtons {
+#scheduleList, #channelScheduleLinks, #sleepTimerButtons, #visualiserList {
     padding: 0 40px;
 }
 #scheduleList {
     margin: 10px 0 0 0;
 }
-#channelScheduleLinks {
-    margin: 10px 0;
+#channelScheduleLinks, #visualiserList {
+    margin: 15px 0 10px 0;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;

@@ -18,80 +18,6 @@ function buildVisualiser(dataFactory) {
         return `rgb(${v},${v},${v})`;
     }
 
-    const timelapse = (() => {
-        const history = [], audioData = dataFactory.audioDataSource()
-            .withBucketCount(100)
-            .withRedistribution(1.5)
-            .withShuffling()
-            .withFiltering(5000)
-            .build();
-
-        return () => {
-            const maxHistory = 20,
-                historyLag = 5,
-                minWidth = 0.3 * width,
-                maxWidth = 0.9 * width,
-                barWidthFraction = 0.2,
-                borderY = 50,
-                rowGap = (height - 2 * borderY) / (maxHistory - 1),
-                dataBuckets = audioData.get();
-
-            history.push(dataBuckets);
-            if (history.length > maxHistory * historyLag) {
-                history.shift();
-            }
-            clearCanvas();
-            history.filter((row, rowIndex) => (maxHistory * historyLag - rowIndex) % historyLag === 0).forEach((row, rowIndex) => {
-                const rowWidth = minWidth + (maxWidth - minWidth) * rowIndex / (maxHistory - 1),
-                    rowScale = rowWidth / maxWidth,
-                    rowXStart = (width - rowWidth) / 2,
-                    rowBarAndGapWidth = rowWidth / row.length,
-                    rowBarWidth = rowBarAndGapWidth * barWidthFraction,
-                    rowMaxHeight = 100 * rowScale,
-                    rowYBase = borderY + rowGap * rowIndex,
-                    colourPart = Math.round(255 * (0.2 + 0.8 * rowIndex / (maxHistory - 1)));
-
-                ctx.fillStyle = makeRgb(colourPart);
-                row.forEach((value, valIndex) => {
-                    const x = rowXStart + valIndex * rowBarAndGapWidth,
-                        y = rowYBase - rowMaxHeight * value,
-                        w = rowBarWidth,
-                        h = rowMaxHeight * value || 1;
-                    ctx.fillRect(x, y, w, h);
-                });
-            });
-        }
-    })();
-
-    const experimental = (() => {
-        const audioData = dataFactory.audioDataSource()
-            .withBucketCount(10)
-            .withRedistribution(2)
-            .build();
-
-        return () => {
-            const xBorderWidth = 50,
-                yBorderWidth = 20,
-                maxHeight = height - 2 * yBorderWidth,
-                dataBuckets = audioData.get(),
-                bucketCount = dataBuckets.length,
-                barSeparation = 5,
-                barWidth = (width - 2 * xBorderWidth - (bucketCount-1) * barSeparation) / bucketCount;
-
-            let xBarStart = xBorderWidth;
-            clearCanvas();
-            ctx.fillStyle = 'white';
-            dataBuckets.forEach((value, i) => {
-                const x = xBarStart,
-                    y = yBorderWidth + maxHeight * (1 - value),
-                    w = barWidth,
-                    h = maxHeight * value;
-                ctx.fillRect(x, y, w, h);
-                xBarStart += (barSeparation + barWidth);
-            });
-        };
-    })();
-
     const phonograph = (() => {
         const phonographConfig = config.visualiser.phonograph,
             minRadius = phonographConfig.minRadius,
@@ -223,14 +149,53 @@ function buildVisualiser(dataFactory) {
     })();
 
     const spirograph = (() => {
-        const audioData = dataFactory.audioDataSource()
-            .withBucketCount(100)
-            .withRedistribution(1.5)
-            .withShuffling()
-            .withFiltering(5000)
-            .build(),
-        history = [];
+        const spirographConfig = config.visualiser.spirograph,
+            audioData = dataFactory.audioDataSource()
+                .withBucketCount(spirographConfig.bucketCount)
+                .withRedistribution(spirographConfig.bucketSpread)
+                .withShuffling()
+                .withFiltering(spirographConfig.silenceThresholdMillis)
+                .build(),
+            history = [],
+            rotBase = spirographConfig.rotationBaseValue,
+            alphaCycleRate = spirographConfig.alphaCycleRate,
+            aspectRatio = spirographConfig.aspectRatio,
+            rotationFactor = spirographConfig.rotationFactor,
+            maxRadiusSize = spirographConfig.maxRadiusSize,
+            minRadiusSize = spirographConfig.minRadiusSize,
+            historySize = spirographConfig.historySize,
+            backgroundLoop = spirographConfig.backgroundLoop,
+            foregroundLoop = spirographConfig.foregroundLoop,
+            backgroundAlphaCalc = buildAlphaCalc(backgroundLoop),
+            foregroundAlphaCalc = buildAlphaCalc(foregroundLoop);
+
         let t = 0;
+
+        function buildAlphaCalc(config) {
+            const {minAlpha, maxAlpha, offset} = config;
+            return (age, value) => {
+                const f = (offset + t / alphaCycleRate + value * age) % 1;
+                return minAlpha + (maxAlpha - minAlpha) * f;
+            };
+        }
+
+        function drawHistory(cx, cy, minRadius, maxRadius, alphaCalc, angleDiff, initialDirection) {
+            let age = 0;
+            history.forEach(p => {
+                age += 1 / history.length;
+                let direction = initialDirection;
+                p.forEach((value, i) => {
+                    const xRadius = minRadius + (maxRadius - minRadius) * value;
+                    let alpha = alphaCalc(age, value);
+                    ctx.strokeStyle = `rgba(255,255,255,${alpha}`;
+                    ctx.beginPath();
+                    ctx.ellipse(cx, cy, xRadius, xRadius * aspectRatio, (angleDiff * i + t * rotBase * (i+1) + age * value * rotationFactor) * direction, 0, Math.PI * 2);
+                    ctx.stroke();
+                    direction *= -1;
+                });
+            })
+        }
+
         return () => {
             const dataBuckets = audioData.get();
 
@@ -239,30 +204,20 @@ function buildVisualiser(dataFactory) {
                 angleDiff = Math.PI * 2 / bucketCount,
                 cx = width / 2,
                 cy = height / 2,
-                minRadius = 50,
-                maxRadius = 200,
-                rotBase = 0.001;
+                smallestDimension = Math.min(height, width),
+                bgMaxRadius = maxRadiusSize * smallestDimension * backgroundLoop.maxRadiusFactor,
+                bgMinRadius = minRadiusSize * smallestDimension * backgroundLoop.minRadiusFactor,
+                fgMaxRadius = maxRadiusSize * smallestDimension,
+                fgMinRadius = minRadiusSize * smallestDimension;
 
             history.push(dataBuckets);
-            if (history.length > 10) {
+            if (history.length > historySize) {
                 history.shift();
             }
 
-            let c = 0, d;
             t+=1;
-            history.forEach(p => {
-                c += 1 / history.length;
-                ctx.strokeStyle = `rgba(255,255,255,${c/4}`;
-                d = 1;
-                p.forEach((value, i) => {
-                    const xRadius = minRadius + (maxRadius - minRadius) * value;
-                    ctx.beginPath();
-                    ctx.ellipse(cx, cy, xRadius, xRadius / 2, (angleDiff * i + t * rotBase * (i+1) + c * value) * d, 0, Math.PI * 2);
-                    ctx.stroke();
-                    d *= -1;
-                });
-
-            })
+            drawHistory(cx, cy, bgMinRadius, bgMaxRadius, backgroundAlphaCalc, angleDiff, -1);
+            drawHistory(cx, cy, fgMinRadius, fgMaxRadius, foregroundAlphaCalc, angleDiff,  1);
         };
     })();
 
@@ -270,9 +225,7 @@ function buildVisualiser(dataFactory) {
         "None": () => {},
         "Spirograph": spirograph,
         "Oscillograph": oscillograph,
-        "Time Lapse": timelapse,
-        "Phonograph": phonograph,
-        "Experimental": experimental
+        "Phonograph": phonograph
     };
 
     let step = 0;
@@ -288,7 +241,7 @@ function buildVisualiser(dataFactory) {
     return {
         init(_elCanvas) {
             elCanvas = _elCanvas;
-            ctx = elCanvas.getContext('2d');
+            ctx = elCanvas.getContext('2d', { alpha: false });
             updateCanvasSize();
             clearCanvas();
             paint();

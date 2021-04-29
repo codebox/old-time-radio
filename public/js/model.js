@@ -4,7 +4,7 @@ function buildModel() {
         MAX_VOLUME = 10,
         STORED_PROPS = {
             'volume': MAX_VOLUME,
-            'visualiserId': 'Sine Waves'
+            'visualiserId': 'Oscillograph'
         };
 
     let volume = 10, stationBuilderModel = {

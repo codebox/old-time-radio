@@ -10,7 +10,7 @@ const config = {
             waveSpeed: 0.5,
             minWaveLightness: 10
         },
-        phonograph:{
+        phonograph: {
             bucketCount: 100,
             bucketSpread: 1.2,
             minRadius: 30,
@@ -24,6 +24,30 @@ const config = {
             snapshotStopColour: 0,
             snapshotSpeed: 1,
             snapshotFadeOutFactor: 2
+        },
+        spirograph: {
+            bucketCount: 100,
+            bucketSpread: 1.5,
+            silenceThresholdMillis: 5 * 1000,
+            rotationBaseValue: 0.0005,
+            alphaCycleRate: 600,
+            aspectRatio: 0.5,
+            rotationFactor: 1 / 3,
+            maxRadiusSize: 0.5,
+            minRadiusSize: 0.25,
+            historySize: 10,
+            backgroundLoop: {
+                minRadiusFactor: 0.5,
+                maxRadiusFactor: 2,
+                minAlpha: 0.05,
+                maxAlpha: 0.15,
+                offset: 0
+            },
+            foregroundLoop: {
+                minAlpha: 0.1,
+                maxAlpha: 0.4,
+                offset: 0.5
+            }
         }
     },
     sleepTimer: {
