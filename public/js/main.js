@@ -6,7 +6,8 @@ window.onload = () => {
         view = buildView(eventSource('view')),
         service = buildService(),
         audioPlayer = buildAudioPlayer(model.maxVolume, eventSource('audio')),
-        visualiser = buildVisualiser(audioPlayer.getData),
+        visualiserDataFactory = buildVisualiserDataFactory(audioPlayer.getData),
+        visualiser = buildVisualiser(visualiserDataFactory),
         messageManager = buildMessageManager(model, eventSource('msg')),
         sleepTimer = buildSleepTimer(eventSource('sleep'));
 
@@ -182,6 +183,12 @@ window.onload = () => {
         model.save();
     }
 
+    function applyModelVisualiser() {
+        view.updateVisualiserId(model.visualiserId);
+        visualiser.setVisualiserId(model.visualiserId);
+        model.save();
+    }
+
     view.on(EVENT_VOLUME_UP_CLICK).then(() => {
         model.volume++;
         applyModelVolume();
@@ -328,6 +335,12 @@ window.onload = () => {
         view.updateStationBuilderStationDetails(model.stationBuilder);
     });
 
+    view.on(EVENT_VISUALISER_BUTTON_CLICK).then(event => {
+        const visualiserId = event.data;
+        model.visualiserId = visualiserId;
+        applyModelVisualiser();
+    });
+
     function getChannels() {
         messageManager.showLoadingChannels();
 
@@ -361,7 +374,10 @@ window.onload = () => {
         model.channels = model.selectedChannelId = model.playlist = model.track = null;
 
         applyModelVolume();
+
         view.setVisualiser(visualiser);
+        view.setVisualiserIds(visualiser.getVisualiserIds());
+        applyModelVisualiser();
 
         Promise.all([getChannels(), service.getShowList()]).then(values => {
            const [channels, shows] = values;

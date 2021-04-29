@@ -2,10 +2,12 @@ function buildView(eventSource) {
     "use strict";
     const FEW_CHANNELS_LIMIT = 4,
         channelButtons = {},
+        visualiserButtons = {},
 
         CLASS_LOADING = 'channelLoading',
         CLASS_PLAYING = 'channelPlaying',
         CLASS_ERROR = 'channelError',
+        CLASS_SELECTED = 'selected',
 
         elMenuOpenButton = document.getElementById('menuOpenButton'),
         elMenuCloseButton = document.getElementById('menuCloseButton'),
@@ -17,6 +19,7 @@ function buildView(eventSource) {
         elButtonContainer = document.getElementById('buttons'),
         elVolumeLeds = Array.from(Array(10).keys()).map(i => document.getElementById(`vol${i+1}`)),
         elVisualiserCanvas = document.getElementById('canvas'),
+        elVisualiserButtons = document.getElementById('visualiserList'),
 
         sleepTimerView = buildSleepTimerView(eventSource),
         scheduleView = buildScheduleView(eventSource),
@@ -55,6 +58,17 @@ function buildView(eventSource) {
 
         elButtonContainer.appendChild(elButtonBox);
         channelButtons[channelId] = elButtonBox;
+    }
+
+    function buildVisualiserButton(id) {
+        const li = document.createElement('li');
+        li.innerHTML = id;
+        li.classList.add('showButton');
+        li.onclick = () => {
+            eventSource.trigger(EVENT_VISUALISER_BUTTON_CLICK, id);
+        };
+        elVisualiserButtons.appendChild(li);
+        visualiserButtons[id] = li;
     }
 
     const messagePrinter = (() => {
@@ -229,7 +243,17 @@ function buildView(eventSource) {
                 el.classList.remove(CLASS_PLAYING, CLASS_ERROR);
                 el.classList.toggle(CLASS_LOADING, true);
             });
-
+        },
+        setVisualiserIds(visualiserIds) {
+            visualiserIds.forEach(visualiserId => {
+                buildVisualiserButton(visualiserId);
+            });
+        },
+        updateVisualiserId(selectedVisualiserId) {
+            Object.keys(visualiserButtons).forEach(visualiserId => {
+                const el = visualiserButtons[visualiserId];
+                el.classList.toggle(CLASS_SELECTED, selectedVisualiserId === visualiserId);
+            });
         }
     };
 }
