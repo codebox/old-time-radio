@@ -1,4 +1,20 @@
 {
+    "web": {
+        "port": 3000,
+        "paths": {
+            "static": "public",
+            "api": {
+                "shows": "/api/shows",
+                "channels": "/api/channels",
+                "channel": "/api/channel/",
+                "generate": "/api/channel/generate/"
+            }
+        }
+    },
+  "log": {
+    "file": "/var/log/oldtimeradio/access.log",
+    "level": "debug"
+  },
   "shows" : [
     {
       "name": "Commercials",

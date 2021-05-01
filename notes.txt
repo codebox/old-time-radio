@@ -33,3 +33,22 @@ Schedule
 
 Station Builder
 - When listening to a custom station, schedule should show correct channels
+
+---------------------
+New backend design
+
+Inputs ->
+    data.json
+    archive.org API / cache
+
+app.js
+    /api/shows
+    /api/channels
+    /api/channel/:channel
+    /api/channel/generate/:indexes
+
+service.js
+    getShows()
+    getChannels()
+    getChannelPlaylist()
+    getChannelCode()

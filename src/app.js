@@ -1,45 +1,31 @@
-const express = require('express'),
-    service = require('./service.js').service,
-    winston = require('winston'),
-    app = express(),
-    port = 3000;
+const config = require('../config.json'),
+    log = require('./log.js'),
+    service = require('./service.js'),
+    express = require('express'),
+    app = express();
 
-const transports = [];
-try{
-    transports.push(new (winston.transports.File)({
-        filename: '/var/log/oldtimeradio/access.log',
-        format: winston.format.simple()
-    }))
-} catch (e) {
-    transports.push(new (winston.transports.Console)({
-        format: winston.format.simple()
-    }))
-}
+const port = config.web.port;
 
-winston.configure({
-    transports
-});
-
-app.use(express.static('public'))
-
-app.get(`/api/shows`, (req, res) => {
+app.use((req, res, next) => {
     "use strict";
-    res.status(200).json(service.getShows().map(show => {
-        return {
-            name: show.name,
-            index: show.index,
-            isCommercial: !! show.isCommercial,
-            channels: show.channels
-        };
-    }));
+    log.debug(`Request: ${req.method} ${req.path}`);
+    next();
 });
 
-app.get(`/api/channels`, (req, res) => {
+app.use(express.static(config.web.paths.static));
+
+app.get(config.web.paths.api.shows, (req, res) => {
     "use strict";
-    res.status(200).json(service.getPredefinedChannels());
+    res.status(200).json(service.getShows());
 });
 
-app.get(`/api/channel/:channel`, (req, res) => {
+app.get(config.web.paths.api.channels, (req, res) => {
+    "use strict";
+    res.status(200).json(service.getChannels());
+});
+
+
+app.get(config.web.paths.api.channel + ':channel', (req, res) => {
     const channelId = req.params.channel,
         length = req.query.length,
         schedule = service.getScheduleForChannel(channelId, length);
@@ -51,19 +37,16 @@ app.get(`/api/channel/:channel`, (req, res) => {
     }
 });
 
-app.get(`/api/channel/generate/:indexes`, (req, res) => {
+app.get(config.web.paths.api.generate + ":indexes", (req, res) => {
     "use strict";
     const indexes = req.params.indexes.split(',').map(s => Number(s));
-    res.status(200).json(service.generateCodeForShowIndexes(indexes));
+    res.status(200).json(service.getCodeForShowIndexes(indexes));
 });
 
-service.init()
-    .then(_ => {
-        app.listen(port, () => winston.log('info', `Initialisation complete, listening on port ${port}...`));
-    })
-    .catch(err => {
-        // winston.log('error', 'Failed to start application - ' + err)
-        throw err
-    });
+app.use((error, req, res, next) => {
+    "use strict";
+    log.error(error.stack);
+    res.status(500).json({'error':''})
+});
 
-
+app.listen(port, () => log.info(`Initialisation complete, listening on port ${port}...`));
