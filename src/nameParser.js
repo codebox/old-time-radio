@@ -940,6 +940,29 @@ const parsers = [
 
             return `Vic and Sade - ${title} [${date}]`;
         }
+    },
+    {
+        ids: ["Sf_68"],
+        regex: /([-0-9]+)(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const number = match[1],
+                title = addSpacesBeforeCapitals(match[2]);
+
+            return `SF68 - ${number} ${title}`;
+        }
+    },
+    {
+        ids: ["haunting_hour"],
+        regex: /([0-9]{6}_)?([0-9]{2}_)?(.*).mp3/i,
+        getName(match) {
+            "use strict";
+            const date = match[1],
+                title = match[3].replace(/_/g, ' '),
+                number = match[2];
+
+            return `The Haunting Hour - ${number ? number.replace('_','') + ' ' : ''}${title}${date ? ' [' + date.replace('_','') + ']' : ''}`;
+        }
     }
 ];
 
@@ -960,8 +983,10 @@ module.exports.parseName = (playlistId, metadata) => {
             }
         }).filter(o => o);
         if (matches.length) {
+            // console.log(playlistId, 'OK', matches[0]);
             return matches[0];
         }
     }
+    // console.log(playlistId, 'NOMATCH', metadata.name);
     return metadata.title || metadata.name;
 };

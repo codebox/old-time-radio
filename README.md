@@ -20,10 +20,7 @@ This allowed me to write some JavaScript to analyse the audio signal in real-tim
 
 ## TODO List
 
-* Low-CPU version
-    * no animations, hide visualiser
 * Add some music channels
-* Different visualisers
 
 ## Bugs
 * CSS rule for div height: 100% breaks some browser extensions

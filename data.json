@@ -385,12 +385,22 @@
       "name": "Vic and Sade",
       "playlists": ["VicSade1937-1939", "VicSade1940-1941", "VicSade1942-1947"],
       "index": 76
+    },
+    {
+      "name": "SF 68",
+      "playlists": ["Sf_68"],
+      "index": 77
+    },
+    {
+      "name": "The Haunting Hour",
+      "playlists": ["haunting_hour"],
+      "index": 78
     }
   ],
   "channels" : [
     {
       "name" : "future",
-      "shows": [0,1,2,3,4,5,6,7,8,9]
+      "shows": [0,1,2,3,4,5,6,7,8,9,77]
     },
     {
       "name" : "action",
@@ -402,7 +412,7 @@
     },
     {
       "name" : "horror",
-      "shows": [0,17,43,44,53,54]
+      "shows": [0,17,43,44,53,54,78]
     },
     {
       "name" : "suspense",
