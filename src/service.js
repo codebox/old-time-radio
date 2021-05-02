@@ -1,21 +1,21 @@
+"use strict";
+
 const channelData = require('./channelData.js'),
-    channelCodes = require('./channelCodes');
+    channelCodes = require('./channelCodes'),
+    scheduler = require('./scheduler.js'),
+    ONE_HOUR = 60 * 60;
 
 module.exports = {
     getShows() {
-        "use strict";
         return channelData.getShows();
     },
     getChannels() {
-        "use strict";
         return channelData.getChannels();
     },
-    getScheduleForChannel(channelId, length) {
-        "use strict";
-
+    getScheduleForChannel(channelId, length = ONE_HOUR) {
+        return scheduler.getScheduleForChannel(channelId, length);
     },
-    getCodeForShowIndexes(showIndexes) {
-        "use strict";
+    getCodeForShowIndexes(showIndexes = []) {
         return channelCodes.buildChannelCodeFromShowIndexes(showIndexes);
     }
 };

@@ -1,3 +1,5 @@
+"use strict";
+
 const config = require('../config.json'),
     log = require('./log.js'),
     service = require('./service.js'),
@@ -7,7 +9,6 @@ const config = require('../config.json'),
 const port = config.web.port;
 
 app.use((req, res, next) => {
-    "use strict";
     log.debug(`Request: ${req.method} ${req.path}`);
     next();
 });
@@ -16,13 +17,11 @@ app.use(express.static(config.web.paths.static));
 
 // [{channels:["future"], index: 1, isCommercial: false, name: "X Minus One"}, ...]
 app.get(config.web.paths.api.shows, (req, res) => {
-    "use strict";
     res.status(200).json(service.getShows());
 });
 
 // ["future", "action", ...]
 app.get(config.web.paths.api.channels, (req, res) => {
-    "use strict";
     res.status(200).json(service.getChannels());
 });
 
@@ -41,13 +40,11 @@ app.get(config.web.paths.api.channel + ':channel', (req, res) => {
 
 // "1g0000g000000"
 app.get(config.web.paths.api.generate + ":indexes", (req, res) => {
-    "use strict";
     const indexes = req.params.indexes.split(',').map(s => Number(s));
     res.status(200).json(service.getCodeForShowIndexes(indexes));
 });
 
 app.use((error, req, res, next) => {
-    "use strict";
     log.error(error.stack);
     res.status(500).json({'error':''})
 });

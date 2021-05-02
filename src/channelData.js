@@ -6,7 +6,7 @@ function getChannelNamesForShowIndex(showIndex) {
 }
 
 module.exports = {
-    getShows() {
+    getShows() { //TODO memoize
         "use strict";
         return config.shows.map(show => {
             return {
@@ -17,7 +17,7 @@ module.exports = {
             };
         });
     },
-    getChannels() {
+    getChannels() { //TODO memoize
         "use strict";
         return config.channels.map(channel => channel.name);
     }
