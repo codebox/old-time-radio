@@ -14,17 +14,19 @@ app.use((req, res, next) => {
 
 app.use(express.static(config.web.paths.static));
 
+// [{channels:["future"], index: 1, isCommercial: false, name: "X Minus One"}, ...]
 app.get(config.web.paths.api.shows, (req, res) => {
     "use strict";
     res.status(200).json(service.getShows());
 });
 
+// ["future", "action", ...]
 app.get(config.web.paths.api.channels, (req, res) => {
     "use strict";
     res.status(200).json(service.getChannels());
 });
 
-
+// {initialOffset: 123.456, list: [{archivalUrl: "http://...", length: 1234.56, name: "X Minus One - Episode 079", url: "http://..."}, ...]}
 app.get(config.web.paths.api.channel + ':channel', (req, res) => {
     const channelId = req.params.channel,
         length = req.query.length,
@@ -37,6 +39,7 @@ app.get(config.web.paths.api.channel + ':channel', (req, res) => {
     }
 });
 
+// "1g0000g000000"
 app.get(config.web.paths.api.generate + ":indexes", (req, res) => {
     "use strict";
     const indexes = req.params.indexes.split(',').map(s => Number(s));
