@@ -30,6 +30,7 @@ module.exports = {
         }
         return groupTotals.map(numToString).join('');
     },
+
     buildShowIndexesFromChannelCode(channelCode) {
         const indexes = [];
         channelCode.split('').forEach((c, charIndex) => {

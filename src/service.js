@@ -7,7 +7,14 @@ const channelData = require('./channelData.js'),
 
 module.exports = {
     getShows() {
-        return channelData.getShows();
+        return channelData.getShows().map(show => {
+            return {
+                channels: show.channels,
+                index: show.index,
+                isCommercial: show.isCommercial,
+                name: show.name
+            };
+        });
     },
     getChannels() {
         return channelData.getChannels();

@@ -11,6 +11,10 @@
             }
         }
     },
+  "webCache": {
+    "location": "./cache",
+    "expiryIntervalSeconds": 60
+  },
   "log": {
     "file": "/var/log/oldtimeradio/access.log",
     "level": "debug"

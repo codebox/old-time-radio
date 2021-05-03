@@ -13,7 +13,8 @@ module.exports = {
                 channels: getChannelNamesForShowIndex(show.index),
                 index: show.index,
                 isCommercial: !! show.isCommercial,
-                name: show.name
+                name: show.name,
+                playlists: show.playlists
             };
         });
     },
