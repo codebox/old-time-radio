@@ -329,7 +329,7 @@ noscript a, noscript a:visited {
     flex-wrap: wrap;
     justify-content: center;
 }
-#channelScheduleLinks li.showButton {
+#channelScheduleLinks li.showButton, #visualiserList li.showButton {
     text-transform: capitalize;
     margin: 5px;
     cursor: pointer;
