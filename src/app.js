@@ -49,4 +49,7 @@ app.use((error, req, res, next) => {
     res.status(500).json({'error':''})
 });
 
-app.listen(port, () => log.info(`Initialisation complete, listening on port ${port}...`));
+app.listen(port, () => {
+    log.info(`Initialisation complete, listening on port ${port}...`);
+    service.init();
+});

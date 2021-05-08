@@ -7,9 +7,10 @@ function makeKeyFromUrl(url) {
     return url.replace(/https?:\/\//, '').replace(/[^A-Za-z0-9]+/g, '_');
 }
 
-cache.loadFromDisk();
-
 module.exports = {
+    init() {
+        cache.loadFromDisk();
+    },
     get(url) {
         const cachedData = cache.get(url);
         if (cachedData) {

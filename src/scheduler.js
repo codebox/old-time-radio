@@ -48,8 +48,8 @@ function getCurrentSchedule(fullSchedule, lengthInSeconds) {
 
 module.exports = {
     getScheduleForChannel(channelNameOrCode, lengthInSeconds) {
-        const showListForChannel = getShowListForChannel(channelNameOrCode),
-            fullSchedule = getFullScheduleFromShowList(showListForChannel),
+        const showListForChannel = getShowListForChannel(channelNameOrCode);
+            const fullSchedule = getFullScheduleFromShowList(showListForChannel),
             currentSchedule = getCurrentSchedule(fullSchedule, lengthInSeconds);
 
         return currentSchedule;
