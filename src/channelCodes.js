@@ -1,28 +1,35 @@
 "use strict";
-const channelData = require('./channelData.js'),
-    shows = channelData.getShows(),
+const TOO_BIG_INDEX = 200,
     SHOWS_PER_CHAR = 6,
     CHAR_MAP = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_';
 
 function numToString(n) {
-    console.assert(n<64);
+    console.assert(n<64, n);
     return CHAR_MAP.charAt(n);
 }
 
 function stringToNum(s) {
     "use strict";
-    console.assert(s.length === 1);
+    console.assert(s.length === 1, s);
     const n = CHAR_MAP.indexOf(s);
-    console.assert(n >= 0);
+    if (n < 0) {
+        throw new Error(`Invalid character in channel code: '${s}'`);
+    }
     return n;
 }
 
 module.exports = {
     buildChannelCodeFromShowIndexes(indexes) {
-        const uniqueNumericIndexes = new Set(indexes.map(Number));
+        const numericIndexes = indexes.map(Number).filter(n=>!isNaN(n)),
+            uniqueNumericIndexes = new Set(numericIndexes);
 
-        const groupTotals = new Array(Math.ceil(shows.length / SHOWS_PER_CHAR)).fill(0);
-        for (let i=0; i<shows.length; i++) {
+        const maxIndex = numericIndexes.length ? Math.max(...numericIndexes) : 0;
+        if (maxIndex > TOO_BIG_INDEX) {
+            throw new Error('Index is too large: ' + maxIndex);
+        }
+        const groupTotals = new Array(Math.ceil((maxIndex+1) / SHOWS_PER_CHAR)).fill(0);
+
+        for (let i=0; i <= maxIndex; i++) {
             const groupIndex = Math.floor(i / SHOWS_PER_CHAR);
             if (uniqueNumericIndexes.has(i)) {
                 groupTotals[groupIndex] += Math.pow(2, i - groupIndex * SHOWS_PER_CHAR);

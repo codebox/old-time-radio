@@ -3,15 +3,25 @@ const axios = require('axios'),
     log = require('./log.js'),
     cache = require('./cache.js');
 
+function makeKeyFromUrl(url) {
+    return url.replace(/https?:\/\//, '').replace(/[^A-Za-z0-9]+/g, '_');
+}
+
+cache.loadFromDisk();
+
 module.exports = {
     get(url) {
-        return cache.get(url).catch(_ => {
-            log.debug(`Requesting ${url}...`)
+        const cachedData = cache.get(url);
+        if (cachedData) {
+            return Promise.resolve(cachedData);
+        } else {
+            log.debug(`Requesting ${url}...`);
             return axios.get(url).then(response => {
-                const data = response.data;
-                cache.put(url, data);
+                const data = response.data,
+                    cacheKey = makeKeyFromUrl(url);
+                cache.put(cacheKey, data);
                 return data;
             });
-        });
+        }
     }
 };
