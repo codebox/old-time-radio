@@ -28,18 +28,48 @@ function getFullScheduleFromShowList(showListForChannel) {
         show.playlists.forEach(playlistName => {
             const playlist = playlistData.getPlaylist(playlistName);
             playlist.files.forEach(fileMetadata => {
-                const readableName = nameParser.parseName(playlistName, fileMetadata);
+                const readableName = nameParser.parseName(playlistName, fileMetadata),
+                    length = Number(fileMetadata.length);
+
                 showsToFiles[show.name].push({
                     url: `https://${playlist.server}/${playlist.dir}/${fileMetadata.name}`,
                     archivalUrl: `https://archive.org/download/${playlistName}/${fileMetadata.name}`,
-                    length: Number(fileMetadata.length),
-                    name: readableName
+                    name: readableName,
+                    length
                 });
             });
         });
     });
 
-    return showsToFiles[Object.keys(showsToFiles)[0]];
+    const originalFileCounts = {};
+    Object.keys(showsToFiles).forEach(showName => {
+        originalFileCounts[showName] = showsToFiles[showName].length;
+    });
+
+    const schedule = [];
+
+    while (true) {
+        let largestFractionToRemain = -1, listToReduce = [];
+
+        Object.entries(showsToFiles).forEach(entry => {
+            const [showName, files] = entry,
+                originalFileCount = originalFileCounts[showName],
+                fractionToRemain = (files.length - 1) / originalFileCount;
+
+            if (fractionToRemain > largestFractionToRemain) {
+                largestFractionToRemain = fractionToRemain;
+                listToReduce = files;
+            }
+        });
+
+        if (listToReduce.length) {
+            schedule.push(listToReduce.shift());
+        } else {
+            break;
+        }
+    }
+
+    return schedule;
 }
 
 function getCurrentSchedule(fullSchedule, lengthInSeconds) {

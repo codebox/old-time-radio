@@ -32,6 +32,8 @@ const proxyquire = require('proxyquire'),
     });
 
 describe("schedule", () => {
+    let schedule;
+
     beforeEach(() => {
         shows = [];
         playlists = {};
@@ -47,19 +49,12 @@ describe("schedule", () => {
         playlists[name] = {server, dir, files};
     }
 
+    function thenScheduleUrlsAre(...expectedUrls) {
+        expect(schedule.map(o => o.url)).toEqual(expectedUrls);
+    }
+
     describe("getScheduleForChannel", () => {
-
-        it("works", () => {
-            givenAShow('show1', ['channel1', 'channel2'], 0, ['playlist1', 'playlist2']);
-            givenAShow('show2', ['channel1'], 1, ['playlist3', 'playlist4']);
-            givenAShow('show3', ['channel4'], 2, ['playlist5']);
-            givenAShow('show4', ['channel1'], 3, ['playlist6']);
-
-            showIndexes = {
-                'code1' : [0, 1, 2, 3, 4],
-                'code2' : [2]
-            };
-
+        beforeEach(() => {
             givenAPlaylist('playlist1', 'server1', 'dir1', [
                 {name: 'p1_1', length: 30 * 60},
                 {name: 'p1_2', length: 10 * 60},
@@ -95,8 +90,14 @@ describe("schedule", () => {
                 {name: 'p6_2', length: 25 * 60},
                 {name: 'p6_3', length: 35 * 60}
             ]);
+        });
 
-            console.log(scheduler.getScheduleForChannel('code1', 100));
+        it("works", () => {
+            givenAShow('show1', ['channel1'], 0, ['playlist1']);
+
+            schedule = scheduler.getScheduleForChannel('channel1', 100);
+
+            thenScheduleUrlsAre('https://server1/dir1/p1_1', 'https://server1/dir1/p1_2', 'https://server1/dir1/p1_3');
         });
 
     });
