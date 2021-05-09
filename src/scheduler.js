@@ -20,9 +20,11 @@ function getShowListForChannel(channelNameOrCode) {
     }
 }
 
-function getFullScheduleFromShowList(showListForChannel) {
+function getFullScheduleFromShowList(showListForChannel) { //TODO memoize
     const showsToFiles = {};
+    let scheduleLength = 0;
 
+    //TODO handle commercials
     showListForChannel.forEach(show => {
         showsToFiles[show.name] = [];
         show.playlists.forEach(playlistName => {
@@ -31,6 +33,7 @@ function getFullScheduleFromShowList(showListForChannel) {
                 const readableName = nameParser.parseName(playlistName, fileMetadata),
                     length = Number(fileMetadata.length);
 
+                scheduleLength += length;
                 showsToFiles[show.name].push({
                     url: `https://${playlist.server}/${playlist.dir}/${fileMetadata.name}`,
                     archivalUrl: `https://archive.org/download/${playlistName}/${fileMetadata.name}`,
@@ -69,11 +72,50 @@ function getFullScheduleFromShowList(showListForChannel) {
         }
     }
 
-    return schedule;
+    return {schedule, length: scheduleLength};
 }
 
-function getCurrentSchedule(fullSchedule, lengthInSeconds) {
-    return fullSchedule;
+function getCurrentPlaylistPosition(playlist, playlistDuration) {
+    const offsetSinceStartOfPlay = (clock.now() - START_TIME) % playlistDuration;
+    let i = 0, playlistItemOffset = 0;
+
+    let initialOffset;
+    while (true) {
+        const playlistItem = playlist[i % playlist.length],
+            itemIsPlayingNow = playlistItemOffset + playlistItem.length > offsetSinceStartOfPlay;
+        if (itemIsPlayingNow) {
+            initialOffset = offsetSinceStartOfPlay - playlistItemOffset;
+            break;
+        }
+        playlistItemOffset += playlistItem.length;
+        i++;
+    }
+
+    return {
+        index: i % playlist.length,
+        offset: initialOffset
+    };
+}
+
+function getCurrentSchedule(fullSchedule, playlistMinLength) {
+    const episodeList = fullSchedule.schedule,
+        playlistLength = fullSchedule.length,
+        clientPlaylist = [];
+
+    let {index, offset} = getCurrentPlaylistPosition(episodeList, playlistLength);
+
+    let currentPlaylistDuration = -offset;
+    while (currentPlaylistDuration < playlistMinLength) {
+        const currentItem = episodeList[index % episodeList.length];
+        clientPlaylist.push(currentItem);
+        currentPlaylistDuration += currentItem.length;
+        index++;
+    }
+
+    return {
+        list: clientPlaylist,
+        initialOffset: offset
+    };
 }
 
 module.exports = {

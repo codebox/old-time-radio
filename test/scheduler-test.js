@@ -49,11 +49,19 @@ describe("schedule", () => {
         playlists[name] = {server, dir, files};
     }
 
-    function thenScheduleUrlsAre(...expectedUrls) {
-        expect(schedule.map(o => o.url)).toEqual(expectedUrls);
+    function givenTimeOffsetIs(offset) {
+        timeNow += offset;
     }
 
-    describe("getScheduleForChannel", () => {
+    function thenScheduleUrlsAre(...expectedUrls) {
+        expect(schedule.list.map(o => o.url)).toEqual(expectedUrls);
+    }
+
+    function thenScheduleOffsetIs(expectedOffset) {
+        expect(schedule.initialOffset).toBe(expectedOffset);
+    }
+
+    fdescribe("getScheduleForChannel", () => {
         beforeEach(() => {
             givenAPlaylist('playlist1', 'server1', 'dir1', [
                 {name: 'p1_1', length: 30 * 60},
@@ -92,14 +100,67 @@ describe("schedule", () => {
             ]);
         });
 
-        it("works", () => {
-            givenAShow('show1', ['channel1'], 0, ['playlist1']);
+        describe("Single Channel", () => {
+            it("Zero offset, matching duration", () => {
+                givenAShow('show1', ['channel1'], 0, ['playlist1']);
+                givenTimeOffsetIs(0);
 
-            schedule = scheduler.getScheduleForChannel('channel1', 100);
+                schedule = scheduler.getScheduleForChannel('channel1', 60 * 60);
 
-            thenScheduleUrlsAre('https://server1/dir1/p1_1', 'https://server1/dir1/p1_2', 'https://server1/dir1/p1_3');
+                thenScheduleUrlsAre('https://server1/dir1/p1_1', 'https://server1/dir1/p1_2', 'https://server1/dir1/p1_3');
+                thenScheduleOffsetIs(0);
+            });
+
+            it("Zero offset, duration shorter", () => {
+                givenAShow('show1', ['channel1'], 0, ['playlist1']);
+                givenTimeOffsetIs(0);
+
+                schedule = scheduler.getScheduleForChannel('channel1', 50 * 60);
+
+                thenScheduleUrlsAre('https://server1/dir1/p1_1', 'https://server1/dir1/p1_2', 'https://server1/dir1/p1_3');
+                thenScheduleOffsetIs(0);
+            });
+
+            it("Zero offset, duration longer", () => {
+                givenAShow('show1', ['channel1'], 0, ['playlist1']);
+                givenTimeOffsetIs(0);
+
+                schedule = scheduler.getScheduleForChannel('channel1', 70 * 60);
+
+                thenScheduleUrlsAre('https://server1/dir1/p1_1', 'https://server1/dir1/p1_2', 'https://server1/dir1/p1_3', 'https://server1/dir1/p1_1');
+                thenScheduleOffsetIs(0);
+            });
+
+            it("Small offset", () => {
+                givenAShow('show1', ['channel1'], 0, ['playlist1']);
+                givenTimeOffsetIs(20 * 60);
+
+                schedule = scheduler.getScheduleForChannel('channel1', 60 * 60);
+
+                thenScheduleUrlsAre('https://server1/dir1/p1_1', 'https://server1/dir1/p1_2', 'https://server1/dir1/p1_3', 'https://server1/dir1/p1_1');
+                thenScheduleOffsetIs(20 * 60);
+            });
+
+            it("Larger offset", () => {
+                givenAShow('show1', ['channel1'], 0, ['playlist1']);
+                givenTimeOffsetIs(50 * 60);
+
+                schedule = scheduler.getScheduleForChannel('channel1', 60 * 60);
+
+                thenScheduleUrlsAre('https://server1/dir1/p1_3', 'https://server1/dir1/p1_1', 'https://server1/dir1/p1_2', 'https://server1/dir1/p1_3');
+                thenScheduleOffsetIs(10 * 60);
+            });
+
+            it("Large offset", () => {
+                givenAShow('show1', ['channel1'], 0, ['playlist1']);
+                givenTimeOffsetIs(60 * 60 + 20 * 60);
+
+                schedule = scheduler.getScheduleForChannel('channel1', 60 * 60);
+
+                thenScheduleUrlsAre('https://server1/dir1/p1_1', 'https://server1/dir1/p1_2', 'https://server1/dir1/p1_3', 'https://server1/dir1/p1_1');
+                thenScheduleOffsetIs(20 * 60);
+            });
         });
-
     });
 
 });
