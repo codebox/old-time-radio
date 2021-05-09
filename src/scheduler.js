@@ -5,7 +5,6 @@ const channelData = require('./channelData.js'),
     nameParser = require('./nameParser.js'),
     clock = require('./clock.js'),
     START_TIME = 1595199600, // 2020-07-20 00:00:00
-    MIN_SCHEDULE_LENGTH = 60 * 60,
     MAX_SCHEDULE_LENGTH = 24 * 60 * 60;
 
 function getShowListForChannel(channelNameOrCode) {
@@ -138,9 +137,9 @@ function getCurrentSchedule(fullSchedule, playlistMinLength) {
 
 module.exports = {
     getScheduleForChannel(channelNameOrCode, lengthInSeconds) {
-        const showListForChannel = getShowListForChannel(channelNameOrCode);
-            const fullSchedule = getFullScheduleFromShowList(showListForChannel),
-            currentSchedule = getCurrentSchedule(fullSchedule, lengthInSeconds);
+        const showListForChannel = getShowListForChannel(channelNameOrCode),
+            fullSchedule = getFullScheduleFromShowList(showListForChannel),
+            currentSchedule = getCurrentSchedule(fullSchedule, Math.min(lengthInSeconds, MAX_SCHEDULE_LENGTH));
 
         return currentSchedule;
     }

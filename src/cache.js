@@ -49,7 +49,7 @@ module.exports = {
     put(id, data) {
         store[id] = {ts: clock.now(), data};
         const fileName = `${id}.json`;
-        fs.writeFile(path.join(location, fileName), data, ENCODING, err => {
+        fs.writeFile(path.join(location, fileName), JSON.stringify(data, null, 4), ENCODING, err => {
             if (err) {
                 log.error(`Failed to write file ${fileName} to cache dir ${location} - error was ${err}`);
             } else {
