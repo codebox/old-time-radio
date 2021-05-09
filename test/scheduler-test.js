@@ -100,8 +100,8 @@ describe("schedule", () => {
             ]);
         });
 
-        describe("Single Channel", () => {
-            it("Zero offset, matching duration", () => {
+        describe("Single Show", () => {
+            it("Zero offset, duration exactly matches playlist length", () => {
                 givenAShow('show1', ['channel1'], 0, ['playlist1']);
                 givenTimeOffsetIs(0);
 
@@ -111,7 +111,7 @@ describe("schedule", () => {
                 thenScheduleOffsetIs(0);
             });
 
-            it("Zero offset, duration shorter", () => {
+            it("Zero offset, duration shorter than playlist length", () => {
                 givenAShow('show1', ['channel1'], 0, ['playlist1']);
                 givenTimeOffsetIs(0);
 
@@ -121,7 +121,7 @@ describe("schedule", () => {
                 thenScheduleOffsetIs(0);
             });
 
-            it("Zero offset, duration longer", () => {
+            it("Zero offset, duration longer than playlist length", () => {
                 givenAShow('show1', ['channel1'], 0, ['playlist1']);
                 givenTimeOffsetIs(0);
 
@@ -131,7 +131,7 @@ describe("schedule", () => {
                 thenScheduleOffsetIs(0);
             });
 
-            it("Small offset", () => {
+            it("Offset within first show", () => {
                 givenAShow('show1', ['channel1'], 0, ['playlist1']);
                 givenTimeOffsetIs(20 * 60);
 
@@ -141,7 +141,7 @@ describe("schedule", () => {
                 thenScheduleOffsetIs(20 * 60);
             });
 
-            it("Larger offset", () => {
+            it("Offset within later show", () => {
                 givenAShow('show1', ['channel1'], 0, ['playlist1']);
                 givenTimeOffsetIs(50 * 60);
 
@@ -151,7 +151,7 @@ describe("schedule", () => {
                 thenScheduleOffsetIs(10 * 60);
             });
 
-            it("Large offset", () => {
+            it("Offset wraps whole playlist", () => {
                 givenAShow('show1', ['channel1'], 0, ['playlist1']);
                 givenTimeOffsetIs(60 * 60 + 20 * 60);
 
@@ -161,6 +161,30 @@ describe("schedule", () => {
                 thenScheduleOffsetIs(20 * 60);
             });
         });
+
+        describe("Multiple Shows", () => {
+            it("interleaved correctly", () => {
+                givenAShow('show1', ['channel1'], 0, ['playlist1', 'playlist2']); // 7 items, 80 mins
+                givenAShow('show2', ['channel1'], 1, ['playlist3']); // 4 items, 122 mins
+
+                schedule = scheduler.getScheduleForChannel('channel1', (80 + 122) * 60);
+
+                thenScheduleUrlsAre(
+                    'https://server1/dir1/p1_1',
+                    'https://server3/dir3/p3_1',
+                    'https://server1/dir1/p1_2',
+                    'https://server1/dir1/p1_3',
+                    'https://server3/dir3/p3_2',
+                    'https://server2/dir2/p2_1',
+                    'https://server2/dir2/p2_2',
+                    'https://server3/dir3/p3_3',
+                    'https://server2/dir2/p2_3',
+                    'https://server2/dir2/p2_4',
+                    'https://server3/dir3/p3_4');
+                thenScheduleOffsetIs(0);
+            });
+        });
+
     });
 
 });
