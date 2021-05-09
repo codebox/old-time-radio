@@ -41,8 +41,8 @@ describe("schedule", () => {
         timeNow = 1595199600; // 2020-07-20 00:00:00
     });
 
-    function givenAShow(name, channels, index, playlists) {
-        shows.push({channels, index, name, playlists});
+    function givenAShow(name, channels, index, playlists, isCommercial=false) {
+        shows.push({channels, index, name, playlists, isCommercial});
     }
 
     function givenAPlaylist(name, server, dir, files) { // files: [{name, length}]
@@ -84,9 +84,9 @@ describe("schedule", () => {
                 {name: 'p4_1', length: 1 * 60},
                 {name: 'p4_2', length: 2 * 60},
                 {name: 'p4_3', length: 3 * 60},
-                {name: 'p4_3', length: 4 * 60},
-                {name: 'p4_3', length: 5 * 60},
-                {name: 'p4_3', length: 6 * 60}
+                {name: 'p4_4', length: 4 * 60},
+                {name: 'p4_5', length: 5 * 60},
+                {name: 'p4_6', length: 6 * 60}
             ]);
             givenAPlaylist('playlist5', 'server5', 'dir5', [
                 {name: 'p5_1', length: 30 * 60},
@@ -181,6 +181,32 @@ describe("schedule", () => {
                     'https://server2/dir2/p2_3',
                     'https://server2/dir2/p2_4',
                     'https://server3/dir3/p3_4');
+                thenScheduleOffsetIs(0);
+            });
+
+            it("commercials added correctly", () => {
+                givenAShow('show1', ['channel1'], 0, ['playlist1', 'playlist2']);
+                givenAShow('show2', ['channel1'], 1, ['playlist3']);
+                givenAShow('show3', ['channel1'], 2, ['playlist4'], true);
+
+                schedule = scheduler.getScheduleForChannel('channel1', (80 + 122) * 60);
+
+                thenScheduleUrlsAre(
+                    'https://server1/dir1/p1_1',
+                    'https://server4/dir4/p4_1',
+                    'https://server3/dir3/p3_1',
+                    'https://server4/dir4/p4_2',
+                    'https://server1/dir1/p1_2',
+                    'https://server4/dir4/p4_3',
+                    'https://server1/dir1/p1_3',
+                    'https://server4/dir4/p4_4',
+                    'https://server3/dir3/p3_2',
+                    'https://server4/dir4/p4_5',
+                    'https://server2/dir2/p2_1',
+                    'https://server4/dir4/p4_6',
+                    'https://server2/dir2/p2_2',
+                    'https://server4/dir4/p4_1',
+                    'https://server3/dir3/p3_3')
                 thenScheduleOffsetIs(0);
             });
         });

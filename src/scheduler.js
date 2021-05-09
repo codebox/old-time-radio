@@ -21,20 +21,17 @@ function getShowListForChannel(channelNameOrCode) {
 }
 
 function getFullScheduleFromShowList(showListForChannel) { //TODO memoize
-    const showsToFiles = {};
-    let scheduleLength = 0;
+    const showsToFiles = {}, commercials = [];
 
-    //TODO handle commercials
     showListForChannel.forEach(show => {
-        showsToFiles[show.name] = [];
+        const files = [];
         show.playlists.forEach(playlistName => {
             const playlist = playlistData.getPlaylist(playlistName);
             playlist.files.forEach(fileMetadata => {
                 const readableName = nameParser.parseName(playlistName, fileMetadata),
                     length = Number(fileMetadata.length);
 
-                scheduleLength += length;
-                showsToFiles[show.name].push({
+                files.push({
                     url: `https://${playlist.server}/${playlist.dir}/${fileMetadata.name}`,
                     archivalUrl: `https://archive.org/download/${playlistName}/${fileMetadata.name}`,
                     name: readableName,
@@ -42,6 +39,12 @@ function getFullScheduleFromShowList(showListForChannel) { //TODO memoize
                 });
             });
         });
+
+        if (show.isCommercial) {
+            commercials.push(...files);
+        } else {
+            showsToFiles[show.name] = files;
+        }
     });
 
     const originalFileCounts = {};
@@ -49,7 +52,16 @@ function getFullScheduleFromShowList(showListForChannel) { //TODO memoize
         originalFileCounts[showName] = showsToFiles[showName].length;
     });
 
-    const schedule = [];
+    const schedule = [],
+        hasCommercials = !! commercials.length,
+        nextCommercial = (() => {
+            let nextIndex = 0;
+            return () => {
+                const commercial = commercials[nextIndex];
+                nextIndex = (nextIndex + 1) % commercials.length;
+                return commercial;
+            };
+        })();
 
     while (true) {
         let largestFractionToRemain = -1, listToReduce = [];
@@ -67,10 +79,16 @@ function getFullScheduleFromShowList(showListForChannel) { //TODO memoize
 
         if (listToReduce.length) {
             schedule.push(listToReduce.shift());
+            if (hasCommercials) {
+                schedule.push(nextCommercial());
+            }
+
         } else {
             break;
         }
     }
+
+    const scheduleLength = schedule.reduce((total, item) => item.length + total, 0);
 
     return {schedule, length: scheduleLength};
 }
