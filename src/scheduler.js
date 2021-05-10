@@ -26,9 +26,17 @@ function getFullScheduleFromShowList(showListForChannel) { //TODO memoize
         const files = [];
         show.playlists.forEach(playlistName => {
             const playlist = playlistData.getPlaylist(playlistName);
-            playlist.files.forEach(fileMetadata => {
-                const readableName = nameParser.parseName(playlistName, fileMetadata),
+
+            playlist.files.filter(f => f.name.toLowerCase().endsWith('.mp3')).filter(f => f.length).forEach(fileMetadata => {
+                const readableName = nameParser.parseName(playlistName, fileMetadata);
+
+                let length;
+                if (fileMetadata.length.match(/^[0-9]+:[0-9]+$/)) {
+                    const [min, sec] = fileMetadata.length.split(':')
+                    length = Number(min) * 60 + Number(sec);
+                } else {
                     length = Number(fileMetadata.length);
+                }
 
                 files.push({
                     url: `https://${playlist.server}/${playlist.dir}/${fileMetadata.name}`,
@@ -86,9 +94,7 @@ function getFullScheduleFromShowList(showListForChannel) { //TODO memoize
             break;
         }
     }
-
     const scheduleLength = schedule.reduce((total, item) => item.length + total, 0);
-
     return {schedule, length: scheduleLength};
 }
 
@@ -100,12 +106,14 @@ function getCurrentPlaylistPosition(playlist, playlistDuration) {
     while (true) {
         const playlistItem = playlist[i % playlist.length],
             itemIsPlayingNow = playlistItemOffset + playlistItem.length > offsetSinceStartOfPlay;
+
         if (itemIsPlayingNow) {
             initialOffset = offsetSinceStartOfPlay - playlistItemOffset;
             break;
         }
         playlistItemOffset += playlistItem.length;
         i++;
+        //TODO safety value here
     }
 
     return {
