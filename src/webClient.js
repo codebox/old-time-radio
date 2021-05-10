@@ -9,10 +9,10 @@ function makeKeyFromUrl(url) {
 
 module.exports = {
     init() {
-        cache.loadFromDisk();
+        return cache.loadFromDisk();
     },
     get(url) {
-        const cachedData = cache.get(url);
+        const cachedData = cache.get(makeKeyFromUrl(url));
         if (cachedData) {
             return Promise.resolve(cachedData);
         } else {

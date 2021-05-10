@@ -3,12 +3,13 @@
 const channelData = require('./channelData.js'),
     channelCodes = require('./channelCodes'),
     scheduler = require('./scheduler.js'),
+    playlistData = require('./playlistData.js'),
     webClient = require('./webClient.js'),
     ONE_HOUR = 60 * 60;
 
 module.exports = {
     init() {
-        webClient.init();
+        return webClient.init().then(() => playlistData.init());
     },
     getShows() {
         return channelData.getShows().map(show => {

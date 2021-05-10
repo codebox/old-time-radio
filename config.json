@@ -13,7 +13,7 @@
     },
   "webCache": {
     "location": "./cache",
-    "expiryIntervalSeconds": 60
+    "expiryIntervalSeconds": 3600
   },
   "log": {
     "file": "/var/log/oldtimeradio/access.log",
