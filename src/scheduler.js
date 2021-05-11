@@ -39,9 +39,10 @@ function getFullScheduleFromShowList(showListForChannel) { //TODO memoize
                 }
 
                 files.push({
-                    url: `https://${playlist.server}/${playlist.dir}/${fileMetadata.name}`,
+                    url: `https://${playlist.server}${playlist.dir}/${fileMetadata.name}`,
                     archivalUrl: `https://archive.org/download/${playlistName}/${fileMetadata.name}`,
                     name: readableName,
+                    commercial: show.isCommercial,
                     length
                 });
             });
