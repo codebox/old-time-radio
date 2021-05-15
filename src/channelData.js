@@ -6,6 +6,19 @@ function getChannelNamesForShowIndex(showIndex) {
 }
 
 module.exports = {
+    /*
+        [
+            {
+                "channels" : ["future"],
+                "index": 3,
+                "isCommercial": false,
+                "name": "Space Patrol",
+                "playlists": ["OTRR_Space_Patrol_Singles"]
+            }, {
+                ...
+            }
+        ]
+     */
     getShows() { //TODO memoize
         "use strict";
         return config.shows.map(show => {
@@ -18,6 +31,10 @@ module.exports = {
             };
         });
     },
+
+    /*
+        ["future", "action", ... ]
+     */
     getChannels() { //TODO memoize
         "use strict";
         return config.channels.map(channel => channel.name);
