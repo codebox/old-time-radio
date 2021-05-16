@@ -2,7 +2,6 @@
 const channelData = require('./channelData.js'),
     playlistData = require('./playlistData.js'),
     channelCodes = require('./channelCodes'),
-    nameParser = require('./nameParser.js'),
     clock = require('./clock.js'),
     START_TIME = 1595199600, // 2020-07-20 00:00:00
     MAX_SCHEDULE_LENGTH = 24 * 60 * 60;
@@ -23,29 +22,11 @@ function getFullScheduleFromShowList(showListForChannel) { //TODO memoize
     const showsToFiles = {}, commercials = [];
 
     showListForChannel.forEach(show => {
-        const files = [];
-        show.playlists.forEach(playlistName => {
-            const playlist = playlistData.getPlaylist(playlistName);
-
-            playlist.files.filter(f => f.name.toLowerCase().endsWith('.mp3')).filter(f => f.length).forEach(fileMetadata => {
-                const readableName = nameParser.parseName(playlistName, fileMetadata);
-
-                let length;
-                if (fileMetadata.length.match(/^[0-9]+:[0-9]+$/)) {
-                    const [min, sec] = fileMetadata.length.split(':')
-                    length = Number(min) * 60 + Number(sec);
-                } else {
-                    length = Number(fileMetadata.length);
-                }
-
-                files.push({
-                    url: `https://${playlist.server}${playlist.dir}/${fileMetadata.name}`,
-                    archivalUrl: `https://archive.org/download/${playlistName}/${fileMetadata.name}`,
-                    name: readableName,
-                    commercial: show.isCommercial,
-                    length
-                });
-            });
+        const files = show.playlists.flatMap(playlistName => playlistData.getPlaylist(playlistName)).flatMap(file => {
+            if (show.isCommercial) {
+                file.commercial = true;
+            }
+            return file;
         });
 
         if (show.isCommercial) {

@@ -25,7 +25,7 @@ app.get(config.web.paths.api.channels, (req, res) => {
     res.status(200).json(service.getChannels());
 });
 
-// {initialOffset: 123.456, list: [{archivalUrl: "http://...", length: 1234.56, name: "X Minus One - Episode 079", url: "http://..."}, ...]}
+// {initialOffset: 123.456, list: [{archivalUrl: "http://...", length: 1234.56, name: "X Minus One - Episode 079", url: "http://...", commercial: false}, ...]}
 app.get(config.web.paths.api.channel + ':channel', (req, res) => {
     const channelId = req.params.channel,
         length = req.query.length,
