@@ -1,6 +1,6 @@
 "use strict";
 
-let shows, playlists, showIndexes, parsedNames, timeNow;
+let shows, playlists, showIndexes, timeNow;
 
 const proxyquire = require('proxyquire'),
     scheduler = proxyquire('../src/scheduler.js', {
@@ -17,11 +17,6 @@ const proxyquire = require('proxyquire'),
         './channelCodes.js': {
             buildShowIndexesFromChannelCode(channelCodeOrName) {
                 return showIndexes[channelCodeOrName];
-            }
-        },
-        './nameParser.js': {
-            parseName(playlistName, fileMetadata) {
-                return `parsed_${fileMetadata.name}_${playlistName}`;
             }
         },
         './clock.js': {
@@ -46,7 +41,16 @@ describe("schedule", () => {
     }
 
     function givenAPlaylist(name, server, dir, files) { // files: [{name, length}]
-        playlists[name] = {server, dir, files};
+        playlists[name] = files.map(f => {
+            const url = `https://${server}/${dir}/${f.name}`;
+            return {
+                archivalUrl: url + '/archive',
+                length: f.length,
+                commercial: false,
+                name: f.name,
+                url
+            };
+        });
     }
 
     function givenTimeOffsetIs(offset) {
@@ -61,7 +65,7 @@ describe("schedule", () => {
         expect(schedule.initialOffset).toBe(expectedOffset);
     }
 
-    fdescribe("getScheduleForChannel", () => {
+    describe("getScheduleForChannel", () => {
         beforeEach(() => {
             givenAPlaylist('playlist1', 'server1', 'dir1', [
                 {name: 'p1_1', length: 30 * 60},
