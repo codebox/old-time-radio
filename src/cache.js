@@ -2,56 +2,122 @@
 const config = require('../config.json'),
     clock = require('./clock.js'),
     log = require('./log.js'),
-    fs = require('fs'),
+    fs = require('fs').promises,
     path = require('path'),
-    readdir = require("fs").promises.readdir,
-    JSON_EXT = '.json',
     ENCODING = 'utf-8',
-    MILLISECONDS_PER_SECOND = 1000,
-    expiryIntervalSeconds = config.webCache.expiryIntervalSeconds,
-    location = config.webCache.location;
-
-const store = {};
+    MILLISECONDS_PER_SECOND = 1000;
 
 module.exports = {
-    loadFromDisk() {
-        return readdir(location).then(files => {
-            files.filter(file => path.extname(file) === JSON_EXT).forEach(file => {
-                const fileAndPath = path.join(location, file),
-                    id = path.basename(file, JSON_EXT),
-                    ts = fs.statSync(fileAndPath).mtimeMs / MILLISECONDS_PER_SECOND,
-                    dataString = fs.readFileSync(fileAndPath),
-                    data = JSON.parse(dataString);
-
-                store[id] = {ts, data};
-            });
-        }).catch(err => {
-            log.error(`Failed to load cache from ${location} - error was ${err}`);
-        });
+    testSource() {
+        return {
+            get(id) {
+                return Promise.resolve("hello " + id);
+            }
+        };
     },
 
-    get(id) {
-        const cacheEntry = store[id];
-        if (cacheEntry) {
-            const {ts, data} = cacheEntry;
-            if (clock.now() - ts < expiryIntervalSeconds) {
-                return data;
-            } else {
-                log.debug(`Cache item ${id} has expired`);
-                delete store[id];
+    memoize(name, fn) {
+        const resultCache = this.buildCache(name, values => fn(...values));
+        return (...args) => {
+            return resultCache.get(args);
+        };
+    },
+
+    buildCache(name, source, {expiryIntervalSeconds} = {}) {
+        function hasTsExpired(ts) {
+            if (expiryIntervalSeconds) {
+                return clock.now() - ts > expiryIntervalSeconds;
+            }
+            return false;
+        }
+
+        const memory = (() => {
+            const data = {};
+
+            return {
+                get(id) {
+                    const entry = data[id];
+                    if (entry) {
+                        if (hasTsExpired(entry.ts)) {
+                            log.debug(`Cache MISS (memory) - item [${id}] has expired`);
+                            delete data[id];
+                            return Promise.reject();
+                        }
+                        log.debug(`Cache HIT (memory) - item [${id}] found`);
+                        return Promise.resolve(entry.value);
+                    }
+                    log.debug(`Cache MISS (memory) - item [${id}] does not exist`);
+                    return Promise.reject();
+                },
+                put(id, value) {
+                    const ts = clock.now();
+                    data[id] = {ts, value};
+                    log.debug(`Cache WRITE (memory) - item [${id}] stored`);
+                    return Promise.resolve(value);
+                }
+            }
+        })();
+
+        const disk = (() => {
+            const cacheDir = path.join(config.webCache.location, name);
+
+            function getCacheFilePath(id) {
+                return path.join(cacheDir, `${id}.json`);
+            }
+
+            return {
+                init() {
+                    return fs.mkdir(cacheDir, {recursive: true});
+                },
+                get(id) {
+                    const filePath = getCacheFilePath(id);
+
+                    return fs.stat(filePath)
+                        .then(stat => {
+                            const modificationTime = stat.mtimeMs / MILLISECONDS_PER_SECOND;
+                            if (hasTsExpired(modificationTime)) {
+                                log.debug(`Cache MISS (disk) - item [${id}] has expired`);
+                                return fs.unlink(filePath)
+                                    .then(() => Promise.reject());
+                            } else {
+                                return fs.readFile(filePath);
+                            }
+                        })
+                        .catch(() => {
+                            log.debug(`Cache MISS (disk) - item [${id}] does not exist`);
+                            return Promise.reject();
+                        })
+                        .then(buffer => {
+                            log.debug(`Cache HIT (disk) - item [${id}] found`);
+                            return JSON.parse(buffer.toString());
+                        });
+                },
+                put(id, value) {
+                    const filePath = getCacheFilePath(id),
+                        valueAsJson = JSON.stringify(value, null, 4);
+
+                    return fs.writeFile(filePath, valueAsJson, {encoding: ENCODING}).then(() => {
+                        log.debug(`Cache WRITE (disk) - item [${id}] stored`);
+                        return value;
+                    });
+                }
+            };
+        })();
+
+        return {
+            init() {
+                return disk.init();
+            },
+            get(rawId) {
+                const id = JSON.stringify(rawId).replace(/[^A-Za-z0-9]/g, '_');
+                return memory.get(id)
+                    .catch(() => disk.get(id)
+                        .then(value => memory.put(id, value))
+                        .catch(() => source(rawId)
+                            .then(value => disk.put(id, value))
+                            .then(value => memory.put(id, value))));
             }
         }
     },
 
-    put(id, data) {
-        store[id] = {ts: clock.now(), data};
-        const fileName = `${id}.json`;
-        fs.writeFile(path.join(location, fileName), JSON.stringify(data, null, 4), ENCODING, err => {
-            if (err) {
-                log.error(`Failed to write file ${fileName} to cache dir ${location} - error was ${err}`);
-            } else {
-                log.debug(`Wrote file ${fileName} to cache dir ${location}`);
-            }
-        });
-    }
 }

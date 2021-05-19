@@ -1,28 +1,19 @@
 "use strict";
 const axios = require('axios'),
     log = require('./log.js'),
-    cache = require('./cache.js');
+    config = require('../config.json'),
+    cacheBuilder = require('./cache.js');
 
-function makeKeyFromUrl(url) {
-    return url.replace(/https?:\/\//, '').replace(/[^A-Za-z0-9]+/g, '_');
-}
+const cache = cacheBuilder.buildCache('web', url => {
+        log.debug(`Requesting ${url}...`);
+        return axios.get(url).then(response => response.data);
+    }, config.webCache);
 
 module.exports = {
     init() {
-        return cache.loadFromDisk();
+        return cache.init();
     },
     get(url) {
-        const cachedData = cache.get(makeKeyFromUrl(url));
-        if (cachedData) {
-            return Promise.resolve(cachedData);
-        } else {
-            log.debug(`Requesting ${url}...`);
-            return axios.get(url).then(response => {
-                const data = response.data,
-                    cacheKey = makeKeyFromUrl(url);
-                cache.put(cacheKey, data);
-                return data;
-            });
-        }
+        return cache.get(url);
     }
 };
