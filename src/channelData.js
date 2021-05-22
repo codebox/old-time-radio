@@ -36,8 +36,8 @@ module.exports = {
     /*
         ["future", "action", ... ]
      */
-    getChannels() {
+    getChannels: memoize(() => {
         "use strict";
         return config.channels.map(channel => channel.name);
-    }
+    }, "channels")
 };

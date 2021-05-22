@@ -24,7 +24,9 @@ app.get(config.web.paths.api.shows, (req, res) => {
 
 // ["future", "action", ...]
 app.get(config.web.paths.api.channels, (req, res) => {
-    res.status(200).json(service.getChannels());
+    service.getChannels().then(channels => {
+        res.status(200).json(channels);
+    });
 });
 
 // {initialOffset: 123.456, list: [{archivalUrl: "http://...", length: 1234.56, name: "X Minus One - Episode 079", url: "http://...", commercial: false}, ...]}

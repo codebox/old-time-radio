@@ -7,7 +7,7 @@ const channelData = require('./channelData.js'),
     START_TIME = 1595199600, // 2020-07-20 00:00:00
     MAX_SCHEDULE_LENGTH = 24 * 60 * 60;
 
-const getFullScheduleForChannel = memoize(async channelNameOrCode => {
+const getFullScheduleForChannel = memoize(async channelNameOrCode => { //TODO limit how many we store in memory
     async function getShowListForChannel(channelNameOrCode) {
         const allShows = await channelData.getShows(),
             showsForPredefinedChannel = allShows.filter(show => show.channels.includes(channelNameOrCode));

@@ -20,8 +20,8 @@ module.exports = {
             };
         });
     },
-    getChannels() {
-        return channelData.getChannels();
+    async getChannels() {
+        return await channelData.getChannels();
     },
     async getScheduleForChannel(channelId, length = ONE_HOUR) {
         return await scheduler.getScheduleForChannel(channelId, length);
