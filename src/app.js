@@ -28,14 +28,14 @@ app.get(config.web.paths.api.channels, (req, res) => {
 // {initialOffset: 123.456, list: [{archivalUrl: "http://...", length: 1234.56, name: "X Minus One - Episode 079", url: "http://...", commercial: false}, ...]}
 app.get(config.web.paths.api.channel + ':channel', (req, res) => {
     const channelId = req.params.channel,
-        length = req.query.length,
-        schedule = service.getScheduleForChannel(channelId, length);
-
-    if (schedule) {
-        res.status(200).json(schedule);
-    } else {
-        res.status(400).send('Unknown channel');
-    }
+        length = req.query.length;
+    service.getScheduleForChannel(channelId, length).then(schedule => {
+        if (schedule) {
+            res.status(200).json(schedule);
+        } else {
+            res.status(400).send('Unknown channel');
+        }
+    });
 });
 
 // "1g0000g000000"

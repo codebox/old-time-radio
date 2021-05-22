@@ -3,6 +3,7 @@ const config = require('../config.json'),
     clock = require('./clock.js'),
     log = require('./log.js'),
     fs = require('fs').promises,
+    mkdirSync = require('fs').mkdirSync,
     path = require('path'),
     ENCODING = 'utf-8',
     MILLISECONDS_PER_SECOND = 1000;
@@ -16,8 +17,8 @@ module.exports = {
         };
     },
 
-    memoize(name, fn) {
-        const resultCache = this.buildCache(name, values => fn(...values));
+    memoize(fn, name) {
+        const resultCache = module.exports.buildCache(name, values => fn(...values));
         return (...args) => {
             return resultCache.get(args);
         };
@@ -60,15 +61,13 @@ module.exports = {
 
         const disk = (() => {
             const cacheDir = path.join(config.webCache.location, name);
+            mkdirSync(cacheDir, {recursive: true});
 
             function getCacheFilePath(id) {
                 return path.join(cacheDir, `${id}.json`);
             }
 
             return {
-                init() {
-                    return fs.mkdir(cacheDir, {recursive: true});
-                },
                 get(id) {
                     const filePath = getCacheFilePath(id);
 
@@ -105,15 +104,12 @@ module.exports = {
         })();
 
         return {
-            init() {
-                return disk.init();
-            },
             get(rawId) {
                 const id = JSON.stringify(rawId).replace(/[^A-Za-z0-9]/g, '_');
                 return memory.get(id)
                     .catch(() => disk.get(id)
                         .then(value => memory.put(id, value))
-                        .catch(() => source(rawId)
+                        .catch(() => Promise.resolve(source(rawId))
                             .then(value => disk.put(id, value))
                             .then(value => memory.put(id, value))));
             }

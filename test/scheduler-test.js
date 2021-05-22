@@ -105,61 +105,61 @@ describe("schedule", () => {
         });
 
         describe("Single Show", () => {
-            it("Zero offset, duration exactly matches playlist length", () => {
+            it("Zero offset, duration exactly matches playlist length", async () => {
                 givenAShow('show1', ['channel1'], 0, ['playlist1']);
                 givenTimeOffsetIs(0);
 
-                schedule = scheduler.getScheduleForChannel('channel1', 60 * 60);
+                schedule = await scheduler.getScheduleForChannel('channel1', 60 * 60);
 
                 thenScheduleUrlsAre('https://server1/dir1/p1_1', 'https://server1/dir1/p1_2', 'https://server1/dir1/p1_3');
                 thenScheduleOffsetIs(0);
             });
 
-            it("Zero offset, duration shorter than playlist length", () => {
+            it("Zero offset, duration shorter than playlist length", async () => {
                 givenAShow('show1', ['channel1'], 0, ['playlist1']);
                 givenTimeOffsetIs(0);
 
-                schedule = scheduler.getScheduleForChannel('channel1', 50 * 60);
+                schedule = await scheduler.getScheduleForChannel('channel1', 50 * 60);
 
                 thenScheduleUrlsAre('https://server1/dir1/p1_1', 'https://server1/dir1/p1_2', 'https://server1/dir1/p1_3');
                 thenScheduleOffsetIs(0);
             });
 
-            it("Zero offset, duration longer than playlist length", () => {
+            it("Zero offset, duration longer than playlist length", async () => {
                 givenAShow('show1', ['channel1'], 0, ['playlist1']);
                 givenTimeOffsetIs(0);
 
-                schedule = scheduler.getScheduleForChannel('channel1', 70 * 60);
+                schedule = await scheduler.getScheduleForChannel('channel1', 70 * 60);
 
                 thenScheduleUrlsAre('https://server1/dir1/p1_1', 'https://server1/dir1/p1_2', 'https://server1/dir1/p1_3', 'https://server1/dir1/p1_1');
                 thenScheduleOffsetIs(0);
             });
 
-            it("Offset within first show", () => {
+            it("Offset within first show", async () => {
                 givenAShow('show1', ['channel1'], 0, ['playlist1']);
                 givenTimeOffsetIs(20 * 60);
 
-                schedule = scheduler.getScheduleForChannel('channel1', 60 * 60);
+                schedule = await scheduler.getScheduleForChannel('channel1', 60 * 60);
 
                 thenScheduleUrlsAre('https://server1/dir1/p1_1', 'https://server1/dir1/p1_2', 'https://server1/dir1/p1_3', 'https://server1/dir1/p1_1');
                 thenScheduleOffsetIs(20 * 60);
             });
 
-            it("Offset within later show", () => {
+            it("Offset within later show", async () => {
                 givenAShow('show1', ['channel1'], 0, ['playlist1']);
                 givenTimeOffsetIs(50 * 60);
 
-                schedule = scheduler.getScheduleForChannel('channel1', 60 * 60);
+                schedule = await scheduler.getScheduleForChannel('channel1', 60 * 60);
 
                 thenScheduleUrlsAre('https://server1/dir1/p1_3', 'https://server1/dir1/p1_1', 'https://server1/dir1/p1_2', 'https://server1/dir1/p1_3');
                 thenScheduleOffsetIs(10 * 60);
             });
 
-            it("Offset wraps whole playlist", () => {
+            it("Offset wraps whole playlist", async () => {
                 givenAShow('show1', ['channel1'], 0, ['playlist1']);
                 givenTimeOffsetIs(60 * 60 + 20 * 60);
 
-                schedule = scheduler.getScheduleForChannel('channel1', 60 * 60);
+                schedule = await scheduler.getScheduleForChannel('channel1', 60 * 60);
 
                 thenScheduleUrlsAre('https://server1/dir1/p1_1', 'https://server1/dir1/p1_2', 'https://server1/dir1/p1_3', 'https://server1/dir1/p1_1');
                 thenScheduleOffsetIs(20 * 60);
@@ -167,11 +167,11 @@ describe("schedule", () => {
         });
 
         describe("Multiple Shows", () => {
-            it("interleaved correctly", () => {
+            it("interleaved correctly", async () => {
                 givenAShow('show1', ['channel1'], 0, ['playlist1', 'playlist2']); // 7 items, 80 mins
                 givenAShow('show2', ['channel1'], 1, ['playlist3']); // 4 items, 122 mins
 
-                schedule = scheduler.getScheduleForChannel('channel1', (80 + 122) * 60);
+                schedule = await scheduler.getScheduleForChannel('channel1', (80 + 122) * 60);
 
                 thenScheduleUrlsAre(
                     'https://server1/dir1/p1_1',
@@ -188,12 +188,12 @@ describe("schedule", () => {
                 thenScheduleOffsetIs(0);
             });
 
-            it("commercials added correctly", () => {
+            it("commercials added correctly", async () => {
                 givenAShow('show1', ['channel1'], 0, ['playlist1', 'playlist2']);
                 givenAShow('show2', ['channel1'], 1, ['playlist3']);
                 givenAShow('show3', ['channel1'], 2, ['playlist4'], true);
 
-                schedule = scheduler.getScheduleForChannel('channel1', (80 + 122) * 60);
+                schedule = await scheduler.getScheduleForChannel('channel1', (80 + 122) * 60);
 
                 thenScheduleUrlsAre(
                     'https://server1/dir1/p1_1',

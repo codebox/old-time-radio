@@ -9,7 +9,7 @@ const channelData = require('./channelData.js'),
 
 module.exports = {
     init() {
-        return webClient.init().then(() => playlistData.init());
+        return playlistData.init();
     },
     getShows() {
         return channelData.getShows().map(show => {
@@ -24,8 +24,8 @@ module.exports = {
     getChannels() {
         return channelData.getChannels();
     },
-    getScheduleForChannel(channelId, length = ONE_HOUR) {
-        return scheduler.getScheduleForChannel(channelId, length);
+    async getScheduleForChannel(channelId, length = ONE_HOUR) {
+        return await scheduler.getScheduleForChannel(channelId, length);
     },
     getCodeForShowIndexes(showIndexes = []) {
         return channelCodes.buildChannelCodeFromShowIndexes(showIndexes);

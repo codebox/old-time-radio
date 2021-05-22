@@ -17,9 +17,8 @@ describe("cache", () => {
     describe("with no expiry time", () => {
         let cache;
 
-        beforeEach(async () => {
+        beforeEach(() => {
             cache = cacheBuilder.buildCache("test", source);
-            await cache.init();
         });
 
         it("source only called once per id", async () => {
@@ -45,9 +44,8 @@ describe("cache", () => {
     describe("items expire correctly", () => {
         let cache;
 
-        beforeEach(async () => {
+        beforeEach(() => {
             cache = cacheBuilder.buildCache("test", source, {expiryIntervalSeconds: 2});
-            await cache.init();
         });
 
         it("source only called once per id", async done => {
@@ -65,6 +63,52 @@ describe("cache", () => {
                 done();
             }, 3000);
         });
+    });
 
+    describe("can memoize function", () => {
+        let callCounter;
+
+        function add(...nums) {
+            callCounter += 1;
+            return Promise.resolve(nums.reduce((a,b) => a + b, 0));
+        }
+
+        beforeEach(() => {
+            callCounter = 0;
+        });
+
+        afterEach(async () => {
+            await fs.rmdir('cache/no_params', {recursive: true});
+            await fs.rmdir('cache/with_params', {recursive: true});
+        });
+
+        it("with no parameters", async () => {
+            const addMemo = cacheBuilder.memoize(add, "no_params");
+            expect(callCounter).toBe(0);
+            expect(await addMemo()).toEqual(0);
+            expect(callCounter).toBe(1);
+            expect(await addMemo()).toEqual(0);
+            expect(callCounter).toBe(1);
+        });
+
+        it("with parameters", async () => {
+            const addMemo = cacheBuilder.memoize(add, "with_params");
+
+            expect(callCounter).toBe(0);
+            expect(await addMemo(1)).toEqual(1);
+            expect(callCounter).toBe(1);
+            expect(await addMemo(2)).toEqual(2);
+            expect(callCounter).toBe(2);
+            expect(await addMemo(1)).toEqual(1);
+            expect(callCounter).toBe(2);
+            expect(await addMemo(2)).toEqual(2);
+            expect(callCounter).toBe(2);
+            expect(await addMemo(1,2,3)).toEqual(6);
+            expect(callCounter).toBe(3);
+            expect(await addMemo(1,2,3)).toEqual(6);
+            expect(callCounter).toBe(3);
+            expect(await addMemo(5,6)).toEqual(11);
+            expect(callCounter).toBe(4);
+        });
     });
 });

@@ -10,9 +10,6 @@ const cache = cacheBuilder.buildCache('web', url => {
     }, config.webCache);
 
 module.exports = {
-    init() {
-        return cache.init();
-    },
     get(url) {
         return cache.get(url);
     }

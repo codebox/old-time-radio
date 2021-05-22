@@ -3,82 +3,89 @@ const channelData = require('./channelData.js'),
     playlistData = require('./playlistData.js'),
     channelCodes = require('./channelCodes'),
     clock = require('./clock.js'),
+    memoize = require('./cache.js').memoize,
     START_TIME = 1595199600, // 2020-07-20 00:00:00
     MAX_SCHEDULE_LENGTH = 24 * 60 * 60;
 
-function getShowListForChannel(channelNameOrCode) {
-    const showsForPredefinedChannel = channelData.getShows().filter(show => show.channels.includes(channelNameOrCode));
+const getFullScheduleForChannel = memoize(channelNameOrCode => {
+    function getShowListForChannel(channelNameOrCode) {
+        const showsForPredefinedChannel = channelData.getShows().filter(show => show.channels.includes(channelNameOrCode));
 
-    if (showsForPredefinedChannel.length) {
-        return showsForPredefinedChannel;
+        if (showsForPredefinedChannel.length) {
+            return showsForPredefinedChannel;
 
-    } else {
-        const showIndexes = channelCodes.buildShowIndexesFromChannelCode(channelNameOrCode);
-        return channelData.getShows().filter(show => showIndexes.includes(show.index));
+        } else {
+            const showIndexes = channelCodes.buildShowIndexesFromChannelCode(channelNameOrCode);
+            return channelData.getShows().filter(show => showIndexes.includes(show.index));
+        }
     }
-}
 
-function getFullScheduleFromShowList(showListForChannel) { //TODO memoize
-    const showsToFiles = {}, commercials = [];
+    function getFullScheduleFromShowList(showListForChannel) {
+        const showsToFiles = {}, commercials = [];
 
-    showListForChannel.forEach(show => {
-        const files = show.playlists.flatMap(playlistName => playlistData.getPlaylist(playlistName)).flatMap(file => {
+        showListForChannel.forEach(show => {
+            const files = show.playlists.flatMap(playlistName => playlistData.getPlaylist(playlistName)).flatMap(file => {
+                if (show.isCommercial) {
+                    file.commercial = true;
+                }
+                return file;
+            });
+
             if (show.isCommercial) {
-                file.commercial = true;
-            }
-            return file;
-        });
-
-        if (show.isCommercial) {
-            commercials.push(...files);
-        } else {
-            showsToFiles[show.name] = files;
-        }
-    });
-
-    const originalFileCounts = {};
-    Object.keys(showsToFiles).forEach(showName => {
-        originalFileCounts[showName] = showsToFiles[showName].length;
-    });
-
-    const schedule = [],
-        hasCommercials = !! commercials.length,
-        nextCommercial = (() => {
-            let nextIndex = 0;
-            return () => {
-                const commercial = commercials[nextIndex];
-                nextIndex = (nextIndex + 1) % commercials.length;
-                return commercial;
-            };
-        })();
-
-    while (true) {
-        let largestFractionToRemain = -1, listToReduce = [];
-
-        Object.entries(showsToFiles).forEach(entry => {
-            const [showName, files] = entry,
-                originalFileCount = originalFileCounts[showName],
-                fractionToRemain = (files.length - 1) / originalFileCount;
-
-            if (fractionToRemain > largestFractionToRemain) {
-                largestFractionToRemain = fractionToRemain;
-                listToReduce = files;
+                commercials.push(...files);
+            } else {
+                showsToFiles[show.name] = files;
             }
         });
 
-        if (listToReduce.length) {
-            schedule.push(listToReduce.shift());
-            if (hasCommercials) {
-                schedule.push(nextCommercial());
-            }
+        const originalFileCounts = {};
+        Object.keys(showsToFiles).forEach(showName => {
+            originalFileCounts[showName] = showsToFiles[showName].length;
+        });
 
-        } else {
-            break;
+        const schedule = [],
+            hasCommercials = !! commercials.length,
+            nextCommercial = (() => {
+                let nextIndex = 0;
+                return () => {
+                    const commercial = commercials[nextIndex];
+                    nextIndex = (nextIndex + 1) % commercials.length;
+                    return commercial;
+                };
+            })();
+
+        while (true) {
+            let largestFractionToRemain = -1, listToReduce = [];
+
+            Object.entries(showsToFiles).forEach(entry => {
+                const [showName, files] = entry,
+                    originalFileCount = originalFileCounts[showName],
+                    fractionToRemain = (files.length - 1) / originalFileCount;
+
+                if (fractionToRemain > largestFractionToRemain) {
+                    largestFractionToRemain = fractionToRemain;
+                    listToReduce = files;
+                }
+            });
+
+            if (listToReduce.length) {
+                schedule.push(listToReduce.shift());
+                if (hasCommercials) {
+                    schedule.push(nextCommercial());
+                }
+
+            } else {
+                break;
+            }
         }
+        const scheduleLength = schedule.reduce((total, item) => item.length + total, 0);
+        return {schedule, length: scheduleLength};
     }
-    const scheduleLength = schedule.reduce((total, item) => item.length + total, 0);
-    return {schedule, length: scheduleLength};
-}
+
+    const showListForChannel = getShowListForChannel(channelNameOrCode);
+
+    return getFullScheduleFromShowList(showListForChannel);
+}, "channelFullSchedule");
 
 function getCurrentPlaylistPosition(playlist, playlistDuration) {
     const offsetSinceStartOfPlay = (clock.now() - START_TIME) % playlistDuration;
@@ -126,9 +133,8 @@ function getCurrentSchedule(fullSchedule, playlistMinLength) {
 }
 
 module.exports = {
-    getScheduleForChannel(channelNameOrCode, lengthInSeconds) {
-        const showListForChannel = getShowListForChannel(channelNameOrCode),
-            fullSchedule = getFullScheduleFromShowList(showListForChannel),
+    async getScheduleForChannel(channelNameOrCode, lengthInSeconds) {
+        const fullSchedule = await getFullScheduleForChannel(channelNameOrCode),
             currentSchedule = getCurrentSchedule(fullSchedule, Math.min(lengthInSeconds, MAX_SCHEDULE_LENGTH));
 
         return currentSchedule;
