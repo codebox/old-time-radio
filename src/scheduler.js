@@ -7,16 +7,17 @@ const channelData = require('./channelData.js'),
     START_TIME = 1595199600, // 2020-07-20 00:00:00
     MAX_SCHEDULE_LENGTH = 24 * 60 * 60;
 
-const getFullScheduleForChannel = memoize(channelNameOrCode => {
-    function getShowListForChannel(channelNameOrCode) {
-        const showsForPredefinedChannel = channelData.getShows().filter(show => show.channels.includes(channelNameOrCode));
+const getFullScheduleForChannel = memoize(async channelNameOrCode => {
+    async function getShowListForChannel(channelNameOrCode) {
+        const allShows = await channelData.getShows(),
+            showsForPredefinedChannel = allShows.filter(show => show.channels.includes(channelNameOrCode));
 
         if (showsForPredefinedChannel.length) {
             return showsForPredefinedChannel;
 
         } else {
             const showIndexes = channelCodes.buildShowIndexesFromChannelCode(channelNameOrCode);
-            return channelData.getShows().filter(show => showIndexes.includes(show.index));
+            return allShows.filter(show => showIndexes.includes(show.index));
         }
     }
 
@@ -82,7 +83,7 @@ const getFullScheduleForChannel = memoize(channelNameOrCode => {
         return {schedule, length: scheduleLength};
     }
 
-    const showListForChannel = getShowListForChannel(channelNameOrCode);
+    const showListForChannel = await getShowListForChannel(channelNameOrCode);
 
     return getFullScheduleFromShowList(showListForChannel);
 }, "channelFullSchedule");

@@ -9,14 +9,6 @@ const config = require('../config.json'),
     MILLISECONDS_PER_SECOND = 1000;
 
 module.exports = {
-    testSource() {
-        return {
-            get(id) {
-                return Promise.resolve("hello " + id);
-            }
-        };
-    },
-
     memoize(fn, name) {
         const resultCache = module.exports.buildCache(name, values => fn(...values));
         return (...args) => {
@@ -40,20 +32,20 @@ module.exports = {
                     const entry = data[id];
                     if (entry) {
                         if (hasTsExpired(entry.ts)) {
-                            log.debug(`Cache MISS (memory) - item [${id}] has expired`);
+                            log.debug(`Cache MISS for ${name} (memory) - item [${id}] has expired`);
                             delete data[id];
                             return Promise.reject();
                         }
-                        log.debug(`Cache HIT (memory) - item [${id}] found`);
+                        log.debug(`Cache HIT for ${name} (memory) - item [${id}] found`);
                         return Promise.resolve(entry.value);
                     }
-                    log.debug(`Cache MISS (memory) - item [${id}] does not exist`);
+                    log.debug(`Cache MISS for ${name} (memory) - item [${id}] does not exist`);
                     return Promise.reject();
                 },
                 put(id, value) {
                     const ts = clock.now();
                     data[id] = {ts, value};
-                    log.debug(`Cache WRITE (memory) - item [${id}] stored`);
+                    log.debug(`Cache WRITE for ${name} (memory) - item [${id}] stored`);
                     return Promise.resolve(value);
                 }
             }
@@ -75,7 +67,7 @@ module.exports = {
                         .then(stat => {
                             const modificationTime = stat.mtimeMs / MILLISECONDS_PER_SECOND;
                             if (hasTsExpired(modificationTime)) {
-                                log.debug(`Cache MISS (disk) - item [${id}] has expired`);
+                                log.debug(`Cache MISS for ${name} (disk) - item [${id}] has expired`);
                                 return fs.unlink(filePath)
                                     .then(() => Promise.reject());
                             } else {
@@ -83,11 +75,11 @@ module.exports = {
                             }
                         })
                         .catch(() => {
-                            log.debug(`Cache MISS (disk) - item [${id}] does not exist`);
+                            log.debug(`Cache MISS for ${name} (disk) - item [${id}] does not exist`);
                             return Promise.reject();
                         })
                         .then(buffer => {
-                            log.debug(`Cache HIT (disk) - item [${id}] found`);
+                            log.debug(`Cache HIT for ${name} (disk) - item [${id}] found`);
                             return JSON.parse(buffer.toString());
                         });
                 },
@@ -96,7 +88,7 @@ module.exports = {
                         valueAsJson = JSON.stringify(value, null, 4);
 
                     return fs.writeFile(filePath, valueAsJson, {encoding: ENCODING}).then(() => {
-                        log.debug(`Cache WRITE (disk) - item [${id}] stored`);
+                        log.debug(`Cache WRITE for ${name} (disk) - item [${id}] stored`);
                         return value;
                     });
                 }

@@ -17,7 +17,9 @@ app.use(express.static(config.web.paths.static));
 
 // [{channels:["future"], index: 1, isCommercial: false, name: "X Minus One"}, ...]
 app.get(config.web.paths.api.shows, (req, res) => {
-    res.status(200).json(service.getShows());
+    service.getShows().then(shows => {
+        res.status(200).json(shows);
+    });
 });
 
 // ["future", "action", ...]
