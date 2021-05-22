@@ -9,6 +9,11 @@ const proxyquire = require('proxyquire'),
                 return shows;
             }
         },
+        './cache.js': {
+            memoize(fn){
+                return fn;
+            }
+        },
         './playlistData.js': {
             getPlaylist(name) {
                 return playlists[name];

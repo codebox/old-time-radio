@@ -1,5 +1,6 @@
 "use strict";
 const cacheBuilder = require('../src/cache.js'),
+    config = require('../config.json'),
     fs = require('fs').promises;
 
 describe("cache", () => {
@@ -45,7 +46,8 @@ describe("cache", () => {
         let cache;
 
         beforeEach(() => {
-            cache = cacheBuilder.buildCache("test", source, {expiryIntervalSeconds: 2});
+            config.caches.expirySeconds.test = 2;
+            cache = cacheBuilder.buildCache("test", source);
         });
 
         it("source only called once per id", async done => {
