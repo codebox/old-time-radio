@@ -1,19 +1,21 @@
 {
-    "web": {
-        "port": 3000,
-        "paths": {
-            "static": "public",
-            "api": {
-                "shows": "/api/shows",
-                "channels": "/api/channels",
-                "channel": "/api/channel/",
-                "generate": "/api/channel/generate/"
-            }
-        }
-    },
-  "webCache": {
+  "web": {
+    "port": 3000,
+    "paths": {
+      "static": "public",
+      "api": {
+        "shows": "/api/shows",
+        "channels": "/api/channels",
+        "channel": "/api/channel/",
+        "generate": "/api/channel/generate/"
+      }
+    }
+  },
+  "caches": {
     "location": "./cache",
-    "expiryIntervalSeconds": 360000
+    "expirySeconds": {
+      "web": 360000
+    }
   },
   "log": {
     "file": "/var/log/oldtimeradio/access.log",
