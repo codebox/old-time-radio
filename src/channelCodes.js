@@ -9,7 +9,6 @@ function numToString(n) {
 }
 
 function stringToNum(s) {
-    "use strict";
     console.assert(s.length === 1, s);
     const n = CHAR_MAP.indexOf(s);
     if (n < 0) {

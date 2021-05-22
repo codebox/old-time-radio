@@ -1,8 +1,8 @@
+"use strict";
 const config = require('../config.json'),
     memoize = require('./cache.js').memoize;
 
 function getChannelNamesForShowIndex(showIndex) {
-    "use strict";
     return config.channels.filter(channel => channel.shows.includes(showIndex)).map(channel => channel.name);
 }
 
@@ -21,7 +21,6 @@ module.exports = {
         ]
      */
     getShows: memoize(() => {
-        "use strict";
         return config.shows.map(show => {
             return {
                 channels: getChannelNamesForShowIndex(show.index),
@@ -37,7 +36,6 @@ module.exports = {
         ["future", "action", ... ]
      */
     getChannels: memoize(() => {
-        "use strict";
         return config.channels.map(channel => channel.name);
     }, "channels")
 };

@@ -1,3 +1,4 @@
+"use strict";
 const winston = require('winston'),
     config = require('../config.json');
 

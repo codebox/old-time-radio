@@ -1,5 +1,4 @@
 "use strict";
-
 const channelData = require('./channelData.js'),
     channelCodes = require('./channelCodes'),
     scheduler = require('./scheduler.js'),
