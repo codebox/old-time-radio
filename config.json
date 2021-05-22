@@ -14,7 +14,10 @@
   "caches": {
     "location": "./cache",
     "expirySeconds": {
-      "web": 360000
+      "web": 360000,
+      "channelFullSchedule": 360000,
+      "shows": 0,
+      "channels": 0
     }
   },
   "log": {
