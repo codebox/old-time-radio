@@ -55,3 +55,20 @@ service.js
     getChannelPlaylist()
     getChannelCode()
 
+--------
+https://archive.org/advancedsearch.php?q=collection%3A%2878rpm_bostonpubliclibrary%29+AND+mediatype%3A%28audio%29+AND+date%3A%5B1920-01-01+TO+1929-12-31%5D&fl%5B%5D=creator&fl%5B%5D=date&fl%5B%5D=genre&fl%5B%5D=identifier&fl%5B%5D=name&fl%5B%5D=title&sort%5B%5D=&sort%5B%5D=&sort%5B%5D=&rows=500&page=1&output=json
+
+see https://archive.org/advancedsearch.php
+
+`https://archive.org/advancedsearch.php?q=collection%3A%28${collection}%29+AND+mediatype%3A%28audio%29+AND+date%3A%5B${startYear}-01-01+TO+${endYear}-12-31%5D&fl%5B%5D=creator&fl%5B%5D=date&fl%5B%5D=genre&fl%5B%5D=identifier&fl%5B%5D=name&fl%5B%5D=title&sort%5B%5D=&sort%5B%5D=&sort%5B%5D=&rows=${rowCount}&page=${pageNumber}&output=json`
+
+    {
+      "name": "Boston Public Library 78s - 1920s",
+      "query": {
+          "collection": "78rpm_bostonpubliclibrary",
+          "startYear": "1920",
+          "endYear": "1929"
+      },
+      "index": 79
+    }
+
