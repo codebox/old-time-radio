@@ -1,4 +1,29 @@
 {
+  "web": {
+    "port": 3000,
+    "paths": {
+      "static": "public",
+      "api": {
+        "shows": "/api/shows",
+        "channels": "/api/channels",
+        "channel": "/api/channel/",
+        "generate": "/api/channel/generate/"
+      }
+    }
+  },
+  "caches": {
+    "location": "./cache",
+    "expirySeconds": {
+      "web": 360000,
+      "channelFullSchedule": 360000,
+      "shows": 360000,
+      "channels": 360000
+    }
+  },
+  "log": {
+    "file": "/var/log/oldtimeradio/access.log",
+    "level": "info"
+  },
   "shows" : [
     {
       "name": "Commercials",

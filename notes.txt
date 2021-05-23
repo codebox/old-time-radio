@@ -1,5 +1,7 @@
 Tests
 -----
+To run jasmine tests, from the root of the projet do:
+    jasmine --config=test/support/jasmine.json
 
 - When everything on current playlist has been played, the API is queried again and playback continues
 - When playing a show the Download as MP3 link is visible
@@ -33,3 +35,23 @@ Schedule
 
 Station Builder
 - When listening to a custom station, schedule should show correct channels
+
+---------------------
+New backend design
+
+Inputs ->
+    data.json
+    archive.org API / cache
+
+app.js
+    /api/shows
+    /api/channels
+    /api/channel/:channel
+    /api/channel/generate/:indexes
+
+service.js
+    getShows()
+    getChannels()
+    getChannelPlaylist()
+    getChannelCode()
+
