@@ -4,7 +4,7 @@ const axios = require('axios'),
     cacheBuilder = require('./cache.js');
 
 const cache = cacheBuilder.buildCache('web', url => {
-        log.debug(`Requesting ${url}...`);
+        log.info(`Requesting ${url}...`);
         return axios.get(url).then(response => response.data);
     });
 

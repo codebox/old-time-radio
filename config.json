@@ -16,13 +16,13 @@
     "expirySeconds": {
       "web": 360000,
       "channelFullSchedule": 360000,
-      "shows": 0,
-      "channels": 0
+      "shows": 360000,
+      "channels": 360000
     }
   },
   "log": {
     "file": "/var/log/oldtimeradio/access.log",
-    "level": "debug"
+    "level": "info"
   },
   "shows" : [
     {

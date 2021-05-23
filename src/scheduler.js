@@ -3,6 +3,7 @@ const channelData = require('./channelData.js'),
     playlistData = require('./playlistData.js'),
     channelCodes = require('./channelCodes'),
     clock = require('./clock.js'),
+    log = require('./log.js'),
     memoize = require('./cache.js').memoize,
     START_TIME = 1595199600, // 2020-07-20 00:00:00
     MAX_SCHEDULE_LENGTH = 24 * 60 * 60;
@@ -83,6 +84,7 @@ const getFullScheduleForChannel = memoize(async channelNameOrCode => { //TODO li
         return {schedule, length: scheduleLength};
     }
 
+    log.info(`Calculating schedule for channel [${channelNameOrCode}]`);
     const showListForChannel = await getShowListForChannel(channelNameOrCode);
 
     return getFullScheduleFromShowList(showListForChannel);
