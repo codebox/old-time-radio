@@ -9,9 +9,9 @@ const playlistsById = {};
     Shows have one or more 'playlists' associated with them (see config file) - each playlist comprises a list episodes
     including mp3 file urls.
 */
-function extractUsefulPlaylistData(playlistId, playlist) {
-    return playlist.files.filter(f => f.name.toLowerCase().endsWith('.mp3')).filter(f => f.length).map(fileMetadata => {
-        const readableName = nameParser.parseName(playlistId, fileMetadata);
+function extractUsefulPlaylistData(playlistId, playlist, query) {
+    return playlist.files.filter(f => f.name.toLowerCase().endsWith('.mp3')).filter(f => f.length).filter((f,i) => !query || i===0).map(fileMetadata => {
+        const readableName = nameParser.parseName(playlistId, {...fileMetadata, customParser: query ? 'music' : ''});
 
         let length;
         if (fileMetadata.length.match(/^[0-9]+:[0-9]+$/)) {
@@ -30,16 +30,43 @@ function extractUsefulPlaylistData(playlistId, playlist) {
     });
 }
 
+function getPlaylistQuery(query) {
+    return archiveOrg.search(query.collection, 100, 1, `${query.startYear}-01-01`, `${query.endYear}-12-31`);
+}
+
+function queryPlaylistIds() {
+    const showsWithPlaylistQueries = config.shows.filter(show => show.query),
+        playListPromises = showsWithPlaylistQueries.map(show => getPlaylistQuery(show.query));
+
+    return Promise.all(playListPromises).then(results => {
+        results.forEach((result, i) => {
+            const show = showsWithPlaylistQueries[i];
+            show.playlists = result.response.docs.map(doc => doc.identifier);
+        });
+    });
+}
+
 module.exports = {
     init() {
-        const allPlaylistIds = config.shows.flatMap(show => show.playlists),
-            allPlaylistDataPromises = allPlaylistIds.map(playlistId => archiveOrg.getPlaylist(playlistId));
+        return queryPlaylistIds().then(() => {
+            const configuredPlaylists = config.shows.filter(show => !show.query).flatMap(show => show.playlists).map(id => {
+                    return {id, query: false};
+                }),
+                queriedPlaylists = config.shows.filter(show => show.query).flatMap(show => show.playlists).map(id => {
+                    return {id, query: true};
+                });
 
-        return Promise.all(allPlaylistDataPromises).then(allPlaylistData => {
-            allPlaylistData.forEach(playlistData => {
-                const id = playlistData.metadata.identifier,
-                    usefulPlaylistData = extractUsefulPlaylistData(id, playlistData);
-                playlistsById[id] = usefulPlaylistData;
+            const allPlaylistDataPromises = [...configuredPlaylists, ...queriedPlaylists]
+                .map(playlistData => archiveOrg.getPlaylist(playlistData.id).then(data => {
+                    return {...playlistData, data};
+                }));
+
+            return Promise.all(allPlaylistDataPromises).then(allPlaylistData => {
+                allPlaylistData.forEach(playlistData => {
+                    const {id, query, data} = playlistData;
+                    const usefulPlaylistData = extractUsefulPlaylistData(id, data, query);
+                    playlistsById[id] = usefulPlaylistData;
+                });
             });
         });
     },

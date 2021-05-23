@@ -420,6 +420,33 @@
       "name": "The Haunting Hour",
       "playlists": ["haunting_hour"],
       "index": 78
+    },
+    {
+      "name": "Boston Public Library 78s - 1920s",
+      "query": {
+        "collection": "78rpm_bostonpubliclibrary",
+        "startYear": "1920",
+        "endYear": "1929"
+      },
+      "index": 79
+    },
+    {
+      "name": "Boston Public Library 78s - 1930s",
+      "query": {
+        "collection": "78rpm_bostonpubliclibrary",
+        "startYear": "1930",
+        "endYear": "1939"
+      },
+      "index": 80
+    },
+    {
+      "name": "Boston Public Library 78s - 1940s",
+      "query": {
+        "collection": "78rpm_bostonpubliclibrary",
+        "startYear": "1940",
+        "endYear": "1949"
+      },
+      "index": 81
     }
   ],
   "channels" : [
@@ -454,6 +481,18 @@
     {
       "name" : "drama",
       "shows": [0,65,66,67,68,69,70,71,72,73,74]
+    },
+    {
+      "name" : "20s music",
+      "shows": [79]
+    },
+    {
+      "name" : "30s music",
+      "shows": [80]
+    },
+    {
+      "name" : "40s music",
+      "shows": [81]
     }
   ]
 }

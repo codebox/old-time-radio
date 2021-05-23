@@ -877,6 +877,18 @@ const parsers = [
         }
     }
 ];
+const customParsers = {
+    music(metadata) {
+        if (metadata.title) {
+            const artist = metadata.artist || metadata.creator;
+            if (artist) {
+                return `"${metadata.title}" - ${artist.split(';')[0]}`;
+            }
+            return `"${metadata.title}"`;
+        }
+        return metadata.name;
+    }
+};
 
 module.exports.parseName = (playlistId, metadata) => {
     const matchingParsers = parsers.filter(p => p.ids.includes(playlistId));
@@ -893,10 +905,15 @@ module.exports.parseName = (playlistId, metadata) => {
                 return parser.getName(metadata);
             }
         }).filter(o => o);
+
         if (matches.length) {
             // console.log(playlistId, 'OK', matches[0]);
             return matches[0];
         }
+
+    } else if (metadata.customParser) {
+        return customParsers[metadata.customParser](metadata);
+
     }
     // console.log(playlistId, 'NOMATCH', metadata.name);
     return metadata.title || metadata.name;
