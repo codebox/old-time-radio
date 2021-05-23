@@ -37,6 +37,7 @@ module.exports = {
      }
      */
     search(collection, rowCount, page, fromDate, toDate) {
+        // Example url: https://archive.org/advancedsearch.php?q=collection%3A(78rpm_bostonpubliclibrary)%20AND%20mediatype%3A(audio)%20AND%20date%3A%5B1920-01-01%20TO%201929-12-31%5D&fl[]=identifier&rows=10&page=1&output=json
         const query = encodeURIComponent(`collection:(${collection}) AND mediatype:(audio) AND date:[${fromDate} TO ${toDate}]`);
         return webClient.get(`https://archive.org/advancedsearch.php?q=${query}&fl[]=identifier&rows=${rowCount}&page=${page}&output=json`);
     }
