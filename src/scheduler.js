@@ -69,7 +69,6 @@ const getFullScheduleForChannel = memoize(async channelNameOrCode => { //TODO li
                     listToReduce = files;
                 }
             });
-
             if (listToReduce.length) {
                 schedule.push(listToReduce.shift());
                 if (hasCommercials) {

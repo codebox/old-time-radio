@@ -1,6 +1,7 @@
 "use strict";
 const archiveOrg = require('./archiveOrg.js'),
     nameParser = require('./nameParser.js'),
+    log = require('./log.js'),
     config = require('../config.json');
 
 const playlistsById = {};
@@ -30,8 +31,9 @@ function extractUsefulPlaylistData(playlistId, playlist, query) {
     });
 }
 
+const MAX_COUNT = 100;
 function getPlaylistQuery(query) {
-    return archiveOrg.search(query.collection, 100, 1, `${query.startYear}-01-01`, `${query.endYear}-12-31`);
+    return archiveOrg.search(query.collection, MAX_COUNT, '', `${query.startYear}-01-01`, `${query.endYear}-12-31`);
 }
 
 function queryPlaylistIds() {

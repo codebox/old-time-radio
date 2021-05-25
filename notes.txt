@@ -73,3 +73,8 @@ see https://archive.org/advancedsearch.php
       "index": 79
     }
 
+Music TODOs
+-----------
+- using the word 'shows' no longer makes sense in a lot of places
+- in channel builder, should put all music playlists under a single 'Music' heading
+

@@ -11,6 +11,9 @@
       }
     }
   },
+  "webClient": {
+      "userAgent": "Old Time Radio - https://oldtime.radio"
+  },
   "caches": {
     "location": "./cache",
     "expirySeconds": {
