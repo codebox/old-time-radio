@@ -48,6 +48,29 @@ function queryPlaylistIds() {
     });
 }
 
+function promiseBatcher(batchSize, allPromises) {
+    const batchesOfPromises = [];
+    let i=0;
+
+    while (i < allPromises.length) {
+        batchesOfPromises.push(allPromises.slice(i, i+=batchSize));
+    }
+
+    const promises = batchesOfPromises.map(batch => {
+        let previousPromise = Promise.resolve([]);
+        batch.forEach(nextPromise => {
+            let results;
+            previousPromise = previousPromise.then(previousResults => {
+                results = previousResults;
+                return nextPromise;
+            }).then(result => [...results, result])
+        });
+        return previousPromise;
+    });
+
+    return Promise.all(promises);
+}
+
 module.exports = {
     init() {
         return queryPlaylistIds().then(() => {
@@ -69,6 +92,12 @@ module.exports = {
                     const usefulPlaylistData = extractUsefulPlaylistData(id, data, query);
                     playlistsById[id] = usefulPlaylistData;
                 });
+            }).then(d => {
+                config.shows.filter(show => !show.query).forEach(show => {
+                    console.log(`${show.name} ${show.playlists.reduce((total,id) => {
+                        return total + playlistsById[id].length},0)}`);
+                })
+
             });
         });
     },
