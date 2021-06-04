@@ -163,12 +163,31 @@ const parsers = [
         }
     },
     {
-        ids: ['Tarzan1951'],
-        regex: /TARZ.([\.0-9]+)_(.*).mp3/i,
+        ids: ['OTRR_Tarzan_Singles_TLotJ'],
+        regex: /Tarzan - Lord Of The Jungle ([-0-9x]+) \(([0-9x]+)\) (.*).mp3/i,
         getName(match) {
             const date = match[1],
-                title = toTitleCase(match[2].replace(/_+/g, ' '));
-            return `Tarzan - ${title} [${date}]`;
+                number = match[2],
+                title = match[3];
+            return `Tarzan, Lord Of The Jungle ${number} - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ['OTRR_Tarzan_Singles_TatFoT'],
+        regex: /Tarzan - The Fires Of Tohr [-0-9x]+ \(([0-9x]+)\) Fires of Tohr [0-9]+.mp3/i,
+        getName(match) {
+            const number = match[1];
+            return `Tarzan and The Fires of Tohr - Part ${number} [1936]`;
+        }
+    },
+    {
+        ids: ['OTRR_Tarzan_Singles_TatDoA'],
+        regex: /Tarzan - The Diamond Of Asher ([-0-9x]+) \(([0-9x]+)\) (.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                number = match[2],
+                title = match[3];
+            return `Tarzan and The Diamond Of Asher ${number} - ${title} [${date}]`;
         }
     },
     {
