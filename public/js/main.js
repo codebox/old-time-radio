@@ -213,6 +213,7 @@ window.onload = () => {
             stop() {
                 if (interval) {
                     clearInterval(interval);
+                    interval = null;
                 }
             }
         }
