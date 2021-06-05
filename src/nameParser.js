@@ -1,4 +1,5 @@
 "use strict";
+const log = require('./log.js');
 
 function addSpacesBeforeCapitals(txt) {
     return txt.replace('_','').replace(/([A-Z])/g, ' $1').replace(/([^0-9])([0-9])/g, '$1 $2').trim();
@@ -894,6 +895,38 @@ const parsers = [
 
             return `The Haunting Hour - ${number ? number.replace('_','') + ' ' : ''}${title}${date ? ' [' + date.replace('_','') + ']' : ''}`;
         }
+    },
+    {
+        ids: ["OTRR_Moon_Over_Africa_Singles"],
+        regex: /Moon_over_Africa_([-0-9]+)_ep([0-9]+)_(.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                title = match[3].replace(/_/g, ' '),
+                number = match[2];
+
+            return `Moon Over Africa - Episode ${number}: ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["Otrr_Dangerous_Assignment_Singles"],
+        regex: /Dangerous_Assignment_([-0-9]+)_([0-9]+)_(.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                title = match[3].replace(/_/g, ' '),
+                number = match[2];
+
+            return `Dangerous Assignment ${number} - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["OTRR_Sealed_Book_Singles"],
+        regex: /Sealed_Book_45-xx-xx_ep([0-9]+)_(.*).mp3/i,
+        getName(match) {
+            const title = match[2].replace(/_/g, ' '),
+                number = match[1];
+
+            return `Sealed Book - Episode ${number}: - ${title} [1945]`;
+        }
     }
 ];
 
@@ -913,10 +946,10 @@ module.exports.parseName = (playlistId, metadata) => {
             }
         }).filter(o => o);
         if (matches.length) {
-            // console.log(playlistId, 'OK', matches[0]);
+            log.debug(`nameParser MATCH OK: ${playlistId} ${matches[0]}`);
             return matches[0];
         }
     }
-    // console.log(playlistId, 'NOMATCH', metadata.name);
+    log.debug(`nameParser NO MATCH: ${playlistId} ${metadata.name}`);
     return metadata.title || metadata.name;
 };
