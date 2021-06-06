@@ -22,6 +22,21 @@ const getFullScheduleForChannel = memoize(async channelNameOrCode => { //TODO li
         }
     }
 
+    function balanceFileCounts(showsToFiles) {
+        const fileCounts = {};
+        Object.keys(showsToFiles).forEach(showName => {
+            fileCounts[showName] = showsToFiles[showName].length;
+        });
+
+        const maxFileCount = Math.max(...Object.values(fileCounts));
+        Object.keys(showsToFiles).forEach(showName => {
+            const fileCount = fileCounts[showName],
+                copyCount = 1;
+            fileCounts[showName] = showsToFiles[showName].length;
+        });
+
+    }
+
     function getFullScheduleFromShowList(showListForChannel) {
         const showsToFiles = {}, commercials = [];
 
@@ -39,6 +54,8 @@ const getFullScheduleForChannel = memoize(async channelNameOrCode => { //TODO li
                 showsToFiles[show.name] = files;
             }
         });
+
+        balanceFileCounts(showsToFiles);
 
         const originalFileCounts = {};
         Object.keys(showsToFiles).forEach(showName => {
