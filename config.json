@@ -20,6 +20,9 @@
       "channels": 360000
     }
   },
+  "scheduler": {
+    "radical": 2
+  },
   "log": {
     "file": "/var/log/oldtimeradio/access.log",
     "level": "info"

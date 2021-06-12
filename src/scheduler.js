@@ -3,6 +3,7 @@ const channelData = require('./channelData.js'),
     playlistData = require('./playlistData.js'),
     channelCodes = require('./channelCodes'),
     clock = require('./clock.js'),
+    config = require('../config.json'),
     log = require('./log.js'),
     memoize = require('./cache.js').memoize,
     START_TIME = 1595199600, // 2020-07-20 00:00:00
@@ -22,23 +23,39 @@ const getFullScheduleForChannel = memoize(async channelNameOrCode => { //TODO li
         }
     }
 
-    function balanceFileCounts(showsToFiles) {
-        const fileCounts = {};
-        Object.keys(showsToFiles).forEach(showName => {
-            fileCounts[showName] = showsToFiles[showName].length;
+    function balanceFileCounts(unbalancedShowsToFiles) {
+        const fileCounts = {}, showsToFiles = {};
+        Object.keys(unbalancedShowsToFiles).forEach(showName => {
+            fileCounts[showName] = unbalancedShowsToFiles[showName].length;
         });
 
-        const maxFileCount = Math.max(...Object.values(fileCounts));
-        Object.keys(showsToFiles).forEach(showName => {
+        const maxFileCount = Math.max(...Object.values(fileCounts)),
+            radical = Math.max(config.scheduler.radical, 1);
+
+        function getCopyCount(count) {
+            /*
+             The 'config.scheduler.radical' value is used to determine how much to boost shows with only a small number of episodes within a channel schedule. Setting the value close to 0 will cause a schedule to contain roughly equal numbers of episodes from each show, and consequently lots of repeated episodes from shows with low episode counts. Setting a higher value (eg 3 or 4) will result in far fewer repeats, but at the cost of having shows with many episodes dominate the schedule, perhaps causing multiple episodes from the same show to be played consecutively.
+             */
+            return Math.round(Math.pow(maxFileCount/count, 1 / radical));
+        }
+
+        Object.keys(unbalancedShowsToFiles).forEach(showName => {
             const fileCount = fileCounts[showName],
-                copyCount = 1;
-            fileCounts[showName] = showsToFiles[showName].length;
+                filesForShow = unbalancedShowsToFiles[showName];
+            let copyCount = getCopyCount(fileCount);
+            showsToFiles[showName] = [];
+
+            while(copyCount > 0) {
+                showsToFiles[showName].push(...filesForShow);
+                copyCount--;
+            }
         });
 
+        return showsToFiles;
     }
 
     function getFullScheduleFromShowList(showListForChannel) {
-        const showsToFiles = {}, commercials = [];
+        const unbalancedShowsToFiles = {}, commercials = [];
 
         showListForChannel.forEach(show => {
             const files = show.playlists.flatMap(playlistName => playlistData.getPlaylist(playlistName)).flatMap(file => {
@@ -51,11 +68,14 @@ const getFullScheduleForChannel = memoize(async channelNameOrCode => { //TODO li
             if (show.isCommercial) {
                 commercials.push(...files);
             } else {
-                showsToFiles[show.name] = files;
+                unbalancedShowsToFiles[show.name] = files;
             }
         });
 
-        balanceFileCounts(showsToFiles);
+        const showsToFiles = balanceFileCounts(unbalancedShowsToFiles);
+        Object.keys(showsToFiles).forEach(showName => {
+            log.info(`${channelNameOrCode}: ${showName} [${showsToFiles[showName].length/unbalancedShowsToFiles[showName].length}x] ${unbalancedShowsToFiles[showName].length}/${showsToFiles[showName].length}`)
+        });
 
         const originalFileCounts = {};
         Object.keys(showsToFiles).forEach(showName => {

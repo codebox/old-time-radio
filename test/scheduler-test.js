@@ -218,6 +218,41 @@ describe("schedule", () => {
                     'https://server3/dir3/p3_3')
                 thenScheduleOffsetIs(0);
             });
+
+            fit("show balanced correctly", async () => {//1-3 2-4 3-4 4-6 5-3 6-3
+                givenAShow('show1', ['channel1'], 0, ['playlist1', 'playlist2', 'playlist3', 'playlist4']); // 17 items
+                givenAShow('show2', ['channel1'], 1, ['playlist5']); // 3 items
+
+                schedule = await scheduler.getScheduleForChannel('channel1', (223 + 180) * 60);
+console.log(schedule.list.map(s => s.url))
+                thenScheduleUrlsAre(
+                    'https://server1/dir1/p1_1',
+                    'https://server1/dir1/p1_2',
+                    'https://server5/dir5/p5_1',
+                    'https://server1/dir1/p1_3',
+                    'https://server2/dir2/p2_1',
+                    'https://server2/dir2/p2_2',
+                    'https://server5/dir5/p5_2',
+                    'https://server2/dir2/p2_3',
+                    'https://server2/dir2/p2_4',
+                    'https://server3/dir3/p3_1',
+                    'https://server5/dir5/p5_3',
+                    'https://server3/dir3/p3_2',
+                    'https://server3/dir3/p3_3',
+                    'https://server3/dir3/p3_4',
+                    'https://server5/dir5/p5_1', // playlist 5 is repeated
+                    'https://server4/dir4/p4_1',
+                    'https://server4/dir4/p4_2',
+                    'https://server4/dir4/p4_3',
+                    'https://server5/dir5/p5_2',
+                    'https://server4/dir4/p4_4',
+                    'https://server4/dir4/p4_5',
+                    'https://server4/dir4/p4_6',
+                    'https://server5/dir5/p5_3'
+                );
+                thenScheduleOffsetIs(0);
+            });
+
         });
 
     });
