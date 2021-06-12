@@ -74,7 +74,7 @@ const getFullScheduleForChannel = memoize(async channelNameOrCode => { //TODO li
 
         const showsToFiles = balanceFileCounts(unbalancedShowsToFiles);
         Object.keys(showsToFiles).forEach(showName => {
-            log.info(`${channelNameOrCode}: ${showName} [${showsToFiles[showName].length/unbalancedShowsToFiles[showName].length}x] ${unbalancedShowsToFiles[showName].length}/${showsToFiles[showName].length}`)
+            log.debug(`${channelNameOrCode}: ${showName} [${showsToFiles[showName].length/unbalancedShowsToFiles[showName].length}x] ${unbalancedShowsToFiles[showName].length}/${showsToFiles[showName].length}`)
         });
 
         const originalFileCounts = {};
