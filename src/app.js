@@ -15,6 +15,11 @@ app.use((req, res, next) => {
 
 app.use(express.static(config.web.paths.static));
 
+app.use('/listen-to', express.static(config.web.paths.static));
+app.get("/listen-to/:show", (req, res) => {
+    res.sendFile('public/index.html',{root:'./'});
+});
+
 // [{channels:["future"], index: 1, isCommercial: false, name: "X Minus One"}, ...]
 app.get(config.web.paths.api.shows, (req, res) => {
     service.getShows().then(shows => {
