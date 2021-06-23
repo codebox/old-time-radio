@@ -11,11 +11,14 @@ module.exports = {
     },
     async getShows() {
         return (await channelData.getShows()).map(show => {
+            const channelCode = channelCodes.buildChannelCodeFromShowIndexes([show.index]);
             return {
                 channels: show.channels,
                 index: show.index,
                 isCommercial: show.isCommercial,
-                name: show.name
+                name: show.name,
+                descriptiveId: show.name.toLowerCase().replace(' ', '-'),
+                channelCode
             };
         });
     },

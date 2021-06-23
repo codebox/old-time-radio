@@ -357,15 +357,26 @@ window.onload = () => {
             return Promise.resolve(channels);
 
         } else {
-            return service.getChannels().then(channelIds => {
-                return channelIds.map(channelId => {
-                    return {
-                        id: channelId,
-                        name: channelId,
-                        userChannel: false
-                    };
+            const pathParts = window.location.pathname.split('/');
+            if (pathParts[1] === 'listen-to') {
+                const descriptiveShowId = pathParts[2].toLowerCase(),
+                    showObject = model.stationBuilder.shows.find(show => show.descriptiveId === descriptiveShowId);
+                return Promise.resolve([{
+                    id: showObject.channelCode,
+                    name: showObject.name,
+                    userChannel: true
+                }]);
+            } else {
+                return service.getChannels().then(channelIds => {
+                    return channelIds.map(channelId => {
+                        return {
+                            id: channelId,
+                            name: channelId,
+                            userChannel: false
+                        };
+                    });
                 });
-            });
+            }
         }
     }
 
@@ -380,26 +391,33 @@ window.onload = () => {
         view.setVisualiserIds(visualiser.getVisualiserIds());
         applyModelVisualiser();
 
-        Promise.all([getChannels(), service.getShowList()]).then(values => {
-           const [channels, shows] = values;
-            model.channels = channels;
-            view.setChannels(model.channels);
-            model.stationBuilder.shows = [...shows.filter(show => !show.isCommercial).map(show => {
-                return {
-                    index: show.index,
-                    name: show.name,
-                    selected: false,
-                    channels: show.channels
-                };
-            })];
-            model.stationBuilder.commercialShowIds.push(...shows.filter(show => show.isCommercial).map(show => show.index));
+        service.getShowList()
+            .then(shows => {
+                model.stationBuilder.shows = [...shows.filter(show => !show.isCommercial).map(show => {
+                    return {
+                        index: show.index,
+                        name: show.name,
+                        selected: false,
+                        channels: show.channels,
+                        descriptiveId: show.descriptiveId,
+                        channelCode: show.channelCode
+                    };
+                })];
+                model.stationBuilder.commercialShowIds.push(...shows.filter(show => show.isCommercial).map(show => show.index));
 
-            view.populateStationBuilderShows(model.stationBuilder);
-            tempMessageTimer.start();
-            messageManager.showSelectChannel();
+                view.populateStationBuilderShows(model.stationBuilder);
 
-            stateMachine.idle();
-        }).catch(onError);
+                return getChannels();
+            })
+            .then(channels => {
+                model.channels = channels;
+                view.setChannels(model.channels);
+                tempMessageTimer.start();
+                messageManager.showSelectChannel();
+
+                stateMachine.idle();
+            })
+            .catch(onError);
     }
     startUp();
 
