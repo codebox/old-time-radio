@@ -16,6 +16,7 @@ app.use((req, res, next) => {
 app.use(express.static(config.web.paths.static));
 
 app.use('/listen-to', express.static(config.web.paths.static));
+
 app.get("/listen-to/:show", (req, res) => {
     res.sendFile('public/index.html',{root:'./'});
 });
@@ -51,6 +52,13 @@ app.get(config.web.paths.api.channel + ':channel', (req, res) => {
 app.get(config.web.paths.api.generate + ":indexes", (req, res) => {
     const indexes = req.params.indexes.split(',').map(s => Number(s));
     res.status(200).json(service.getCodeForShowIndexes(indexes));
+});
+
+app.get("/sitemap.xml", (req, res) => {
+    service.getSitemapXml().then(xml => {
+        res.set('Content-Type', 'text/xml');
+        res.send(xml);
+    });
 });
 
 app.use((error, req, res, next) => {

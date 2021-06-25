@@ -55,7 +55,8 @@ const getFullScheduleForChannel = memoize(async channelNameOrCode => { //TODO li
     }
 
     function getFullScheduleFromShowList(showListForChannel) {
-        const unbalancedShowsToFiles = {}, commercials = [];
+        const unbalancedShowsToFiles = {}, commercials = [],
+            isOnlyCommercials = showListForChannel.every(show => show.isCommercial);
 
         showListForChannel.forEach(show => {
             const files = show.playlists.flatMap(playlistName => playlistData.getPlaylist(playlistName)).flatMap(file => {
@@ -65,7 +66,7 @@ const getFullScheduleForChannel = memoize(async channelNameOrCode => { //TODO li
                 return file;
             });
 
-            if (show.isCommercial) {
+            if (show.isCommercial && !isOnlyCommercials) {
                 commercials.push(...files);
             } else {
                 unbalancedShowsToFiles[show.name] = files;

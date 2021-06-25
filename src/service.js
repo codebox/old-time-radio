@@ -3,6 +3,7 @@ const channelData = require('./channelData.js'),
     channelCodes = require('./channelCodes'),
     scheduler = require('./scheduler.js'),
     playlistData = require('./playlistData.js'),
+    sitemap = require('./sitemap.js'),
     ONE_HOUR = 60 * 60;
 
 module.exports = {
@@ -17,7 +18,8 @@ module.exports = {
                 index: show.index,
                 isCommercial: show.isCommercial,
                 name: show.name,
-                descriptiveId: show.name.toLowerCase().replace(' ', '-'),
+                shortName: show.shortName,
+                descriptiveId: show.name.toLowerCase().replace(/ /g, '-').replace(/-+/g, '-').replace(/[^a-zA-Z0-9-]/g, ''),
                 channelCode
             };
         });
@@ -27,6 +29,9 @@ module.exports = {
     },
     async getScheduleForChannel(channelId, length = ONE_HOUR) {
         return await scheduler.getScheduleForChannel(channelId, length);
+    },
+    async getSitemapXml() {
+        return this.getShows().then(shows => sitemap.getSitemapXml(shows));
     },
     getCodeForShowIndexes(showIndexes = []) {
         return channelCodes.buildChannelCodeFromShowIndexes(showIndexes);

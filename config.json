@@ -3,6 +3,7 @@
     "port": 3000,
     "paths": {
       "static": "public",
+      "listenTo": "https://oldtime.radio/listen-to/",
       "api": {
         "shows": "/api/shows",
         "channels": "/api/channels",
@@ -81,6 +82,7 @@
     },
     {
       "name": "The Adventures of Superman",
+      "shortName": "Superman",
       "playlists": ["TheAdventuresOfSuperman_201805"],
       "index": 10
     },
@@ -101,6 +103,7 @@
     },
     {
       "name": "Speed Gibson Of The International Secret Police",
+      "shortName": "Speed Gibson",
       "playlists": ["Speed_Gibson_Of_The_International_Secret_Police"],
       "index": 14
     },
@@ -141,6 +144,7 @@
     },
     {
       "name": "The Adventures of Philip Marlowe",
+      "shortName": "Philip Marlowe",
       "playlists": ["OTRR_Philip_Marlowe_Singles"],
       "index": 22
     },
@@ -151,6 +155,7 @@
     },
     {
       "name": "The New Adventures of Sherlock Holmes",
+      "shortName": "Sherlock Holmes",
       "playlists": ["sherlockholmes_otr"],
       "index": 24
     },
@@ -171,6 +176,7 @@
     },
     {
       "name": "Tales of the Texas Rangers",
+      "shortName": "Texas Rangers",
       "playlists": ["TalesOfTheTexasRangers"],
       "index": 28
     },
@@ -196,26 +202,31 @@
     },
     {
       "name": "The Harold Peary Show",
+      "shortName": "Harold Peary",
       "playlists": ["OTRR_Harold_Peary_Show_Singles"],
       "index": 33
     },
     {
       "name": "The Jack Benny Show",
+      "shortName": "Jack Benny",
       "playlists": ["OTRR_Jack_Benny_Singles_1932-1934", "OTRR_Jack_Benny_Singles_1934-1935", "OTRR_Jack_Benny_Singles_1935-1936", "OTRR_Jack_Benny_Singles_1936-1937", "OTRR_Jack_Benny_Singles_1937-1938", "OTRR_Jack_Benny_Singles_1938-1939", "OTRR_Jack_Benny_Singles_1939-1940", "OTRR_Jack_Benny_Singles_1940-1941", "OTRR_Jack_Benny_Singles_1941-1942", "OTRR_Jack_Benny_Singles_1942-1943", "OTRR_Jack_Benny_Singles_1943-1944", "OTRR_Jack_Benny_Singles_1944-1945", "OTRR_Jack_Benny_Singles_1945-1946", "OTRR_Jack_Benny_Singles_1946-1947", "OTRR_Jack_Benny_Singles_1947-1948", "OTRR_Jack_Benny_Singles_1948-1949", "OTRR_Jack_Benny_Singles_1949-1950", "OTRR_Jack_Benny_Singles_1950-1951", "OTRR_Jack_Benny_Singles_1951-1952", "OTRR_Jack_Benny_Singles_1952-1953", "OTRR_Jack_Benny_Singles_1953-1954", "OTRR_Jack_Benny_Singles_1954-1955"],
       "index": 34
     },
     {
       "name": "The Phil Harris - Alice Faye Show",
+      "shortName": "Phil Harris - Alice Faye",
       "playlists": ["OTRR_Harris_Faye_Singles"],
       "index": 35
     },
     {
       "name": "Fibber McGee and Molly",
+      "shortName": "Fibber McGee",
       "playlists": ["FibberMcgeeAndMollyHq"],
       "index": 36
     },
     {
       "name": "Pat Novak, For Hire",
+      "shortName": "Pat Novak",
       "playlists": ["PatNovakForHire"],
       "index": 37
     },
@@ -226,6 +237,7 @@
     },
     {
       "name": "The Lives of Harry Lime",
+      "shortName": "Harry Lime",
       "playlists": ["TheLivesOfHarryLime"],
       "index": 39
     },
@@ -266,6 +278,7 @@
     },
     {
       "name": "New Adventures of Nero Wolfe",
+      "shortName": "Nero Wolfe",
       "playlists": ["OTRR_New_Adventures_of_Nero_Wolfe_Singles"],
       "index": 47
     },
@@ -311,16 +324,19 @@
     },
     {
       "name": "CBS Radio Mystery Theater [Science Fiction]",
+      "shortName": "CBS Radio Mystery Theater",
       "playlists": ["CBSMTFantasy1", "cbsmtfs2", "cbsmtfs3", "cbsmtfs4", "cbsmtfs5", "cbsmtfs6", "cbsmtfs7", "cbsmtfs8"],
       "index": 56
     },
     {
       "name": "CBS Radio Mystery Theater",
+      "shortName": "CBS Radio Mystery Theater",
       "playlists": ["theoldonesarehardtokill_20191104_1301", "CbsRadioMysteryTheater1975Page1", "CbsRadioMysteryTheater1976Page1", "CbsRadioMysteryTheater1976Page2", "CbsRadioMysteryTheater1976Page3", "CbsRadioMysteryTheater1976Page4", "CbsRadioMysteryTheater1976Page5"],
       "index": 57
     },
     {
       "name": "Richard Diamond, Private Detective",
+      "shortName": "Richard Diamond",
       "playlists": ["OTRR_Richard_Diamond_Private_Detective_Singles"],
       "index": 58
     },

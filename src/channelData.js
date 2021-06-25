@@ -27,6 +27,7 @@ module.exports = {
                 index: show.index,
                 isCommercial: !! show.isCommercial,
                 name: show.name,
+                shortName: show.shortName || show.name,
                 playlists: show.playlists
             };
         });
