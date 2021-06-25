@@ -60,15 +60,26 @@ const config = {
         lengthInSeconds: 12 * 60 * 60
     },
     messages: {
-        canned: [
-            'All audio hosted by The Internet Archive. Find more at http://archive.org',
-            'To check the channel schedules, click the menu ↗',
-            'Streaming shows from the Golden Age of Radio, 24 hours a day',
-            'Volume too loud? You can turn it down, click the menu ↗',
-            'Please support The Internet Archive by donating at http://archive.org/donate',
-            'Build your own channel with your favourite shows, click the menu ↗',
-            'To change the visualiser or turn it off, click the menu ↗'
-        ],
+        canned: {
+            "all": [
+                'All audio hosted by The Internet Archive. Find more at http://archive.org',
+                'Streaming shows from the Golden Age of Radio, 24 hours a day',
+                'Volume too loud? You can turn it down, click the menu ↗',
+                'Please support The Internet Archive by donating at http://archive.org/donate',
+                'Build your own channel with your favourite shows, click the menu ↗',
+                'To change the visualiser or turn it off, click the menu ↗'
+            ],
+            "normal": [
+                'To check the channel schedules, click the menu ↗'
+            ],
+            "userChannel": [
+                'To check the channel schedules, click the menu ↗'
+            ],
+            "singleShow": [
+                'There are many other classic shows playing at https://oldtime.radio',
+                'To check the channel schedule, click the menu ↗'
+            ]
+        },
         charPrintIntervalMillis: 40,
         tempMessageDurationMillis: 5000,
         tempMessageIntervalMillis: 60 * 1000

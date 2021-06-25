@@ -113,6 +113,11 @@ noscript a, noscript a:visited {
     text-align: center;
     margin: 0;
     height: 100%;
+    z-index: 10;
+}
+#title h1 a, #title h1 a:visited {
+    text-decoration: none;
+    color: inherit;
 }
 #title .spacer {
     flex: 0 0 40px;

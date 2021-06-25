@@ -30,13 +30,26 @@ function buildMessageManager(model, eventSource) {
                 return `Up next: ${nonCommercials[0].name}`;
             }
         }
+        function getModeSpecificCannedMessages() {
+            if (model.isUserChannelMode()) {
+                return config.messages.canned.userChannel;
+            } else if (model.isSingleShowMode()) {
+                return config.messages.canned.singleShow;
+            } else {
+                return config.messages.canned.normal;
+            }
+        }
 
-        const MESSAGES = config.messages.canned.map(textMessage => [showNext, textMessage]).flatMap(m => m);
-
-        let nextIndex = 0;
+        let messages, nextIndex = 0;
         return {
+            init() {
+                const modeSpecificCannedMessages = getModeSpecificCannedMessages(),
+                    allCannedMessages = [...modeSpecificCannedMessages, ...config.messages.canned.all];
+
+                messages = allCannedMessages.map(textMessage => [showNext, textMessage]).flatMap(m => m);
+            },
             next() {
-                const nextMsg = MESSAGES[nextIndex = (nextIndex + 1) % MESSAGES.length];
+                const nextMsg = messages[nextIndex = (nextIndex + 1) % messages.length];
                 return (typeof nextMsg === 'function') ? nextMsg() : nextMsg;
             }
         };
@@ -44,17 +57,25 @@ function buildMessageManager(model, eventSource) {
 
     return {
         on: eventSource.on,
+        init() {
+            cannedMessages.init();
+        },
         showLoadingChannels() {
             triggerNewMessage('Loading Channels...');
         },
         showSelectChannel() {
-            triggerNewMessage('Select a channel');
+            if (model.channels.length === 1) {
+                triggerNewMessage(`Press the '${model.channels[0].name}' button to tune in`);
+            } else {
+                triggerNewMessage('Select a channel');
+            }
         },
         showTuningInToChannel(channelName) {
-            triggerNewMessage(`Tuning in to the ${channelName} channel...`);
-        },
-        showTuningInToUserChannel(channelName) {
-            triggerNewMessage(`Tuning in to ${channelName}...`);
+            if (model.isSingleShowMode() || model.isUserChannelMode()) {
+                triggerNewMessage(`Tuning in to ${channelName}...`);
+            } else {
+                triggerNewMessage(`Tuning in to the ${channelName} channel...`);
+            }
         },
         showNowPlaying(trackName) {
             triggerNewMessage(trackName);

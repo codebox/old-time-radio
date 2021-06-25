@@ -20,12 +20,11 @@ function buildView(eventSource) {
         elVolumeLeds = Array.from(Array(10).keys()).map(i => document.getElementById(`vol${i+1}`)),
         elVisualiserCanvas = document.getElementById('canvas'),
         elVisualiserButtons = document.getElementById('visualiserList'),
+        elTitle = document.getElementsByTagName('title')[0],
 
         sleepTimerView = buildSleepTimerView(eventSource),
         scheduleView = buildScheduleView(eventSource),
         stationBuilderView = buildStationBuilderView(eventSource);
-
-    let visualiser;
 
     function forEachChannelButton(fn) {
         Object.keys(channelButtons).forEach(channelId => {
@@ -254,6 +253,9 @@ function buildView(eventSource) {
                 const el = visualiserButtons[visualiserId];
                 el.classList.toggle(CLASS_SELECTED, selectedVisualiserId === visualiserId);
             });
+        },
+        addShowTitleToPage(title) {
+            elTitle.innerHTML += (' - ' + title);
         }
     };
 }

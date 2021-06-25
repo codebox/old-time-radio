@@ -149,11 +149,7 @@ window.onload = () => {
 
             view.setChannelLoading(model.selectedChannelId);
             const channel = model.channels.find(channel => channel.id === model.selectedChannelId);
-            if (channel.userChannel) {
-                messageManager.showTuningInToUserChannel(channel.name);
-            } else {
-                messageManager.showTuningInToChannel(channel.name);
-            }
+            messageManager.showTuningInToChannel(channel.name);
             view.hideDownloadLink();
 
             loadNextFromPlaylist();
@@ -324,7 +320,7 @@ window.onload = () => {
     });
 
     view.on(EVENT_STATION_BUILDER_GO_TO_CHANNEL_CLICK).then(() => {
-        window.location.href = `?channels=${model.stationBuilder.savedChannelCodes.join(',')}`;
+        window.location.href = `/?channels=${model.stationBuilder.savedChannelCodes.join(',')}`;
     });
 
     view.on(EVENT_STATION_BUILDER_ADD_CHANNEL_CLICK).then(() => {
@@ -347,6 +343,8 @@ window.onload = () => {
 
         const urlChannelCodes = new URLSearchParams(window.location.search).get('channels');
         if (urlChannelCodes) {
+            model.setModelUserChannels();
+
             const channels = urlChannelCodes.split(',').map((code, i) => {
                 return {
                     id: code,
@@ -359,14 +357,22 @@ window.onload = () => {
         } else {
             const pathParts = window.location.pathname.split('/');
             if (pathParts[1] === 'listen-to') {
+                model.setModeSingleShow();
+
                 const descriptiveShowId = pathParts[2].toLowerCase(),
-                    showObject = model.stationBuilder.shows.find(show => show.descriptiveId === descriptiveShowId);
+                    showObject = model.shows.find(show => show.descriptiveId === descriptiveShowId);
+
+                view.addShowTitleToPage(showObject.name);
+
                 return Promise.resolve([{
                     id: showObject.channelCode,
-                    name: showObject.name,
+                    name: showObject.shortName,
                     userChannel: true
                 }]);
+
             } else {
+                model.setModeNormal();
+
                 return service.getChannels().then(channelIds => {
                     return channelIds.map(channelId => {
                         return {
@@ -393,17 +399,24 @@ window.onload = () => {
 
         service.getShowList()
             .then(shows => {
+                model.shows = [...shows.map(show => {
+                    return {
+                        index: show.index,
+                        name: show.name,
+                        shortName: show.shortName,
+                        descriptiveId: show.descriptiveId,
+                        channelCode: show.channelCode
+                    };
+                })];
+
                 model.stationBuilder.shows = [...shows.filter(show => !show.isCommercial).map(show => {
                     return {
                         index: show.index,
                         name: show.name,
                         selected: false,
-                        channels: show.channels,
-                        descriptiveId: show.descriptiveId,
-                        channelCode: show.channelCode
+                        channels: show.channels
                     };
                 })];
-                model.stationBuilder.commercialShowIds.push(...shows.filter(show => show.isCommercial).map(show => show.index));
 
                 view.populateStationBuilderShows(model.stationBuilder);
 
@@ -413,6 +426,7 @@ window.onload = () => {
                 model.channels = channels;
                 view.setChannels(model.channels);
                 tempMessageTimer.start();
+                messageManager.init();
                 messageManager.showSelectChannel();
 
                 stateMachine.idle();
