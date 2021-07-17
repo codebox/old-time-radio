@@ -15,10 +15,10 @@
   "caches": {
     "location": "./cache",
     "expirySeconds": {
-      "web": 360000,
-      "channelFullSchedule": 360000,
-      "shows": 360000,
-      "channels": 360000
+      "web": 36000,
+      "channelFullSchedule": 36000,
+      "shows": 36000,
+      "channels": 36000
     }
   },
   "scheduler": {
