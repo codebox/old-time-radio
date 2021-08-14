@@ -927,6 +927,71 @@ const parsers = [
 
             return `Sealed Book - Episode ${number}: - ${title} [1945]`;
         }
+    },
+    {
+        ids: ["OTRR_Whitehall_1212_Singles"],
+        regex: /Whitehall 1212 ([-0-9]+) \(([0-9]+)\) (.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                title = match[3],
+                number = match[2];
+
+            return `Whitehall 1212 - ${number}: ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["OTRR_Frank_Race_Singles"],
+        regex: /Frank_Race_49-xx-xx_ep(\d+)_(.*).mp3/i,
+        getName(match) {
+            const title = match[2].replace(/_/g, ' '),
+                number = match[1];
+
+            return `The Adventures of Frank Race ${number}: ${title}`;
+        }
+    },
+    {
+        ids: ["OTRR_Halls_Of_Ivy_Singles"],
+        regex: /HallsOfIvy([-0-9]+)(\d{3})(.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                title = addSpacesBeforeCapitals(match[3]),
+                number = match[2];
+
+            return `The Halls of Ivy ${number}: ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["TheClock"],
+        regex: /CLOCK_([0-9_]+)ep(\d+)_?(.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                title = match[3].replace(/_/g, ' '),
+                number = match[2];
+
+            return `The Clock ${number} - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["OTRR_John_Steele_Adventurer_Singles"],
+        regex: /John_Steele_Adventurer_([-x0-9]+)_([x0-9]{3})_(.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                title = match[3].replace(/_/g, ' '),
+                number = match[2];
+
+            return `John Steele, Adventurer - ${number}: ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["OTRR_Mel_Blanc_Singles"],
+        regex: /The_Mel_Blanc_Show_([-0-9]+)_ep(\d+)_(.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                title = match[3].replace(/_/g, ' '),
+                number = match[2];
+
+            return `The Mel Blanc Show - ${number}: ${title} [${date}]`;
+        }
     }
 ];
 

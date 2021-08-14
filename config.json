@@ -454,6 +454,36 @@
       "name": "Sealed Book",
       "playlists": ["OTRR_Sealed_Book_Singles"],
       "index": 81
+    },
+    {
+      "name": "Whitehall 1212",
+      "playlists": ["OTRR_Whitehall_1212_Singles"],
+      "index": 82
+    },
+    {
+      "name": "The Adventures of Frank Race",
+      "playlists": ["OTRR_Frank_Race_Singles"],
+      "index": 83
+    },
+    {
+      "name": "The Halls of Ivy",
+      "playlists": ["OTRR_Halls_Of_Ivy_Singles"],
+      "index": 84
+    },
+    {
+      "name": "The Clock",
+      "playlists": ["TheClock"],
+      "index": 85
+    },
+    {
+      "name": "John Steele Adventurer",
+      "playlists": ["OTRR_John_Steele_Adventurer_Singles"],
+      "index": 86
+    },
+    {
+      "name": "The Mel Blanc Show",
+      "playlists": ["OTRR_Mel_Blanc_Singles"],
+      "index": 87
     }
   ],
   "channels" : [
@@ -463,11 +493,11 @@
     },
     {
       "name" : "action",
-      "shows": [0,10,11,14,15,16,18,39,40,42,59,79,80]
+      "shows": [0,10,11,14,15,16,18,39,40,42,59,79,80,83,86]
     },
     {
       "name" : "crime",
-      "shows": [0,12,13,22,23,24,37,41,47,48,52,58,60,62,63,75]
+      "shows": [0,12,13,22,23,24,37,41,47,48,52,58,60,62,63,75,82]
     },
     {
       "name" : "horror",
@@ -475,7 +505,7 @@
     },
     {
       "name" : "suspense",
-      "shows": [0,19,20,21,38,45,51,56,57]
+      "shows": [0,19,20,21,38,45,51,56,57,85]
     },
     {
       "name" : "western",
@@ -483,7 +513,7 @@
     },
     {
       "name" : "comedy",
-      "shows": [0,31,32,33,34,35,36,46,49,61,64,76]
+      "shows": [0,31,32,33,34,35,36,46,49,61,64,76,84,87]
     },
     {
       "name" : "drama",
