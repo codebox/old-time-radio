@@ -484,6 +484,11 @@
       "name": "The Mel Blanc Show",
       "playlists": ["OTRR_Mel_Blanc_Singles"],
       "index": 87
+    },
+    {
+      "name": "Burns and Allen",
+      "playlists": ["the-burns-and-allen-show-1934-09-26-2-leaving-for-america"],
+      "index": 88
     }
   ],
   "channels" : [
@@ -513,7 +518,7 @@
     },
     {
       "name" : "comedy",
-      "shows": [0,31,32,33,34,35,36,46,49,61,64,76,84,87]
+      "shows": [0,31,32,33,34,35,36,46,49,61,64,76,84,87,88]
     },
     {
       "name" : "drama",

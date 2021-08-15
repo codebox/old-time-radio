@@ -992,6 +992,17 @@ const parsers = [
 
             return `The Mel Blanc Show - ${number}: ${title} [${date}]`;
         }
+    },
+    {
+        ids: ["the-burns-and-allen-show-1934-09-26-2-leaving-for-america"],
+        regex: /The Burns and Allen Show ([-0-9]+) \(([0-9]+)\) (.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                title = match[3],
+                number = match[2];
+
+            return `The Burns and Allen Show - ${number}: ${title} [${date}]`;
+        }
     }
 ];
 
