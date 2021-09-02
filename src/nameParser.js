@@ -1003,6 +1003,135 @@ const parsers = [
 
             return `The Burns and Allen Show - ${number}: ${title} [${date}]`;
         }
+    },
+    {
+        ids: ["OTRR_This_Is_Your_FBI_Singles"],
+        regex: /This Is Your FBI ([-0-9]+) \(([0-9]+)\) (.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                title = match[3],
+                number = match[2];
+
+            return `This Is Your FBI - ${number}: ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["OTRR_Man_Called_X_Singles"],
+        regex: /Man Called X ([-0-9]+) \(([0-9]+)\) (.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                title = match[3],
+                number = match[2];
+
+            return `The Man Called X - ${number}: ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["OTRR_Counterspy_Singles"],
+        regex: /Counterspy ([-0-9x]+) \(([0-9x]+)\) (.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                title = match[3],
+                number = match[2];
+
+            return `Counterspy ${number === 'xxx' ? '' : ' - ' + number}: ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["OTRR_Magic_Island_Singles"],
+        regex: /MagicIsland_36xxxx__([0-9]+)_(.*).mp3/i,
+        getName(match) {
+            const title = match[2].replace(/_/g, ' '),
+                number = match[1];
+
+            return `Magic Island - ${number}: ${title} [1936]`;
+        }
+    },
+    {
+        ids: ["FrontierGentleman-All41Episodes"],
+        regex: /FrontierGentleman([-0-9]+)_episode([0-9]+)_(.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                title = addSpacesBeforeCapitals(match[3]),
+                number = match[2];
+
+            return `Frontier Gentleman - ${number}: ${title[0].toUpperCase() + title.slice(1)} [${date}]`;
+        }
+    },
+    {
+        ids: ["OTRR_Philo_Vance_Singles"],
+        regex: /Philo_Vance_([-0-9]+)_([0-9x]+)_(.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                title = match[3].replace(/_/g, ' '),
+                number = match[2];
+
+            return `Philo Vance${number === 'xxx' ? '' : ' - ' + number}: ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["OzzieHarriet"],
+        regex: /Oh([-0-9]{10})([0-9]+)(.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                title = addSpacesBeforeCapitals(match[3]).replace(/[^ ]aka /g, ' aka ').replace(/^afrs /, ''),
+                number = match[2].substr(0,3);
+
+            return `Ozzie and Harriet ${number}: ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["DuffysTavern_524"],
+        regex: /Dt([-0-9]{10})([0-9]*)(.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                title = addSpacesBeforeCapitals(match[3]).replace(/^afrs /, ''),
+                number = match[2];
+
+            return `Duffy's Tavern${number ? ' - ' + number : ''}: ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["OTRR_Frontier_Town_Singles"],
+        regex: /Frontier_Town_49-xx-xx_ep([0-9]+)_(.*).mp3/i,
+        getName(match) {
+            const title = match[2].replace(/_/g, ' '),
+                number = match[1];
+
+            return `Frontier Town - ${number}: ${title} [1949]`;
+        }
+    },
+    {
+        ids: ["470213ThePerfectScript"],
+        regex: /([0-9]+)_(.*).mp3/i,
+        getName(match) {
+            const title = match[2].replace(/_/g, ' '),
+                date = match[1];
+
+            return `Hall of Fantasy: ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["OTRR_Wild_Bill_Hickock_Singles"],
+        regex: /WildBillHickok([-0-9]{8})([0-9]+)(.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                title = addSpacesBeforeCapitals(match[3]).replace(/^afrs /, ''),
+                number = match[2];
+
+            return `Wild Bill Hickok - ${number}: ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["OTRR_Candy_Matson_Singles"],
+        regex: /CandyMatson([-0-9]{8})([0-9]+)(.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                title = addSpacesBeforeCapitals(match[3]).replace(/^afrs /, '').replace(/^aud /,''),
+                number = match[2];
+
+            return `Candy Matson - ${number}: ${title} [${date}]`;
+        }
     }
 ];
 

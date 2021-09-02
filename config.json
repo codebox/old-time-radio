@@ -323,7 +323,7 @@
       "index": 55
     },
     {
-      "name": "CBS Radio Mystery Theater [Science Fiction]",
+      "name": "CBS Radio Mystery Theater [Fantasy]",
       "shortName": "CBS Radio Mystery Theater",
       "playlists": ["CBSMTFantasy1", "cbsmtfs2", "cbsmtfs3", "cbsmtfs4", "cbsmtfs5", "cbsmtfs6", "cbsmtfs7", "cbsmtfs8"],
       "index": 56
@@ -489,6 +489,66 @@
       "name": "Burns and Allen",
       "playlists": ["the-burns-and-allen-show-1934-09-26-2-leaving-for-america"],
       "index": 88
+    },
+    {
+      "name": "This Is Your FBI",
+      "playlists": ["OTRR_This_Is_Your_FBI_Singles"],
+      "index": 89
+    },
+    {
+      "name": "The Man Called X",
+      "playlists": ["OTRR_Man_Called_X_Singles"],
+      "index": 90
+    },
+    {
+      "name": "Counter-Spy",
+      "playlists": ["OTRR_Counterspy_Singles"],
+      "index": 91
+    },
+    {
+      "name": "Magic Island",
+      "playlists": ["OTRR_Magic_Island_Singles"],
+      "index": 92
+    },
+    {
+      "name": "Frontier Gentleman",
+      "playlists": ["FrontierGentleman-All41Episodes"],
+      "index": 93
+    },
+    {
+      "name": "Philo Vance",
+      "playlists": ["OTRR_Philo_Vance_Singles"],
+      "index": 94
+    },
+    {
+      "name": "Ozzie & Harriet",
+      "playlists": ["OzzieHarriet"],
+      "index": 95
+    },
+    {
+      "name": "Duffy's Tavern",
+      "playlists": ["DuffysTavern_524"],
+      "index": 96
+    },
+    {
+      "name": "Frontier Town",
+      "playlists": ["OTRR_Frontier_Town_Singles"],
+      "index": 97
+    },
+    {
+      "name": "Hall of Fantasy",
+      "playlists": ["470213ThePerfectScript"],
+      "index": 98
+    },
+    {
+      "name": "Wild Bill Hickok",
+      "playlists": ["OTRR_Wild_Bill_Hickock_Singles"],
+      "index": 99
+    },
+    {
+      "name": "Candy Matson",
+      "playlists": ["OTRR_Candy_Matson_Singles"],
+      "index": 100
     }
   ],
   "channels" : [
@@ -498,15 +558,15 @@
     },
     {
       "name" : "action",
-      "shows": [0,10,11,14,15,16,18,39,40,42,59,79,80,83,86]
+      "shows": [0,10,11,14,15,16,18,39,40,42,59,79,80,83,86,90,91,92]
     },
     {
       "name" : "crime",
-      "shows": [0,12,13,22,23,24,37,41,47,48,52,58,60,62,63,75,82]
+      "shows": [0,12,13,22,23,24,37,41,47,48,52,58,60,62,63,75,82,89,94,100]
     },
     {
       "name" : "horror",
-      "shows": [0,17,43,44,53,54,78,81]
+      "shows": [0,17,43,44,53,54,78,81,98]
     },
     {
       "name" : "suspense",
@@ -514,11 +574,11 @@
     },
     {
       "name" : "western",
-      "shows": [0,25,26,27,28,29,30,55]
+      "shows": [0,25,26,27,28,29,30,55,93,97,99]
     },
     {
       "name" : "comedy",
-      "shows": [0,31,32,33,34,35,36,46,49,61,64,76,84,87,88]
+      "shows": [0,31,32,33,34,35,36,46,49,61,64,76,84,87,88,95,96]
     },
     {
       "name" : "drama",
