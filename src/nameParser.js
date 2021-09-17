@@ -2,7 +2,7 @@
 const log = require('./log.js');
 
 function addSpacesBeforeCapitals(txt) {
-    return txt.replace('_','').replace(/([A-Z])/g, ' $1').replace(/([^0-9])([0-9])/g, '$1 $2').trim();
+    return txt.replace('_','').replace(/([A-Z])/g, ' $1').replace(/([^0-9])([0-9])/g, '$1 $2').replace(/ +/g, ' ').trim();
 }
 function toTitleCase(txt) {
     return txt
@@ -1131,6 +1131,27 @@ const parsers = [
                 number = match[2];
 
             return `Candy Matson - ${number}: ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["OTRR_Sam_Spade_Singles"],
+        regex: /Sam ?Spade ?([-0-9]+) ?(.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                title = addSpacesBeforeCapitals(match[2].replace(/afrs/i,''));
+
+            return `Sam Spade - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["RadioReadersDigest"],
+        regex: /([0-9]+)_([0-9]+)_(.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                title = match[3].replace(/_/g, ' '),
+                number = match[2];
+
+            return `Radio Readers Digest - ${number}: ${title} [${date}]`;
         }
     }
 ];
