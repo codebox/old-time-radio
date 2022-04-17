@@ -230,6 +230,7 @@ noscript a, noscript a:visited {
 #menu .showButton {
     background-color: var(--font-color-dim);
     border: 2px solid var(--divider-colour);
+    color: var(--menu-font-color);
     border-radius: 10px;
     display: inline-block;
     white-space: nowrap;
