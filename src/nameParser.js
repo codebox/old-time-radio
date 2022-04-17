@@ -1153,6 +1153,31 @@ const parsers = [
 
             return `Radio Readers Digest - ${number}: ${title} [${date}]`;
         }
+    },
+    {
+        ids: ["classicmlbbaseballradio"],
+        regex: /([0-9]{4})([0-9]{2})([0-9]{2})(.*).mp3/i,
+        getName(match) {
+            const date = match.slice(1,4).join(' '),
+                name = addSpacesBeforeCapitals(match[4]);
+            return `Classic Baseball - ${date} ${name}`;
+        }
+    },
+    {
+        ids: ["classicmlbbaseballradio"],
+        regex: /([0-9]{4})([0-9]{2})-([0-9]{2})(.*).mp3/i,
+        getName(match) {
+            const date = match.slice(1,4).join(' '),
+                name = addSpacesBeforeCapitals(match[4]);
+            return `Classic Baseball - ${date} ${name}`;
+        }
+    },
+    {
+        ids: ["classicmlbbaseballradio"],
+        regex: /(.*).mp3/i,
+        getName(match) {
+            return `Classic Baseball - ${match[1]}`;
+        }
     }
 ];
 

@@ -559,6 +559,11 @@
       "name": "Radio Reader's Digest",
       "playlists": ["RadioReadersDigest"],
       "index": 102
+    },
+    {
+      "name": "Classic Baseball",
+      "playlists": ["classicmlbbaseballradio"],
+      "index": 103
     }
   ],
   "channels" : [
@@ -593,6 +598,10 @@
     {
       "name" : "drama",
       "shows": [0,65,66,67,68,69,70,71,72,73,74,102]
+    },
+    {
+      "name" : "sports",
+      "shows": [103]
     }
   ]
 }

@@ -329,14 +329,14 @@ noscript a, noscript a:visited {
     margin: 10px 0 0 0;
 }
 #channelScheduleLinks, #visualiserList {
-    margin: 15px 0 10px 0;
+    margin: 10px 0;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
 }
 #channelScheduleLinks li.showButton, #visualiserList li.showButton {
     text-transform: capitalize;
-    margin: 5px;
+    margin: 5px 3px;
     cursor: pointer;
 }
 #scheduleList li {
