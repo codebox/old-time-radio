@@ -1178,6 +1178,15 @@ const parsers = [
         getName(match) {
             return `Classic Baseball - ${match[1]}`;
         }
+    },
+    {
+        ids: ["OTRR_Black_Flame_Singles"],
+        regex: /Black Flame of the Amazon, The 1938-xx-xx \(([0-9]+)\) (.*).mp3/i,
+        getName(match) {
+            const num = match[1],
+                name = match[2];
+            return `Black Flame of the Amazon ${num} - ${name}`;
+        }
     }
 ];
 
