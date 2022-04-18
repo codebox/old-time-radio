@@ -569,6 +569,56 @@
       "name": "Black Flame of the Amazon",
       "playlists": ["OTRR_Black_Flame_Singles"],
       "index": 104
+    },
+    {
+      "name": "The Shadow",
+      "playlists": ["the-shadow-1938-10-09-141-death-stalks-the-shadow"],
+      "index": 105
+    },
+    {
+      "name": "Box 13",
+      "playlists": ["OTRR_Box_13_Singles"],
+      "index": 106
+    },
+    {
+      "name": "Barrie Craig, Confidential Investigator",
+      "playlists": ["OTRR_Barrie_Craig_Singles"],
+      "index": 107
+    },
+    {
+      "name": "Mr. Keen, Tracer of Lost Persons",
+      "playlists": ["OTRR_Mr_Keen_Tracer_Of_Lost_Persons_Singles"],
+      "index": 108
+    },
+    {
+      "name": "Rocky Jordan",
+      "playlists": ["RockyJordan"],
+      "index": 109
+    },
+    {
+      "name": "Nick Carter, Master Detective",
+      "playlists": ["OTRR_Nick_Carter_Master_Detective_Singles"],
+      "index": 110
+    },
+    {
+      "name": "The Aldrich Family",
+      "playlists": ["TheAldrichFamily"],
+      "index": 111
+    },
+    {
+      "name": "Gang Busters",
+      "playlists": ["gang-busters-1955-04-02-885-the-case-of-the-mistreated-lady"],
+      "index": 112
+    },
+    {
+      "name": "Night Beat",
+      "playlists": ["night-beat-1950-07-24-25-the-devils-bible"],
+      "index": 113
+    },
+    {
+      "name": "Lum and Abner",
+      "playlists": ["l-a-1953-11-20-xx-thanksgiving-in-pine-ridge"],
+      "index": 114
     }
   ],
   "channels" : [
@@ -582,7 +632,7 @@
     },
     {
       "name" : "crime",
-      "shows": [0,12,13,22,23,24,37,41,47,48,52,58,60,62,63,75,82,89,94,100,101]
+      "shows": [0,12,13,22,23,24,37,41,47,48,52,58,60,62,63,75,82,89,94,100,101,107,108,110,112]
     },
     {
       "name" : "horror",
@@ -590,7 +640,7 @@
     },
     {
       "name" : "suspense",
-      "shows": [0,19,20,21,38,45,51,56,57,85]
+      "shows": [0,19,20,21,38,45,51,56,57,85,105,106,109,113]
     },
     {
       "name" : "western",
@@ -598,7 +648,7 @@
     },
     {
       "name" : "comedy",
-      "shows": [0,31,32,33,34,35,36,46,49,61,64,76,84,87,88,95,96]
+      "shows": [0,31,32,33,34,35,36,46,49,61,64,76,84,87,88,95,96,111,114]
     },
     {
       "name" : "drama",
