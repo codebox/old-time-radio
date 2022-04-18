@@ -50,6 +50,12 @@ function buildAudioPlayer(maxVolume, eventSource) {
     audio.addEventListener('ended', () => eventSource.trigger(EVENT_AUDIO_TRACK_ENDED, event));
     audio.addEventListener('error', () => eventSource.trigger(EVENT_AUDIO_ERROR, event));
 
+    audio.addEventListener('pause', () => {
+        /* This can be triggered by unplugging headphones when audio is playing causing the browser to halt playback.
+        * We need to know when this happens so we can keep the UI in the correct state. */
+        eventSource.trigger(EVENT_AUDIO_PLAY_STOPPED);
+    });
+
     return {
         on: eventSource.on,
         load(url) {
@@ -65,6 +71,7 @@ function buildAudioPlayer(maxVolume, eventSource) {
         },
         stop() {
             audio.pause();
+            audio.src = null;
         },
         getVolume() {
             const gainValue = audioGain ? audioGain.gain.value : initialAudioGainValue;

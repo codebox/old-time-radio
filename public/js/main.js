@@ -52,6 +52,20 @@ window.onload = () => {
         }
     }
 
+    function stopPlayback() {
+        model.selectedChannelId = model.playlist  = model.track = model.nextTrackOffset = null;
+
+        audioPlayer.stop();
+
+        view.setNoChannelSelected();
+        view.hideDownloadLink();
+        visualiser.stop(config.visualiser.fadeOutIntervalMillis);
+
+        messageManager.showSelectChannel();
+
+        stateMachine.idle();
+    }
+
     // Message Manager event handler
     messageManager.on(EVENT_NEW_MESSAGE).then(event => {
         const {text} = event.data;
@@ -71,6 +85,8 @@ window.onload = () => {
         view.setChannelLoaded(model.selectedChannelId);
         messageManager.showNowPlaying(model.track.name);
     });
+
+    audioPlayer.on(EVENT_AUDIO_PLAY_STOPPED).ifState(STATE_PLAYING).then(() => stopPlayback());
 
     audioPlayer.on(EVENT_AUDIO_TRACK_ENDED).ifState(STATE_PLAYING).then(() => {
         loadNextFromPlaylist();
@@ -131,17 +147,7 @@ window.onload = () => {
         const channelId = event.data;
 
         if (channelId === model.selectedChannelId) {
-            model.selectedChannelId = model.playlist = model.track = model.nextTrackOffset = null;
-
-            audioPlayer.stop();
-
-            view.setNoChannelSelected();
-            view.hideDownloadLink();
-            visualiser.stop(config.visualiser.fadeOutIntervalMillis);
-
-            messageManager.showSelectChannel();
-
-            stateMachine.idle();
+            stopPlayback();
 
         } else {
             model.selectedChannelId = channelId;
