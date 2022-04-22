@@ -1187,6 +1187,112 @@ const parsers = [
                 name = match[2];
             return `Black Flame of the Amazon ${num} - ${name}`;
         }
+    },
+    {
+        ids: ["the-shadow-1938-10-09-141-death-stalks-the-shadow"],
+        regex: /The Shadow ([-0-9]+) \(([0-9]+)\) (.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                num = match[2],
+                name = match[3];
+            return `The Shadow ${num} - ${name} [${date}]`;
+        }
+    },
+    {
+        ids: ["OTRR_Box_13_Singles"],
+        regex: /Box 13 4x-xx-xx \(([0-9]+)\) (.*).mp3/i,
+        getName(match) {
+            const num = match[1],
+                name = match[2];
+            return `Box 13 - ${num}. ${name}`;
+        }
+    },
+    {
+        ids: ["OTRR_Barrie_Craig_Singles"],
+        regex: /Barrie Craig ([-0-9]+) (.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                name = match[2];
+            return `Barrie Craig, Confidential Investigator - ${name} [${date}]`;
+        }
+    },
+    {
+        ids: ["OTRR_Mr_Keen_Tracer_Of_Lost_Persons_Singles"],
+        regex: /Mr. Keen, Tracer of Lost Persons \(([0-9]+)\) ([-0-9]+) (.*).mp3/i,
+        getName(match) {
+            const num = match[1],
+                date = match[2],
+                name = match[3];
+            return `Mr. Keen, Tracer of Lost Persons ${num} - ${name} [${date}]`;
+        }
+    },
+    {
+        ids: ["RockyJordan"],
+        regex: /RJ_([-0-9]+)_ep([0-9]+)-(.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                num = match[2],
+                name = match[3].replace(/_/g, ' ');
+            return `RockyJordan ${num} - ${name} [${date}]`;
+        }
+    },
+    {
+        ids: ["OTRR_Nick_Carter_Master_Detective_Singles"],
+        regex: /Nick Carter ([-0-9]+) \(([0-9]+)\) (.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                num = match[2],
+                name = match[3].replace(/_/g, ' ');
+            return `Nick Carter, Master Detective ${num} - ${name} [${date}]`;
+        }
+    },
+    {
+        ids: ["TheAldrichFamily"],
+        regex: /Af([-0-9]{10})([0-9]{3})(.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                num = match[2],
+                name = addSpacesBeforeCapitals(match[3]);
+            return `The Aldrich Family ${num} - ${name} [${date}]`;
+        }
+    },
+    {
+        ids: ["TheAldrichFamily"],
+        regex: /Af(.*).mp3/i,
+        getName(match) {
+            const name = addSpacesBeforeCapitals(match[1]);
+            return `The Aldrich Family - ${name}`;
+        }
+    },
+    {
+        ids: ["gang-busters-1955-04-02-885-the-case-of-the-mistreated-lady"],
+        regex: /Gang Busters ([-0-9]+) \(([0-9]{3})\) (.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                num = match[2],
+                name = match[3];
+            return `Gang Busters ${num} - ${name} [${date}]`;
+        }
+    },
+    {
+        ids: ["night-beat-1950-07-24-25-the-devils-bible"],
+        regex: /Night Beat ([-0-9x]+) \(([0-9x]+)\) (.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                num = match[2],
+                name = match[3];
+            return `Night Beat ${num} - ${name} [${date}]`;
+        }
+    },
+    {
+        ids: ["l-a-1953-11-20-xx-thanksgiving-in-pine-ridge"],
+        regex: /L&A ([-0-9]+) \(([0-9x]+)\) (.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                num = match[2].replace(/x/g, ''),
+                name = match[3];
+            return `Lum and Abner ${num} - ${name} [${date}]`.replace(/ +/g, ' ');
+        }
     }
 ];
 
