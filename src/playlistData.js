@@ -45,6 +45,6 @@ module.exports = {
     },
     // [{archivalUrl: "http://...", length: 1234.56, name: "X Minus One - Episode 079", url: "http://...", commercial: false}, ...]
     getPlaylist(id) {
-        return playlistsById[id];
+        return playlistsById[id] || [];
     }
 };
