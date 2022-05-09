@@ -36,7 +36,7 @@ module.exports = {
             allPlaylistDataPromises = allPlaylistIds.map(playlistId => archiveOrg.getPlaylist(playlistId));
 
         return Promise.all(allPlaylistDataPromises).then(allPlaylistData => {
-            allPlaylistData.forEach(playlistData => {
+            allPlaylistData.filter(playlistData => !playlistData.is_dark).forEach(playlistData => {
                 const id = playlistData.metadata.identifier,
                     usefulPlaylistData = extractUsefulPlaylistData(id, playlistData);
                 playlistsById[id] = usefulPlaylistData;
