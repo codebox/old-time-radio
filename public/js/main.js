@@ -38,8 +38,6 @@ window.onload = () => {
             stateMachine.loadingTrack();
         }
 
-        audioPlayer.load('https://another-hack-to-make-ios-playback-work.com/fake.mp3');
-
         if (model.playlist && model.playlist.length) {
             playNextFromPlaylist();
 
@@ -153,6 +151,12 @@ window.onload = () => {
             const channel = model.channels.find(channel => channel.id === model.selectedChannelId);
             messageManager.showTuningInToChannel(channel.name);
             view.hideDownloadLink();
+
+            /* Hack to make iOS web audio work, starting around iOS 15.5 browsers refuse to play media loaded from
+            within an AJAX event handler (such as loadNextFromPlaylist -> service.getPlaylistForChannel) but if we load
+            something (anything) outside the callback without playing it, then subsequent load/plays from within the
+            callback all work - Godammit Safari */
+            audioPlayer.load('silence.mp3');
 
             loadNextFromPlaylist();
         }
