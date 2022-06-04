@@ -38,6 +38,8 @@ window.onload = () => {
             stateMachine.loadingTrack();
         }
 
+        audioPlayer.load('https://another-hack-to-make-ios-playback-work.com/fake.mp3');
+
         if (model.playlist && model.playlist.length) {
             playNextFromPlaylist();
 
