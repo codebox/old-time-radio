@@ -39,14 +39,16 @@ function buildView(eventSource) {
         elButtonBox.classList.add('buttonBox');
 
         const elButtonIndicator = document.createElement('div'),
-            elButton = document.createElement('div'),
+            elButton = document.createElement('button'),
             elButtonLabel = document.createElement('div');
 
         elButtonIndicator.classList.add('buttonIndicator');
 
         elButton.classList.add('button');
+        elButton.id = (channelName + '_channel').toLowerCase().replaceAll(' ', '_');
         elButtonLabel.classList.add('buttonLabel');
         elButtonLabel.innerText = channelName;
+        elButtonLabel.setAttribute('for', elButton.id);
 
         elButton.onclick = () => {
             eventSource.trigger(EVENT_CHANNEL_BUTTON_CLICK, channelId);
