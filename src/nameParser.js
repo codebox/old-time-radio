@@ -1293,6 +1293,55 @@ const parsers = [
                 name = match[3];
             return `Lum and Abner ${num} - ${name} [${date}]`.replace(/ +/g, ' ');
         }
+    },
+    {
+        ids: ["VoyageOfTheScarletQueen"],
+        regex: /ScarletQueen([-0-9]{8})([0-9]*)(.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                num = match[2],
+                name = addSpacesBeforeCapitals(match[3]);
+            return `Voyage of the Scarlet Queen ${num} - ${name} [${date}]`;
+        }
+    },
+    {
+        ids: ["The_Bob_Hope_Program"],
+        regex: /([0-9]{6})_(.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                name = match[2].replace(/[-_]+/g, ' ').trim();
+            return `The Bob Hope Show - ${name} [${date}]`;
+        }
+    },
+    {
+        ids: ["MartinAndLewis_OldTimeRadio"],
+        regex: /MartinLewisShow([0-9]{6})_([0-9]+)_(.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                num = match[2],
+                name = addSpacesBeforeCapitals(match[3]);
+            return `The Martin and Lewis Show ${num} - ${name} [${date}]`;
+        }
+    },
+    {
+        ids: ["ItsHigginsSir"],
+        regex: /([-0-9]+)_(.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                tmp = addSpacesBeforeCapitals(match[2]),
+                name = tmp.charAt(0).toUpperCase() + tmp.slice(1);
+            return `It's Higgins, Sir! - ${name} [${date}]`;
+        }
+    },
+    {
+        ids: ["town-hall-tonight-1938-06-08-232-music-publisher-needs-a-tune"],
+        regex: /(.*) ([-0-9]+) \(([0-9]+)\) (.*).mp3/i,
+        getName(match) {
+            const date = match[2],
+                num = match[3],
+                name = match[4];
+            return `The Fred Allen Show ${num} - ${name} [${date}]`;
+        }
     }
 ];
 
