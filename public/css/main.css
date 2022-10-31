@@ -20,6 +20,9 @@
     font-family: 'Courier Prime';
     src: url('CourierPrime-Regular.ttf') format('truetype');
 }
+*:focus-visible {
+    outline-color: white;
+}
 body {
     background-color: var(--body-background);
     min-width: 270px;

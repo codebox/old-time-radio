@@ -118,6 +118,8 @@ function buildView(eventSource) {
             elMenuBox.style.visibility = 'hidden';
         }
     };
+    elMenuBox.style.visibility = 'hidden';
+
     elVolumeUp.onclick = () => {
         eventSource.trigger(EVENT_VOLUME_UP_CLICK);
     };
@@ -170,12 +172,14 @@ function buildView(eventSource) {
             elMenuBox.classList.add('visible');
             elMenuOpenIcon.style.display = 'none';
             elMenuCloseIcon.style.display = 'inline';
+            elMenuButton.ariaExpanded = "true";
         },
         closeMenu() {
             menuOpen = false;
             elMenuBox.classList.remove('visible');
             elMenuOpenIcon.style.display = 'inline';
             elMenuCloseIcon.style.display = 'none';
+            elMenuButton.ariaExpanded = "false";
         },
 
         updateVolume(volume, minVolume, maxVolume) {
