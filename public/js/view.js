@@ -40,7 +40,7 @@ function buildView(eventSource) {
 
         const elButtonIndicator = document.createElement('div'),
             elButton = document.createElement('button'),
-            elButtonLabel = document.createElement('div');
+            elButtonLabel = document.createElement('label');
 
         elButtonIndicator.classList.add('buttonIndicator');
 
