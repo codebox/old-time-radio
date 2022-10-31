@@ -127,13 +127,17 @@ noscript a, noscript a:visited {
     justify-content: center;
 }
 #title svg {
-    margin-top: 20px;
     fill: white;
     cursor: pointer;
     width: 32px;
     height: 32px;
 }
-#menuCloseButton {
+#menuButton {
+    background-color: transparent;
+    border: none;
+    margin-top: 20px;
+}
+#menuCloseIcon {
     display: none;
 }
 

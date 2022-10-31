@@ -9,8 +9,9 @@ function buildView(eventSource) {
         CLASS_ERROR = 'channelError',
         CLASS_SELECTED = 'selected',
 
-        elMenuOpenButton = document.getElementById('menuOpenButton'),
-        elMenuCloseButton = document.getElementById('menuCloseButton'),
+        elMenuOpenIcon = document.getElementById('menuOpenIcon'),
+        elMenuCloseIcon = document.getElementById('menuCloseIcon'),
+        elMenuButton = document.getElementById('menuButton'),
         elMenuBox = document.getElementById('menu'),
         elVolumeUp = document.getElementById('volumeUp'),
         elVolumeDown = document.getElementById('volumeDown'),
@@ -107,13 +108,16 @@ function buildView(eventSource) {
         eventSource.trigger(EVENT_WAKE_UP);
     }
 
-    elMenuOpenButton.onclick = () => {
-        eventSource.trigger(EVENT_MENU_OPEN_CLICK);
-    };
-    elMenuCloseButton.onclick = () => {
-        eventSource.trigger(EVENT_MENU_CLOSE_CLICK);
+    let menuOpen = false;
+    elMenuButton.onclick = () => {
+        eventSource.trigger(menuOpen ? EVENT_MENU_CLOSE_CLICK : EVENT_MENU_OPEN_CLICK);
     };
 
+    elMenuBox.ontransitionend = () => {
+        if (!menuOpen) {
+            elMenuBox.style.visibility = 'hidden';
+        }
+    };
     elVolumeUp.onclick = () => {
         eventSource.trigger(EVENT_VOLUME_UP_CLICK);
     };
@@ -161,14 +165,17 @@ function buildView(eventSource) {
         },
 
         openMenu() {
+            menuOpen = true;
+            elMenuBox.style.visibility = 'visible';
             elMenuBox.classList.add('visible');
-            elMenuOpenButton.style.display = 'none';
-            elMenuCloseButton.style.display = 'inline';
+            elMenuOpenIcon.style.display = 'none';
+            elMenuCloseIcon.style.display = 'inline';
         },
         closeMenu() {
+            menuOpen = false;
             elMenuBox.classList.remove('visible');
-            elMenuOpenButton.style.display = 'inline';
-            elMenuCloseButton.style.display = 'none';
+            elMenuOpenIcon.style.display = 'inline';
+            elMenuCloseIcon.style.display = 'none';
         },
 
         updateVolume(volume, minVolume, maxVolume) {
