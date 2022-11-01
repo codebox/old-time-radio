@@ -149,6 +149,7 @@ function buildView(eventSource) {
         setNoChannelSelected() {
             forEachChannelButton((id, el) => {
                 el.classList.remove(CLASS_LOADING, CLASS_PLAYING, CLASS_ERROR);
+                el.ariaCurrent = false;
             });
         },
 
@@ -156,6 +157,7 @@ function buildView(eventSource) {
             forEachChannelButton((id, el) => {
                 el.classList.remove(CLASS_PLAYING, CLASS_ERROR);
                 el.classList.toggle(CLASS_LOADING, id === channelId);
+                el.ariaCurrent = false;
             });
         },
 
@@ -163,6 +165,7 @@ function buildView(eventSource) {
             forEachChannelButton((id, el) => {
                 el.classList.remove(CLASS_LOADING, CLASS_ERROR);
                 el.classList.toggle(CLASS_PLAYING, id === channelId);
+                el.ariaCurrent = id === channelId;
             });
         },
 
