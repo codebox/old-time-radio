@@ -11,6 +11,7 @@
     --divider-colour: #333;
     --body-background: #777;
     --menu-font-color: black;
+    --hr-bottom-color: #ddd;
 }
 @font-face {
     font-family: 'Bellerose';
@@ -266,6 +267,7 @@ noscript a, noscript a:visited {
 }
 #menu hr {
     margin-top: 32px;
+    border-bottom-color: var(--hr-bottom-color);
 }
 #menu h3 {
     margin: 8px 0 4px 0;
