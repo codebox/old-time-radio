@@ -42,10 +42,10 @@
             <div id="menu">
                 <section>
                     <h2>Schedule</h2>
-                    <p>
+                    <p id="scheduleDescription">
                         Select a channel to see what shows are coming up
                     </p>
-                    <ul id="channelScheduleLinks"></ul>
+                    <ul id="channelScheduleLinks" role="radiogroup" aria-describedby="scheduleDescription"></ul>
                     <ul id="scheduleList"></ul>
                 </section>
                 <hr>
@@ -58,7 +58,7 @@
                 </section>
                 <hr>
                 <section>
-                <h2>Volume</h2>
+                    <h2>Volume</h2>
                     <p>
                         <div id="volumeControlContainer">
                             <div class="button" id="volumeDown">
@@ -83,7 +83,6 @@
                     </p>
                 </section>
                 <hr>
-
                 <section>
                     <h2>Sleep Timer</h2>
                     <p>

@@ -11,6 +11,7 @@ function buildScheduleView(eventSource) {
             const li = document.createElement('li');
             li.innerHTML = channel.name;
             li.classList.add('showButton');
+            li.setAttribute('role', 'radio');
             li.onclick = () => {
                 eventSource.trigger(EVENT_SCHEDULE_BUTTON_CLICK, channel.id);
             };
@@ -21,6 +22,7 @@ function buildScheduleView(eventSource) {
             Object.keys(channelToElement).forEach(channelId => {
                 const el = channelToElement[channelId];
                 el.classList.toggle(CSS_CLASS_SELECTED, selectedChannelId === channelId);
+                el.ariaChecked = selectedChannelId === channelId;
             });
         },
         displaySchedule(schedule) {
