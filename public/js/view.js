@@ -46,6 +46,7 @@ function buildView(eventSource) {
         elButtonIndicator.classList.add('buttonIndicator');
 
         elButton.classList.add('button');
+        elButton.setAttribute('role', 'radio');
         elButton.id = (channelName + '_channel').toLowerCase().replaceAll(' ', '_');
         elButtonLabel.classList.add('buttonLabel');
         elButtonLabel.innerText = channelName;
@@ -149,7 +150,7 @@ function buildView(eventSource) {
         setNoChannelSelected() {
             forEachChannelButton((id, el) => {
                 el.classList.remove(CLASS_LOADING, CLASS_PLAYING, CLASS_ERROR);
-                el.ariaCurrent = false;
+                el.ariaChecked = false;
             });
         },
 
@@ -157,7 +158,7 @@ function buildView(eventSource) {
             forEachChannelButton((id, el) => {
                 el.classList.remove(CLASS_PLAYING, CLASS_ERROR);
                 el.classList.toggle(CLASS_LOADING, id === channelId);
-                el.ariaCurrent = false;
+                el.ariaChecked = false;
             });
         },
 
@@ -165,7 +166,7 @@ function buildView(eventSource) {
             forEachChannelButton((id, el) => {
                 el.classList.remove(CLASS_LOADING, CLASS_ERROR);
                 el.classList.toggle(CLASS_PLAYING, id === channelId);
-                el.ariaCurrent = id === channelId;
+                el.ariaChecked = id === channelId;
             });
         },
 
