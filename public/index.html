@@ -32,7 +32,7 @@
             <div class="radioWave" id="titleInner3" aria-hidden="true"></div>
             <div class="radioWave" id="titleInner4" aria-hidden="true"></div>
         </div>
-        <div id="message" aria-live="off"></div>
+        <div id="message" role="status" aria-live="off"></div>
         <noscript>
             <h2>Please Adjust Your Receiver</h2>
             It looks like JavaScript is disabled in your web browser<br>
@@ -40,103 +40,116 @@
         </noscript>
         <div id="visualiser">
             <div id="menu">
-                <h2>Schedule</h2>
-                <p>
-                    Select a channel to see what shows are coming up
-                </p>
-                <ul id="channelScheduleLinks"></ul>
-                <ul id="scheduleList"></ul>
-                <hr>
-                <h2>Visualiser</h2>
-                <p>
-                    Select a visualiser
-                </p>
-                <ul id="visualiserList"></ul>
-                <hr>
-                <h2>Volume</h2>
-                <p>
-                    <div id="volumeControlContainer">
-                        <div class="button" id="volumeDown">
-                            <svg  id="Layer_1" style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M417.4,224H94.6C77.7,224,64,238.3,64,256c0,17.7,13.7,32,30.6,32h322.8c16.9,0,30.6-14.3,30.6-32  C448,238.3,434.3,224,417.4,224z"/></svg>
-                        </div>
-                        <label id="volumeLevel">
-                            <div id="vol1" class="miniLed buttonIndicator"></div>
-                            <div id="vol2" class="miniLed buttonIndicator"></div>
-                            <div id="vol3" class="miniLed buttonIndicator"></div>
-                            <div id="vol4" class="miniLed buttonIndicator"></div>
-                            <div id="vol5" class="miniLed buttonIndicator"></div>
-                            <div id="vol6" class="miniLed buttonIndicator"></div>
-                            <div id="vol7" class="miniLed buttonIndicator"></div>
-                            <div id="vol8" class="miniLed buttonIndicator"></div>
-                            <div id="vol9" class="miniLed buttonIndicator"></div>
-                            <div id="vol10" class="miniLed buttonIndicator"></div>
-                        </label>
-                        <div class="button" id="volumeUp">
-                            <svg id="Layer_1" style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M417.4,224H288V94.6c0-16.9-14.3-30.6-32-30.6c-17.7,0-32,13.7-32,30.6V224H94.6C77.7,224,64,238.3,64,256  c0,17.7,13.7,32,30.6,32H224v129.4c0,16.9,14.3,30.6,32,30.6c17.7,0,32-13.7,32-30.6V288h129.4c16.9,0,30.6-14.3,30.6-32  C448,238.3,434.3,224,417.4,224z"/></svg>
-                        </div>
-                    </div>
-                </p>
-                <hr>
-
-                <h2>Sleep Timer</h2>
-                <p>
-                    Set the Sleep Timer to stop playing shows after:
-                </p>
-                <ul id="sleepTimerButtons" class="sleepTimerButtonContainer">
-                </ul>
-                <div id="sleepTimerRunningDisplay" class="hidden">
+                <section>
+                    <h2>Schedule</h2>
                     <p>
-                        Sleeping in <span id="sleepTimerTime"></span>
+                        Select a channel to see what shows are coming up
                     </p>
-                    <button class="showButton" id="cancelSleepTimerButton">Cancel Sleep Timer Countdown</button>
-                </div>
-
+                    <ul id="channelScheduleLinks"></ul>
+                    <ul id="scheduleList"></ul>
+                </section>
+                <hr>
+                <section aria-hidden="true">
+                    <h2>Visualiser</h2>
+                    <p>
+                        Select a visualiser
+                    </p>
+                    <ul id="visualiserList"></ul>
+                </section>
+                <hr>
+                <section>
+                <h2>Volume</h2>
+                    <p>
+                        <div id="volumeControlContainer">
+                            <div class="button" id="volumeDown">
+                                <svg  id="Layer_1" style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M417.4,224H94.6C77.7,224,64,238.3,64,256c0,17.7,13.7,32,30.6,32h322.8c16.9,0,30.6-14.3,30.6-32  C448,238.3,434.3,224,417.4,224z"/></svg>
+                            </div>
+                            <label id="volumeLevel">
+                                <div id="vol1" class="miniLed buttonIndicator"></div>
+                                <div id="vol2" class="miniLed buttonIndicator"></div>
+                                <div id="vol3" class="miniLed buttonIndicator"></div>
+                                <div id="vol4" class="miniLed buttonIndicator"></div>
+                                <div id="vol5" class="miniLed buttonIndicator"></div>
+                                <div id="vol6" class="miniLed buttonIndicator"></div>
+                                <div id="vol7" class="miniLed buttonIndicator"></div>
+                                <div id="vol8" class="miniLed buttonIndicator"></div>
+                                <div id="vol9" class="miniLed buttonIndicator"></div>
+                                <div id="vol10" class="miniLed buttonIndicator"></div>
+                            </label>
+                            <div class="button" id="volumeUp">
+                                <svg id="Layer_1" style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M417.4,224H288V94.6c0-16.9-14.3-30.6-32-30.6c-17.7,0-32,13.7-32,30.6V224H94.6C77.7,224,64,238.3,64,256  c0,17.7,13.7,32,30.6,32H224v129.4c0,16.9,14.3,30.6,32,30.6c17.7,0,32-13.7,32-30.6V288h129.4c16.9,0,30.6-14.3,30.6-32  C448,238.3,434.3,224,417.4,224z"/></svg>
+                            </div>
+                        </div>
+                    </p>
+                </section>
                 <hr>
 
-                <h2 id="stationBuilderTitle">Station Builder</h2>
-                <p>
-                    Build your own radio station - create some channels by selecting shows from the list below:
-                </p>
-                <ul id="showList"></ul>
-                <div id="channelSettings">
-                    <h3>Channel Settings</h3>
-                    <ul>
-                        <li>
-                            <button id="adsInChannel" class="showButton">Play Commercials Between Programmes</button>
-                        </li>
+                <section>
+                    <h2>Sleep Timer</h2>
+                    <p>
+                        Set the Sleep Timer to stop playing shows after:
+                    </p>
+                    <ul id="sleepTimerButtons" class="sleepTimerButtonContainer">
                     </ul>
-                </div>
-                <p id="showsSelected"></p>
-                <p>
-                    <button id="createChannel"></button>
-                </p>
-                <div id="stationDetails">
-                    <p id="channelCount"></p>
-                    <button id="goToStation">Listen Now</button>
-                    <button id="addAnotherChannel">Add Another Channel</button>
-                    <button id="deleteStation">Delete Station</button>
-                </div>
-
+                    <div id="sleepTimerRunningDisplay" class="hidden">
+                        <p>
+                            Sleeping in <span id="sleepTimerTime"></span>
+                        </p>
+                        <button class="showButton" id="cancelSleepTimerButton">Cancel Sleep Timer Countdown</button>
+                    </div>
+                </section>
                 <hr>
-                <h2>About</h2>
-                <p>
-                    This station broadcasts Old Time Radio shows 24/7 for free.
-                </p>
-                <p>
-                    All the audio that you hear is hosted by the non-profit
-                    <a href="https://archive.org/details/oldtimeradio" target="_blank">Internet Archive</a>. If you are a regular listener then please consider <a href="https://archive.org/donate/" target="_blank">supporting them financially</a>.
-                </p>
+                <section>
+                    <h2 id="stationBuilderTitle">Station Builder</h2>
+                    <p>
+                        Build your own radio station - create some channels by selecting shows from the list below:
+                    </p>
+                    <ul id="showList"></ul>
+                    <div id="channelSettings">
+                        <h3>Channel Settings</h3>
+                        <ul>
+                            <li>
+                                <button id="adsInChannel" class="showButton">Play Commercials Between Programmes</button>
+                            </li>
+                        </ul>
+                    </div>
+                    <p id="showsSelected"></p>
+                    <p>
+                        <button id="createChannel"></button>
+                    </p>
+                    <div id="stationDetails">
+                        <p id="channelCount"></p>
+                        <button id="goToStation">Listen Now</button>
+                        <button id="addAnotherChannel">Add Another Channel</button>
+                        <button id="deleteStation">Delete Station</button>
+                    </div>
+                </section>
                 <hr>
-                <h2>Source Code</h2>
-                <p>
-                    This website is Open Source Software, released under the MIT Licence. <br>
-                    The source code is available <a href="https://github.com/codebox/old-time-radio" target="_blank">on GitHub</a>.
-                </p>
+                <section>
+                    <h2>About</h2>
+                    <p>
+                        This station broadcasts Old Time Radio shows 24/7 for free.
+                    </p>
+                    <p>
+                        All the audio that you hear is hosted by the non-profit
+                        <a href="https://archive.org/details/oldtimeradio" target="_blank">Internet Archive</a>. If you are a regular listener then please consider <a href="https://archive.org/donate/" target="_blank">supporting them financially</a>.
+                    </p>
+                </section>
                 <hr>
-                <h2>Contact</h2>
-                <p>
-                    You can contact the station by email: <a href="mailto:rob@oldtime.radio">rob@oldtime.radio</a>
-                </p>
+                <section>
+                    <h2>Source Code</h2>
+                    <p>
+                        This website is Open Source Software, released under the MIT Licence. <br>
+                        The source code is available <a href="https://github.com/codebox/old-time-radio" target="_blank">on GitHub</a>.
+                    </p>
+                </section>
+                <hr>
+                <section>
+                    <h2>Contact</h2>
+                    <p>
+                        You can contact the station by email: <a href="mailto:rob@oldtime.radio">rob@oldtime.radio</a>
+                    </p>
+                </section>
                 <hr>
             </div>
             <canvas id="canvas" aria-hidden="true"></canvas>
