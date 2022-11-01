@@ -12,6 +12,7 @@ function buildScheduleView(eventSource) {
             li.innerHTML = channel.name;
             li.classList.add('showButton');
             li.setAttribute('role', 'radio');
+            li.setAttribute('aria-controls', elScheduleList.id);
             li.onclick = () => {
                 eventSource.trigger(EVENT_SCHEDULE_BUTTON_CLICK, channel.id);
             };
