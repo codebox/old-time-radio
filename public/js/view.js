@@ -67,6 +67,7 @@ function buildView(eventSource) {
         const li = document.createElement('li');
         li.innerHTML = id;
         li.classList.add('showButton');
+        li.setAttribute('role', 'radio');
         li.onclick = () => {
             eventSource.trigger(EVENT_VISUALISER_BUTTON_CLICK, id);
         };
@@ -269,6 +270,8 @@ function buildView(eventSource) {
             Object.keys(visualiserButtons).forEach(visualiserId => {
                 const el = visualiserButtons[visualiserId];
                 el.classList.toggle(CLASS_SELECTED, selectedVisualiserId === visualiserId);
+                el.ariaChecked = selectedVisualiserId === visualiserId;
+                el.setAttribute('aria-controls', 'canvas');
             });
         },
         addShowTitleToPage(title) {
