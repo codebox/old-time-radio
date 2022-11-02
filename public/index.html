@@ -83,16 +83,16 @@
                 <hr>
                 <section>
                     <h2>Sleep Timer</h2>
-                    <p>
+                    <p id="sleepTimerDescription">
                         Set the Sleep Timer to stop playing shows after:
                     </p>
-                    <ul id="sleepTimerButtons" class="sleepTimerButtonContainer">
+                    <ul id="sleepTimerButtons" class="sleepTimerButtonContainer" role="radiogroup" aria-describedby="sleepTimerDescription">
                     </ul>
                     <div id="sleepTimerRunningDisplay" class="hidden">
                         <p>
                             Sleeping in <span id="sleepTimerTime"></span>
                         </p>
-                        <button class="showButton" id="cancelSleepTimerButton">Cancel Sleep Timer Countdown</button>
+                        <button class="showButton" id="cancelSleepTimerButton" aria-controls="sleepTimerTime">Cancel Sleep Timer Countdown</button>
                     </div>
                 </section>
                 <hr>

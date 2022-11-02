@@ -11,16 +11,25 @@ function buildSleepTimerView(eventSource) {
         return (value < 10 ? '0' : '') + value;
     }
 
+    function setSelected(selectedButton) {
+        elSleepTimerButtons.querySelectorAll('li').forEach(button => {
+            button.ariaChecked = '' + (button === selectedButton);
+        });
+    }
+
     return {
         init() {
             elSleepTimerButtons.innerHTML = '';
             INTERVALS.forEach(intervalMinutes => {
                 const text = `${intervalMinutes} Minutes`;
                 const button = document.createElement('li');
+                button.setAttribute('role', 'radio');
+                button.setAttribute('aria-controls', elSleepTimerTime.id);
                 button.classList.add('showButton');
                 button.innerHTML = text;
 
                 button.onclick = () => {
+                    setSelected(button);
                     eventSource.trigger(EVENT_SET_SLEEP_TIMER_CLICK, intervalMinutes);
                 };
 
@@ -38,6 +47,9 @@ function buildSleepTimerView(eventSource) {
         },
         setRunState(isRunning) {
             elSleepTimerRunningDisplay.classList.toggle(HIDDEN_CSS_CLASS, !isRunning);
+            if (!isRunning) {
+                setSelected();
+            }
         }
     };
 }
