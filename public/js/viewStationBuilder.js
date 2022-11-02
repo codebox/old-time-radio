@@ -55,7 +55,7 @@ function buildStationBuilderView(eventSource) {
         const el = document.createElement('li');
         el.innerHTML = show.name;
         el.dataset.index = show.index;
-        el.classList.add('showButton');
+        el.classList.add('menuButton');
         el.setAttribute('role', 'checkbox');
         el.ariaChecked = 'false';
         if (!show.elements) {

@@ -2,7 +2,6 @@ function buildSleepTimerView(eventSource) {
     const elSleepTimerTime = document.getElementById('sleepTimerTime'),
         elSleepTimerRunningDisplay = document.getElementById('sleepTimerRunningDisplay'),
         elSleepTimerButtons = document.getElementById('sleepTimerButtons'),
-        elCancelSleepTimerButton = document.getElementById('cancelSleepTimerButton'),
 
         HIDDEN_CSS_CLASS = 'hidden',
         INTERVALS = config.sleepTimer.intervals;
@@ -12,8 +11,10 @@ function buildSleepTimerView(eventSource) {
     }
 
     function setSelected(selectedButton) {
-        elSleepTimerButtons.querySelectorAll('li').forEach(button => {
-            button.ariaChecked = '' + (button === selectedButton);
+        elSleepTimerButtons.querySelectorAll('button').forEach(button => {
+            const isSelected = button === selectedButton;
+            button.ariaChecked = '' + isSelected;
+            button.classList.toggle('selected', isSelected);
         });
     }
 
@@ -22,22 +23,19 @@ function buildSleepTimerView(eventSource) {
             elSleepTimerButtons.innerHTML = '';
             INTERVALS.forEach(intervalMinutes => {
                 const text = `${intervalMinutes} Minutes`;
-                const button = document.createElement('li');
+                const button = document.createElement('button');
                 button.setAttribute('role', 'radio');
                 button.setAttribute('aria-controls', elSleepTimerTime.id);
-                button.classList.add('showButton');
+                button.classList.add('menuButton');
                 button.innerHTML = text;
 
                 button.onclick = () => {
                     setSelected(button);
-                    eventSource.trigger(EVENT_SET_SLEEP_TIMER_CLICK, intervalMinutes);
+                    eventSource.trigger(EVENT_SLEEP_TIMER_CLICK, intervalMinutes);
                 };
 
                 elSleepTimerButtons.appendChild(button);
             });
-            elCancelSleepTimerButton.onclick = () => {
-                eventSource.trigger(EVENT_CANCEL_SLEEP_TIMER_CLICK);
-            };
         },
         render(totalSeconds) {
             const hours = Math.floor(totalSeconds / 3600),

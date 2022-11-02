@@ -221,15 +221,16 @@ window.onload = () => {
         }
     })();
 
-    view.on(EVENT_SET_SLEEP_TIMER_CLICK).then(event => {
+    view.on(EVENT_SLEEP_TIMER_CLICK).then(event => {
         const minutes = event.data;
-        sleepTimer.start(minutes);
-        view.startSleepTimer();
-    });
-
-    view.on(EVENT_CANCEL_SLEEP_TIMER_CLICK).then(() => {
-        sleepTimer.stop();
-        view.clearSleepTimer();
+        if (minutes === sleepTimer.getMinutesRequested()) {
+            // the already-selected button has been clicked a second time, so turn it off
+            sleepTimer.stop();
+            view.clearSleepTimer();
+        } else {
+            sleepTimer.start(minutes);
+            view.startSleepTimer();
+        }
     });
 
     view.on(EVENT_WAKE_UP).ifState(STATE_GOING_TO_SLEEP).then(() => {

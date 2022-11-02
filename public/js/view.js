@@ -45,7 +45,7 @@ function buildView(eventSource) {
 
         elButtonIndicator.classList.add('buttonIndicator');
 
-        elButton.classList.add('button');
+        elButton.classList.add('raisedButton');
         elButton.setAttribute('role', 'radio');
         elButton.id = (channelName + '_channel').toLowerCase().replaceAll(' ', '_');
         elButtonLabel.classList.add('buttonLabel');
@@ -64,15 +64,15 @@ function buildView(eventSource) {
     }
 
     function buildVisualiserButton(id) {
-        const li = document.createElement('li');
-        li.innerHTML = id;
-        li.classList.add('showButton');
-        li.setAttribute('role', 'radio');
-        li.onclick = () => {
+        const button = document.createElement('button');
+        button.innerHTML = id;
+        button.classList.add('menuButton');
+        button.setAttribute('role', 'radio');
+        button.onclick = () => {
             eventSource.trigger(EVENT_VISUALISER_BUTTON_CLICK, id);
         };
-        elVisualiserButtons.appendChild(li);
-        visualiserButtons[id] = li;
+        elVisualiserButtons.appendChild(button);
+        visualiserButtons[id] = button;
     }
 
     const messagePrinter = (() => {

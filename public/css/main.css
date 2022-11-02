@@ -235,7 +235,8 @@ noscript a, noscript a:visited {
     margin-bottom: 0;
     margin-top: 8px;
 }
-#menu .showButton {
+#menu .menuButton {
+    font-family: Bellerose;
     background-color: var(--font-color-dim);
     border: 2px solid var(--divider-colour);
     color: var(--menu-font-color);
@@ -250,20 +251,13 @@ noscript a, noscript a:visited {
     user-select: none;
     outline: none;
 }
-#menu .showButton:disabled {
+#menu .menuButton:disabled {
     border-color: var(--font-color-dim);
     background-color: var(--font-color-dim) ! important;
     cursor: default;
 }
-#menu button {
-    color: var(--menu-font-color);
-    font-family: Bellerose;
-    border: 2px solid var(--divider-colour);
-    font-size: 16px;
-    line-height: 24px;
-    padding: 0 8px 8px 8px;
-    border-radius: 4px;
-    cursor: pointer;
+#menu .menuButton:focus-visible {
+    outline: 2px solid white;
 }
 #menu hr {
     margin-top: 32px;
@@ -274,7 +268,7 @@ noscript a, noscript a:visited {
     text-transform: capitalize;
     font-size: 20px;
 }
-#menu .showButton.selected {
+#menu .menuButton.selected {
     background-color: var(--font-color);
 }
 #menu .hidden {
@@ -293,12 +287,12 @@ noscript a, noscript a:visited {
     align-items: center;
     justify-content: center;
 }
-.button svg {
+.raisedButton svg {
     height: 25px;
     width: 25px;
     fill: var(--panel-background);
 }
-.button.disabled svg {
+.raisedButton.disabled svg {
     fill: var(--font-color-dim);
 }
 #volumeLevel {
@@ -346,7 +340,7 @@ noscript a, noscript a:visited {
     flex-wrap: wrap;
     justify-content: center;
 }
-#channelScheduleLinks li.showButton, #visualiserList li.showButton {
+#channelScheduleLinks .menuButton, #visualiserList .menuButton {
     text-transform: capitalize;
     margin: 5px 3px;
     cursor: pointer;
@@ -370,16 +364,13 @@ noscript a, noscript a:visited {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    margin-bottom: -10px;
 }
 #sleepTimerButtons {
     display: flex;
     justify-content: center;
-    margin: 10px 0;
+    margin: 20px 0 0 0;
     flex-wrap: wrap;
-}
-#sleepTimerButtons .showButton, #cancelSleepTimerButton.showButton {
-    background-color: var(--font-color);
-    margin: 5px;
 }
 #sleepTimerTime {
     font-family: 'Courier Prime', monospace;
@@ -459,7 +450,7 @@ noscript a, noscript a:visited {
     background-color: var(--led-on);
     box-shadow: var(--led-glow);
 }
-.button, .button.disabled:active {
+.raisedButton, .raisedButton.disabled:active {
     display: flex;
     flex: 0 0 50px;
     width: 50px;
@@ -471,7 +462,7 @@ noscript a, noscript a:visited {
     box-shadow: 1px 1px 6px var(--button-outer-shadow), inset 2px 2px 3px #fff;
     border: 1px solid var(--divider-colour);
 }
-.button:active {
+.raisedButton:active {
     box-shadow: 1px 1px 6px var(--button-outer-shadow);
     background-image: linear-gradient(to bottom right, #d8d8d8, #2a2a2a);
     border-width: 2px;
@@ -600,10 +591,10 @@ body.sleeping #title .spacer {
     .buttonLabel {
         font-size: 16px;
     }
-    .button {
+    .raisedButton {
         flex: 0 0 40px;
     }
-    .button, .buttonIndicator {
+    .raisedButton, .buttonIndicator {
         height: 40px;
         width: 40px;
     }

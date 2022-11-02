@@ -8,16 +8,16 @@ function buildScheduleView(eventSource) {
 
     return {
         addChannel(channel) {
-            const li = document.createElement('li');
-            li.innerHTML = channel.name;
-            li.classList.add('showButton');
-            li.setAttribute('role', 'radio');
-            li.setAttribute('aria-controls', elScheduleList.id);
-            li.onclick = () => {
+            const button = document.createElement('button');
+            button.innerHTML = channel.name;
+            button.classList.add('menuButton');
+            button.setAttribute('role', 'radio');
+            button.setAttribute('aria-controls', elScheduleList.id);
+            button.onclick = () => {
                 eventSource.trigger(EVENT_SCHEDULE_BUTTON_CLICK, channel.id);
             };
-            elChannelLinks.appendChild(li);
-            channelToElement[channel.id] = li;
+            elChannelLinks.appendChild(button);
+            channelToElement[channel.id] = button;
         },
         setSelectedChannel(selectedChannelId) {
             Object.keys(channelToElement).forEach(channelId => {
