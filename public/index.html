@@ -106,16 +106,16 @@
                         <h3>Channel Settings</h3>
                         <ul>
                             <li>
-                                <button id="adsInChannel" class="showButton">Play Commercials Between Programmes</button>
+                                <button id="adsInChannel" class="showButton" role="checkbox" aria-checked="false">Play Commercials Between Programmes</button>
                             </li>
                         </ul>
                     </div>
-                    <p id="showsSelected"></p>
+                    <p id="showsSelected" aria-live="polite"></p>
                     <p>
                         <button id="createChannel"></button>
                     </p>
                     <div id="stationDetails">
-                        <p id="channelCount"></p>
+                        <p id="channelCount" aria-live="polite"></p>
                         <button id="goToStation">Listen Now</button>
                         <button id="addAnotherChannel">Add Another Channel</button>
                         <button id="deleteStation">Delete Station</button>

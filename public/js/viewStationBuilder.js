@@ -56,6 +56,8 @@ function buildStationBuilderView(eventSource) {
         el.innerHTML = show.name;
         el.dataset.index = show.index;
         el.classList.add('showButton');
+        el.setAttribute('role', 'checkbox');
+        el.ariaChecked = 'false';
         if (!show.elements) {
             show.elements = [];
         }
@@ -150,7 +152,10 @@ function buildStationBuilderView(eventSource) {
 
         updateShowSelections(stationBuilderModel) {
             stationBuilderModel.shows.forEach(show => {
-                show.elements.forEach(el => el.classList.toggle(CSS_CLASS_SELECTED, show.selected));
+                show.elements.forEach(el => {
+                    el.classList.toggle(CSS_CLASS_SELECTED, show.selected);
+                    el.ariaChecked = show.selected;
+                });
             });
 
             const selectedChannelsCount = getSelectedChannelCount(stationBuilderModel);
@@ -161,6 +166,7 @@ function buildStationBuilderView(eventSource) {
 
         updateIncludeCommercials(stationBuilderModel) {
             elIncludeAdsInChannelButton.classList.toggle(CSS_CLASS_SELECTED, stationBuilderModel.includeCommercials);
+            elIncludeAdsInChannelButton.ariaChecked = stationBuilderModel.includeCommercials;
 
             const selectedChannelsCount = getSelectedChannelCount(stationBuilderModel);
             updateStationDescription(selectedChannelsCount, stationBuilderModel.includeCommercials);
