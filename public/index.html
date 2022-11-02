@@ -45,7 +45,7 @@
                     <p id="scheduleDescription">
                         Select a channel to see what shows are coming up
                     </p>
-                    <ul id="channelScheduleLinks" role="radiogroup" aria-describedby="scheduleDescription"></ul>
+                    <div id="channelScheduleLinks" role="radiogroup" aria-describedby="scheduleDescription"></div>
                     <ul id="scheduleList" aria-live="off" aria-label="Schedule for the selected channel"></ul>
                 </section>
                 <hr>
@@ -54,7 +54,7 @@
                     <p id="visualiserDescription">
                         Select a visualiser
                     </p>
-                    <ul id="visualiserList" role="radiogroup" aria-describedby="visualiserDescription"></ul>
+                    <div id="visualiserList" role="radiogroup" aria-describedby="visualiserDescription"></div>
                 </section>
                 <hr>
                 <section>
@@ -86,8 +86,8 @@
                     <p id="sleepTimerDescription">
                         Set the Sleep Timer to stop playing shows after:
                     </p>
-                    <ul id="sleepTimerButtons" class="sleepTimerButtonContainer" role="radiogroup" aria-describedby="sleepTimerDescription">
-                    </ul>
+                    <div id="sleepTimerButtons" class="sleepTimerButtonContainer" role="radiogroup" aria-describedby="sleepTimerDescription">
+                    </div>
                     <div id="sleepTimerRunningDisplay" class="hidden">
                         <p>
                             Sleeping in <span id="sleepTimerTime"></span>
@@ -100,7 +100,7 @@
                     <p>
                         Build your own radio station - create some channels by selecting shows from the list below:
                     </p>
-                    <ul id="showList"></ul>
+                    <div id="showList"></div>
                     <div id="channelSettings">
                         <h3>Channel Settings</h3>
                         <ul>
@@ -111,13 +111,13 @@
                     </div>
                     <p id="showsSelected" aria-live="polite"></p>
                     <p>
-                        <button id="createChannel"></button>
+                        <button id="createChannel" class="menuButton"></button>
                     </p>
                     <div id="stationDetails">
                         <p id="channelCount" aria-live="polite"></p>
-                        <button id="goToStation">Listen Now</button>
-                        <button id="addAnotherChannel">Add Another Channel</button>
-                        <button id="deleteStation">Delete Station</button>
+                        <button id="goToStation" class="menuButton">Listen Now</button>
+                        <button id="addAnotherChannel" class="menuButton">Add Another Channel</button>
+                        <button id="deleteStation" class="menuButton">Delete Station</button>
                     </div>
                 </section>
                 <hr>

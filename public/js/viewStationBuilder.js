@@ -52,17 +52,17 @@ function buildStationBuilderView(eventSource) {
     }
 
     function buildShowButtonElement(show) {
-        const el = document.createElement('li');
-        el.innerHTML = show.name;
-        el.dataset.index = show.index;
-        el.classList.add('menuButton');
-        el.setAttribute('role', 'checkbox');
-        el.ariaChecked = 'false';
+        const button = document.createElement('button');
+        button.innerHTML = show.name;
+        button.dataset.index = show.index;
+        button.classList.add('menuButton');
+        button.setAttribute('role', 'checkbox');
+        button.ariaChecked = 'false';
         if (!show.elements) {
             show.elements = [];
         }
-        show.elements.push(el);
-        return el;
+        show.elements.push(button);
+        return button;
     }
 
     elIncludeAdsInChannelButton.onclick = () => {
