@@ -66,7 +66,7 @@ function buildView(eventSource) {
     function buildVisualiserButton(id) {
         const button = document.createElement('button');
         button.innerHTML = id;
-        button.classList.add('menuButton');
+        button.classList.add('menuButton', `umami--click--visualiser-${id.toLowerCase()}`);
         button.setAttribute('role', 'radio');
         button.onclick = () => {
             eventSource.trigger(EVENT_VISUALISER_BUTTON_CLICK, id);
