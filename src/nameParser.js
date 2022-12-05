@@ -1342,6 +1342,34 @@ const parsers = [
                 name = match[4];
             return `The Fred Allen Show ${num} - ${name} [${date}]`;
         }
+    },
+    {
+        ids: ["bickersons-1947-03-02-12-blanche-has-a-stomach-ache"],
+        regex: /Bickersons ([-0-9]{10}) \((.+)\) (.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                num = match[2] === 'xx' ? '' : match[2],
+                name = match[3];
+            return `The Bickersons ${num} - ${name} [${date}]`;
+        }
+    },
+    {
+        ids: ["bickersons-1947-03-02-12-blanche-has-a-stomach-ache"],
+        regex: /Bickersons xx_xx_xx \(xx\) (.*).mp3/i,
+        getName(match) {
+            const name = match[1];
+            return `The Bickersons - ${name}`;
+        }
+    },
+    {
+        ids: ["OTRR_The_Big_Show_Singles"],
+        regex: /([-0-9]+)_ep([0-9]+)_(.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                num = match[2],
+                name = match[3].replace(/_/g, ' ');
+            return `The Big Show ${num} - ${name} [${date}]`;
+        }
     }
 ];
 

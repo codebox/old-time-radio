@@ -644,6 +644,16 @@
       "name": "The Fred Allen Show",
       "playlists": ["town-hall-tonight-1938-06-08-232-music-publisher-needs-a-tune"],
       "index": 119
+    },
+    {
+      "name": "The Bickersons",
+      "playlists": ["bickersons-1947-03-02-12-blanche-has-a-stomach-ache"],
+      "index": 120
+    },
+    {
+      "name": "The Big Show",
+      "playlists": ["OTRR_The_Big_Show_Singles"],
+      "index": 121
     }
   ],
   "channels" : [
@@ -673,7 +683,7 @@
     },
     {
       "name" : "comedy",
-      "shows": [0,31,32,33,34,35,36,46,49,61,64,76,84,87,88,95,96,111,114,116,117,118,119]
+      "shows": [0,31,32,33,34,35,36,46,49,61,64,76,84,87,88,95,96,111,114,116,117,118,119,120,121]
     },
     {
       "name" : "drama",
