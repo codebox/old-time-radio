@@ -340,7 +340,7 @@ noscript a, noscript a:visited {
     flex-wrap: wrap;
     justify-content: center;
 }
-#channelScheduleLinks .menuButton, #visualiserList .menuButton {
+#channelScheduleLinks .menuButton, #visualiserList .menuButton, #sleepTimerButtons .menuButton {
     text-transform: capitalize;
     margin: 5px 3px;
     cursor: pointer;
