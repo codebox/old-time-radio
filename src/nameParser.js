@@ -1370,6 +1370,37 @@ const parsers = [
                 name = match[3].replace(/_/g, ' ');
             return `The Big Show ${num} - ${name} [${date}]`;
         }
+    },
+    {
+        ids: ["general-electric-show-52-54-1952-12-25-12-guest-gary-crosby"],
+        regex: /([A-Za-z ]+) \([^)]+\) ([-0-9]+) \(([0-9]+)\) (.*).mp3/i,
+        getName(match) {
+            const title1 = match[1],
+                date = match[2],
+                num = match[3],
+                title2 = match[4];
+            return `Bing Crosby - ${title1} ${num} - ${title2} [${date}]`;
+        }
+    },
+    {
+        ids: ["a-a-1948-11-14-183-tourist-sightseeing-agency-aka-ny-sightseeing-agency-aka-andy"],
+        regex: /A&A ([-0-9]+) #([0-9]+) (.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                num = match[2],
+                title = match[3].replaceAll(/\s*\(aka [^)]+\)\s*/g, '');
+            return `Amos and Andy ${num} - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["Perry_Mason_Radio_Show"],
+        regex: /PM_([0-9]+)_([0-9]+)_(.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                num = match[2],
+                title = match[3].replaceAll('_', ' ');
+            return `Perry Mason Radio Show ${num} - ${title} [${date}]`;
+        }
     }
 ];
 

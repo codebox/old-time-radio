@@ -22,8 +22,8 @@ function extractUsefulPlaylistData(playlistId, playlist) {
         }
 
         return {
-            url: `https://${playlist.server}${playlist.dir}/${fileMetadata.name}`,
-            archivalUrl: `https://archive.org/download/${playlistId}/${fileMetadata.name}`,
+            url: `https://${playlist.server}${playlist.dir}/${encodeURIComponent(fileMetadata.name)}`,
+            archivalUrl: `https://archive.org/download/${playlistId}/${encodeURIComponent(fileMetadata.name)}`,
             name: readableName,
             length
         };
