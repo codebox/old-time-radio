@@ -33,8 +33,7 @@ window.onload = () => {
         function playNextFromPlaylist() {
             const nextItem = model.playlist.shift();
             model.track = nextItem;
-            /* For now we need to use the direct url rather than the safer 'archival' url (see https://archive.org/services/docs/api/items.html#archival-urls) because Safari breaks if the MP3 request returns a redirect. Godammit Safari... */
-            audioPlayer.load(nextItem.url);
+            audioPlayer.load(nextItem.archivalUrl);
             stateMachine.loadingTrack();
         }
 
