@@ -1401,6 +1401,26 @@ const parsers = [
                 title = match[3].replaceAll('_', ' ');
             return `Perry Mason Radio Show ${num} - ${title} [${date}]`;
         }
+    },
+    {
+        ids: ["chaseandsanbornhour1931122015firstsongcarolinamoon"],
+        regex: /.* ([-0-9]{10}) (\([0-9]+\)) (.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                num = match[2],
+                title = match[3];
+            return `Eddie Cantor ${num} - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["edgar-bergen-1937-12-12-32-guest-mae-west"],
+        regex: /.* ([-0-9]{10}) \(([0-9]+)\) (.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                num = match[2],
+                title = match[3];
+            return `Edgar Bergen ${num} - ${title} [${date}]`;
+        }
     }
 ];
 

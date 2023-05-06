@@ -669,6 +669,16 @@
       "name": "Perry Mason",
       "playlists": ["Perry_Mason_Radio_Show"],
       "index": 124
+    },
+    {
+      "name": "Eddie Cantor",
+      "playlists": ["chaseandsanbornhour1931122015firstsongcarolinamoon"],
+      "index": 125
+    },
+    {
+      "name": "Edgar Bergen and Charlie McCarthy",
+      "playlists": ["edgar-bergen-1937-12-12-32-guest-mae-west"],
+      "index": 126
     }
   ],
   "channels" : [
@@ -698,7 +708,7 @@
     },
     {
       "name" : "comedy",
-      "shows": [0,31,32,33,34,35,36,46,49,61,64,76,84,87,88,95,96,111,114,116,117,118,119,120,121,123]
+      "shows": [0,31,32,33,34,35,36,46,49,61,64,76,84,87,88,95,96,111,114,116,117,118,119,120,121,123,125,126]
     },
     {
       "name" : "drama",
