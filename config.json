@@ -679,6 +679,11 @@
       "name": "Edgar Bergen and Charlie McCarthy",
       "playlists": ["edgar-bergen-1937-12-12-32-guest-mae-west"],
       "index": 126
+    },
+    {
+      "name": "The Damon Runyon Theatre",
+      "playlists": ["OTRR_Damon_Runyon_Singles"],
+      "index": 127
     }
   ],
   "channels" : [
@@ -692,7 +697,7 @@
     },
     {
       "name" : "crime",
-      "shows": [0,12,13,22,23,24,37,41,47,48,52,58,60,62,63,75,82,89,94,100,101,107,108,110,112,124]
+      "shows": [0,12,13,22,23,24,37,41,47,48,52,58,60,62,63,75,82,89,94,100,101,107,108,110,112,124,127]
     },
     {
       "name" : "horror",

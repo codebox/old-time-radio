@@ -1421,6 +1421,15 @@ const parsers = [
                 title = match[3];
             return `Edgar Bergen ${num} - ${title} [${date}]`;
         }
+    },
+    {
+        ids: ["OTRR_Damon_Runyon_Singles"],
+        regex: /Damon_Runyon__4x-xx-xx_ep([0-9]+)_(.*).mp3/i,
+        getName(match) {
+            const num = match[1],
+                title = match[2].replaceAll('_', ' ');
+            return `Damon Runyon Theatre ${num} - ${title}`;
+        }
     }
 ];
 
