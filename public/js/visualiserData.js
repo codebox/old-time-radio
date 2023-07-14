@@ -2,6 +2,7 @@ function buildVisualiserDataFactory(dataSource) {
     "use strict";
 
     const MAX_FREQ_DATA_VALUE = 255;
+    const clock = buildClock();
 
     function sortDataIntoBuckets(data, bucketCount, p=1) {
         function bucketIndexes(valueCount, bucketCount, p) {
@@ -75,7 +76,7 @@ function buildVisualiserDataFactory(dataSource) {
         return {
             get() {
                 const rawData = dataSource(),
-                    now = Date.now();
+                    now = clock.nowMillis();
                 let bucketedData;
 
                 if (bucketCount) {

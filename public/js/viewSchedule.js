@@ -4,7 +4,8 @@ function buildScheduleView(eventSource) {
     const elChannelLinks = document.getElementById('channelScheduleLinks'),
         elScheduleList = document.getElementById('scheduleList'),
         channelToElement = {},
-        CSS_CLASS_SELECTED = 'selected';
+        CSS_CLASS_SELECTED = 'selected',
+        clock = buildClock();
 
     return {
         addChannel(channel) {
@@ -28,7 +29,7 @@ function buildScheduleView(eventSource) {
         },
         displaySchedule(schedule) {
             const playingNow = schedule.list.shift(),
-                timeNow = Date.now() / 1000;
+                timeNow = clock.nowSeconds();
             let nextShowStartOffsetFromNow = playingNow.length - schedule.initialOffset;
 
             const scheduleList = [{time: 'NOW &gt;', name: playingNow.name}];

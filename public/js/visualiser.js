@@ -18,6 +18,8 @@ function buildVisualiser(dataFactory) {
         return `rgb(${v},${v},${v})`;
     }
 
+    const clock = buildClock();
+
     const phonograph = (() => {
         const phonographConfig = config.visualiser.phonograph,
             minRadius = phonographConfig.minRadius,
@@ -31,13 +33,13 @@ function buildVisualiser(dataFactory) {
                 .withShuffling()
                 .build();
 
-        let startTs = Date.now(), snapshots = [], lastSnapshotTs = Date.now();
+        let startTs = clock.nowMillis(), snapshots = [], lastSnapshotTs = clock.nowMillis();
 
         return () => {
             const cx = width / 2,
                 cy = height / 2,
                 maxRadius = Math.min(height, width) / 2,
-                now = Date.now();
+                now = clock.nowMillis();
 
             clearCanvas();
 

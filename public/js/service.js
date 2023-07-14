@@ -1,11 +1,8 @@
 function buildService() {
+    const clock = buildClock();
     "use strict";
     const playlistCache = (() => {
         const cache = {};
-
-        function now() {
-            return Date.now() / 1000;
-        }
 
         function buildKeyName(channelId, length) {
             return `${channelId}_${length}`;
@@ -16,7 +13,7 @@ function buildService() {
                 const key = buildKeyName(channelId, length),
                     entry = cache[key];
                 if (entry) {
-                    const ageInSeconds = now() - entry.ts,
+                    const ageInSeconds = clock.nowSeconds() - entry.ts,
                         initialOffsetInSecondsNow = entry.playlist.initialOffset + ageInSeconds,
                         lengthOfCurrentPlaylistItem = entry.playlist.list[0].length;
                     if (lengthOfCurrentPlaylistItem > initialOffsetInSecondsNow) {
@@ -32,7 +29,7 @@ function buildService() {
             set(channelId, length, playlist) {
                 const key = buildKeyName(channelId, length);
                 cache[key] = {
-                    ts: now(),
+                    ts: clock.nowSeconds(),
                     playlist: { // defensive copy
                         initialOffset: playlist.initialOffset,
                         list: [...playlist.list]
