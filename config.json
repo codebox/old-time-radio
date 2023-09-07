@@ -684,6 +684,31 @@
       "name": "The Damon Runyon Theatre",
       "playlists": ["OTRR_Damon_Runyon_Singles"],
       "index": 127
+    },
+    {
+      "name": "Quiet, Please",
+      "playlists": ["QuietPlease_806"],
+      "index": 128
+    },
+    {
+      "name": "The Witch's Tale",
+      "playlists": ["TheWitchsTale"],
+      "index": 129
+    },
+    {
+      "name": "The Shadow of Fu Manchu",
+      "playlists": ["390903-102-the-joy-shop"],
+      "index": 130
+    },
+    {
+      "name": "Chandu the Magician",
+      "playlists": ["otr_chanduthemagician"],
+      "index": 131
+    },
+    {
+      "name": "Challenge of the Yukon",
+      "playlists": ["OTRR_Challenge_of_the_Yukon_Singles"],
+      "index": 132
     }
   ],
   "channels" : [
@@ -693,15 +718,15 @@
     },
     {
       "name" : "action",
-      "shows": [0,10,11,14,15,16,18,39,40,42,59,79,80,83,86,90,91,92,104,115]
+      "shows": [0,10,11,14,15,16,18,39,40,42,59,79,80,83,86,90,91,92,104,115,131,132]
     },
     {
       "name" : "crime",
-      "shows": [0,12,13,22,23,24,37,41,47,48,52,58,60,62,63,75,82,89,94,100,101,107,108,110,112,124,127]
+      "shows": [0,12,13,22,23,24,37,41,47,48,52,58,60,62,63,75,82,89,94,100,101,107,108,110,112,124,127,130]
     },
     {
       "name" : "horror",
-      "shows": [0,17,43,44,53,54,78,81,98]
+      "shows": [0,17,43,44,53,54,78,81,98,128,129]
     },
     {
       "name" : "suspense",

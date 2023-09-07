@@ -1430,6 +1430,64 @@ const parsers = [
                 title = match[2].replaceAll('_', ' ');
             return `Damon Runyon Theatre ${num} - ${title}`;
         }
+    },
+    {
+        ids: ["QuietPlease_806"],
+        regex: /([-0-9]+)_QUIETPLEASE_([0-9]+)_(.*).MP3/i,
+        getName(match) {
+            const date = match[1],
+                num = match[2],
+                title = match[3];
+            return `Quiet, Please ${num} - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["TheWitchsTale"],
+        regex: /([-0-9]+) - ([0-9]+)\) (.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                num = match[2],
+                title = match[3];
+            return `The Witch's Tale ${num} - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["390903-102-the-joy-shop"],
+        regex: /([0-9]+)_([0-9]+)_(.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                num = match[2],
+                title = match[3].replaceAll('_', ' ');
+            return `The Shadow of Fu Manchu ${num} - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["otr_chanduthemagician"],
+        regex: /([-0-9]+)_Xxxx_-_Chandu_the_Magician_-_(.*)/i,
+        getName(match) {
+            const date = match[1],
+                title = match[2].replaceAll('_', ' ');
+            return `Chandu the Magician - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["otr_chanduthemagician"],
+        regex: /([-0-9]+)_(.*).MP3/i,
+        getName(match) {
+            const date = match[1],
+                title = match[2].replaceAll('_', ' ');
+            return `Chandu the Magician - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["OTRR_Challenge_of_the_Yukon_Singles"],
+        regex: /COTY ([-0-9]+) \(([0-9]+)\) (.*)/i,
+        getName(match) {
+            const date = match[1],
+                num = match[2],
+                title = match[3];
+            return `Challenge of the Yukon ${num} - ${title} [${date}]`;
+        }
     }
 ];
 
