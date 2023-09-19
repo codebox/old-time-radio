@@ -23,6 +23,13 @@ function buildAudioPlayer(maxVolume, eventSource) {
                 audioGain.gain.value = initialAudioGainValue;
             }
 
+            audioCtx.onstatechange = () => {
+                // needed to allow audio to continue to play on ios when screen is locked
+                if (audioCtx.state === 'interrupted') {
+                    audioCtx.resume();
+                }
+            };
+
             audioSrc.connect(audioGain);
             audioGain.connect(analyser);
             analyser.connect(audioCtx.destination);
