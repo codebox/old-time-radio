@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Old Time Radio - Audio Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+<body>
+<button id="btn">Play</button>
+<div id="status"></div>
+
+<script type="application/javascript">
+    const btn = document.getElementById('btn');
+
+    btn.addEventListener('click', function() {
+        const audio = new Audio();
+
+        audio.crossOrigin = "anonymous";
+        const AudioContext = window.AudioContext || window.webkitAudioContext,
+            audioCtx = new AudioContext(),
+            audioSrc = audioCtx.createMediaElementSource(audio);
+
+        audioSrc.connect(audioCtx.destination);
+
+        audio.addEventListener('canplaythrough', () => {
+            audio.play();
+        });
+
+        audio.src = 'https://archive.org/download/Old_Radio_Adverts_01/OldRadio_Adv--1957_Chevrolet.mp3';
+        audio.load();
+    });
+</script>
+</body>
+</html>
