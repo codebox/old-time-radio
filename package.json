@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/codebox/old-time-radio/issues",
   "dependencies": {
-    "axios": "^0.21.2",
+    "axios": "^1.6.0",
     "express": "^4.17.3",
     "jasmine": "^3.7.0",
     "proxyquire": "^2.1.3",
