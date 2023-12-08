@@ -152,7 +152,7 @@ function getCurrentPlaylistPosition(playlist, playlistDuration) {
     };
 }
 
-function getCurrentSchedule(fullSchedule, playlistMinLength) {
+function getCurrentSchedule(fullSchedule, stopCondition) {
     const episodeList = fullSchedule.schedule,
         playlistLength = fullSchedule.length,
         clientPlaylist = [];
@@ -160,7 +160,7 @@ function getCurrentSchedule(fullSchedule, playlistMinLength) {
     let {index, offset} = getCurrentPlaylistPosition(episodeList, playlistLength);
 
     let currentPlaylistDuration = -offset;
-    while (currentPlaylistDuration < playlistMinLength) {
+    while (!stopCondition(currentPlaylistDuration, clientPlaylist.length)) {
         const currentItem = episodeList[index % episodeList.length];
         clientPlaylist.push(currentItem);
         currentPlaylistDuration += currentItem.length;
@@ -173,11 +173,34 @@ function getCurrentSchedule(fullSchedule, playlistMinLength) {
     };
 }
 
+function playlistReachedMinDuration(minDuration) {
+    return (currentPlaylistDuration) => {
+        return currentPlaylistDuration >= minDuration;
+    };
+}
+
+function playlistContainsRequiredNumberOfItems(numberOfItems) {
+    return (_, currentPlaylistSize) => {
+        return currentPlaylistSize >= numberOfItems;
+    };
+}
+
 module.exports = {
     async getScheduleForChannel(channelNameOrCode, lengthInSeconds) {
         const fullSchedule = await getFullScheduleForChannel(channelNameOrCode),
-            currentSchedule = getCurrentSchedule(fullSchedule, Math.min(lengthInSeconds, MAX_SCHEDULE_LENGTH));
+            currentSchedule = getCurrentSchedule(fullSchedule, playlistReachedMinDuration(Math.min(lengthInSeconds, MAX_SCHEDULE_LENGTH)));
 
         return currentSchedule;
+    },
+    async getPlayingNowAndNext(channelNameOrCode) {
+        const fullSchedule = await getFullScheduleForChannel(channelNameOrCode),
+            // min length of '3' guarantees we get the current show and the next show even if there are commercials playing between them
+            currentSchedule = getCurrentSchedule(fullSchedule, playlistContainsRequiredNumberOfItems(3));
+
+        return {
+            channelId: channelNameOrCode,
+            list: currentSchedule.list.filter(item => !item.commercial).slice(0, 2),
+            initialOffset: currentSchedule.initialOffset
+        };
     }
 }

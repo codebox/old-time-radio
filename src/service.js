@@ -35,5 +35,9 @@ module.exports = {
     },
     getCodeForShowIndexes(showIndexes = []) {
         return channelCodes.buildChannelCodeFromShowIndexes(showIndexes);
+    },
+    async getPlayingNowAndNext(channels) {
+        const channelIds = channels.length ? channels : await channelData.getChannels();
+        return Promise.all(channelIds.map(channelId => scheduler.getPlayingNowAndNext(channelId)));
     }
 };

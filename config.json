@@ -8,7 +8,8 @@
         "shows": "/api/shows",
         "channels": "/api/channels",
         "channel": "/api/channel/",
-        "generate": "/api/channel/generate/"
+        "generate": "/api/channel/generate/",
+        "playingNow": "/api/playing-now"
       }
     }
   },
