@@ -3,7 +3,7 @@ window.onload = () => {
 
     const model = buildModel(),
         stateMachine = buildStateMachine(),
-        view = buildView(eventSource('view')),
+        view = buildView(eventSource('view'), model),
         service = buildService(),
         audioPlayer = buildAudioPlayer(model.maxVolume, eventSource('audio')),
         visualiserDataFactory = buildVisualiserDataFactory(audioPlayer.getData),
@@ -23,6 +23,7 @@ window.onload = () => {
         visualiser.stop();
         tempMessageTimer.stop();
         scheduleRefresher.stop();
+        playingNowTimer.stop();
         view.setNoChannelSelected();
         view.hideDownloadLink();
         view.showError(error);
@@ -59,6 +60,7 @@ window.onload = () => {
             playNextFromPlaylist();
 
         } else {
+            playingNowTimer.stop();
             stateMachine.tuningIn();
             service.getPlaylistForChannel(model.selectedChannelId).then(playlist => {
                 model.playlist = playlist.list;
@@ -140,6 +142,7 @@ window.onload = () => {
         tempMessageTimer.stop();
         messageManager.showSleeping();
         visualiser.stop();
+        playingNowTimer.stop();
         scheduleRefresher.stop();
 
         stateMachine.sleeping();
@@ -158,6 +161,7 @@ window.onload = () => {
             view.hideDownloadLink();
             visualiser.stop(config.visualiser.fadeOutIntervalMillis);
             startSnowMachineIfAppropriate();
+            playingNowTimer.start();
 
             messageManager.showSelectChannel();
 
@@ -241,6 +245,36 @@ window.onload = () => {
         }
     })();
 
+    const playingNowTimer = (() => {
+        let timerId;
+
+        function updatePlayingNowDetails() {
+            service.getPlayingNow().then(playingNow => {
+                if (playingNow) {
+                    view.updatePlayingNowDetails(playingNow);
+                }
+            });
+        }
+
+        return {
+            start(){
+                if (!timerId) {
+                    service.getPlayingNow().then(playingNow => {
+                        view.showPlayingNowDetails(playingNow);
+                        timerId = setTimeout(updatePlayingNowDetails, config.playingNow.apiCallIntervalMillis);
+                    });
+                }
+            },
+            stop() {
+                if (timerId) {
+                    clearTimeout(timerId);
+                    timerId = null;
+                    view.hidePlayingNowDetails();
+                }
+            }
+        }
+    })();
+
     view.on(EVENT_SLEEP_TIMER_CLICK).then(event => {
         const minutes = event.data;
         if (minutes === sleepTimer.getMinutesRequested()) {
@@ -267,6 +301,7 @@ window.onload = () => {
         startSnowMachineIfAppropriate();
         audioPlayer.setVolume(model.volume);
         tempMessageTimer.start();
+        playingNowTimer.start();
 
         messageManager.showSelectChannel();
         stateMachine.idle();
@@ -458,6 +493,7 @@ window.onload = () => {
                 tempMessageTimer.start();
                 messageManager.init();
                 messageManager.showSelectChannel();
+                playingNowTimer.start();
 
                 stateMachine.idle();
             })

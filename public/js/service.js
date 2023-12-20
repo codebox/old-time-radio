@@ -66,6 +66,10 @@ function buildService() {
                         return playlist;
                     });
                 });
+        },
+        getPlayingNow(channelsList) {
+            return fetch(`/api/playing-now${channelsList ? '?channels=' + channelsList : ''}`)
+                .then(response => response.json());
         }
     };
 }

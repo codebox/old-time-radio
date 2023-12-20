@@ -1,4 +1,4 @@
-function buildView(eventSource) {
+function buildView(eventSource, model) {
     "use strict";
     const FEW_CHANNELS_LIMIT = 4,
         channelButtons = {},
@@ -19,7 +19,8 @@ function buildView(eventSource) {
         elDownloadLink = document.getElementById('downloadLink'),
         elButtonContainer = document.getElementById('buttons'),
         elVolumeLeds = Array.from(Array(10).keys()).map(i => document.getElementById(`vol${i+1}`)),
-        elVisualiserCanvas = document.getElementById('canvas'),
+        elVisualiserCanvas = document.getElementById('visualiserCanvas'),
+        elPlayingNowCanvas = document.getElementById('playingNowCanvas'),
         elVisualiserButtons = document.getElementById('visualiserList'),
         elTitle = document.getElementsByTagName('title')[0],
 
@@ -106,6 +107,8 @@ function buildView(eventSource) {
             }
         };
     })();
+
+    const playingNowPrinter = buildPlayingNowManager(model, elPlayingNowCanvas);
 
     function triggerWake() {
         eventSource.trigger(EVENT_WAKE_UP);
@@ -251,6 +254,20 @@ function buildView(eventSource) {
         },
         setVisualiser(audioVisualiser) {
             audioVisualiser.init(elVisualiserCanvas);
+        },
+        showPlayingNowDetails(playingNowDetails) {
+            elVisualiserCanvas.style.display = 'none';
+            window.devicePixelRatio
+            elPlayingNowCanvas.style.display = 'block';
+            playingNowPrinter.start(playingNowDetails);
+        },
+        updatePlayingNowDetails(playingNowDetails) {
+            playingNowPrinter.update(playingNowDetails);
+        },
+        hidePlayingNowDetails() {
+            elPlayingNowCanvas.style.display = 'none';
+            elVisualiserCanvas.style.display = 'block';
+            playingNowPrinter.stop();
         },
         showDownloadLink(mp3Url) {
             elDownloadLink.innerHTML = `<a href="${mp3Url}" target="_blank">Download this show as an MP3 file</a>`;

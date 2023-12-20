@@ -488,6 +488,9 @@ canvas {
     height: 100%;
     background-color: var(--msg-background);
 }
+#playingNowCanvas {
+    display: none;
+}
 /* Styles for after sleep timer is triggered*/
 body.sleeping {
     background-color: #111;

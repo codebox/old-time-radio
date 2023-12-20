@@ -5,8 +5,10 @@ function buildVisualiser(dataFactory) {
     let isStarted, elCanvas, ctx, width, height, fadeOutTimeout, visualiserId;
 
     function updateCanvasSize() {
-        width = elCanvas.width = elCanvas.offsetWidth;
-        height = elCanvas.height = elCanvas.offsetHeight;
+        const ratio = window.devicePixelRatio || 1;
+        elCanvas.width = (width = elCanvas.offsetWidth) * ratio;
+        elCanvas.height = (height = elCanvas.offsetHeight) * ratio;
+        ctx.scale(ratio, ratio);
     }
 
     function clearCanvas() {

@@ -59,6 +59,10 @@ const config = {
         refreshIntervalMillis: 5000,
         lengthInSeconds: 12 * 60 * 60
     },
+    playingNow: {
+        apiCallIntervalMillis: 30 * 1000,
+        infoDisplayIntervalMillis: 5 * 1000,
+    },
     messages: {
         canned: {
             "all": [

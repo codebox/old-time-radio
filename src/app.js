@@ -54,7 +54,7 @@ app.get(config.web.paths.api.generate + ":indexes", (req, res) => {
     res.status(200).json(service.getCodeForShowIndexes(indexes));
 });
 
-// [{channelId: 'action', {initialOffset: 123.456, list: [{archivalUrl: "http://...", length: 1234.56, name: "X Minus One - Episode 079", url: "http://...", commercial: false}, ...]}, ...]
+// [{channelId: 'action', initialOffset: 123.456, list: [{archivalUrl: "http://...", length: 1234.56, name: "X Minus One - Episode 079", url: "http://...", commercial: false}, ...]}, ...]
 app.get(config.web.paths.api.playingNow, (req, res) => {
     const channels = (req.query.channels || '').split(',').filter(c => c);
     service.getPlayingNowAndNext(channels).then(result => res.status(200).json(result));

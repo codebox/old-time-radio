@@ -16,7 +16,7 @@ function buildVisualiserDataFactory(dataSource) {
 
              This function calculates a set of bucket sizes which distribute the frequency values in a more interesting way, spreading the
              low frequency values over a larger number of buckets, so they are more prominent in the visualisation, without discarding any
-             of the less common high frequency values (they just get squashed into fewer buckets, giving less 'dead space' in the visualisaton).
+             of the less common high frequency values (they just get squashed into fewer buckets, giving less 'dead space' in the visualisation).
 
              The parameter 'p' determines how much redistribution is performed. A 'p' value of 1 gives uniformly sized buckets (ie no
              redistribution), as 'p' is increased more and more redistribution is performed.
