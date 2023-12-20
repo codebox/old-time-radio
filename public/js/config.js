@@ -83,5 +83,18 @@ const config = {
         charPrintIntervalMillis: 40,
         tempMessageDurationMillis: 5000,
         tempMessageIntervalMillis: 60 * 1000
+    },
+    snow: {
+        maxFlakeCount: 500,
+        minFlakeSize: 0.5,
+        maxFlakeSize: 3,
+        maxXSpeed: 0.5,
+        minYSpeed: 0.3,
+        maxYSpeed: 2,
+        windSpeedMax: 0.5,
+        windSpeedDelta: 0.001,
+        windSpeedChangeIntervalSeconds: 10,
+        snowflakeAddIntervalSeconds: 0.1,
+        distanceColourFade: 3
     }
 };

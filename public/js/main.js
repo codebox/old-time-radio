@@ -26,7 +26,25 @@ window.onload = () => {
         view.setNoChannelSelected();
         view.hideDownloadLink();
         view.showError(error);
+        startSnowMachineIfAppropriate();
         messageManager.showError();
+    }
+
+    function startSnowMachineIfAppropriate() {
+        function getSnowIntensityForToday(day, month) {
+            if (month === 11) {
+                if (day <= 25) {
+                    return 1 - (25 - day) / 25;
+                } else {
+                    return (32 - day) / 7;
+                }
+            }
+        }
+        const today = new Date(),
+            snowIntensity = getSnowIntensityForToday(25, today.getMonth());
+        if (snowIntensity) {
+            view.startSnowMachine(snowIntensity);
+        }
     }
 
     function loadNextFromPlaylist() {
@@ -59,6 +77,7 @@ window.onload = () => {
 
     // Audio Player event handlers
     audioPlayer.on(EVENT_AUDIO_TRACK_LOADED).ifState(STATE_LOADING_TRACK).then(() => {
+        view.stopSnowMachine();
         visualiser.start();
         audioPlayer.play(model.nextTrackOffset);
         model.nextTrackOffset = 0;
@@ -114,6 +133,7 @@ window.onload = () => {
 
     sleepTimer.on(EVENT_SLEEP_TIMER_DONE).ifState(STATE_IDLE, STATE_TUNING_IN, STATE_LOADING_TRACK, STATE_ERROR).then(() => {
         view.sleep();
+        view.stopSnowMachine();
         model.selectedChannelId = model.track = model.playlist = null;
         view.setNoChannelSelected();
         view.hideDownloadLink();
@@ -137,6 +157,7 @@ window.onload = () => {
             view.setNoChannelSelected();
             view.hideDownloadLink();
             visualiser.stop(config.visualiser.fadeOutIntervalMillis);
+            startSnowMachineIfAppropriate();
 
             messageManager.showSelectChannel();
 
@@ -243,6 +264,7 @@ window.onload = () => {
 
     view.on(EVENT_WAKE_UP).ifState(STATE_SLEEPING).then(() => {
         view.wakeUp();
+        startSnowMachineIfAppropriate();
         audioPlayer.setVolume(model.volume);
         tempMessageTimer.start();
 
@@ -402,6 +424,8 @@ window.onload = () => {
         view.setVisualiser(visualiser);
         view.setVisualiserIds(visualiser.getVisualiserIds());
         applyModelVisualiser();
+
+        startSnowMachineIfAppropriate();
 
         service.getShowList()
             .then(shows => {

@@ -131,6 +131,8 @@ function buildView(eventSource) {
 
     sleepTimerView.init();
 
+    const snowMachine = buildSnowMachine(elVisualiserCanvas);
+
     return {
         on: eventSource.on,
 
@@ -276,6 +278,12 @@ function buildView(eventSource) {
         },
         addShowTitleToPage(title) {
             elTitle.innerHTML += (' - ' + title);
+        },
+        startSnowMachine(intensity) {
+            snowMachine.start(intensity);
+        },
+        stopSnowMachine() {
+            snowMachine.stop();
         }
     };
 }
