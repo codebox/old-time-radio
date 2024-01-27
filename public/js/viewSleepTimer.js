@@ -26,7 +26,8 @@ function buildSleepTimerView(eventSource) {
                 const button = document.createElement('button');
                 button.setAttribute('role', 'radio');
                 button.setAttribute('aria-controls', elSleepTimerTime.id);
-                button.classList.add('menuButton', `umami--click--sleep-${intervalMinutes}`);
+                button.classList.add('menuButton');
+                button.setAttribute('data-umami-event', `sleep-${intervalMinutes}`);
                 button.innerHTML = text;
 
                 button.onclick = () => {

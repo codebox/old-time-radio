@@ -11,7 +11,8 @@ function buildScheduleView(eventSource) {
         addChannel(channel) {
             const button = document.createElement('button');
             button.innerHTML = channel.name;
-            button.classList.add('menuButton', `umami--click--schedule-${channel.name.toLowerCase().replaceAll(' ', '-')}`);
+            button.classList.add('menuButton');
+            button.setAttribute('data-umami-event', `schedule-${channel.name.toLowerCase().replaceAll(' ', '-')}`);
             button.setAttribute('role', 'radio');
             button.setAttribute('aria-controls', elScheduleList.id);
             button.onclick = () => {
