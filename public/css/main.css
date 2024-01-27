@@ -291,6 +291,7 @@ noscript a, noscript a:visited {
     height: 25px;
     width: 25px;
     fill: var(--panel-background);
+    pointer-events: none;
 }
 .raisedButton.disabled svg {
     fill: var(--font-color-dim);
