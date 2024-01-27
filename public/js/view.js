@@ -257,7 +257,6 @@ function buildView(eventSource, model) {
         },
         showPlayingNowDetails(playingNowDetails) {
             elVisualiserCanvas.style.display = 'none';
-            window.devicePixelRatio
             elPlayingNowCanvas.style.display = 'block';
             playingNowPrinter.start(playingNowDetails);
         },
