@@ -1,5 +1,6 @@
 function buildPlayingNowManager(model, elCanvas) {
-    const ctx = elCanvas.getContext('2d');
+    const ctx = elCanvas.getContext('2d'),
+        updatePeriodSeconds = 7;
     let updateTimerId, canvasWidth, canvasHeight;
 
     function fillTextMultiLine(text, initialY) {
@@ -31,6 +32,7 @@ function buildPlayingNowManager(model, elCanvas) {
 
         ctx.fillStyle = 'white';
         ctx.font = '40px Bellerose';
+        elCanvas.style.animation = `pulse ${updatePeriodSeconds}s infinite`;
     }
 
     let playingNowData, currentIndex = 0;
@@ -40,6 +42,9 @@ function buildPlayingNowManager(model, elCanvas) {
 
     let running = false;
     function renderCurrentInfo() {
+        if (!running) {
+            return;
+        }
         ctx.clearRect(0, 0, elCanvas.width, elCanvas.height);
         const channelId = playingNowData[currentIndex].channelId,
             channelDescription = describeChannel(channelId),
@@ -47,9 +52,7 @@ function buildPlayingNowManager(model, elCanvas) {
 
         fillTextMultiLine(`Now Playing on ${channelDescription}:\n${playingNowName}`, canvasHeight / 2);
 
-        if (running) {
-            requestAnimationFrame(renderCurrentInfo);
-        }
+        requestAnimationFrame(renderCurrentInfo);
     }
 
     return {
@@ -59,7 +62,7 @@ function buildPlayingNowManager(model, elCanvas) {
             if (!updateTimerId) {
                 running = true;
                 renderCurrentInfo();
-                updateTimerId = setInterval(updateCurrentIndex, 5000);
+                updateTimerId = setInterval(updateCurrentIndex, updatePeriodSeconds * 1000);
             }
         },
         update(details) {

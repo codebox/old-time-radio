@@ -246,10 +246,10 @@ window.onload = () => {
     })();
 
     const playingNowTimer = (() => {
-        let timerId;
+        let timerId, channelIds;
 
         function updatePlayingNowDetails() {
-            service.getPlayingNow().then(playingNow => {
+            service.getPlayingNow(channelIds).then(playingNow => {
                 if (playingNow) {
                     view.updatePlayingNowDetails(playingNow);
                 }
@@ -259,10 +259,14 @@ window.onload = () => {
         return {
             start(){
                 if (!timerId) {
-                    service.getPlayingNow().then(playingNow => {
-                        view.showPlayingNowDetails(playingNow);
-                        timerId = setTimeout(updatePlayingNowDetails, config.playingNow.apiCallIntervalMillis);
-                    });
+                    channelIds = shuffle(model.channels.map(c => c.id));
+                    if (channelIds.length > 1) {
+                        // Only show 'playing now' details if there are multiple channels
+                        service.getPlayingNow(channelIds).then(playingNow => {
+                            view.showPlayingNowDetails(playingNow);
+                            timerId = setTimeout(updatePlayingNowDetails, config.playingNow.apiCallIntervalMillis);
+                        });
+                    }
                 }
             },
             stop() {

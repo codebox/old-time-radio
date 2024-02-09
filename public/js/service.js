@@ -68,7 +68,9 @@ function buildService() {
                 });
         },
         getPlayingNow(channelsList) {
-            return fetch(`/api/playing-now${channelsList ? '?channels=' + channelsList : ''}`)
+            const hasChannels = channelsList && channelsList.length > 0,
+                channelsParameter = hasChannels ? channelsList.map(encodeURIComponent).join(',') : '';
+            return fetch(`/api/playing-now${channelsParameter ? '?channels=' + channelsParameter : ''}`)
                 .then(response => response.json());
         }
     };

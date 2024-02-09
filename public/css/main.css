@@ -195,6 +195,7 @@ noscript a, noscript a:visited {
     flex: 1 1 200px;
     min-height: 0;
     position: relative;
+    overflow: hidden;
 }
 #menu {
     font-family: Bellerose;
@@ -210,6 +211,7 @@ noscript a, noscript a:visited {
     border-radius: 5px;
     overflow-y: scroll;
     margin: 0 10px;
+    z-index: 10;
 }
 #menu.visible {
     height: 100%;
@@ -318,6 +320,7 @@ noscript a, noscript a:visited {
 }
 #channelSettings h3 {
     text-decoration: underline;
+    margin-top: 36px;
 }
 #channelSettings ul {
     display: flex;
@@ -490,8 +493,27 @@ canvas {
 }
 #playingNowCanvas {
     display: none;
+    /* This margin and padding, together with #visualiser{ overflow: hidden; } are needed to hide strange
+    grey glow around the edges of this element when filter: blur is applied. */
+    margin: -50px;
+    padding: 50px;
+    filter: blur(25px) brightness(0%);
 }
-/* Styles for after sleep timer is triggered*/
+@keyframes pulse {
+    0% {
+        filter: blur(25px) brightness(30%);
+    }
+    30% {
+        filter: blur(0) brightness(100%);
+    }
+    70% {
+        filter: blur(0) brightness(100%);
+    }
+    100% {
+        filter: blur(25px) brightness(30%);
+    }
+}
+/* Styles for after sleep timer is triggered */
 body.sleeping {
     background-color: #111;
 }
