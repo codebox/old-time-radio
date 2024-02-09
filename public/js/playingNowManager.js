@@ -48,9 +48,9 @@ function buildPlayingNowManager(model, elCanvas) {
         ctx.clearRect(0, 0, elCanvas.width, elCanvas.height);
         const channelId = playingNowData[currentIndex].channelId,
             channelDescription = describeChannel(channelId),
-            playingNowName = playingNowData[currentIndex].list[0].name;
+            playingNowName = playingNowData[currentIndex].list[0].showName;
 
-        fillTextMultiLine(`Now Playing on ${channelDescription}:\n${playingNowName}`, canvasHeight / 2);
+        fillTextMultiLine(`Now Playing on\n${channelDescription}:\n\n${playingNowName.toUpperCase()}`, canvasHeight / 3);
 
         requestAnimationFrame(renderCurrentInfo);
     }

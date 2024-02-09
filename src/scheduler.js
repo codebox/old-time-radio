@@ -69,7 +69,7 @@ const getFullScheduleForChannel = memoize(async channelNameOrCode => { //TODO li
             if (show.isCommercial && !isOnlyCommercials) {
                 commercials.push(...files);
             } else {
-                unbalancedShowsToFiles[show.name] = files;
+                unbalancedShowsToFiles[show.shortName] = files;
             }
         });
 
@@ -95,7 +95,7 @@ const getFullScheduleForChannel = memoize(async channelNameOrCode => { //TODO li
             })();
 
         while (true) {
-            let largestFractionToRemain = -1, listToReduce = [];
+            let largestFractionToRemain = -1, listToReduce = [], showNameToReduce;
 
             Object.entries(showsToFiles).forEach(entry => {
                 const [showName, files] = entry,
@@ -105,13 +105,14 @@ const getFullScheduleForChannel = memoize(async channelNameOrCode => { //TODO li
                 if (fractionToRemain > largestFractionToRemain) {
                     largestFractionToRemain = fractionToRemain;
                     listToReduce = files;
+                    showNameToReduce = showName;
                 }
             });
 
             if (listToReduce.length) {
-                schedule.push(listToReduce.shift());
+                schedule.push({...listToReduce.shift(), showName: showNameToReduce});
                 if (hasCommercials) {
-                    schedule.push(nextCommercial());
+                    schedule.push({...nextCommercial(), showName: "Commercial"});
                 }
 
             } else {
