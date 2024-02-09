@@ -3,13 +3,13 @@ function buildPlayingNowManager(model, elCanvas) {
         updatePeriodSeconds = 7;
     let updateTimerId, canvasWidth, canvasHeight;
 
-    function fillTextMultiLine(text, initialY) {
-        const lineHeight = ctx.measureText("M").width * 1.5, lines = text.split("\n");
-        let y = initialY;
-        lines.forEach(line => {
-            const lineWidth = Math.min(ctx.measureText(line).width, canvasWidth * 0.9);
-            ctx.fillText(line, (canvasWidth - lineWidth) / 2, y, lineWidth);
-            y += lineHeight;
+    function fillTextMultiLine(textAndOffsets, initialY) {
+        const lineHeight = ctx.measureText("M").width * 1.5;
+        textAndOffsets.forEach(textAndOffset => {
+            const {text, offset} = textAndOffset,
+                lineWidth = Math.min(ctx.measureText(text).width, canvasWidth * 0.9),
+                y = initialY + lineHeight * offset;
+            ctx.fillText(text, (canvasWidth - lineWidth) / 2, y, lineWidth);
         });
     }
 
@@ -30,7 +30,7 @@ function buildPlayingNowManager(model, elCanvas) {
         elCanvas.height = (canvasHeight = elCanvas.offsetHeight) * ratio;
         ctx.scale(ratio, ratio);
 
-        ctx.fillStyle = 'white';
+        ctx.fillStyle = '#ccc';
         ctx.font = '40px Bellerose';
         elCanvas.style.animation = `pulse ${updatePeriodSeconds}s infinite`;
     }
@@ -50,7 +50,11 @@ function buildPlayingNowManager(model, elCanvas) {
             channelDescription = describeChannel(channelId),
             playingNowName = playingNowData[currentIndex].list[0].showName;
 
-        fillTextMultiLine(`Now Playing on\n${channelDescription}:\n\n${playingNowName.toUpperCase()}`, canvasHeight / 3);
+        fillTextMultiLine([
+            {text: 'Now Playing on', offset: 0},
+            {text: channelDescription, offset: 1.2},
+            {text: playingNowName.toUpperCase(), offset: 3}
+            ], canvasHeight / 3);
 
         requestAnimationFrame(renderCurrentInfo);
     }

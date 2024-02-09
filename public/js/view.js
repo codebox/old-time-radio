@@ -256,7 +256,6 @@ function buildView(eventSource, model) {
             audioVisualiser.init(elVisualiserCanvas);
         },
         showPlayingNowDetails(playingNowDetails) {
-            elVisualiserCanvas.style.display = 'none';
             elPlayingNowCanvas.style.display = 'block';
             playingNowPrinter.start(playingNowDetails);
         },
@@ -265,7 +264,6 @@ function buildView(eventSource, model) {
         },
         hidePlayingNowDetails() {
             elPlayingNowCanvas.style.display = 'none';
-            elVisualiserCanvas.style.display = 'block';
             playingNowPrinter.stop();
         },
         showDownloadLink(mp3Url) {
