@@ -42,7 +42,7 @@ window.onload = () => {
             }
         }
         const today = new Date(),
-            snowIntensity = getSnowIntensityForToday(25, today.getMonth());
+            snowIntensity = getSnowIntensityForToday(today.getDate(), today.getMonth());
         if (snowIntensity) {
             view.startSnowMachine(snowIntensity);
         }
