@@ -28,14 +28,18 @@ function buildPlayingNowManager(model, elCanvas) {
                     y = nextY;
                 ctx.fillText(text, (canvasWidth - lineWidth) / 2, y, lineWidth);
                 nextY += lineHeight;
+
             } else if (imageCoords) {
                 const {x:sx, y:sy, w:sw, h:sh} = imageCoords,
                     dh = imageHeight,
                     dw = dh * sw / sh,
                     dx = (canvasWidth - dw) / 2,
                     dy = nextY - lineHeight + imagePadding;
-                ctx.drawImage(spriteImage, sx, sy, sw, sh, dx, dy, dw, dh);
-                ctx.rect(dx, dy, dw, dh);
+                try {
+                    ctx.drawImage(spriteImage, sx, sy, sw, sh, dx, dy, dw, dh);
+                } catch (e) {
+                    // ignore, the image hasn't loaded yet
+                }
                 nextY += (dh + imagePadding * 2);
             }
             nextY += spacing;
