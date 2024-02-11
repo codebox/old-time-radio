@@ -15,10 +15,6 @@ function buildSnowMachine(elCanvas) {
         lastWindSpeedChangeTs = Date.now(),
         lastAddedSnowflakeTs = Date.now();
 
-    function rndRange(min, max) {
-        return Math.random() * (max - min) + min;
-    }
-
     function buildSnowflake() {
         const distance = rndRange(0, 1);
         return {

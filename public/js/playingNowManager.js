@@ -1,15 +1,44 @@
 function buildPlayingNowManager(model, elCanvas) {
     const ctx = elCanvas.getContext('2d'),
-        updatePeriodSeconds = 7;
-    let updateTimerId, canvasWidth, canvasHeight;
+        updatePeriodSeconds = 7,
+        spriteCoords = [
+            {x: 3, y: 16, w: 540, h: 93},
+            {x: 633, y: 1, w: 549, h: 125},
+            {x: 2, y: 264, w: 540, h: 103},
+            {x: 635, y: 261, w: 548, h: 123},
+            {x: 2, y: 499, w: 539, h: 147},
+            {x: 615, y: 531, w: 583, h: 103},
+            {x: 1, y: 788, w: 540, h: 111},
+            {x: 630, y: 790, w: 549, h: 82},
+            {x: 0, y: 1043, w: 540, h: 87},
+            {x: 632, y: 1037, w: 553, h: 128}
+        ],
+        spriteImage = new Image();
 
-    function fillTextMultiLine(textAndOffsets, initialY) {
-        const lineHeight = ctx.measureText("M").width * 1.5;
+    spriteImage.src = 'swirl_sprites.jpg';
+
+    let updateTimerId, canvasWidth, canvasHeight, spacing, imagePadding, imageHeight, initialY, lineHeight;
+
+    function fillTextMultiLine(textAndOffsets) {
+        let nextY = initialY;
         textAndOffsets.forEach(textAndOffset => {
-            const {text, offset} = textAndOffset,
-                lineWidth = Math.min(ctx.measureText(text).width, canvasWidth * 0.9),
-                y = initialY + lineHeight * offset;
-            ctx.fillText(text, (canvasWidth - lineWidth) / 2, y, lineWidth);
+            const {text, imageCoords} = textAndOffset;
+            if (text) {
+                const lineWidth = Math.min(ctx.measureText(text).width, canvasWidth * 0.9),
+                    y = nextY;
+                ctx.fillText(text, (canvasWidth - lineWidth) / 2, y, lineWidth);
+                nextY += lineHeight;
+            } else if (imageCoords) {
+                const {x:sx, y:sy, w:sw, h:sh} = imageCoords,
+                    dh = imageHeight,
+                    dw = dh * sw / sh,
+                    dx = (canvasWidth - dw) / 2,
+                    dy = nextY - lineHeight + imagePadding;
+                ctx.drawImage(spriteImage, sx, sy, sw, sh, dx, dy, dw, dh);
+                ctx.rect(dx, dy, dw, dh);
+                nextY += (dh + imagePadding * 2);
+            }
+            nextY += spacing;
         });
     }
 
@@ -23,7 +52,6 @@ function buildPlayingNowManager(model, elCanvas) {
         }
     }
 
-
     function prepareCanvas() {
         const ratio = window.devicePixelRatio || 1;
         elCanvas.width = (canvasWidth = elCanvas.offsetWidth) * ratio;
@@ -31,12 +59,19 @@ function buildPlayingNowManager(model, elCanvas) {
         ctx.scale(ratio, ratio);
 
         ctx.fillStyle = '#ccc';
-        ctx.font = '40px Bellerose';
+        ctx.font = `${Math.round(canvasHeight / 12)}px Bellerose`;
         elCanvas.style.animation = `pulse ${updatePeriodSeconds}s infinite`;
+
+        lineHeight = ctx.measureText("M").width * 1.5;
+        spacing = canvasHeight / 48;
+        imagePadding = canvasHeight / 48;
+        imageHeight = canvasHeight / 12;
+        initialY = (canvasHeight - (2 * lineHeight + imageHeight + 3 * spacing + 3 * imagePadding)) / 2;
     }
 
-    let playingNowData, currentIndex = 0;
+    let playingNowData, currentIndex = 0, spriteIndex = 0;
     function updateCurrentIndex() {
+        spriteIndex = (spriteIndex + 1) % spriteCoords.length;
         currentIndex = (currentIndex + 1) % playingNowData.length;
     }
 
@@ -51,9 +86,10 @@ function buildPlayingNowManager(model, elCanvas) {
             playingNowName = playingNowData[currentIndex].list[0].showName;
 
         fillTextMultiLine([
-            {text: 'Now Playing on', offset: 0},
-            {text: channelDescription, offset: 1.2},
-            {text: playingNowName.toUpperCase(), offset: 3}
+            {text: 'Now Playing on'},
+            {text: channelDescription},
+            {imageCoords: spriteCoords[spriteIndex]},
+            {text: playingNowName.toUpperCase()}
             ], canvasHeight / 3);
 
         requestAnimationFrame(renderCurrentInfo);

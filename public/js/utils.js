@@ -5,3 +5,9 @@ function shuffle(arr) {
     }
     return arr;
 }
+function rndRange(min, max) {
+    return Math.random() * (max - min) + min;
+}
+function rndItem(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+}

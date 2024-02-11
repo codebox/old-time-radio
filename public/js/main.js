@@ -264,14 +264,14 @@ window.onload = () => {
                         // Only show 'playing now' details if there are multiple channels
                         service.getPlayingNow(channelIds).then(playingNow => {
                             view.showPlayingNowDetails(playingNow);
-                            timerId = setTimeout(updatePlayingNowDetails, config.playingNow.apiCallIntervalMillis);
+                            timerId = setInterval(updatePlayingNowDetails, config.playingNow.apiCallIntervalMillis);
                         });
                     }
                 }
             },
             stop() {
                 if (timerId) {
-                    clearTimeout(timerId);
+                    clearInterval(timerId);
                     timerId = null;
                     view.hidePlayingNowDetails();
                 }
