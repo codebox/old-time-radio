@@ -392,6 +392,11 @@ noscript a, noscript a:visited {
     border-right-width: 1px;
     border-style: solid;
     border-color: var(--divider-colour);
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+#buttons::-webkit-scrollbar {
+    display: none;
 }
 #buttonsContainer {
     display: flex;
