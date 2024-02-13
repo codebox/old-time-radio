@@ -13,36 +13,38 @@ function buildPlayingNowManager(model, elCanvas) {
             {x: 0, y: 1043, w: 540, h: 87},
             {x: 632, y: 1037, w: 553, h: 128}
         ],
+        minPrintableRegionHeight = 150,
+        maxPrintableRegionHeight = 300,
         spriteImage = new Image();
 
     spriteImage.src = 'swirl_sprites.jpg';
 
-    let updateTimerId, canvasWidth, canvasHeight, spacing, imagePadding, imageHeight, initialY, lineHeight;
+    let updateTimerId, canvasWidth, canvasHeight, spacing, imageHeight, initialY, lineHeight, canvasSizeOk;
 
     function fillTextMultiLine(textAndOffsets) {
         let nextY = initialY;
+
         textAndOffsets.forEach(textAndOffset => {
             const {text, imageCoords} = textAndOffset;
             if (text) {
                 const lineWidth = Math.min(ctx.measureText(text).width, canvasWidth * 0.9),
-                    y = nextY;
+                    y = nextY + lineHeight;
                 ctx.fillText(text, (canvasWidth - lineWidth) / 2, y, lineWidth);
-                nextY += lineHeight;
+                nextY += lineHeight + spacing;
 
             } else if (imageCoords) {
                 const {x:sx, y:sy, w:sw, h:sh} = imageCoords,
                     dh = imageHeight,
                     dw = dh * sw / sh,
                     dx = (canvasWidth - dw) / 2,
-                    dy = nextY - lineHeight + imagePadding;
+                    dy = nextY + spacing;
                 try {
                     ctx.drawImage(spriteImage, sx, sy, sw, sh, dx, dy, dw, dh);
                 } catch (e) {
                     // ignore, the image hasn't loaded yet
                 }
-                nextY += (dh + imagePadding * 2);
+                nextY += (dh + 2 * spacing);
             }
-            nextY += spacing;
         });
     }
 
@@ -62,15 +64,16 @@ function buildPlayingNowManager(model, elCanvas) {
         elCanvas.height = (canvasHeight = elCanvas.offsetHeight) * ratio;
         ctx.scale(ratio, ratio);
 
+        const printableRegionHeight = Math.min(maxPrintableRegionHeight, Math.max(minPrintableRegionHeight, canvasHeight / 2));
         ctx.fillStyle = '#ccc';
-        ctx.font = `${Math.round(canvasHeight / 12)}px Bellerose`;
+        ctx.font = `${Math.round(printableRegionHeight / 5)}px Bellerose`;
         elCanvas.style.animation = `pulse ${updatePeriodSeconds}s infinite`;
 
-        lineHeight = ctx.measureText("M").width * 1.5;
-        spacing = canvasHeight / 48;
-        imagePadding = canvasHeight / 48;
-        imageHeight = canvasHeight / 12;
-        initialY = (canvasHeight - (2 * lineHeight + imageHeight + 3 * spacing + 3 * imagePadding)) / 2;
+        lineHeight = printableRegionHeight / 5;
+        spacing = printableRegionHeight / 20;
+        imageHeight = printableRegionHeight / 5;
+        initialY = (canvasHeight - printableRegionHeight) / 2;
+        canvasSizeOk = initialY >= 0;
     }
 
     let playingNowData, currentIndex = 0, spriteIndex = 0;
@@ -94,7 +97,7 @@ function buildPlayingNowManager(model, elCanvas) {
             {text: channelDescription},
             {imageCoords: spriteCoords[spriteIndex]},
             {text: playingNowName.toUpperCase()}
-            ], canvasHeight / 3);
+        ]);
 
         requestAnimationFrame(renderCurrentInfo);
     }
@@ -103,7 +106,7 @@ function buildPlayingNowManager(model, elCanvas) {
         start(details) {
             this.update(details);
             prepareCanvas();
-            if (!updateTimerId) {
+            if (!updateTimerId && canvasSizeOk) {
                 running = true;
                 renderCurrentInfo();
                 updateTimerId = setInterval(updateCurrentIndex, updatePeriodSeconds * 1000);
