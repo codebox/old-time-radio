@@ -385,17 +385,18 @@ noscript a, noscript a:visited {
     display: flex;
     flex: 0 0 430px;
     flex-direction: row;
-    overflow-x: hidden;
+    overflow-x: scroll;
     scroll-snap-type: x mandatory;
     border-width: 0;
     border-left-width: 1px;
     border-right-width: 1px;
     border-style: solid;
     border-color: var(--divider-colour);
+    scrollbar-width: none;
 }
 
 #buttons:hover, #buttons:focus, #buttons:active {
-    overflow-x: scroll;
+    scrollbar-width: auto;
 }
 
 #buttonsContainer {
