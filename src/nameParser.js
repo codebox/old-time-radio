@@ -1134,13 +1134,14 @@ const parsers = [
         }
     },
     {
-        ids: ["OTRR_Sam_Spade_Singles"],
-        regex: /Sam ?Spade ?([-0-9]+) ?(.*).mp3/i,
+        ids: ["adventures-of-sam-spade-1948-07-04-106-the-rushlight-diamond-caper"],
+        regex: /Adventures of Sam Spade ([-0-9]+) \(([0-9]+)\) (.*).mp3/i,
         getName(match) {
             const date = match[1],
-                title = addSpacesBeforeCapitals(match[2].replace(/afrs/i,''));
+                number = match[2],
+                title = addSpacesBeforeCapitals(match[3].replace(/afrs/i,''));
 
-            return `Sam Spade - ${title} [${date}]`;
+            return `Sam Spade - ${number}: ${title} [${date}]`;
         }
     },
     {

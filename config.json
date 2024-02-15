@@ -553,7 +553,7 @@
     },
     {
       "name": "Sam Spade",
-      "playlists": ["OTRR_Sam_Spade_Singles"],
+      "playlists": ["adventures-of-sam-spade-1948-07-04-106-the-rushlight-diamond-caper"],
       "index": 101
     },
     {
@@ -719,7 +719,7 @@
     },
     {
       "name" : "action",
-      "shows": [0,10,11,14,15,16,18,39,40,42,59,79,80,83,86,90,91,92,104,115,131]
+      "shows": [0,10,11,14,15,16,18,39,40,42,59,79,80,83,86,90,91,92,104,115,131,132]
     },
     {
       "name" : "crime",
