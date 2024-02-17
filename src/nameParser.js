@@ -1489,6 +1489,62 @@ const parsers = [
                 title = match[3];
             return `Challenge of the Yukon ${num} - ${title} [${date}]`;
         }
+    },
+    {
+        ids: ["Michael_Shayne"],
+        regex: /Michael_Shayne_([-0-9]+)_(ep[0-9]+_)?(.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                title = match[3].replaceAll('_', ' ');
+            return `Michael Shayne - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["MrMoto"],
+        regex: /MM_([-0-9]+)_ep([0-9]+)-(.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                num = match[2],
+                title = match[3].replaceAll('_', ' ');
+            return `Mr Moto ${num} - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["ItPaysToBeIgnorant"],
+        regex: /Iptbi_([-0-9x]+)_(.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                title = match[2].replaceAll('_', ' ');
+            return `It Pays To Be Ignorant - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["OTRR_Jeff_Regan_Singles"],
+        regex: /Jeff Regan, Investigator ([-0-9]+) (.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                title = match[2];
+            return `Jeff Regan - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["you-bet-your-life-1952-02-20-160-secret-word-heart"],
+        regex: /You Bet Your Life ([-0-9x]+) \(([0-9x]+)\) (.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                num = match[2],
+                title = match[3];
+            return `You Bet Your Life ${num} - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["The_Scarlet_Pimpernel"],
+        regex: /ScarletPimpernel_([0-9]+)_(.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                title = match[2].replaceAll('_', ' ');
+            return `The Scarlet Pimpernel - ${title} [${date}]`;
+        }
     }
 ];
 
