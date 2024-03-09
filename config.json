@@ -740,6 +740,56 @@
       "name": "The Scarlet Pimpernel",
       "playlists": ["The_Scarlet_Pimpernel"],
       "index": 138
+    },
+    {
+      "name": "Dr. Christian",
+      "playlists": ["Dr.Christian_911"],
+      "index": 139
+    },
+    {
+      "name": "One Man's Family",
+      "playlists": ["OneMansFamily"],
+      "index": 140
+    },
+    {
+      "name": "The Goldbergs",
+      "playlists": ["Goldbergs"],
+      "index": 141
+    },
+    {
+      "name": "Ma Perkins",
+      "playlists": ["MaPerkins021950"],
+      "index": 142
+    },
+    {
+      "name": "Adventures of Frank Merriwell",
+      "playlists": ["AdventuresofFrankMerriwell"],
+      "index": 143
+    },
+    {
+      "name": "Adventures of Maisie",
+      "playlists": ["Maisie"],
+      "index": 144
+    },
+    {
+      "name": "Red Ryder",
+      "playlists": ["red-ryder"],
+      "index": 145
+    },
+    {
+      "name": "Horizons West",
+      "playlists": ["OtrHorizonsWest13Of13Eps"],
+      "index": 146
+    },
+    {
+      "name": "Mark Trail",
+      "playlists": ["mark_trail"],
+      "index": 147
+    },
+    {
+      "name": "Luke Slaughter",
+      "playlists": ["OTRR_Luke_Slaughter_Of_Tombstone_Singles"],
+      "index": 148
     }
   ],
   "channels" : [
@@ -773,7 +823,7 @@
     },
     {
       "name" : "drama",
-      "shows": [0,65,66,67,68,69,70,71,72,73,74,102]
+      "shows": [0,65,66,67,68,69,70,71,72,73,74,102,139,140,141,142,143,144]
     },
     {
       "name" : "sports",

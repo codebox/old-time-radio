@@ -1201,11 +1201,11 @@ const parsers = [
     },
     {
         ids: ["OTRR_Box_13_Singles"],
-        regex: /Box 13 4x-xx-xx \(([0-9]+)\) (.*).mp3/i,
+        regex: /Box 13 ([0-9x-]+) \(([0-9]+)\) (.*).mp3/i,
         getName(match) {
-            const num = match[1],
-                name = match[2];
-            return `Box 13 - ${num}. ${name}`;
+            const num = match[2],
+                name = match[3];
+            return `Box 13 Ep${num} - ${name}`;
         }
     },
     {
@@ -1544,6 +1544,103 @@ const parsers = [
             const date = match[1],
                 title = match[2].replaceAll('_', ' ');
             return `The Scarlet Pimpernel - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["Dr.Christian_911"],
+        regex: /Drc([-0-9]{10})([0-9]+)(.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                num = match[2],
+                title = addSpacesBeforeCapitals(match[3]);
+            return `Dr. Christian ${num} - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["OneMansFamily"],
+        regex: /1MsF([-0-9x]{10})(.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                title = addSpacesBeforeCapitals(match[2]);
+            return `One Man's Family - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["Goldbergs"],
+        regex: /gold.([0-9\.]{10})_Ep([0-9]+)_(.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                num = match[2],
+                title = match[3].replaceAll('_', ' ');
+            return `The Goldbergs ${num} - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["MaPerkins021950"],
+        regex: /MaP([0-9]+)([^0-9]*)([0-9-]{4,10})?.mp3/i,
+        getName(match) {
+            const title = addSpacesBeforeCapitals(match[2]),
+                num = match[3],
+                date = num || '1950';
+            return `Ma Perkins - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["AdventuresofFrankMerriwell"],
+        regex: /Fm_([0-9-]{8})_ep([0-9]+)-(.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                num = match[2],
+                title = match[3].replaceAll('_', ' ');
+            return `Adventures of Frank Merriwell ${num} - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["Maisie"],
+        regex: /([0-9]+)_([0-9]+)_(.*).mp3/i,
+        getName(match) {
+            const num = match[1],
+                date = match[2],
+                title = match[3].replaceAll('_', ' ');
+            return `Adventures of Maisie ${num} - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["red-ryder"],
+        regex: /red_ryder_([x0-9-]+)_?(.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                title = match[2].replaceAll('_', ' ');
+            return `Red Ryder - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["OtrHorizonsWest13Of13Eps"],
+        regex: /Hw([0-9]+)(.*).mp3/i,
+        getName(match) {
+            const num = match[1],
+                title = addSpacesBeforeCapitals(match[2]);
+            return `Red Ryder ${num} - ${title}`;
+        }
+    },
+    {
+        ids: ["mark_trail"],
+        regex: /mark_trail_([0-9-]+)_([0-9]+)_(.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                num = match[2],
+                title = match[3].replaceAll('_', ' ');
+            return `Mark Trail ${num} - ${title} [${date}]`;
+        }
+    },
+    {
+        ids: ["OTRR_Luke_Slaughter_Of_Tombstone_Singles"],
+        regex: /Luke_Slaughter_([0-9-]+)_ep([0-9]+)_(.*).mp3/i,
+        getName(match) {
+            const date = match[1],
+                num = match[2],
+                title = match[3].replaceAll('_', ' ');
+            return `Mark Trail ${num} - ${title} [${date}]`;
         }
     }
 ];
