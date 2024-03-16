@@ -1,5 +1,5 @@
 "use strict";
-const channelData = require('./channelData.js'),
+const {configHelper} = require('./configHelper.js'),
     channelCodes = require('./channelCodes'),
     scheduler = require('./scheduler.js'),
     playlistData = require('./playlistData.js'),
@@ -11,7 +11,7 @@ module.exports = {
         return playlistData.init();
     },
     async getShows() {
-        return (await channelData.getShows()).map(show => {
+        return (await configHelper.getShows()).map(show => {
             const channelCode = channelCodes.buildChannelCodeFromShowIndexes([show.index]);
             return {
                 channels: show.channels,
@@ -25,7 +25,7 @@ module.exports = {
         });
     },
     async getChannels() {
-        return await channelData.getChannels();
+        return await configHelper.getChannels();
     },
     async getScheduleForChannel(channelId, length = ONE_HOUR) {
         return await scheduler.getScheduleForChannel(channelId, length);
@@ -37,7 +37,7 @@ module.exports = {
         return channelCodes.buildChannelCodeFromShowIndexes(showIndexes);
     },
     async getPlayingNowAndNext(channels) {
-        const channelIds = channels.length ? channels : await channelData.getChannels();
+        const channelIds = channels.length ? channels : await configHelper.getChannels();
         return Promise.all(channelIds.map(channelId => scheduler.getPlayingNowAndNext(channelId)));
     }
 };

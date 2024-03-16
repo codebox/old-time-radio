@@ -1,17 +1,35 @@
 "use strict";
+
 const archiveOrg = require('./archiveOrg.js'),
-    nameParser = require('./nameParser.js'),
-    config = require('../config.json');
+    log = require('./log.js'),
+    {buildNameParser} = require('./nameParser.js'),
+    {configHelper} = require('./configHelper.js'),
+    LOG_ID = 'playlistData';
 
-const playlistsById = {};
+const playlistsById = {},
+    skippedShows = new Set();
 
+function isPartOfSkipListForShow(fileName, playlistId){
+    return (configHelper.getShowForPlaylistId(playlistId).skip || []).some(skipPattern => fileName.includes(skipPattern));
+}
 /*
     Shows have one or more 'playlists' associated with them (see config file) - each playlist comprises a list episodes
     including mp3 file urls.
 */
-function extractUsefulPlaylistData(playlistId, playlist) {
-    return playlist.files.filter(f => f.name.toLowerCase().endsWith('.mp3')).filter(f => f.length).map(fileMetadata => {
-        const readableName = nameParser.parseName(playlistId, fileMetadata);
+function extractUsefulPlaylistData(playlistId, playlist, nameParser) {
+    return playlist.files
+        .filter(f => f.name.toLowerCase().endsWith('.mp3'))
+        .filter(f => {
+            const isOnSkipList = isPartOfSkipListForShow(f.name, playlistId);
+            if (isOnSkipList) {
+                skippedShows.add(`${playlistId} ${f.name}`);
+                log.debug(`${LOG_ID}: skipping ${f.name} for ${playlistId}`);
+            }
+            return ! isOnSkipList;
+        })
+        .filter(f => f.length)
+        .map(fileMetadata => {
+        const readableName = nameParser.parse(playlistId, fileMetadata);
 
         let length;
         if (fileMetadata.length.match(/^[0-9]+:[0-9]+$/)) {
@@ -32,15 +50,19 @@ function extractUsefulPlaylistData(playlistId, playlist) {
 
 module.exports = {
     init() {
-        const allPlaylistIds = config.shows.flatMap(show => show.playlists),
-            allPlaylistDataPromises = allPlaylistIds.map(playlistId => archiveOrg.getPlaylist(playlistId));
+        const allPlaylistIds = configHelper.getAllPlaylistIds(),
+            allPlaylistDataPromises = allPlaylistIds.map(playlistId => archiveOrg.getPlaylist(playlistId)),
+            nameParser = buildNameParser();
 
         return Promise.all(allPlaylistDataPromises).then(allPlaylistData => {
             allPlaylistData.filter(playlistData => !playlistData.is_dark).forEach(playlistData => {
                 const id = playlistData.metadata.identifier,
-                    usefulPlaylistData = extractUsefulPlaylistData(id, playlistData);
+                    usefulPlaylistData = extractUsefulPlaylistData(id, playlistData, nameParser);
                 playlistsById[id] = usefulPlaylistData;
             });
+            nameParser.logStats();
+        }).then(() => {
+            log.info(`${LOG_ID}: Skipped ${skippedShows.size} files`);
         });
     },
     // [{archivalUrl: "http://...", length: 1234.56, name: "X Minus One - Episode 079", url: "http://...", commercial: false}, ...]

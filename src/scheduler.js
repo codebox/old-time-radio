@@ -1,5 +1,5 @@
 "use strict";
-const channelData = require('./channelData.js'),
+const {configHelper} = require('./configHelper.js'),
     playlistData = require('./playlistData.js'),
     channelCodes = require('./channelCodes'),
     clock = require('./clock.js'),
@@ -11,7 +11,7 @@ const channelData = require('./channelData.js'),
 
 const getFullScheduleForChannel = memoize(async channelNameOrCode => { //TODO limit how many we store in memory
     async function getShowListForChannel(channelNameOrCode) {
-        const allShows = await channelData.getShows(),
+        const allShows = await configHelper.getShows(),
             showsForPredefinedChannel = allShows.filter(show => show.channels.includes(channelNameOrCode));
 
         if (showsForPredefinedChannel.length) {

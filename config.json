@@ -126,7 +126,8 @@
     {
       "name": "I Love a Mystery",
       "playlists": ["otr_iloveamystery"],
-      "index": 18
+      "index": 18,
+      "skip": ["interview"]
     },
     {
       "name": "Suspense",
@@ -173,7 +174,8 @@
     {
       "name": "Have Gun Will Travel",
       "playlists": ["HaveGunWillTravel_OldTimeRadio"],
-      "index": 27
+      "index": 27,
+      "skip": ["64kb"]
     },
     {
       "name": "Tales of the Texas Rangers",
@@ -184,7 +186,8 @@
     {
       "name": "The Six Shooter",
       "playlists": ["OTRR_The_Six_Shooter_Singles"],
-      "index": 29
+      "index": 29,
+        "skip": ["OTRR Introduction", "The Six Shooter Intro", "Jimmy Stewart Biography", "Hollywood Star Playhouse"]
     },
     {
       "name": "Fort Laramie",
@@ -217,7 +220,8 @@
       "name": "The Phil Harris - Alice Faye Show",
       "shortName": "Phil Harris - Alice Faye",
       "playlists": ["OTRR_Harris_Faye_Singles"],
-      "index": 35
+      "index": 35,
+        "skip": ["Audio Bio", "audio synopsis"]
     },
     {
       "name": "Fibber McGee and Molly",
@@ -286,7 +290,8 @@
     {
       "name": "The Black Museum",
       "playlists": ["OTRR_Black_Museum_Singles"],
-      "index": 48
+      "index": 48,
+        "skip": ["Intro", "Biography"]
     },
     {
       "name": "My Favorite Husband",
@@ -332,7 +337,7 @@
     {
       "name": "CBS Radio Mystery Theater",
       "shortName": "CBS Radio Mystery Theater",
-      "playlists": ["theoldonesarehardtokill_20191104_1301", "CbsRadioMysteryTheater1975Page1", "CbsRadioMysteryTheater1976Page1", "CbsRadioMysteryTheater1976Page2", "CbsRadioMysteryTheater1976Page3", "CbsRadioMysteryTheater1976Page4", "CbsRadioMysteryTheater1976Page5"],
+      "playlists": ["CbsRadioMysteryTheater1975Page1", "CbsRadioMysteryTheater1976Page1", "CbsRadioMysteryTheater1976Page2", "CbsRadioMysteryTheater1976Page3", "CbsRadioMysteryTheater1976Page4", "CbsRadioMysteryTheater1976Page5"],
       "index": 57
     },
     {
@@ -349,7 +354,8 @@
     {
       "name": "Let George Do It",
       "playlists": ["OTRR_Let_George_Do_It_Singles"],
-      "index": 60
+      "index": 60,
+        "skip": ["Audition"]
     },
     {
       "name": "Father Knows Best",
@@ -389,7 +395,8 @@
     {
       "name": "On Stage",
       "playlists": ["OTRR_On_Stage_Singles_201901"],
-      "index": 68
+      "index": 68,
+        "skip": ["audio brief", "Bio"]
     },
     {
       "name": "Screen Guild Theater",
@@ -459,7 +466,8 @@
     {
       "name": "Whitehall 1212",
       "playlists": ["OTRR_Whitehall_1212_Singles"],
-      "index": 82
+      "index": 82,
+        "skip": ["Series Synopsis", "star bio", "Audition"]
     },
     {
       "name": "The Adventures of Frank Race",
@@ -499,7 +507,8 @@
     {
       "name": "The Man Called X",
       "playlists": ["OTRR_Man_Called_X_Singles"],
-      "index": 90
+      "index": 90,
+        "skip": ["Series Synopsis", "Herbert Marshall", "Leon Blasco"]
     },
     {
       "name": "Counter-Spy",
@@ -544,7 +553,8 @@
     {
       "name": "Wild Bill Hickok",
       "playlists": ["OTRR_Wild_Bill_Hickock_Singles"],
-      "index": 99
+      "index": 99,
+        "skip": ["Series Synopsis", "Bio"]
     },
     {
       "name": "Candy Matson",
@@ -569,7 +579,8 @@
     {
       "name": "Black Flame of the Amazon",
       "playlists": ["OTRR_Black_Flame_Singles"],
-      "index": 104
+      "index": 104,
+        "skip": ["Introduction"]
     },
     {
       "name": "The Shadow",
@@ -589,12 +600,14 @@
     {
       "name": "Mr. Keen, Tracer of Lost Persons",
       "playlists": ["OTRR_Mr_Keen_Tracer_Of_Lost_Persons_Singles"],
-      "index": 108
+      "index": 108,
+      "skip": ["Introduction", "Producers", "Biography"]
     },
     {
       "name": "Rocky Jordan",
       "playlists": ["RockyJordan"],
-      "index": 109
+      "index": 109,
+      "skip": ["Audition"]
     },
     {
       "name": "Nick Carter, Master Detective",

@@ -3,8 +3,11 @@
 const config = require('../config.json'),
     log = require('./log.js'),
     service = require('./service.js'),
+    { checkConfig } = require('./configChecker.js'),
     express = require('express'),
     app = express();
+
+checkConfig(config);
 
 const port = config.web.port;
 

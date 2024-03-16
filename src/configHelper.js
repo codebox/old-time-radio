@@ -1,12 +1,16 @@
-"use strict";
 const config = require('../config.json'),
     memoize = require('./cache.js').memoize;
 
-function getChannelNamesForShowIndex(showIndex) {
-    return config.channels.filter(channel => channel.shows.includes(showIndex)).map(channel => channel.name);
-}
-
-module.exports = {
+const configHelper = {
+    getShowForPlaylistId(playlistId) {
+        return config.shows.find(show => show.playlists.includes(playlistId));
+    },
+    getAllPlaylistIds() {
+        return config.shows.flatMap(show => show.playlists)
+    },
+    getChannelNamesForShowIndex(showIndex) {
+        return config.channels.filter(channel => channel.shows.includes(showIndex)).map(channel => channel.name);
+    },
     /*
         [
             {
@@ -23,7 +27,7 @@ module.exports = {
     getShows: memoize(() => {
         return config.shows.map(show => {
             return {
-                channels: getChannelNamesForShowIndex(show.index),
+                channels: configHelper.getChannelNamesForShowIndex(show.index),
                 index: show.index,
                 isCommercial: !! show.isCommercial,
                 name: show.name,
@@ -40,3 +44,5 @@ module.exports = {
         return config.channels.map(channel => channel.name);
     }, "channels")
 };
+
+module.exports = {configHelper};

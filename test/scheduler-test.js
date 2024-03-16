@@ -4,7 +4,7 @@ let shows, playlists, showIndexes, timeNow;
 
 const proxyquire = require('proxyquire'),
     scheduler = proxyquire('../src/scheduler.js', {
-        './channelData.js': {
+        './configHelper.js': {
             getShows(){
                 return shows;
             }
