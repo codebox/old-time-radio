@@ -790,6 +790,87 @@
       "name": "Luke Slaughter",
       "playlists": ["OTRR_Luke_Slaughter_Of_Tombstone_Singles"],
       "index": 148
+    },
+    {
+      "name": "Information, Please",
+      "playlists": ["Information-Please"],
+      "index": 149
+    },
+    {
+      "name": "My Friend Irma",
+      "playlists": ["my-friend-irma"],
+      "index": 150
+    },
+    {
+      "name": "Eb and Zeb",
+      "playlists": ["EbZeb"],
+      "index": 151
+    },
+    {
+      "name": "The Milton Berle Show",
+      "playlists": ["Milton_Berle_47-48"],
+      "index": 152
+    },
+    {
+      "name": "The Goon Show",
+      "playlists": ["TheGoonShow1950to1960"],
+      "index": 153
+    },
+    {
+      "name": "The Spike Jones Show",
+      "playlists": ["SpikeJones"],
+      "index": 154
+    },
+    {
+      "name": "Easy Aces",
+      "playlists": ["otr_easyaces"],
+      "index": 155
+    },
+    {
+      "name": "The Red Skelton Show",
+      "playlists": ["red-skelton-show_202008"],
+      "index": 156
+    },
+    {
+      "name": "Ghost Corps",
+      "playlists": ["otr_ghostcorps"],
+      "index": 157
+    },
+    {
+      "name": "Dick Barton, Special Agent",
+      "playlists": ["otr_dickbartonspecialagent"],
+      "index": 158
+    },
+    {
+      "name": "21st Precinct",
+      "playlists": ["OTRR_21st_Precinct_Singles"],
+      "index": 159
+    },
+    {
+      "name": "Pete Kelly's Blues",
+      "playlists": ["PeteKellysBlues"],
+      "index": 160,
+      "skip": ["64kb"]
+    },
+    {
+      "name": "The Line-Up",
+      "playlists": ["OTRR_Line_Up_Singles"],
+      "index": 161
+    },
+    {
+      "name": "Diary of Fate",
+      "playlists": ["DiaryOfFate"],
+      "index": 162
+    },
+    {
+      "name": "Ripley's Believe It or Not",
+      "playlists": ["believe-it-or-not"],
+      "index": 163
+    },
+    {
+      "name": "Bill Stern Sports Reel",
+      "playlists": ["Bill_Sterns_Sports_Newsreel"],
+      "index": 164
     }
   ],
   "channels" : [
@@ -803,23 +884,23 @@
     },
     {
       "name" : "crime",
-      "shows": [0,12,13,22,23,24,37,41,47,48,52,58,60,62,63,75,82,89,94,100,101,107,108,110,112,124,127,130,133,136]
+      "shows": [0,12,13,22,23,24,37,41,47,48,52,58,60,62,63,75,82,89,94,100,101,107,108,110,112,124,127,130,133,136,159,160,161]
     },
     {
       "name" : "horror",
-      "shows": [0,17,43,44,53,54,78,81,98,128,129]
+      "shows": [0,17,43,44,53,54,78,81,98,128,129,162]
     },
     {
       "name" : "suspense",
-      "shows": [0,19,20,21,38,45,51,56,57,85,105,106,109,113,134]
+      "shows": [0,19,20,21,38,45,51,56,57,85,105,106,109,113,134,157,158]
     },
     {
       "name" : "western",
-      "shows": [0,25,26,27,28,29,30,55,93,97,99]
+      "shows": [0,25,26,27,28,29,30,55,93,97,99,145,146,147,148]
     },
     {
       "name" : "comedy",
-      "shows": [0,31,32,33,34,35,36,46,49,61,64,76,84,87,88,95,96,111,114,116,117,118,119,120,121,123,125,126,135,137]
+      "shows": [0,31,32,33,34,35,36,46,49,61,64,76,84,87,88,95,96,111,114,116,117,118,119,120,121,123,125,126,135,137,149,150,151,152,153,154,155,156]
     },
     {
       "name" : "drama",
@@ -827,7 +908,7 @@
     },
     {
       "name" : "sports",
-      "shows": [103]
+      "shows": [0,103,164]
     }
   ]
 }
