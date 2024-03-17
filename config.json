@@ -563,8 +563,9 @@
     },
     {
       "name": "Sam Spade",
-      "playlists": ["adventures-of-sam-spade-1948-07-04-106-the-rushlight-diamond-caper"],
-      "index": 101
+      "playlists": ["OTRR_Sam_Spade_Singles"],
+      "index": 101,
+        "skip": ["Intro", "Biography", "SamShovel", "Bbc", "Spoof", "Suspense", "TheMalteseFalcon", "BurnsAllen"]
     },
     {
       "name": "Radio Reader's Digest",

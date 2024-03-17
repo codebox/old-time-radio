@@ -760,10 +760,10 @@ const nameConfig = [
         }
     },
     {
-        playlistIds: ["adventures-of-sam-spade-1948-07-04-106-the-rushlight-diamond-caper"],
-        regex: /Adventures of Sam Spade (?<date>[-0-9]+) \((?<num>[0-9]+)\) (?<title>.*)/,
+        playlistIds: ["OTRR_Sam_Spade_Singles"],
+        regex: /Sam ?Spade ?(?<date>[0-9-]+) ?(?<title>.*)/,
         transforms: {
-            title: [addSpacesBeforeCapitals, remove(/^afrs/ig)],
+            title: [addSpacesBeforeCapitals],
         }
     },
     {
