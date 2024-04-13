@@ -55,15 +55,31 @@ function buildAudioPlayer(maxVolume, eventSource) {
         eventSource.trigger(EVENT_AUDIO_PLAY_STARTED);
     });
     audio.addEventListener('ended', () => eventSource.trigger(EVENT_AUDIO_TRACK_ENDED, event));
-    audio.addEventListener('error', () => eventSource.trigger(EVENT_AUDIO_ERROR, event));
+
+    function loadUrl(url) {
+        console.log('Loading url: ' + url);
+        audio.src = url;
+        audio.load();
+    }
+
+    let currentUrls;
+    audio.addEventListener('error', event => {
+        console.error(`Error loading audio from ${audio.src}: ${event}`);
+        if (currentUrls.length > 0) {
+            loadUrl(currentUrls.shift());
+        } else {
+            console.log('No more urls to try');
+            eventSource.trigger(EVENT_AUDIO_ERROR, event)
+        }
+    });
 
     return {
         on: eventSource.on,
-        load(url) {
+        load(urls) {
             initAudio();
             loadingTrack = true;
-            audio.src = url;
-            audio.load();
+            currentUrls = Array.isArray(urls) ? urls : [urls];
+            loadUrl(currentUrls.shift());
         },
         play(offset=0) {
             loadingTrack = false;

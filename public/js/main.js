@@ -52,7 +52,7 @@ window.onload = () => {
         function playNextFromPlaylist() {
             const nextItem = model.playlist.shift();
             model.track = nextItem;
-            audioPlayer.load(nextItem.archivalUrl);
+            audioPlayer.load(nextItem.urls);
             stateMachine.loadingTrack();
         }
 

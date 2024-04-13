@@ -39,10 +39,21 @@ function extractUsefulPlaylistData(playlistId, playlist, nameParser) {
             length = Number(fileMetadata.length);
         }
 
+        /* Sometimes archive.org returns an mp3 without adding the 'Access-Control-Allow-Origin: *' header in to the response
+        * so we provide a list of possible urls to the client and it will try them one at a time until one of them works */
+        const encodedFileName = encodeURIComponent(fileMetadata.name),
+            archivalUrl = `https://archive.org/download/${playlistId}/${encodedFileName}`,
+            urls = [
+                archivalUrl,
+                `https://${playlist.server}${playlist.dir}/${encodedFileName}`,
+                `https://${playlist.d1}${playlist.dir}/${encodedFileName}`,
+                `https://${playlist.d2}${playlist.dir}/${encodedFileName}`,
+            ];
+
         return {
-            url: `https://${playlist.server}${playlist.dir}/${encodeURIComponent(fileMetadata.name)}`,
-            archivalUrl: `https://archive.org/download/${playlistId}/${encodeURIComponent(fileMetadata.name)}`,
             name: readableName,
+            urls,
+            archivalUrl,
             length
         };
     });
