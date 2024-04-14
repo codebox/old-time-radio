@@ -1211,6 +1211,13 @@ const nameConfig = [
             title: replaceUnderscores
         }
     },
+    {
+        playlistIds: ["OTRR_World_Adventurer_Club_Singles"],
+        regex: /World_Adventurers_Club_32-xx-xx_ep(?<num>[0-9]+)_(?<title>.*)/,
+        transforms: {
+            title: replaceUnderscores
+        }
+    },
 
 ].map(o => {
     if (o.regex) {
