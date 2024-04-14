@@ -71,7 +71,8 @@ const config = {
                 'Volume too loud? You can turn it down, click the menu ↗',
                 'Please support The Internet Archive by donating at http://archive.org/donate',
                 'Build your own channel with your favourite shows, click the menu ↗',
-                'To change the visualiser or turn it off, click the menu ↗'
+                'To change the visualiser or turn it off, click the menu ↗',
+                'Are these messages annoying? You can turn them off via the menu! ↗'
             ],
             "normal": [
                 'To check the channel schedules, click the menu ↗'

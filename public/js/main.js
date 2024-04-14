@@ -161,7 +161,7 @@ window.onload = () => {
             view.hideDownloadLink();
             visualiser.stop(config.visualiser.fadeOutIntervalMillis);
             startSnowMachineIfAppropriate();
-            playingNowTimer.start();
+            playingNowTimer.startIfApplicable();
 
             messageManager.showSelectChannel();
 
@@ -209,6 +209,12 @@ window.onload = () => {
         model.save();
     }
 
+    function applyModelPrefs() {
+        view.updatePrefInfoMessages(model.showInfoMessages);
+        view.updatePrefNowPlayingMessages(model.showNowPlayingMessages);
+        model.save();
+    }
+
     function applyModelVisualiser() {
         view.updateVisualiserId(model.visualiserId);
         visualiser.setVisualiserId(model.visualiserId);
@@ -225,12 +231,32 @@ window.onload = () => {
         applyModelVolume();
     });
 
+    view.on(EVENT_PREF_INFO_MESSAGES_CLICK).then(() => {
+        if (model.showInfoMessages = !model.showInfoMessages) {
+            tempMessageTimer.startIfApplicable();
+        } else {
+            tempMessageTimer.stop();
+        }
+
+        applyModelPrefs();
+    });
+
+    view.on(EVENT_PREF_NOW_PLAYING_CLICK).then(() => {
+        if (model.showNowPlayingMessages = !model.showNowPlayingMessages) {
+            playingNowTimer.startIfApplicable();
+        } else {
+            playingNowTimer.stop();
+        }
+
+        applyModelPrefs();
+    });
+
     const tempMessageTimer = (() => {
         let interval;
 
         return {
-            start(){
-                if (!interval) {
+            startIfApplicable(){
+                if (!interval && model.showInfoMessages) {
                     interval = setInterval(() => {
                         messageManager.showTempMessage();
                     }, config.messages.tempMessageIntervalMillis);
@@ -257,8 +283,8 @@ window.onload = () => {
         }
 
         return {
-            start(){
-                if (!timerId) {
+            startIfApplicable(){
+                if (!timerId && model.showNowPlayingMessages) {
                     channelIds = shuffle(model.channels.map(c => c.id));
                     if (channelIds.length > 1) {
                         // Only show 'playing now' details if there are multiple channels
@@ -294,7 +320,7 @@ window.onload = () => {
     view.on(EVENT_WAKE_UP).ifState(STATE_GOING_TO_SLEEP).then(() => {
         view.wakeUp();
         audioPlayer.setVolume(model.volume);
-        tempMessageTimer.start();
+        tempMessageTimer.startIfApplicable();
 
         messageManager.showNowPlaying(model.track.name);
         stateMachine.playing();
@@ -304,8 +330,8 @@ window.onload = () => {
         view.wakeUp();
         startSnowMachineIfAppropriate();
         audioPlayer.setVolume(model.volume);
-        tempMessageTimer.start();
-        playingNowTimer.start();
+        tempMessageTimer.startIfApplicable();
+        playingNowTimer.startIfApplicable();
 
         messageManager.showSelectChannel();
         stateMachine.idle();
@@ -463,6 +489,7 @@ window.onload = () => {
         view.setVisualiser(visualiser);
         view.setVisualiserIds(visualiser.getVisualiserIds());
         applyModelVisualiser();
+        applyModelPrefs();
 
         startSnowMachineIfAppropriate();
 
@@ -494,10 +521,10 @@ window.onload = () => {
             .then(channels => {
                 model.channels = channels;
                 view.setChannels(model.channels);
-                tempMessageTimer.start();
+                tempMessageTimer.startIfApplicable();
                 messageManager.init();
                 messageManager.showSelectChannel();
-                playingNowTimer.start();
+                playingNowTimer.startIfApplicable();
 
                 stateMachine.idle();
             })

@@ -15,6 +15,8 @@ function buildView(eventSource, model) {
         elMenuBox = document.getElementById('menu'),
         elVolumeUp = document.getElementById('volumeUp'),
         elVolumeDown = document.getElementById('volumeDown'),
+        elPrefInfoMessages = document.getElementById('prefInfoMessages'),
+        elPrefNowPlayingMessages = document.getElementById('prefNowPlayingMessages'),
         elMessage = document.getElementById('message'),
         elDownloadLink = document.getElementById('downloadLink'),
         elButtonContainer = document.getElementById('buttons'),
@@ -132,6 +134,14 @@ function buildView(eventSource, model) {
     elVolumeDown.onclick = () => {
         eventSource.trigger(EVENT_VOLUME_DOWN_CLICK);
     };
+
+    elPrefInfoMessages.onclick = () => {
+        eventSource.trigger(EVENT_PREF_INFO_MESSAGES_CLICK);
+    }
+
+    elPrefNowPlayingMessages.onclick = () => {
+        eventSource.trigger(EVENT_PREF_NOW_PLAYING_CLICK);
+    }
 
     sleepTimerView.init();
 
@@ -290,6 +300,14 @@ function buildView(eventSource, model) {
                 el.ariaChecked = selectedVisualiserId === visualiserId;
                 el.setAttribute('aria-controls', 'canvas');
             });
+        },
+        updatePrefInfoMessages(showInfoMessages) {
+            elPrefInfoMessages.classList.toggle(CLASS_SELECTED, showInfoMessages);
+            elPrefInfoMessages.innerHTML = showInfoMessages ? 'On' : 'Off';
+        },
+        updatePrefNowPlayingMessages(showNowPlayingMessages) {
+            elPrefNowPlayingMessages.classList.toggle(CLASS_SELECTED, showNowPlayingMessages);
+            elPrefNowPlayingMessages.innerHTML = showNowPlayingMessages ? 'On' : 'Off';
         },
         addShowTitleToPage(title) {
             elTitle.innerHTML += (' - ' + title);

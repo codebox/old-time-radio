@@ -7,7 +7,9 @@ function buildModel() {
         MODE_USER_CHANNELS = 'userChannels',
         STORED_PROPS = {
             'volume': MAX_VOLUME,
-            'visualiserId': 'Oscillograph'
+            'visualiserId': 'Oscillograph',
+            'showInfoMessages': true,
+            'showNowPlayingMessages': true,
         };
 
     let volume = 10,
@@ -22,8 +24,21 @@ function buildModel() {
     const model = {
         load() {
             Object.keys(STORED_PROPS).forEach(propName => {
-                const propDefaultValue = STORED_PROPS[propName];
-                model[propName] = Number(localStorage.getItem(propName)) || localStorage.getItem(propName) || propDefaultValue;
+                const valueAsString = localStorage.getItem(propName);
+                let typedValue;
+
+                if (valueAsString === null) {
+                    typedValue = STORED_PROPS[propName];
+                } else if (valueAsString === 'true') {
+                    typedValue = true;
+                } else if (valueAsString === 'false') {
+                    typedValue = false;
+                } else if (/^\d+$/.test(valueAsString)) {
+                    typedValue = Number(valueAsString);
+                } else {
+                    typedValue = valueAsString;
+                }
+                model[propName] = typedValue;
             });
         },
         save() {

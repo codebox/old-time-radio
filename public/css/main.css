@@ -509,6 +509,19 @@ canvas {
     filter: blur(25px) brightness(0%);
     z-index: 5;
 }
+#preferenceToggles {
+    display: inline-grid;;
+    grid-template-columns: 70% 30%;
+    margin: 0 auto;
+    justify-items: center;
+    align-items: center;
+    grid-gap: 0 10px;
+}
+#preferenceToggles label {
+    font-size: 18px;
+    margin-bottom: 10px;
+    white-space: nowrap;
+}
 @keyframes pulse {
     0% {
         filter: blur(25px) brightness(30%);
