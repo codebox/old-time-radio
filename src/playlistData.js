@@ -66,11 +66,14 @@ module.exports = {
             nameParser = buildNameParser();
 
         return Promise.all(allPlaylistDataPromises).then(allPlaylistData => {
-            allPlaylistData.filter(playlistData => !playlistData.is_dark).forEach(playlistData => {
-                const id = playlistData.metadata.identifier,
-                    usefulPlaylistData = extractUsefulPlaylistData(id, playlistData, nameParser);
-                playlistsById[id] = usefulPlaylistData;
-            });
+            allPlaylistData
+                .filter(playlistData => !playlistData.is_dark)
+                .filter(playlistData => playlistData.metadata)
+                .forEach(playlistData => {
+                    const id = playlistData.metadata.identifier,
+                        usefulPlaylistData = extractUsefulPlaylistData(id, playlistData, nameParser);
+                    playlistsById[id] = usefulPlaylistData;
+                });
             nameParser.logStats();
         }).then(() => {
             log.info(`${LOG_ID}: Skipped ${skippedShows.size} files`);
