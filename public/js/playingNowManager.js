@@ -17,7 +17,7 @@ function buildPlayingNowManager(model, elCanvas) {
         maxPrintableRegionHeight = 200,
         spriteImage = new Image();
 
-    spriteImage.src = 'swirl_sprites.jpg';
+    spriteImage.src = 'swirl_sprites.png';
 
     let updateTimerId, canvasWidth, canvasHeight, spacing, imageHeight, initialY, lineHeight, canvasSizeOk;
 
