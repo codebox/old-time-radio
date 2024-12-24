@@ -925,6 +925,11 @@
       "name": "Bulldog Drummond",
       "playlists": ["bulldog-drummond"],
       "index": 172
+    },
+    {
+      "name": "The Adventures of the Thin Man",
+      "playlists": ["thinmanotr_201412"],
+      "index": 173
     }
   ],
   "channels" : [

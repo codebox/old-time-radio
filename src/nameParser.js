@@ -1255,6 +1255,10 @@ const nameConfig = [
         playlistIds: ["bulldog-drummond"],
         regex: /(?<date>[0-9]+)? (?<title>.*)/
     },
+    {
+        playlistIds: ["thinmanotr_201412"],
+        regex: /Thin ?Man ?(?<date>[-0-9x]+) ?(?<title>.*)/
+    },
 
 ].map(o => {
     if (o.regex) {
