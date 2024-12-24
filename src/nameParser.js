@@ -1218,6 +1218,43 @@ const nameConfig = [
             title: replaceUnderscores
         }
     },
+    {
+        playlistIds: ["JackCarsonShow"],
+        regex: /Jack_Carson_Show_(?<date>[-0-9]+)_(?<num>[0-9]+)_(?<title>.*)/,
+        transforms: {
+            title: replaceUnderscores
+        }
+    },
+    {
+        playlistIds: ["sealtest-variety-theater-1948-10-21-6-happy-ending"],
+        regex: /Sealtest Variety Theater (?<date>[-0-9]+) \((?<num>[0-9]+)\) (?<title>.*)/
+    },
+    {
+        playlistIds: ["OTRR_Cavalcade_of_America_Singles"],
+        regex: /CALV_(?<date>[0-9]+)_(?<num>[0-9]+)_(?<title>.*)/,
+        transforms: {
+            title: replaceUnderscores
+        }
+    },
+    {
+        playlistIds: ["OTRR_Railroad_Hour_Singles"],
+        regex: /Railroad Hour (?<date>[-0-9]+) \((?<num>[0-9]+)\) (?<title>.*)/
+    },
+    {
+        playlistIds: ["columbia-workshop-1938-07-23-100-murder-in-the-cathedral"],
+        regex: /Columbia Workshop (?<date>[-0-9]+) \((?<num>[0-9x]+)\) (?<title>.*)/
+    },
+    {
+        playlistIds: ["OTRR_Sound_of_War_Singles"],
+        regex: /SoundOfWarXx-xx-xx(?<num>[0-9x]+)(?<title>.*)/,
+        transforms: {
+            title: addSpacesBeforeCapitals
+        }
+    },
+    {
+        playlistIds: ["bulldog-drummond"],
+        regex: /(?<date>[0-9]+)? (?<title>.*)/
+    },
 
 ].map(o => {
     if (o.regex) {
