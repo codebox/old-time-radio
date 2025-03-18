@@ -4,6 +4,7 @@ const archiveOrg = require('./archiveOrg.js'),
     log = require('./log.js'),
     {buildNameParser} = require('./nameParser.js'),
     {configHelper} = require('./configHelper.js'),
+    config = require('../config.json'),
     LOG_ID = 'playlistData';
 
 const playlistsById = {},
@@ -62,18 +63,27 @@ function extractUsefulPlaylistData(playlistId, playlist, nameParser) {
 module.exports = {
     init() {
         const allPlaylistIds = configHelper.getAllPlaylistIds(),
-            allPlaylistDataPromises = allPlaylistIds.map(playlistId => archiveOrg.getPlaylist(playlistId)),
+            allPlaylistDataPromises = allPlaylistIds.map((playlistId, index) => {
+                const delayMillis = index * config.playlistFetchDelayMillis;
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        try {
+                            resolve(archiveOrg.getPlaylist(playlistId));
+                        } catch (error) {
+                            reject(error);
+                        }
+                    }, delayMillis);
+                });
+
+            }),
             nameParser = buildNameParser();
 
         return Promise.all(allPlaylistDataPromises).then(allPlaylistData => {
-            allPlaylistData
-                .filter(playlistData => !playlistData.is_dark)
-                .filter(playlistData => playlistData.metadata)
-                .forEach(playlistData => {
-                    const id = playlistData.metadata.identifier,
-                        usefulPlaylistData = extractUsefulPlaylistData(id, playlistData, nameParser);
-                    playlistsById[id] = usefulPlaylistData;
-                });
+            allPlaylistData.filter(playlistData => !playlistData.is_dark).forEach(playlistData => {
+                const id = playlistData.metadata.identifier,
+                    usefulPlaylistData = extractUsefulPlaylistData(id, playlistData, nameParser);
+                playlistsById[id] = usefulPlaylistData;
+            });
             nameParser.logStats();
         }).then(() => {
             log.info(`${LOG_ID}: Skipped ${skippedShows.size} files`);

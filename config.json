@@ -13,6 +13,7 @@
       }
     }
   },
+  "playlistFetchDelayMillis": 1500,
   "caches": {
     "location": "./cache",
     "expirySeconds": {
@@ -890,46 +891,6 @@
       "name": "World Adventurer's Club",
       "playlists": ["OTRR_World_Adventurer_Club_Singles"],
       "index": 165
-    },
-    {
-      "name": "The Jack Carson Show",
-      "playlists": ["JackCarsonShow"],
-      "index": 166
-    },
-    {
-      "name": "Sealtest Variety Theater",
-      "playlists": ["sealtest-variety-theater-1948-10-21-6-happy-ending"],
-      "index": 167
-    },
-    {
-      "name": "Cavalcade of America",
-      "playlists": ["OTRR_Cavalcade_of_America_Singles"],
-      "index": 168
-    },
-    {
-      "name": "Railroad Hour",
-      "playlists": ["OTRR_Railroad_Hour_Singles"],
-      "index": 169
-    },
-    {
-      "name": "Columbia Workshop",
-      "playlists": ["columbia-workshop-1938-07-23-100-murder-in-the-cathedral"],
-      "index": 170
-    },
-    {
-      "name": "The Sound of War",
-      "playlists": ["OTRR_Sound_of_War_Singles"],
-      "index": 171
-    },
-    {
-      "name": "Bulldog Drummond",
-      "playlists": ["bulldog-drummond"],
-      "index": 172
-    },
-    {
-      "name": "The Adventures of the Thin Man",
-      "playlists": ["thinmanotr_201412"],
-      "index": 173
     }
   ],
   "channels" : [
@@ -943,7 +904,7 @@
     },
     {
       "name" : "crime",
-      "shows": [0,12,13,22,23,24,37,41,47,48,52,58,60,62,63,75,82,89,94,100,101,107,108,110,112,124,127,130,133,136,159,160,161,172]
+      "shows": [0,12,13,22,23,24,37,41,47,48,52,58,60,62,63,75,82,89,94,100,101,107,108,110,112,124,127,130,133,136,159,160,161]
     },
     {
       "name" : "horror",
@@ -959,7 +920,7 @@
     },
     {
       "name" : "comedy",
-      "shows": [0,31,32,33,34,35,36,46,49,61,64,76,84,87,88,95,96,111,114,116,117,118,119,120,121,123,125,126,135,137,149,150,151,152,153,154,155,156,166]
+      "shows": [0,31,32,33,34,35,36,46,49,61,64,76,84,87,88,95,96,111,114,116,117,118,119,120,121,123,125,126,135,137,149,150,151,152,153,154,155,156]
     },
     {
       "name" : "drama",
