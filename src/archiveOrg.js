@@ -15,9 +15,13 @@ const requestQueue = (() => {
                 running = true;
                 requestTs = clock.now();
                 interval = setInterval(() => {
-                    console.log(`Requesting ${pendingRequests.length} playlist(s)`);
-                    pendingRequests.length = 0;
-                    running = false;
+                    const nextRequest = pendingRequests.shift();
+                    if (nextRequest) {
+                        webClient.get(`https://archive.org/metadata/${nextRequest}`);
+                    } else {
+                        clearInterval(interval);
+                        running = false;
+                    }
                 }, config.minRequestIntervalMillis);
         }
     };
