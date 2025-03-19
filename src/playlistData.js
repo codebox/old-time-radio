@@ -4,7 +4,6 @@ const archiveOrg = require('./archiveOrg.js'),
     log = require('./log.js'),
     {buildNameParser} = require('./nameParser.js'),
     {configHelper} = require('./configHelper.js'),
-    config = require('../config.json'),
     LOG_ID = 'playlistData';
 
 const playlistsById = {},
@@ -63,18 +62,7 @@ function extractUsefulPlaylistData(playlistId, playlist, nameParser) {
 module.exports = {
     init() {
         const allPlaylistIds = configHelper.getAllPlaylistIds(),
-            allPlaylistDataPromises = allPlaylistIds.map((playlistId, index) => {
-                const delayMillis = index * config.playlistFetchDelayMillis;
-                return new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                        try {
-                            resolve(archiveOrg.getPlaylist(playlistId));
-                        } catch (error) {
-                            reject(error);
-                        }
-                    }, delayMillis);
-                });
-            }),
+            allPlaylistDataPromises = allPlaylistIds.map(playlistId => archiveOrg.getPlaylist(playlistId)),
             nameParser = buildNameParser();
 
         return Promise.all(allPlaylistDataPromises).then(allPlaylistData => {

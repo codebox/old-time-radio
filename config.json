@@ -13,7 +13,7 @@
       }
     }
   },
-  "playlistFetchDelayMillis": 1500,
+  "minRequestIntervalMillis": 1500,
   "caches": {
     "location": "./cache",
     "expirySeconds": {
