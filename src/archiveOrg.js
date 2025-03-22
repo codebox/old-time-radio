@@ -6,26 +6,48 @@ const webClient = require('./webClient.js'),
 
 const requestQueue = (() => {
     const pendingRequests = [];
-    let requestTs = 0, running = false, interval
+    let lastRequestMillis = 0, running = false, interval;
+
+    function ensureRequestProcessorIsRunning(){
+        if (!running) {
+            running = true;
+
+            function processNext() {
+console.log('processNext')
+                const nextRequestPermittedTs = lastRequestMillis + config.minRequestIntervalMillis,
+                    timeUntilNextRequestPermitted = Math.max(0, nextRequestPermittedTs - clock.nowMillis());
+console.log('waiting', timeUntilNextRequestPermitted);
+                setTimeout(() => {
+                    const {url, resolve, reject} = pendingRequests.shift();
+console.log('requesting', url);
+                    webClient.get(url)
+                        .then(resolve)
+                        .catch(reject)
+                        .finally(() => {
+                            lastRequestMillis = clock.nowMillis();
+                            if (pendingRequests.length === 0) {
+                                running = false;
+                            } else {
+                                processNext();
+                            }
+                        });
+                }, timeUntilNextRequestPermitted);
+            }
+
+            processNext();
+        }
+    }
 
     return {
-        push(id) {
-            pendingRequests.push(id);
-            if (!running) {
-                running = true;
-                requestTs = clock.now();
-                interval = setInterval(() => {
-                    const nextRequest = pendingRequests.shift();
-                    if (nextRequest) {
-                        webClient.get(`https://archive.org/metadata/${nextRequest}`);
-                    } else {
-                        clearInterval(interval);
-                        running = false;
-                    }
-                }, config.minRequestIntervalMillis);
+        push(url) {
+            return new Promise((resolve, reject) => {
+                pendingRequests.push({url, resolve, reject});
+                ensureRequestProcessorIsRunning();
+            });
         }
     };
 })();
+
 module.exports = {
     /*
     Example JSON (only showing data used by the application):
@@ -45,8 +67,7 @@ module.exports = {
     }
     */
     getPlaylist(id) {
-        pendingRequests.push(id);
-        // Example url: https://archive.org/metadata/OTRR_Space_Patrol_Singles
-        return webClient.get(`https://archive.org/metadata/${id}`);
+        const requestUrl = `https://archive.org/metadata/${id}`;
+        return requestQueue.push(requestUrl);
     }
 };
