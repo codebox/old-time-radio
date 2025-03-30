@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "target": "es2022",
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+
+    "strict": true,
+    "strictNullChecks": false,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+
+    "module": "NodeNext",
+    "sourceMap": true,
+
+    "lib": ["es2022"]
+  }
+}
