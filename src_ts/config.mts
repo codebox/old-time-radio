@@ -1,24 +1,33 @@
 import {readFile} from "fs/promises";
-
-export type Config = {
-    "web": {
-        "port": number,
-        "paths": {
-            "static": string,
-            "listenTo": string,
-            "api": {
-                "shows": string,
-                "channels": string,
-                "channel": string,
-                "generate": string,
-                "playingNow": string,
-            }
-        }
-    },
-    "log": {
-        "level": string
-    },
-    "minRequestIntervalMillis": number
-};
+import type {Config, PlaylistId, ShowIndex} from "./types.mjs";
+import {memoize} from "../src/cache";
 
 export const config: Config = JSON.parse(await readFile("config.json", "utf8"));
+
+export const configHelper = {
+    getShowForPlaylistId(playlistId: PlaylistId) {
+        return config.shows.find(show => show.playlists.includes(playlistId));
+    },
+    getAllPlaylistIds() {
+        return config.shows.flatMap(show => show.playlists)
+    },
+    getChannelNamesForShowIndex(showIndex: ShowIndex) {
+        return config.channels.filter(channel => channel.shows.includes(showIndex)).map(channel => channel.name);
+    },
+    getShows: memoize(() => {
+        return config.shows.map(show => {
+            return {
+                channels: configHelper.getChannelNamesForShowIndex(show.index),
+                index: show.index,
+                isCommercial: !! show.isCommercial,
+                name: show.name,
+                shortName: show.shortName || show.name,
+                playlists: show.playlists
+            };
+        });
+    }, "shows"),
+
+    getChannels: memoize(() => {
+        return config.channels.map(channel => channel.name);
+    }, "channels")
+}

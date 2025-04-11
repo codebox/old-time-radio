@@ -1,13 +1,16 @@
 import express from "express";
 import {config} from "./config.mjs";
 import {log} from "./log.mjs";
+import {Service} from "./service.mjs";
 
 
 export class WebServer {
     private app: express.Application;
+    private service: Service;
 
     constructor() {
         this.app = express();
+        this.service = new Service();
     }
 
     private setupEndpointHandlers() {
@@ -26,7 +29,9 @@ export class WebServer {
 
 // [{channels:["future"], index: 1, isCommercial: false, name: "X Minus One"}, ...]
         this.app.get(config.web.paths.api.shows, (req, res) => {
-
+            this.service.getShows().then((shows) => {
+                res.json(shows);
+            });
         });
 
 // ["future", "action", ...]
@@ -59,6 +64,6 @@ export class WebServer {
     }
 
     start() {
-
+        this.setupEndpointHandlers();
     }
 }
