@@ -3,7 +3,6 @@ import {config} from "./config.mjs";
 import {log} from "./log.mjs";
 import {Service} from "./service.mjs";
 
-
 export class WebServer {
     private app: express.Application;
     private service: Service;
@@ -65,5 +64,8 @@ export class WebServer {
 
     start() {
         this.setupEndpointHandlers();
+        this.app.listen(config.web.port, () => {
+            log.info(`Initialisation complete, listening on port ${config.web.port}...`);
+        });
     }
 }

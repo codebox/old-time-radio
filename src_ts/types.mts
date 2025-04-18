@@ -25,6 +25,7 @@ export type Config = {
 
 export type ConfigShow = {
     name: ShowName,
+    shortName?: ShowShortName,
     playlists: [PlaylistId],
     index: ShowIndex,
     isCommercial: boolean
@@ -69,15 +70,17 @@ export type ChannelId = string & { readonly __brand: unique symbol };
 export type ChannelCode = string & { readonly __brand: unique symbol };
 export type ChannelName = string & { readonly __brand: unique symbol };
 export type ShowName = string & { readonly __brand: unique symbol };
+export type ShowShortName = string & { readonly __brand: unique symbol };
+export type DescriptiveId = string & { readonly __brand: unique symbol };
 export type PlaylistId = string & { readonly __brand: unique symbol };
 export type ShowIndex = number & { readonly __brand: unique symbol };
 
-export type ShowsList = {
-    channels: [ChannelId],
-    index: ShowIndex,
-    isCommercial: boolean,
-    name: string,
-    shortName: string,
-    descriptiveId: string,
+export type ShowsListItem = {
+    channels: [ChannelId], // used on client-side in Channel Builder to decide which section to display the show in
+    index: ShowIndex, // comes from config.json
+    isCommercial: boolean, // comes from config.json
+    name: ShowName, // comes from config.json
+    shortName: ShowShortName, // used on client-side in various places where we need to display the name without taking up a lot of space. Comes from config.json but not defined for all shows, we fallback to the full name if nothing is specified in the config file
+    descriptiveId: DescriptiveId, // a normalised, url-safe version of the show name, used for 'listen-to' urls, sitemap etc
     channelCode: ChannelCode
 }
