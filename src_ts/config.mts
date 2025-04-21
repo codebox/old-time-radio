@@ -1,6 +1,5 @@
 import {readFile} from "fs/promises";
 import type {Config, PlaylistId, ShowIndex} from "./types.mjs";
-import {memoize} from "../src/cache";
 
 export const config: Config = JSON.parse(await readFile("config.json", "utf8"));
 
@@ -14,7 +13,7 @@ export const configHelper = {
     getChannelNamesForShowIndex(showIndex: ShowIndex) {
         return config.channels.filter(channel => channel.shows.includes(showIndex)).map(channel => channel.name);
     },
-    getShows: memoize(() => {
+    getShows(){
         return config.shows.map(show => {
             return {
                 channels: configHelper.getChannelNamesForShowIndex(show.index),
@@ -25,9 +24,8 @@ export const configHelper = {
                 playlists: show.playlists
             };
         });
-    }, "shows"),
-
-    getChannels: memoize(() => {
+    },
+    getChannels() {
         return config.channels.map(channel => channel.name);
-    }, "channels")
+    }
 }
