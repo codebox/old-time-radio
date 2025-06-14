@@ -4,17 +4,17 @@ import type {
     CurrentChannelSchedule,
     ConfigShow,
     DescriptiveId, PlayingNowAndNext,
-    ShowIndex,
+    ShowId,
     ShowsListItem, Xml
 } from "./types.mjs";
-import {buildChannelCodeFromShowIndexes} from "./channelCodes.mjs";
+import {buildChannelCodeFromShowIds} from "./channelCodes.mjs";
 import type {Seconds} from "./clock.mjs";
 import {Scheduler} from "./scheduler.mjs";
 import {getSitemapXml} from "./sitemap.mjs";
 
 
-function getChannelIdsForShowIndex(showIndex: ShowIndex) {
-    return config.channels.filter(channel => channel.shows.includes(showIndex)).map(channel => channel.name);
+function getChannelIdsForShowId(showId: ShowId) {
+    return config.channels.filter(channel => channel.shows.includes(showId)).map(channel => channel.name);
 }
 
 function getDescriptiveIdForShowName(showName: string): DescriptiveId {
@@ -30,13 +30,13 @@ export class Service {
 
     private getShowsListItemFromConfigShow(configShow: ConfigShow): ShowsListItem {
         return {
-            channels: getChannelIdsForShowIndex(configShow.index),
-            index: configShow.index,
+            channels: getChannelIdsForShowId(configShow.id),
+            id: configShow.id,
             isCommercial: configShow.isCommercial,
             name: configShow.name,
             shortName: configShow.shortName || configShow.name,
             descriptiveId: getDescriptiveIdForShowName(configShow.name),
-            channelCode: buildChannelCodeFromShowIndexes([configShow.index]),
+            channelCode: buildChannelCodeFromShowIds([configShow.id]),
         };
     }
 
@@ -52,8 +52,8 @@ export class Service {
         return this.scheduler.getScheduleForChannel(channelId, length);
     }
 
-    getCodeForShowIndexes(showIndexes: ShowIndex[]): ChannelId {
-        return buildChannelCodeFromShowIndexes(showIndexes);
+    getCodeForShowIds(showIds: ShowId[]): ChannelId {
+        return buildChannelCodeFromShowIds(showIds);
     }
 
     getPlayingNowAndNext(channels: ChannelId[]): Promise<PlayingNowAndNext> {

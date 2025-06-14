@@ -5,12 +5,16 @@ import type {
     CurrentChannelSchedule,
     ConfigShow,
     DescriptiveId, PlayingNowAndNext,
-    ShowIndex,
-    ShowsListItem, FullChannelSchedule, ChannelScheduleItem
+    ShowId,
+    ShowsListItem, FullChannelSchedule, Episode
 } from "./types.mjs";
-
+import { LRUCache } from 'lru-cache'
 import type {Seconds} from "./clock.mjs";
 import {clock} from "./clock.mjs";
+import {log} from "./log.mjs";
+import {buildShowIdsFromChannelCode} from "./channelCodes.mjs";
+import {shows} from "./shows.mjs";
+import {schedule} from "./utils.mjs";
 
 type SchedulerStopCondition = (currentPlaylistDuration: Seconds, currentPlaylistSize: number) => boolean;
 type SchedulePosition = {itemIndex: number, itemOffset: Seconds};
@@ -19,8 +23,19 @@ const MAX_SCHEDULE_LENGTH = 24 * 60 * 60 as Seconds,
     START_TIME = 1595199600 as Seconds; // 2020-07-20 00:00:00
 
 export class Scheduler {
-    constructor() {
+    private cache: LRUCache<ChannelId,FullChannelSchedule>;
 
+    constructor() {
+        this.cache = new LRUCache<ChannelId,FullChannelSchedule>({
+            max: config.cache.maxItems,
+            onInsert: (_, key) => {
+                log.debug(`Adding schedule for channel ${key} to cache`);
+            },
+            fetchMethod: (key) => {
+                log.debug(`Calculating schedule for channel ${key}`);
+                return this.calculateFullScheduleForChannel(key);
+            }
+        });
     }
 
     private playlistReachedMinDuration(minDuration: Seconds): SchedulerStopCondition {
@@ -35,13 +50,44 @@ export class Scheduler {
         };
     }
 
+    private getShowIdsForChannelId(channelId: ChannelId): ShowId[] {
+        const configChannel = config.channels.find(channel => channel.name === channelId);
+        if (configChannel) {
+            return configChannel.shows;
+        } else {
+            return buildShowIdsFromChannelCode(channelId as ChannelCode);
+        }
+    }
+
+    private calculateFullScheduleForChannel(channelId: ChannelId): Promise<FullChannelSchedule> {
+        const showIds = this.getShowIdsForChannelId(channelId);
+
+        return Promise.all(showIds.map(showId => shows.getEpisodesForShow(showId))).then(showScheduleItemsForAllShows => {
+            const totalChannelDuration = showScheduleItemsForAllShows.flatMap(scheduleItem => scheduleItem).reduce((acc, item) => acc + item.length, 0) as Seconds,
+                showCounts = new Map<ShowId, number>();
+
+            showIds.forEach((showId, i) => {
+                const showScheduleItems = showScheduleItemsForAllShows[i];
+                showCounts.set(showId, showScheduleItems.length);
+            });
+
+            const scheduleResults = schedule(showCounts, () => {}),
+                fullSchedule = [] as Episode[];
+
+            scheduleResults.forEach((showId) => {
+                const nextItem = showScheduleItemsForAllShows[showId].shift();
+                fullSchedule.push(nextItem);
+            });
+
+            return {
+                list: fullSchedule,
+                length: totalChannelDuration
+            };
+        });
+    }
+
     private getFullScheduleForChannel(channelId: ChannelId): Promise<FullChannelSchedule> {
-        /*
-        results should be cached/re-used
-        get shows in channel
-        get episodes in shows
-         */
-        return Promise.resolve({} as FullChannelSchedule); //TODO
+        return this.cache.fetch(channelId);
     }
 
     private getCurrentSchedulePosition(fullSchedule: FullChannelSchedule): SchedulePosition {
@@ -70,7 +116,7 @@ export class Scheduler {
     }
 
     private getCurrentSchedule(fullSchedule: FullChannelSchedule, startPosition: SchedulePosition, stopCondition: SchedulerStopCondition): CurrentChannelSchedule {
-        const clientPlaylist = [] as ChannelScheduleItem[];
+        const clientPlaylist = [] as Episode[];
 
         let clientPlaylistDuration = -startPosition.itemOffset as Seconds,
             fullScheduleIndex = startPosition.itemIndex;

@@ -20,20 +20,23 @@ export type Config = {
     },
     "minRequestIntervalMillis": Millis,
     "shows" : [ConfigShow],
-    "channels" : [ConfigChannel]
+    "channels" : [ConfigChannel],
+    "cache" : {
+        "maxItems": number,
+    }
 };
 
 export type ConfigShow = {
     name: ShowName,
     shortName?: ShowName,
     playlists: [PlaylistId],
-    index: ShowIndex,
+    id: ShowId,
     isCommercial: IsCommercial
 }
 
 export type ConfigChannel = {
     name: ChannelId,
-    shows: [ShowIndex]
+    shows: [ShowId]
 }
 
 export type ArchiveOrgMetadata = {
@@ -73,14 +76,15 @@ export type ShowName = string & { readonly __brand: unique symbol };
 export type EpisodeName = string & { readonly __brand: unique symbol };
 export type DescriptiveId = string & { readonly __brand: unique symbol };
 export type PlaylistId = string & { readonly __brand: unique symbol };
-export type ShowIndex = number & { readonly __brand: unique symbol };
+export type ShowId = number & { readonly __brand: unique symbol };
+export type EpisodeIndex = number & { readonly __brand: unique symbol };
 export type Url = string & { readonly __brand: unique symbol };
 export type Xml = string & { readonly __brand: unique symbol };
 export type IsCommercial = boolean & { readonly __brand: unique symbol };
 
 export type ShowsListItem = {
     channels: ChannelId[], // used on client-side in Channel Builder to decide which section to display the show in
-    index: ShowIndex, // comes from config.json
+    id: ShowId, // comes from config.json
     isCommercial: IsCommercial, // comes from config.json
     name: ShowName, // comes from config.json
     shortName: ShowName, // used on client-side in various places where we need to display the name without taking up a lot of space. Comes from config.json but not defined for all shows, we fallback to the full name if nothing is specified in the config file
@@ -88,7 +92,13 @@ export type ShowsListItem = {
     channelCode: ChannelCode // code for a channel with just this show, needed for the 'listen-to' urls so we can retrieve the schedule
 }
 
-export type ChannelScheduleItem = {
+export type Episode = {
+    index: EpisodeIndex,
+    showId: ShowId,
+    length: Seconds
+}
+
+export type EpisodeDetails = {
     archivalUrl: Url,
     commercial: IsCommercial,
     length: Seconds,
@@ -98,15 +108,19 @@ export type ChannelScheduleItem = {
 }
 
 export type FullChannelSchedule = {
-    list: ChannelScheduleItem[]
+    list: Episode[]
     length: Seconds,
 }
 
 export type CurrentChannelSchedule = {
-    list: ChannelScheduleItem[]
+    list: Episode[]
     initialOffset: Seconds,
 }
 
 export type PlayingNowAndNext = {
     [key in ChannelId]: CurrentChannelSchedule
 }
+
+export type ShowCounts = Map<ShowId, number>;
+export type ScheduleResults = ShowId[]
+export type ScheduleResultsAfterInsertHandler = (results: ScheduleResults) => void;

@@ -27,7 +27,7 @@ export class Log {
         this.logger.log('info', message);
     }
     warn(message: string) {
-        this.logger.log('warning', message);
+        this.logger.log('warn', message);
     }
     error(message: string) {
         this.logger.log('error', message);

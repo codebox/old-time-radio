@@ -1,6 +1,6 @@
-import type {ChannelCode, ShowIndex} from "./types.mjs";
+import type {ChannelCode, ShowId} from "./types.mjs";
 
-const TOO_BIG_INDEX = 200,
+const TOO_BIG_ID = 200,
     SHOWS_PER_CHAR = 6,
     CHAR_MAP = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_';
 
@@ -18,30 +18,30 @@ function stringToNum(s: string) {
     return n;
 }
 
-export function buildChannelCodeFromShowIndexes(indexes: ShowIndex[]): ChannelCode {
-    const numericIndexes = indexes.map(Number).filter(n=>!isNaN(n)),
-        uniqueNumericIndexes = new Set(numericIndexes);
+export function buildChannelCodeFromShowIds(ids: ShowId[]): ChannelCode {
+    const numericIds = ids.map(Number).filter(n=>!isNaN(n)),
+        uniqueNumericIds = new Set(numericIds);
 
-    const maxIndex = numericIndexes.length ? Math.max(...numericIndexes) : 0;
-    if (maxIndex > TOO_BIG_INDEX) {
-        throw new Error('Index is too large: ' + maxIndex);
+    const maxId = numericIds.length ? Math.max(...numericIds) : 0;
+    if (maxId > TOO_BIG_ID) {
+        throw new Error('Id is too large: ' + maxId);
     }
-    const groupTotals = new Array(Math.ceil((maxIndex+1) / SHOWS_PER_CHAR)).fill(0);
+    const groupTotals = new Array(Math.ceil((maxId+1) / SHOWS_PER_CHAR)).fill(0);
 
-    for (let i=0; i <= maxIndex; i++) {
+    for (let i=0; i <= maxId; i++) {
         const groupIndex = Math.floor(i / SHOWS_PER_CHAR);
-        if (uniqueNumericIndexes.has(i)) {
+        if (uniqueNumericIds.has(i)) {
             groupTotals[groupIndex] += Math.pow(2, i - groupIndex * SHOWS_PER_CHAR);
         }
     }
     return groupTotals.map(numToString).join('') as ChannelCode;
 }
 
-export function buildShowIndexesFromChannelCode(channelCode: string) {
-    const indexes: number[] = [];
+export function buildShowIdsFromChannelCode(channelCode: ChannelCode) {
+    const ids: number[] = [];
     channelCode.split('').forEach((c, charIndex) => {
         const num = stringToNum(c);
-        indexes.push(...[num & 1, num & 2, num & 4, num & 8, num & 16, num & 32].map((n,i) => n ? i + charIndex * SHOWS_PER_CHAR : null).filter(n => n !== null));
+        ids.push(...[num & 1, num & 2, num & 4, num & 8, num & 16, num & 32].map((n,i) => n ? i + charIndex * SHOWS_PER_CHAR : null).filter(n => n !== null));
     });
-    return indexes;
+    return ids as ShowId[];
 }

@@ -2,7 +2,7 @@ import express from "express";
 import {config} from "./config.mjs";
 import {log} from "./log.mjs";
 import {Service} from "./service.mjs";
-import type {ChannelId, ShowIndex} from "./types.mjs";
+import type {ChannelId, ShowId} from "./types.mjs";
 import type {Seconds} from "./clock.mjs";
 
 export class WebServer {
@@ -52,9 +52,9 @@ export class WebServer {
             });
         });
 
-        this.app.get(config.web.paths.api.generate + ":indexes", (req, res) => {
-            const indexes = req.params.indexes.split(',').map(s => Number(s)) as ShowIndex[];
-            res.status(200).json(this.service.getCodeForShowIndexes(indexes));
+        this.app.get(config.web.paths.api.generate + ":ids", (req, res) => {
+            const ids = req.params.ids.split(',').map(s => Number(s)) as ShowId[];
+            res.status(200).json(this.service.getCodeForShowIds(ids));
         });
 
         this.app.get(config.web.paths.api.playingNow, (req, res) => {

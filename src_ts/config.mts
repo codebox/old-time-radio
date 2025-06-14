@@ -1,5 +1,5 @@
 import {readFile} from "fs/promises";
-import type {Config, PlaylistId, ShowIndex} from "./types.mjs";
+import type {Config, PlaylistId, ShowId} from "./types.mjs";
 
 export const config: Config = JSON.parse(await readFile("config.json", "utf8"));
 
@@ -10,14 +10,14 @@ export const configHelper = {
     getAllPlaylistIds() {
         return config.shows.flatMap(show => show.playlists)
     },
-    getChannelNamesForShowIndex(showIndex: ShowIndex) {
-        return config.channels.filter(channel => channel.shows.includes(showIndex)).map(channel => channel.name);
+    getChannelNamesForShowId(showId: ShowId) {
+        return config.channels.filter(channel => channel.shows.includes(showId)).map(channel => channel.name);
     },
     getShows(){
         return config.shows.map(show => {
             return {
-                channels: configHelper.getChannelNamesForShowIndex(show.index),
-                index: show.index,
+                channels: configHelper.getChannelNamesForShowId(show.id),
+                id: show.id,
                 isCommercial: !! show.isCommercial,
                 name: show.name,
                 shortName: show.shortName || show.name,
