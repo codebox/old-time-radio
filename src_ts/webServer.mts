@@ -2,6 +2,8 @@ import express from "express";
 import {config} from "./config.mjs";
 import {log} from "./log.mjs";
 import {Service} from "./service.mjs";
+import type {ChannelId, ShowIndex} from "./types.mjs";
+import type {Seconds} from "./clock.mjs";
 
 export class WebServer {
     private app: express.Application;
@@ -26,35 +28,45 @@ export class WebServer {
             res.sendFile('public/index.html',{root:'./'});
         });
 
-// [{channels:["future"], index: 1, isCommercial: false, name: "X Minus One"}, ...]
         this.app.get(config.web.paths.api.shows, (req, res) => {
             this.service.getShows().then((shows) => {
                 res.json(shows);
             });
         });
 
-// ["future", "action", ...]
         this.app.get(config.web.paths.api.channels, (req, res) => {
-
+            this.service.getChannels().then((channelIds) => {
+                res.json(channelIds);
+            });
         });
 
-// {initialOffset: 123.456, list: [{archivalUrl: "http://...", length: 1234.56, name: "X Minus One - Episode 079", url: "http://...", commercial: false}, ...]}
         this.app.get(config.web.paths.api.channel + ':channel', (req, res) => {
-
+            const channelId = req.params.channel as ChannelId,
+                length = Number(req.query.length) as Seconds;
+            this.service.getScheduleForChannel(channelId, length).then(schedule => {
+                if (schedule) {
+                    res.status(200).json(schedule);
+                } else {
+                    res.status(400).send('Unknown channel');
+                }
+            });
         });
 
-// "1g0000g000000"
         this.app.get(config.web.paths.api.generate + ":indexes", (req, res) => {
-
+            const indexes = req.params.indexes.split(',').map(s => Number(s)) as ShowIndex[];
+            res.status(200).json(this.service.getCodeForShowIndexes(indexes));
         });
 
-// [{channelId: 'action', initialOffset: 123.456, list: [{archivalUrl: "http://...", length: 1234.56, name: "X Minus One - Episode 079", url: "http://...", commercial: false}, ...]}, ...]
         this.app.get(config.web.paths.api.playingNow, (req, res) => {
-
+            const channels = (req.query.channels as string || '').split(',').filter(c => c) as ChannelId[];
+            this.service.getPlayingNowAndNext(channels).then(result => res.status(200).json(result));
         });
 
         this.app.get("/sitemap.xml", (req, res) => {
-
+            this.service.getSitemapXml().then(xml => {
+                res.set('Content-Type', 'text/xml');
+                res.send(xml);
+            });
         });
 
         // this.app.use((error, req, res, next) => {

@@ -13,3 +13,4 @@ class Clock {
 }
 
 export const clock = new Clock();
+export const ONE_HOUR = 60 * 60 as Seconds;

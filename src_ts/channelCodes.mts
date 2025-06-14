@@ -1,4 +1,4 @@
-import type {ChannelCode} from "./types.mjs";
+import type {ChannelCode, ShowIndex} from "./types.mjs";
 
 const TOO_BIG_INDEX = 200,
     SHOWS_PER_CHAR = 6,
@@ -18,7 +18,7 @@ function stringToNum(s: string) {
     return n;
 }
 
-export function buildChannelCodeFromShowIndexes(indexes: number[]): ChannelCode {
+export function buildChannelCodeFromShowIndexes(indexes: ShowIndex[]): ChannelCode {
     const numericIndexes = indexes.map(Number).filter(n=>!isNaN(n)),
         uniqueNumericIndexes = new Set(numericIndexes);
 

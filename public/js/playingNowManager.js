@@ -113,7 +113,12 @@ function buildPlayingNowManager(model, elCanvas) {
             }
         },
         update(details) {
-            playingNowData = details;
+            playingNowData = Object.keys(details).map(channelId => {
+                return {
+                    ...details[channelId],
+                    channelId
+                }
+            });
         },
         stop() {
             if (updateTimerId) {

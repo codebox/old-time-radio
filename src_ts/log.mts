@@ -2,37 +2,35 @@ import * as winston from "winston";
 import {config} from "./config.mjs";
 
 export class Log {
+    private logger: winston.Logger;
 
     constructor() {
-        const transports = [],
-            format = winston.format.combine(
+        this.logger = winston.createLogger({
+            level: config.log.level,
+            format: winston.format.combine(
                 winston.format.timestamp(),
                 winston.format.printf(info => {
                     return `${info.timestamp} ${info.level.toUpperCase().padStart(5, ' ')}: ${info.message}`;
                 })
-            );
-
-        transports.push(new (winston.transports.Console)({
-            level: config.log.level,
-            format
-        }))
-
-        winston.configure({
-            transports
+            ),
+            transports: [
+                new winston.transports.Console()
+            ]
         });
+
     }
 
     debug(message: string) {
-        winston.log('debug', message);
+        this.logger.log('debug', message);
     }
     info(message: string) {
-        winston.log('info', message);
+        this.logger.log('info', message);
     }
     warn(message: string) {
-        winston.log('warning', message);
+        this.logger.log('warning', message);
     }
     error(message: string) {
-        winston.log('error', message);
+        this.logger.log('error', message);
     }
 }
 
