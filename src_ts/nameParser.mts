@@ -1,17 +1,21 @@
-"use strict";
+import {log} from "./log.mjs";
+import {configHelper} from "./config.mjs";
+import type {NameParserConfig, StringTransformer} from "./types.mjs";
 
-const log = require('./log.js');
-const {configHelper} = require("./configHelper");
-
-function addSpacesBeforeCapitals(txt) {
-    return txt.replace('_','').replace(/([A-Z])/g, ' $1').replace(/([^0-9])([0-9])/g, '$1 $2').replace(/ +/g, ' ').trim();
+function addSpacesBeforeCapitals(txt: string) {
+    return txt
+        .replace('_','')
+        .replace(/([A-Z])/g, ' $1')
+        .replace(/([^0-9])([0-9])/g, '$1 $2')
+        .replace(/ +/g, ' ')
+        .trim();
 }
 
-function replaceUnderscores(txt) {
+function replaceUnderscores(txt: string) {
     return txt.replace(/_/g, ' ');
 }
 
-function capitalise(txt) {
+function capitalise(txt: string) {
     const skipWords = ['a', 'of', 'the', 'and', 'in', 'on', 'at', 'to', 'for', 'with', 'by', 'from'];
     return txt.split(/\s+/).map((word, i) => {
         if (i !== 0 && skipWords.includes(word)) {
@@ -21,7 +25,7 @@ function capitalise(txt) {
     }).join(' ');
 }
 
-function insertHyphens(txt) {
+function insertHyphens(txt: string) {
     const txtWithoutHyphens = txt.replace(/-/g, '');
     if (txtWithoutHyphens.length === 8) {
         return txtWithoutHyphens.substring(0, 4) + '-' + txtWithoutHyphens.substring(4, 6) + '-' + txtWithoutHyphens.substring(6, 8);
@@ -29,19 +33,19 @@ function insertHyphens(txt) {
     return txt;
 }
 
-function remove(txtToRemove) {
+function remove(txtToRemove: string | RegExp) {
     return replace(txtToRemove, '');
 }
 
-function replace(txtToRemove, replacementText) {
+function replace(txtToRemove: string | RegExp, replacementText: string): StringTransformer {
     return txt => txt.replaceAll(txtToRemove, replacementText);
 }
 
-function toArray(value) {
+function toArray<T>(value: T): T[] {
     return Array.isArray(value) ? value : [value];
 }
 
-const nameConfig = [
+const nameConfig: NameParserConfig[] = [
     {
         playlistIds: 'OTRR_Dimension_X_Singles',
         regex: /Dimension_X_(?<date>[-0-9]+)_+(?<num>[0-9]+)_+(?<title>.*)/,
@@ -885,7 +889,7 @@ const nameConfig = [
         playlistIds: ["ItsHigginsSir"],
         regex: /(?<date>[-0-9]+)_(?<title>.*)/,
         transforms: {
-            title: [addSpacesBeforeCapitals, t => t.charAt(0).toUpperCase() + t.slice(1)]
+            title: [addSpacesBeforeCapitals, (t: string) => t.charAt(0).toUpperCase() + t.slice(1)]
         }
     },
     {
@@ -1108,7 +1112,7 @@ const nameConfig = [
         playlistIds: ["EbZeb"],
         regex: /Ez(?<title>[0-9]{3})/,
         transforms: {
-            title: t => `Episode ${t}`
+            title: (t: string) => `Episode ${t}`
         }
     },
     {
@@ -1150,7 +1154,7 @@ const nameConfig = [
         playlistIds: ["otr_ghostcorps"],
         regex: /GhostCorps_(?<title>[0-9]+)/,
         transforms: {
-            title: t => `Episode ${t}`
+            title: (t: string) => `Episode ${t}`
         }
     },
     {
@@ -1165,7 +1169,7 @@ const nameConfig = [
         playlistIds: ["otr_dickbartonspecialagent"],
         regex: /OTR_-_Dick_Barton_Special_Agent_-_72-00-00_-_(?<title>[0-9]+)_-_(.*)/,
         transforms: {
-            title: t => `Episode ${t}`
+            title: (t: string) => `Episode ${t}`
         }
     },
     {
@@ -1354,7 +1358,7 @@ module.exports.buildNameParser = function() {
 
         logStats() {
             Object.entries(stats.playlists).map(([playlistId, stats]) => {
-               log.debug(`nameParser stats: ${playlistId} ${stats.failed} FAILED, ${stats.ok} OK`)
+                log.debug(`nameParser stats: ${playlistId} ${stats.failed} FAILED, ${stats.ok} OK`)
             });
 
             const percentageOk = ((stats.ok / (stats.ok + stats.failed)) * 100).toFixed(2);

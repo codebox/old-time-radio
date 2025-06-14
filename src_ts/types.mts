@@ -19,8 +19,8 @@ export type Config = {
         "level": string
     },
     "minRequestIntervalMillis": Millis,
-    "shows" : [ConfigShow],
-    "channels" : [ConfigChannel],
+    "shows" : ConfigShow[],
+    "channels" : ConfigChannel[],
     "cache" : {
         "maxItems": number,
     }
@@ -29,43 +29,41 @@ export type Config = {
 export type ConfigShow = {
     name: ShowName,
     shortName?: ShowName,
-    playlists: [PlaylistId],
+    playlists: PlaylistId[],
     id: ShowId,
-    isCommercial: IsCommercial
+    isCommercial: IsCommercial,
+    skip?: SkipText[]
 }
 
 export type ConfigChannel = {
     name: ChannelId,
-    shows: [ShowId]
+    shows: ShowId[]
 }
+
+export type ArchiveOrgFileMetadata = {
+    "name": string,
+    "format": string,
+    "length": string,
+};
 
 export type ArchiveOrgMetadata = {
     alternate_locations: {
-        servers: [
-            {
-                "server": string,
-                "dir": string,
-            }
-        ],
-            "workable": [
-            {
-                "server": string,
-                "dir": string,
-            }
-        ]
+        servers: {
+            "server": string,
+            "dir": string,
+        }[],
+        "workable": {
+            "server": string,
+            "dir": string,
+        }[]
     },
     "d1": string,
     "d2": string,
     "dir": string,
-    "files": [
-        {
-            "name": string,
-            "format": string,
-            "length": string,
-        }
-    ],
+    "files": ArchiveOrgFileMetadata[],
     "server": string,
-    "workable_servers": [string]
+    "workable_servers": string[],
+    "is_dark"?: boolean
 }
 
 export type UrlPath = string & { readonly __brand: unique symbol };
@@ -81,6 +79,7 @@ export type EpisodeIndex = number & { readonly __brand: unique symbol };
 export type Url = string & { readonly __brand: unique symbol };
 export type Xml = string & { readonly __brand: unique symbol };
 export type IsCommercial = boolean & { readonly __brand: unique symbol };
+export type SkipText = string & { readonly __brand: unique symbol };
 
 export type ShowsListItem = {
     channels: ChannelId[], // used on client-side in Channel Builder to decide which section to display the show in
@@ -91,6 +90,8 @@ export type ShowsListItem = {
     descriptiveId: DescriptiveId, // a normalised, url-safe version of the show name, used for 'listen-to' urls, sitemap etc
     channelCode: ChannelCode // code for a channel with just this show, needed for the 'listen-to' urls so we can retrieve the schedule
 }
+
+export type EpisodeId = string;
 
 export type Episode = {
     index: EpisodeIndex,
@@ -117,6 +118,11 @@ export type CurrentChannelSchedule = {
     initialOffset: Seconds,
 }
 
+export type CurrentChannelScheduleWithDetails = {
+    list: EpisodeDetails[]
+    initialOffset: Seconds,
+}
+
 export type PlayingNowAndNext = {
     [key in ChannelId]: CurrentChannelSchedule
 }
@@ -124,3 +130,15 @@ export type PlayingNowAndNext = {
 export type ShowCounts = Map<ShowId, number>;
 export type ScheduleResults = ShowId[]
 export type ScheduleResultsAfterInsertHandler = (results: ScheduleResults) => void;
+
+export type StringTransformer = (input: string) => string;
+
+export type NameParserConfig = {
+    playlistIds: string | string[],
+    regex?: RegExp,
+    transforms?: {
+        title?: StringTransformer | StringTransformer[],
+        date?: StringTransformer | StringTransformer[],
+        num?: StringTransformer | StringTransformer[],
+    }
+}

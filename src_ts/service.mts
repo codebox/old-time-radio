@@ -5,12 +5,13 @@ import type {
     ConfigShow,
     DescriptiveId, PlayingNowAndNext,
     ShowId,
-    ShowsListItem, Xml
+    ShowsListItem, Xml, CurrentChannelScheduleWithDetails
 } from "./types.mjs";
 import {buildChannelCodeFromShowIds} from "./channelCodes.mjs";
 import type {Seconds} from "./clock.mjs";
 import {Scheduler} from "./scheduler.mjs";
 import {getSitemapXml} from "./sitemap.mjs";
+import {shows} from "./shows.mjs";
 
 
 function getChannelIdsForShowId(showId: ShowId) {
@@ -48,8 +49,13 @@ export class Service {
         return Promise.resolve(config.channels.map(channel => channel.name));
     }
 
-    getScheduleForChannel(channelId: ChannelId, length: Seconds): Promise<CurrentChannelSchedule> {
-        return this.scheduler.getScheduleForChannel(channelId, length);
+    getScheduleForChannel(channelId: ChannelId, length: Seconds): Promise<CurrentChannelScheduleWithDetails> {
+        return this.scheduler.getScheduleForChannel(channelId, length).then(scheduleWithoutDetails => {
+            return {
+                list: scheduleWithoutDetails.list.map(episode => shows.getEpisodeDetails(episode)),
+                initialOffset: scheduleWithoutDetails.initialOffset,
+            } as CurrentChannelScheduleWithDetails;
+        });
     }
 
     getCodeForShowIds(showIds: ShowId[]): ChannelId {

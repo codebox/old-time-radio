@@ -18,3 +18,5 @@ export class ArchiveOrg {
     }
 
 }
+
+export const archiveOrg = new ArchiveOrg();
