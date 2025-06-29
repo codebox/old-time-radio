@@ -387,7 +387,7 @@ window.onload = () => {
 
     view.on(EVENT_STATION_BUILDER_SHOW_CLICK).then(event => {
         const clickedShow = event.data;
-        model.stationBuilder.shows.filter(show => show.index === clickedShow.index).forEach(show => show.selected = !show.selected);
+        model.stationBuilder.shows.filter(show => show.id === clickedShow.id).forEach(show => show.selected = !show.selected);
         view.updateStationBuilderShowSelections(model.stationBuilder);
     });
 
@@ -398,15 +398,15 @@ window.onload = () => {
     });
 
     view.on(EVENT_STATION_BUILDER_CREATE_CHANNEL_CLICK).then(() => {
-        const selectedShowIndexes = model.stationBuilder.shows.filter(show => show.selected).map(show => show.index);
+        const selectedShowIds = model.stationBuilder.shows.filter(show => show.selected).map(show => show.id);
         if (model.stationBuilder.includeCommercials) {
-            selectedShowIndexes.push(...model.stationBuilder.commercialShowIds);
+            selectedShowIds.push(...model.stationBuilder.commercialShowIds);
         }
 
         model.stationBuilder.shows.forEach(show => show.selected = false);
         view.updateStationBuilderShowSelections(model.stationBuilder);
 
-        service.getChannelCodeForShows(selectedShowIndexes).then(channelCode => {
+        service.getChannelCodeForShows(selectedShowIds).then(channelCode => {
             model.stationBuilder.savedChannelCodes.push(channelCode);
             view.updateStationBuilderStationDetails(model.stationBuilder);
         });
@@ -507,7 +507,7 @@ window.onload = () => {
 
                 model.stationBuilder.shows = [...shows.filter(show => !show.isCommercial).map(show => {
                     return {
-                        index: show.index,
+                        id: show.id,
                         name: show.name,
                         selected: false,
                         channels: show.channels

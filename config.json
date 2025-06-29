@@ -14,15 +14,17 @@
     }
   },
   "minRequestIntervalMillis": 1500,
-  "cache": {
-    "maxItems": 500
+  "caches": {
+    "baseDirectory": "cache",
+    "scheduleCacheMaxItems": 9,
+    "showsCacheMaxAgeHours": 12
   },
   "scheduler": {
     "radical": 1.8
   },
   "log": {
     "file": "/var/log/oldtimeradio/access.log",
-    "level": "info"
+    "level": "debug"
   },
   "shows" : [
     {

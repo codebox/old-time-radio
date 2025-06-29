@@ -8,6 +8,7 @@ export class Log {
         this.logger = winston.createLogger({
             level: config.log.level,
             format: winston.format.combine(
+                winston.format.errors({stack: true}),
                 winston.format.timestamp(),
                 winston.format.printf(info => {
                     return `${info.timestamp} ${info.level.toUpperCase().padStart(5, ' ')}: ${info.message}`;
@@ -29,8 +30,12 @@ export class Log {
     warn(message: string) {
         this.logger.log('warn', message);
     }
-    error(message: string) {
-        this.logger.log('error', message);
+    error(message: string, error?: Error) {
+        if (error) {
+            this.logger.log('error', `${message}\n${error.stack}`);
+        } else {
+            this.logger.log('error', message);
+        }
     }
 }
 

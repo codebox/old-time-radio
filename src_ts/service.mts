@@ -49,13 +49,14 @@ export class Service {
         return Promise.resolve(config.channels.map(channel => channel.name));
     }
 
-    getScheduleForChannel(channelId: ChannelId, length: Seconds): Promise<CurrentChannelScheduleWithDetails> {
-        return this.scheduler.getScheduleForChannel(channelId, length).then(scheduleWithoutDetails => {
-            return {
-                list: scheduleWithoutDetails.list.map(episode => shows.getEpisodeDetails(episode)),
-                initialOffset: scheduleWithoutDetails.initialOffset,
-            } as CurrentChannelScheduleWithDetails;
-        });
+    async getScheduleForChannel(channelId: ChannelId, length: Seconds): Promise<CurrentChannelScheduleWithDetails> {
+        const scheduleWithoutDetails = await this.scheduler.getScheduleForChannel(channelId, length),
+            scheduleEpisodeDetails = await Promise.all(scheduleWithoutDetails.list.map(episode => shows.getEpisodeDetails(episode)));
+
+        return {
+            list: scheduleEpisodeDetails,
+            initialOffset: scheduleWithoutDetails.initialOffset,
+        } as CurrentChannelScheduleWithDetails;
     }
 
     getCodeForShowIds(showIds: ShowId[]): ChannelId {

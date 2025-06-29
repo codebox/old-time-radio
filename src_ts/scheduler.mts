@@ -1,41 +1,30 @@
-import {config} from "./config.mjs";
+import {config, configHelper} from "./config.mjs";
 import type {
     ChannelCode,
     ChannelId,
     CurrentChannelSchedule,
-    ConfigShow,
-    DescriptiveId, PlayingNowAndNext,
     ShowId,
-    ShowsListItem, FullChannelSchedule, Episode
+    FullChannelSchedule, Episode, ScheduleResultsAfterInsertHandler
 } from "./types.mjs";
-import { LRUCache } from 'lru-cache'
 import type {Seconds} from "./clock.mjs";
 import {clock} from "./clock.mjs";
-import {log} from "./log.mjs";
 import {buildShowIdsFromChannelCode} from "./channelCodes.mjs";
 import {shows} from "./shows.mjs";
-import {schedule} from "./utils.mjs";
+import {generator, schedule} from "./utils.mjs";
+import {Cache} from "./cache.mjs";
 
 type SchedulerStopCondition = (currentPlaylistDuration: Seconds, currentPlaylistSize: number) => boolean;
 type SchedulePosition = {itemIndex: number, itemOffset: Seconds};
 
-const MAX_SCHEDULE_LENGTH = 24 * 60 * 60 as Seconds,
+const DEFAULT_SCHEDULE_LENGTH = 60 * 60 as Seconds,
+    MAX_SCHEDULE_LENGTH = 24 * 60 * 60 as Seconds,
     START_TIME = 1595199600 as Seconds; // 2020-07-20 00:00:00
 
 export class Scheduler {
-    private cache: LRUCache<ChannelId,FullChannelSchedule>;
+    private cache: Cache<ChannelId, FullChannelSchedule>;
 
     constructor() {
-        this.cache = new LRUCache<ChannelId,FullChannelSchedule>({
-            max: config.cache.maxItems,
-            onInsert: (_, key) => {
-                log.debug(`Adding schedule for channel ${key} to cache`);
-            },
-            fetchMethod: (key) => {
-                log.debug(`Calculating schedule for channel ${key}`);
-                return this.calculateFullScheduleForChannel(key);
-            }
-        });
+        this.cache = new Cache<ChannelId, FullChannelSchedule>("schedules", channelId => this.calculateFullScheduleForChannel(channelId as ChannelId), config.caches.scheduleCacheMaxItems, false);
     }
 
     private playlistReachedMinDuration(minDuration: Seconds): SchedulerStopCondition {
@@ -59,35 +48,43 @@ export class Scheduler {
         }
     }
 
-    private calculateFullScheduleForChannel(channelId: ChannelId): Promise<FullChannelSchedule> {
-        const showIds = this.getShowIdsForChannelId(channelId);
+    private async calculateFullScheduleForChannel(channelId: ChannelId): Promise<FullChannelSchedule> {
+        const allShowIds = this.getShowIdsForChannelId(channelId),
+            nonCommercialShowIds = allShowIds.filter(showId => !configHelper.getShowFromId(showId).isCommercial),
+            commercialShowIds = allShowIds.filter(showId => configHelper.getShowFromId(showId).isCommercial),
+            showScheduleItems = (await Promise.all(allShowIds.map(showId => shows.getEpisodesForShow(showId)))).map(generator),
+            showIdToIndex = new Map(allShowIds.map((showId, index) => [showId, index])),
+            nonCommercialShowCounts = new Map<ShowId, number>();
 
-        return Promise.all(showIds.map(showId => shows.getEpisodesForShow(showId))).then(showScheduleItemsForAllShows => {
-            const totalChannelDuration = showScheduleItemsForAllShows.flatMap(scheduleItem => scheduleItem).reduce((acc, item) => acc + item.length, 0) as Seconds,
-                showCounts = new Map<ShowId, number>();
-
-            showIds.forEach((showId, i) => {
-                const showScheduleItems = showScheduleItemsForAllShows[i];
-                showCounts.set(showId, showScheduleItems.length);
-            });
-
-            const scheduleResults = schedule(showCounts, () => {}),
-                fullSchedule = [] as Episode[];
-
-            scheduleResults.forEach((showId) => {
-                const nextItem = showScheduleItemsForAllShows[showId].shift();
-                fullSchedule.push(nextItem);
-            });
-
-            return {
-                list: fullSchedule,
-                length: totalChannelDuration
-            };
+        nonCommercialShowIds.forEach((showId, i) => {
+            const index = showIdToIndex.get(showId)
+            nonCommercialShowCounts.set(showId, showScheduleItems[index].length);
         });
-    }
 
-    private getFullScheduleForChannel(channelId: ChannelId): Promise<FullChannelSchedule> {
-        return this.cache.fetch(channelId);
+        let afterEach: ScheduleResultsAfterInsertHandler;
+        if (commercialShowIds.length > 0) {
+            const g = generator(commercialShowIds);
+            afterEach = results => results.push(g.next());
+        } else {
+            afterEach = () => {};
+        }
+
+        const scheduleResults = schedule(nonCommercialShowCounts, afterEach),
+            fullSchedule = [] as Episode[];
+
+        scheduleResults.forEach((showId) => {
+            const index = showIdToIndex.get(showId),
+                nextItem = showScheduleItems[index].next();
+
+            fullSchedule.push(nextItem);
+        });
+
+        const totalChannelDuration = fullSchedule.map(item => item.length).reduce((a, b) => a + b, 0) as Seconds;
+
+        return {
+            list: fullSchedule,
+            length: totalChannelDuration
+        };
     }
 
     private getCurrentSchedulePosition(fullSchedule: FullChannelSchedule): SchedulePosition {
@@ -135,14 +132,14 @@ export class Scheduler {
     }
 
     private getSchedule(channelId: ChannelId, stopCondition: SchedulerStopCondition): Promise<CurrentChannelSchedule> {
-        return this.getFullScheduleForChannel(channelId).then(fullSchedule => {
+        return this.cache.get(channelId).then(fullSchedule => {
             const currentPosition = this.getCurrentSchedulePosition(fullSchedule);
             return this.getCurrentSchedule(fullSchedule, currentPosition, stopCondition);
         });
     }
 
     getScheduleForChannel(channelId: ChannelId, length: Seconds) {
-        return this.getSchedule(channelId, this.playlistReachedMinDuration(Math.min(length, MAX_SCHEDULE_LENGTH) as Seconds));
+        return this.getSchedule(channelId, this.playlistReachedMinDuration(Math.min(length || DEFAULT_SCHEDULE_LENGTH, MAX_SCHEDULE_LENGTH) as Seconds));
     }
 
     getPlayingNowAndNext(channelId: ChannelId) {

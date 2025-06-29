@@ -1,6 +1,9 @@
 Backend Rewrite
 ---------------
-
+refetchStaleItems gets called before cache is populated?
+- when do we update archive.org cached data?
+    - need to invalidate schedules if playlist has changed
+        - need to check if playlist is different from last time
 
 Tests
 -----

@@ -1,6 +1,12 @@
 import {log} from "./log.mjs";
 import {configHelper} from "./config.mjs";
-import type {NameParserConfig, StringTransformer} from "./types.mjs";
+import type {
+    ArchiveOrgFileMetadata, ArchiveOrgMetadata,
+    NameParserConfig,
+    NameParserStats,
+    PlaylistId,
+    StringTransformer
+} from "./types.mjs";
 
 function addSpacesBeforeCapitals(txt: string) {
     return txt
@@ -50,7 +56,7 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: 'OTRR_Dimension_X_Singles',
         regex: /Dimension_X_(?<date>[-0-9]+)_+(?<num>[0-9]+)_+(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals
+            title: [addSpacesBeforeCapitals]
         }
     },
     {
@@ -67,7 +73,7 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ['Flash_Gordon1935'],
         regex: /Flash_Gordon_(?<date>[-0-9]+)_(?<num>[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
@@ -78,14 +84,14 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ['TheGreenHornet'],
         regex: /Thegreenhornet-(?<date>[0-9]{6})(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals
+            title: [addSpacesBeforeCapitals]
         }
     },
     {
         playlistIds: ['Dragnet_OTR'],
         regex: /Dragnet_(?<date>[-0-9]+)_ep(?<num>[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
@@ -99,7 +105,7 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ['otr_iloveamystery'],
         regex: /(?<date>[-0-9]+)_(?<title>[A-Za-z0-9]+)_(.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals
+            title: [addSpacesBeforeCapitals]
         }
     },
     {
@@ -113,7 +119,7 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ['OTRR_Philip_Marlowe_Singles'],
         regex: /Philip_Marlowe_(?<date>[-0-9]+)_(ep)?(?<num>[0-9]+)_(?<title>[A-Za-z0-9_]+)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
@@ -123,21 +129,21 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ['GUNSMOKE01', 'GUNSMOKE02', 'GUNSMOKE03', 'GUNSMOKE04', 'GUNSMOKE05'],
         regex: /Gunsmoke_(?<dater>[-0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ['The_Lone_Ranger_Page_01', 'The_Lone_Ranger_Page_02', 'The_Lone_Ranger_Page_03'],
         regex: /Lone_Ranger_(?<date>[-0-9]+)(.*?)[-_](?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ['HaveGunWillTravel_OldTimeRadio'],
         regex: /HaveGunWillTravel(?<date>[0-9]{6})(?<num>[0-9]+)(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals
+            title: [addSpacesBeforeCapitals]
         }
     },
     {
@@ -206,14 +212,14 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ['OTRR_Fort_Laramie_Singles'],
         regex: /Fort_Laramie_(?<date>[-0-9]+)_ep(?<num>[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ['TalesOfTheTexasRangers'],
         regex: /Texas_Rangers_(?<date>[0-9_]+)_(?<num>[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
@@ -224,7 +230,7 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ['OTRR_Molle_Mystery_Theatre_Singles'],
         regex: /Molle_(?<date>[-0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
@@ -242,105 +248,105 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ['PatNovakForHire'],
         regex: /(?<date>[-0-9]+)-(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals
+            title: [addSpacesBeforeCapitals]
         }
     },
     {
         playlistIds: ['OTRR_Planet_Man_Ver2_Singles'],
         regex: /Planet_Man_50-xx-xx_ep(?<num>[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ['OTRR_Mystery_House_Singles'],
         regex: /MysteryHouse(?<date>[-0-9x]{8})(?<num>[0-9x]+)(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals
+            title: [addSpacesBeforeCapitals]
         }
     },
     {
         playlistIds: ['otr_2000Plus'],
         regex: /(?<date>[-0-9x]+)_(?<num>[0-9x]+)-(.*)2000Plus-(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals
+            title: [addSpacesBeforeCapitals]
         }
     },
     {
         playlistIds: ['Exploring_Tomorrow'],
         regex: /ET_(?<date>[-0-9]+)_(?<num>[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ['OurMissBrooks'],
         regex: /Omb(?<date>[-0-9]+)(?<num>[0-9]{3})(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals
+            title: [addSpacesBeforeCapitals]
         }
     },
     {
         playlistIds: ['Great_Gildersleeve'],
         regex: /gild.(?<date>[0-9\.]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ['OTRR_Harold_Peary_Show_Singles'],
         regex: /Harold_Peary_(?<date>[-0-9]+)_ep(?<num>[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ["OTRR_Jack_Benny_Singles_1932-1934", "OTRR_Jack_Benny_Singles_1934-1935", "OTRR_Jack_Benny_Singles_1935-1936", "OTRR_Jack_Benny_Singles_1936-1937", "OTRR_Jack_Benny_Singles_1937-1938", "OTRR_Jack_Benny_Singles_1938-1939", "OTRR_Jack_Benny_Singles_1939-1940", "OTRR_Jack_Benny_Singles_1940-1941", "OTRR_Jack_Benny_Singles_1941-1942", "OTRR_Jack_Benny_Singles_1942-1943", "OTRR_Jack_Benny_Singles_1943-1944", "OTRR_Jack_Benny_Singles_1944-1945", "OTRR_Jack_Benny_Singles_1945-1946", "OTRR_Jack_Benny_Singles_1946-1947", "OTRR_Jack_Benny_Singles_1947-1948", "OTRR_Jack_Benny_Singles_1948-1949", "OTRR_Jack_Benny_Singles_1949-1950", "OTRR_Jack_Benny_Singles_1950-1951", "OTRR_Jack_Benny_Singles_1951-1952", "OTRR_Jack_Benny_Singles_1952-1953", "OTRR_Jack_Benny_Singles_1953-1954", "OTRR_Jack_Benny_Singles_1954-1955"],
         regex: /JB (?<date>[-0-9]+) (?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ["OTRR_Harris_Faye_Singles"],
         regex: /PhilHarris(?<date>[-0-9]{8})(?<num>[0-9]+)(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals
+            title: [addSpacesBeforeCapitals]
         }
     },
     {
         playlistIds: ["FibberMcgeeAndMollyHq"],
         regex: /(?<date>[0-9]+)-(?<num>[0-9]+)-(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals
+            title: [addSpacesBeforeCapitals]
         }
     },
     {
         playlistIds: ["otr_escape"],
         regex: /Escape.(?<date>[0-9\.]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ["otr_escape"],
         regex: /esca_(?<date>[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals
+            title: [addSpacesBeforeCapitals]
         }
     },
     {
         playlistIds: ["TheLivesOfHarryLime"],
         regex: /Harry_Lime_(?<date>[-0-9]+)_(?<num>[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ["TheSaintVincentPriceOTR"],
         regex: /The_Saint_(?<date>[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
@@ -351,7 +357,7 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ["BoldVenture57Episodes"],
         regex: /BoldVenture(?<date>[0-9]{6})(?<num>[0-9]{2})(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals
+            title: [addSpacesBeforeCapitals]
         }
     },
     {
@@ -362,42 +368,42 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ["LightsOutoldTimeRadio"],
         regex: /LightsOut-(?<date>[-0-9]+)(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals
+            title: [addSpacesBeforeCapitals]
         }
     },
     {
         playlistIds: ["TheMysteriousTraveler"],
         regex: /(?<date>[-0-9]{8})(?<num>[0-9]{3})(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals
+            title: [addSpacesBeforeCapitals]
         }
     },
     {
         playlistIds: ["otr_abbottandcostello"],
         regex: /(?<date>[0-9]{6})(_-)?_(?<title>[A-Za-z].*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ["OTRR_New_Adventures_of_Nero_Wolfe_Singles"],
         regex: /nanw_(?<date>[-0-9]+)_ep(?<num>[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ["OTRR_Black_Museum_Singles"],
         regex: /BlackMuseum-(?<date>[0-9]+)-(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals
+            title: [addSpacesBeforeCapitals]
         }
     },
     {
         playlistIds: ["MyFavoriteHusband"],
         regex: /My_Favorite_Husband_(?<date>[_0-9]{8})_(?<num>.{4})_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
@@ -411,56 +417,56 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ["OTRR_Whistler_Singles"],
         regex: /Whistler_(?<date>[-0-9]*)_ep(?<num>[0-9]{3})_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ["OTRR_Calling_All_Cars_Singles"],
         regex: /Calling_All_Cars_(?<date>[-0-9]+)_ep(?<num>[0-9]{3})_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ["OTRR_Weird_Circle_Singles"],
         regex: /Weird_Circle_4x-xx-xx_ep(?<num>[0-9]{2})_?(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ["The_Hermits_Cave"],
         regex: /HermitsCave_400000_(?<num>[0-9]{2})_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ["HopalongCassidy"],
         regex: /Hopalong_Cassidy_(?<date>[0-9]{6})_(?<num>[0-9]{4})_(?<titler>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ['CBSMTFantasy1', 'cbsmtfs2', 'cbsmtfs3', 'cbsmtfs4', 'cbsmtfs5', 'cbsmtfs6', 'cbsmtfs7', 'cbsmtfs8'],
         regex: /([0-9]{2})(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals
+            title: [addSpacesBeforeCapitals]
         }
     },
     {
         playlistIds: ['CbsRadioMysteryTheater1975Page1'],
         regex: /Cbsrmt([0-9]{6})([0-9]+)(?<title>.*)(_wuwm)(.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals
+            title: [addSpacesBeforeCapitals]
         }
     },
     {
         playlistIds: ['CbsRadioMysteryTheater1976Page1', 'CbsRadioMysteryTheater1976Page2', 'CbsRadioMysteryTheater1976Page3', 'CbsRadioMysteryTheater1976Page4', 'CbsRadioMysteryTheater1976Page5'],
         regex: /Cbsrmt([0-9]{6})([0-9]+)(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals
+            title: [addSpacesBeforeCapitals]
         }
     },
     {
@@ -471,8 +477,8 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ['OTRR_Ranger_Bill_Singles'],
         regex: /Ranger_Bill_(?<date>.{8})_ep(?<num>[0-9x]{3})_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores,
-            date: remove('xx-xx-xx')
+            title: [replaceUnderscores],
+            date: [remove('xx-xx-xx')]
         }
     },
     {
@@ -491,64 +497,64 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ['FatherKnowsBest45Episodes'],
         regex: /Fkb(?<date>[-0-9]{10})(?<num>[0-9]{3})(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals,
+            title: [addSpacesBeforeCapitals]
         }
     },
     {
         playlistIds: ['OTRR_Secrets_Of_Scotland_Yard_Singles'],
         regex: /SecretsOfScotlandYard(.{8})_(.{3})_(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals,
+            title: [addSpacesBeforeCapitals]
         }
     },
     {
         playlistIds: ['OTRR_Mr_District_Attorney_Singles'],
         regex: /Mr_District_Attorney_(?<date>.{8})_(?<num>.{3})_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores,
-            num: remove('xxx')
+            title: [replaceUnderscores],
+            num: [remove('xxx')]
         }
     },
     {
         playlistIds: ['TheLifeOfRiley'],
         regex: /Lor(?<date>[-0-9]{10})(?<num>[0-9]{3})(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals,
+            title: [addSpacesBeforeCapitals],
         }
     },
     {
         playlistIds: ['OTRR_Lux_Radio_Theater_Singles'],
         regex: /LuxRadioTheatre(?<date>[-0-9]{8})(?<num>[0-9]+)(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals,
+            title: [addSpacesBeforeCapitals],
         }
     },
     {
         playlistIds: ['OTRR_Lux_Radio_Theater_Singles'],
         regex: /Lux_Radio_Theatre_(?<date>[-0-9]{8})_(?<num>[0-9]+R?)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores,
+            title: [replaceUnderscores],
         }
     },
     {
         playlistIds: ['otr_campbellplayhouse'],
         regex: /(?<date>[0-9]{6})_(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals,
+            title: [addSpacesBeforeCapitals],
         }
     },
     {
         playlistIds: ['otr_campbellplayhouse'],
         regex: /CampbellPlayhouse(?<date>[-0-9]{8})(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals,
+            title: [addSpacesBeforeCapitals],
         }
     },
     {
         playlistIds: ['OrsonWelles-MercuryTheater-1938Recordings'],
         regex: /MercuryTheater(?<date>[-0-9]{8})(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals,
+            title: [addSpacesBeforeCapitals],
         }
     },
     {
@@ -559,7 +565,7 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ['ScreenGuildTheater'],
         regex: /Sgt_(?<date>[-0-9]{8})_ep(?<num>[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores,
+            title: [replaceUnderscores],
         }
     },
     {
@@ -574,21 +580,21 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ['ScreenDirectorsPlayhouse'],
         regex: /SDP_(?<date>[-0-9]{8})_ep(?<num>[0-9]+)-(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores,
+            title: [replaceUnderscores],
         }
     },
     {
         playlistIds: ['NBC_University_Theater'],
         regex: /NBC_University_Theater_(?<date>[0-9]{6})_(?<num>[0-9]{3})_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores,
+            title: [replaceUnderscores],
         }
     },
     {
         playlistIds: ['OTRR_Dr_Kildare_Singles'],
         regex: /Dr_Kildare_(?<date>[-0-9]{8})__(?<num>[0-9]+)__(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores,
+            title: [replaceUnderscores],
         }
     },
     {
@@ -599,35 +605,35 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ["VicSade1937-1939", "VicSade1940-1941", "VicSade1942-1947"],
         regex: /Vs(?<date>[-0-9]+(xx)?)(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals,
+            title: [addSpacesBeforeCapitals],
         }
     },
     {
         playlistIds: ["Sf_68"],
         regex: /(?<num>[-0-9]+)(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals,
+            title: [addSpacesBeforeCapitals],
         }
     },
     {
         playlistIds: ["haunting_hour"],
         regex: /(?<date>[0-9]{6}_)?(?<num>[0-9]{2}_)?(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores,
+            title: [replaceUnderscores],
         }
     },
     {
         playlistIds: ["OTRR_Moon_Over_Africa_Singles"],
         regex: /Moon_over_Africa_(?<date>[-0-9]+)_ep(?<num>[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores,
+            title: [replaceUnderscores],
         }
     },
     {
         playlistIds: ["Otrr_Dangerous_Assignment_Singles"],
         regex: /Dangerous_Assignment_(?<date>[-0-9]+)_(?<num>[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores,
+            title: [replaceUnderscores],
         }
     },
     {
@@ -638,7 +644,7 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ["OTRR_Sealed_Book_Singles"],
         regex: /Sealed_Book_45-xx-xx_ep(?<num>[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores,
+            title: [replaceUnderscores],
         }
     },
     {
@@ -649,35 +655,35 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ["OTRR_Frank_Race_Singles"],
         regex: /Frank_Race_49-xx-xx_ep(?<num>\d+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores,
+            title: [replaceUnderscores],
         }
     },
     {
         playlistIds: ["OTRR_Halls_Of_Ivy_Singles"],
         regex: /HallsOfIvy(?<date>[-0-9]+)(?<num>\d{3})(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals,
+            title: [addSpacesBeforeCapitals],
         }
     },
     {
         playlistIds: ["TheClock"],
         regex: /CLOCK_(?<date>[0-9_]+)ep(?<num>\d+)_?(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores,
+            title: [replaceUnderscores],
         }
     },
     {
         playlistIds: ["OTRR_John_Steele_Adventurer_Singles"],
         regex: /John_Steele_Adventurer_(?<date>[-x0-9]+)_(?<num>[x0-9]{3})_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores,
+            title: [replaceUnderscores],
         }
     },
     {
         playlistIds: ["OTRR_Mel_Blanc_Singles"],
         regex: /The_Mel_Blanc_Show_(?<date>[-0-9]+)_ep(?<num>\d+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores,
+            title: [replaceUnderscores],
         }
     },
     {
@@ -700,21 +706,21 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ["OTRR_Magic_Island_Singles"],
         regex: /MagicIsland_36xxxx__(?<num>[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores,
+            title: [replaceUnderscores],
         }
     },
     {
         playlistIds: ["FrontierGentleman-All41Episodes"],
         regex: /FrontierGentleman(?<date>[-0-9]+)_episode(?<nun>[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals,
+            title: [addSpacesBeforeCapitals],
         }
     },
     {
         playlistIds: ["OTRR_Philo_Vance_Singles"],
         regex: /Philo_Vance_(?<date>[-0-9]+)_(?<num>[0-9x]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores,
+            title: [replaceUnderscores],
         }
     },
     {
@@ -735,14 +741,14 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ["OTRR_Frontier_Town_Singles"],
         regex: /Frontier_Town_49-xx-xx_ep(?<num>[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ["470213ThePerfectScript"],
         regex: /(?<date>[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
@@ -774,23 +780,23 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ["RadioReadersDigest"],
         regex: /(?<date>[0-9]+)_(?<num>[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ["classicmlbbaseballradio"],
         regex: /(?<date>[0-9]{8})(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals,
-            date: insertHyphens
+            title: [addSpacesBeforeCapitals],
+            date: [insertHyphens]
         }
     },
     {
         playlistIds: ["classicmlbbaseballradio"],
         regex: /(?<date>[0-9]{6}-[0-9]{2})(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals,
-            date: insertHyphens
+            title: [addSpacesBeforeCapitals],
+            date: [insertHyphens]
         }
     },
     {
@@ -825,28 +831,28 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ["RockyJordan"],
         regex: /RJ_(?<date>[-0-9]+)_ep(?<num>[0-9]+)-(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ["OTRR_Nick_Carter_Master_Detective_Singles"],
         regex: /Nick Carter (?<date>[-0-9]+) \((?<num>[0-9]+)\) (?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ["TheAldrichFamily"],
         regex: /Af(?<date>[-0-9]{10})(?<num>[0-9]{3})(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals
+            title: [addSpacesBeforeCapitals]
         }
     },
     {
         playlistIds: ["TheAldrichFamily"],
         regex: /Af(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals
+            title: [addSpacesBeforeCapitals]
         }
     },
     {
@@ -861,14 +867,14 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ["l-a-1953-11-20-xx-thanksgiving-in-pine-ridge"],
         regex: /L&A (?<date>[-0-9]+) \((?<num>[0-9x]+)\) (?<title>.*)/,
         transforms: {
-            num: remove('x')
+            num: [remove('x')]
         }
     },
     {
         playlistIds: ["VoyageOfTheScarletQueen"],
         regex: /ScarletQueen(?<date>[-0-9]{8})(?<num>[0-9]*)(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals
+            title: [addSpacesBeforeCapitals]
         }
     },
     {
@@ -882,7 +888,7 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ["MartinAndLewis_OldTimeRadio"],
         regex: /MartinLewisShow(?<date>[0-9]{6})_(?<num>[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals
+            title: [addSpacesBeforeCapitals]
         }
     },
     {
@@ -900,15 +906,15 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ["bickersons-1947-03-02-12-blanche-has-a-stomach-ache"],
         regex: /Bickersons (?<date>[-0-9x_]{8,10}) \((?<num>.+)\) (?<title>.*)/,
         transforms: {
-            num: remove('xx'),
-            date: remove('xx_xx_xx')
+            num: [remove('xx')],
+            date: [remove('xx_xx_xx')]
         }
     },
     {
         playlistIds: ["OTRR_The_Big_Show_Singles"],
         regex: /(?<date>[-0-9]+)_ep(?<num>[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
@@ -919,14 +925,14 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ["a-a-1948-11-14-183-tourist-sightseeing-agency-aka-ny-sightseeing-agency-aka-andy"],
         regex: /A&A (?<date>[-0-9]+) #(?<num>[0-9]+) (?<title>.*)/,
         transforms: {
-            title: remove(/\s*\(aka [^)]+\)\s*/g)
+            title: [remove(/\s*\(aka [^)]+\)\s*/g)]
         }
     },
     {
         playlistIds: ["Perry_Mason_Radio_Show"],
         regex: /PM_(?<date>[0-9]+)_(?<num>[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
@@ -941,7 +947,7 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ["OTRR_Damon_Runyon_Singles"],
         regex: /Damon_Runyon__4x-xx-xx_ep(?<num>[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
@@ -952,28 +958,28 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ["TheWitchsTale"],
         regex: /(?<date>[-0-9]+) - (?<num>[0-9]+)\) (?<title>.*)/,
         transforms: {
-            title: remove(/ \([^)]+\)/g)
+            title: [remove(/ \([^)]+\)/g)]
         }
     },
     {
         playlistIds: ["390903-102-the-joy-shop"],
         regex: /(?<date>[0-9]+)_(?<num>[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ["otr_chanduthemagician"],
         regex: /(?<date>[-0-9]+)_Xxxx_-_Chandu_the_Magician_-_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ["otr_chanduthemagician"],
         regex: /(?<date>[-0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
@@ -984,22 +990,22 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ["Michael_Shayne"],
         regex: /Michael_Shayne_(?<date>[-0-9]+)_(ep[0-9]+_)?(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ["MrMoto"],
         regex: /MM_(?<date>[-0-9]+)_ep(?<num>[0-9]+)-(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ["ItPaysToBeIgnorant"],
         regex: /Iptbi_(?<date>[-0-9x]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores,
-            date: remove('xx-xx-xx')
+            title: [replaceUnderscores],
+            date: [remove('xx-xx-xx')]
         }
     },
     {
@@ -1014,49 +1020,49 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ["The_Scarlet_Pimpernel"],
         regex: /ScarletPimpernel_(?<num>[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ["Dr.Christian_911"],
         regex: /Drc(?<date>[-0-9]{10})(?<num>[0-9]+)(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals
+            title: [addSpacesBeforeCapitals]
         }
     },
     {
         playlistIds: ["OneMansFamily"],
         regex: /1MsF(?<date>[-0-9x]{10})(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals
+            title: [addSpacesBeforeCapitals]
         }
     },
     {
         playlistIds: ["Goldbergs"],
         regex: /gold.(?<date>[0-9\.]{10})_Ep(?<num>[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ["MaPerkins021950"],
         regex: /MaP([0-9]+)(?<title>[^0-9]*)([0-9-]{4,10})?/,
         transforms: {
-            title: addSpacesBeforeCapitals
+            title: [addSpacesBeforeCapitals]
         }
     },
     {
         playlistIds: ["AdventuresofFrankMerriwell"],
         regex: /Fm_(?<date>[0-9-]{8})_ep(?<num>[0-9]+)-(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ["Maisie"],
         regex: /(?<num>[0-9]+)_(?<date>[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
@@ -1070,7 +1076,7 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ["OtrHorizonsWest13Of13Eps"],
         regex: /Hw(?<num>[0-9]+)(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals
+            title: [addSpacesBeforeCapitals]
         }
     },
     {
@@ -1084,49 +1090,49 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ["OTRR_Luke_Slaughter_Of_Tombstone_Singles"],
         regex: /Luke_Slaughter_(?<date>[0-9-]+)_ep(?<num>[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ["Information-Please"],
         regex: /(?<date>[0-9]+)_(?<num>[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ["my-friend-irma"],
         regex: /(?<date>[0-9]+)_(?<num>[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ["EbZeb"],
         regex: /[0-9]{4}(?<num>[0-9]{3})(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals
+            title: [addSpacesBeforeCapitals]
         }
     },
     {
         playlistIds: ["EbZeb"],
         regex: /Ez(?<title>[0-9]{3})/,
         transforms: {
-            title: (t: string) => `Episode ${t}`
+            title: [(t: string) => `Episode ${t}`]
         }
     },
     {
         playlistIds: ["EbZeb"],
         regex: /Ez(?<date>[0-9-]+)000(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals
+            title: [addSpacesBeforeCapitals]
         }
     },
     {
         playlistIds: ["Milton_Berle_47-48"],
         regex: /MiltonBerle(?<date>[0-9-]{8})-(?<num>[0-9]+)-(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals
+            title: [addSpacesBeforeCapitals]
         }
     },
     {
@@ -1136,14 +1142,14 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ["SpikeJones"],
         regex: /SJ_(?<date>[0-9-]+)_ep(?<num>[0-9]+)-(Guest_)?(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ["otr_easyaces"],
         regex: /EasyAces(_|-)(?<num>[0-9]+)_?(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals
+            title: [addSpacesBeforeCapitals]
         }
     },
     {
@@ -1154,14 +1160,14 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ["otr_ghostcorps"],
         regex: /GhostCorps_(?<title>[0-9]+)/,
         transforms: {
-            title: (t: string) => `Episode ${t}`
+            title: [(t: string) => `Episode ${t}`]
         }
     },
     {
         playlistIds: ["otr_ghostcorps"],
         regex: /gcor.([0-9]+).(?<num>s[0-9]+.?e[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores,
+            title: [replaceUnderscores],
             num: [remove(/[se\.]/g)]
         }
     },
@@ -1169,7 +1175,7 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ["otr_dickbartonspecialagent"],
         regex: /OTR_-_Dick_Barton_Special_Agent_-_72-00-00_-_(?<title>[0-9]+)_-_(.*)/,
         transforms: {
-            title: (t: string) => `Episode ${t}`
+            title: [(t: string) => `Episode ${t}`]
         }
     },
     {
@@ -1191,42 +1197,42 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ["DiaryOfFate"],
         regex: /DF(?<date>[0-9-]+)(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals
+            title: [addSpacesBeforeCapitals]
         }
     },
     {
         playlistIds: ["believe-it-or-not"],
         regex: /(?<num>[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ["Bill_Sterns_Sports_Newsreel"],
         regex: /Bill_Sterns_Sports_Newsreel_-_(?<date>[0-9]+)-(?<num>[0-9]+)_-_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ["Bill_Sterns_Sports_Newsreel"],
         regex: /Bill_Sterns_Sports_Newsreel_-_(?<date>[0-9]+)_-_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ["OTRR_World_Adventurer_Club_Singles"],
         regex: /World_Adventurers_Club_32-xx-xx_ep(?<num>[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
         playlistIds: ["JackCarsonShow"],
         regex: /Jack_Carson_Show_(?<date>[-0-9]+)_(?<num>[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
@@ -1237,7 +1243,7 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ["OTRR_Cavalcade_of_America_Singles"],
         regex: /CALV_(?<date>[0-9]+)_(?<num>[0-9]+)_(?<title>.*)/,
         transforms: {
-            title: replaceUnderscores
+            title: [replaceUnderscores]
         }
     },
     {
@@ -1252,7 +1258,7 @@ const nameConfig: NameParserConfig[] = [
         playlistIds: ["OTRR_Sound_of_War_Singles"],
         regex: /SoundOfWarXx-xx-xx(?<num>[0-9x]+)(?<title>.*)/,
         transforms: {
-            title: addSpacesBeforeCapitals
+            title: [addSpacesBeforeCapitals]
         }
     },
     {
@@ -1264,26 +1270,30 @@ const nameConfig: NameParserConfig[] = [
         regex: /Thin ?Man ?(?<date>[-0-9x]+) ?(?<title>.*)/
     },
 
-].map(o => {
+].map((o: any) => {
     if (o.regex) {
         o.regex = new RegExp(o.regex, 'i');
     }
-    return o;
+    return o as NameParserConfig;
 });
 
-module.exports.buildNameParser = function() {
-    const stats = {ok: 0, failed: 0, playlists: {}};
+export class NameParser {
+    private readonly stats: NameParserStats;
 
-    function applyTransforms(value, transforms) {
+    constructor() {
+        this.stats = {ok: 0, failed: 0, playlists: new Map()};
+    }
+
+    private applyTransforms(value: string, transforms: StringTransformer[]) {
         if (!value) return;
 
         if (transforms) {
-            return toArray(transforms).reduce((acc, transform) => transform(acc), value);
+            return transforms.reduce((acc, transform) => transform(acc), value);
         }
         return value;
     }
 
-    function findBestParser(playlistId, metadata) {
+    private findBestParser(playlistId: PlaylistId, metadata: ArchiveOrgFileMetadata) {
         const matchingParsers= nameConfig.filter(c => c.playlistIds.includes(playlistId));
         if (matchingParsers.length === 0) {
             return;
@@ -1293,99 +1303,100 @@ module.exports.buildNameParser = function() {
         return matchingParsers.find(parser => parser.regex.test(metadata.name));
     }
 
-    return {
-        parse(playlistId, metadata) {
-            const matchingParser= findBestParser(playlistId, metadata),
-                values = {};
+    private updateStatsOk(playlistId: PlaylistId, title: string) {
+        log.debug(`nameParser MATCH OK: ${playlistId} "${title}"`);
+        if (!this.stats.playlists.has(playlistId)) {
+            this.stats.playlists.set(playlistId, {ok: 0, failed: 0});
+        }
+        this.stats.playlists.get(playlistId).ok++;
+        this.stats.ok++;
+    }
 
-            let parseSuccess, displayName;
+    private updateStatsFailed(playlistId: PlaylistId, fileName: string, fallbackTitle: string) {
+        log.debug(`nameParser MATCH FAILED: ${playlistId} "${fileName}", using "${fallbackTitle}"`);
+        if (!this.stats.playlists.has(playlistId)) {
+            this.stats.playlists.set(playlistId, {ok: 0, failed: 0});
+        }
+        this.stats.playlists.get(playlistId).failed++;
+        this.stats.failed++;
+    }
 
-            if (matchingParser) {
-                if (matchingParser.displayName) {
-                    parseSuccess = true;
-                    displayName = matchingParser.displayName;
+    private matchingParserWithNonMatchingRegex(playlistId: PlaylistId, metadata: ArchiveOrgFileMetadata) {
+        const fallbackName = metadata.title || metadata.name;
+        this.updateStatsFailed(playlistId, metadata.name, fallbackName);
+        return fallbackName;
+    }
+
+    private noMatchingParser(playlistId: PlaylistId, metadata: ArchiveOrgFileMetadata) {
+        const fallbackName = metadata.title || metadata.name;
+        this.updateStatsFailed(playlistId, metadata.name, fallbackName);
+        return fallbackName;
+    }
+
+    private matchingParserWithDisplayName(playlistId: PlaylistId, parser: NameParserConfig) {
+        const displayName = parser.displayName;
+        this.updateStatsOk(playlistId, displayName);
+        return displayName;
+    }
+
+    private matchingParserWithMatchingRegex(playlistId: PlaylistId, parser: NameParserConfig, match: RegExpMatchArray) {
+        const titlePart = this.applyTransforms(match.groups.title, parser.transforms?.title),
+            datePart = this.applyTransforms(match.groups.date, parser.transforms?.date),
+            numPart = this.applyTransforms(match.groups.num, parser.transforms?.num);
+
+        let fullTitle: string = parser.showName || configHelper.getShowForPlaylistId(playlistId).name;
+
+        if (numPart) {
+            const parsedNum = parseInt(numPart) || numPart;
+            fullTitle += ` (#${parsedNum})`;
+        }
+        fullTitle += `: ${titlePart}`;
+        if (datePart) {
+            fullTitle += ` [${datePart}]`;
+        }
+
+        this.updateStatsOk(playlistId, fullTitle);
+        return fullTitle;
+    }
+
+    private matchingParserWithNoRegex(playlistId: PlaylistId, metadata: ArchiveOrgFileMetadata) {
+        // If there's a parser with no regex then we can assume the title is safe to use
+        const title = metadata.title;
+        this.updateStatsOk(playlistId, title);
+        return title;
+    }
+
+    parse(playlistId: PlaylistId, metadata: ArchiveOrgFileMetadata) {
+        const matchingParser = this.findBestParser(playlistId, metadata);
+
+        if (matchingParser) {
+            if (matchingParser.displayName) {
+                return this.matchingParserWithDisplayName(playlistId, matchingParser);
+
+            } else if (matchingParser.regex) {
+                const match = (metadata.name.replace(/\.mp3$/i, '')).match(matchingParser.regex);
+                if (match) {
+                    return this.matchingParserWithMatchingRegex(playlistId, matchingParser, match);
+
                 } else {
-                    matchingParser.transforms = matchingParser.transforms || {};
-                    if (matchingParser.regex) {
-                        const match = (metadata.name.replace(/\.mp3$/i, '')).match(matchingParser.regex);
-                        if (match) {
-                            values.title = applyTransforms(match.groups.title, matchingParser.transforms.title);
-                            values.date = applyTransforms(match.groups.date, matchingParser.transforms.date);
-                            values.num = applyTransforms(match.groups.num, matchingParser.transforms.num);
-                            parseSuccess = true;
-                        }
-
-                    } else {
-                        // this means we can assume metadata title is always safe to use
-                        values.title = applyTransforms(metadata.title, matchingParser.transforms.title);
-                        parseSuccess = true;
-                    }
+                    return this.matchingParserWithNonMatchingRegex(playlistId, metadata);
                 }
-            }
-
-            values.title = values.title || metadata.title || metadata.name;
-
-            const showName = (matchingParser && matchingParser.showName) || configHelper.getShowForPlaylistId(playlistId).name,
-                nameParts = [showName];
-
-            if (values.num) {
-                const parsedNum = parseInt(values.num) || values.num;
-                nameParts.push(` (#${parsedNum})`);
-            }
-            nameParts.push(`: ${values.title}`);
-            if (values.date) {
-                nameParts.push(` [${values.date}]`);
-            }
-
-            displayName = displayName || nameParts.join('');
-            if (!stats.playlists[playlistId]) {
-                stats.playlists[playlistId] = {
-                    ok: 0,
-                    failed: 0
-                };
-            }
-            if (parseSuccess) {
-                stats.playlists[playlistId].ok++;
-                stats.ok++;
-                log.debug(`nameParser MATCH OK: ${playlistId} "${displayName}"`);
             } else {
-                stats.playlists[playlistId].failed++;
-                stats.failed++;
-                log.debug(`nameParser MATCH FAILED: ${playlistId} "${displayName}" from ${metadata.name}`);
+                return this.matchingParserWithNoRegex(playlistId, metadata);
             }
-            return displayName;
-        },
-
-        logStats() {
-            Object.entries(stats.playlists).map(([playlistId, stats]) => {
-                log.debug(`nameParser stats: ${playlistId} ${stats.failed} FAILED, ${stats.ok} OK`)
-            });
-
-            const percentageOk = ((stats.ok / (stats.ok + stats.failed)) * 100).toFixed(2);
-            log.info(`nameParser stats: ${percentageOk}% parsed OK, ${stats.failed} failures`);
+        } else {
+            return this.noMatchingParser(playlistId, metadata);
         }
-    };
-    (playlistId, metadata) => {
+    }
 
+    logStats() {
+        Object.entries(this.stats.playlists).map(([playlistId, stats]) => {
+            log.debug(`nameParser stats: ${playlistId} ${stats.failed} FAILED, ${stats.ok} OK`)
+        });
 
-        if (matchingParsers.length) {
-            const matches = matchingParsers.map(parser => {
-                if (parser.regex) {
-                    const match = metadata.name.match(parser.regex);
-                    if (match) {
-                        return parser.getName(match);
-                    }
-
-                } else {
-                    return parser.getName(metadata);
-                }
-            }).filter(o => o);
-            if (matches.length) {
-                log.debug(`nameParser MATCH OK: ${playlistId} ${matches[0]}`);
-                return matches[0];
-            }
-        }
-        log.debug(`nameParser NO MATCH: ${playlistId} ${metadata.name}`);
-        return metadata.title || metadata.name;
+        const percentageOk = ((this.stats.ok / (this.stats.ok + this.stats.failed)) * 100).toFixed(2);
+        log.info(`nameParser stats: ${percentageOk}% parsed OK, ${this.stats.failed} failures`);
     };
 }
+
+export const nameParser = new NameParser();

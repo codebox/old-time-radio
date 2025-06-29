@@ -27,5 +27,12 @@ export const configHelper = {
     },
     getChannels() {
         return config.channels.map(channel => channel.name);
+    },
+    getShowFromId(showId: ShowId) {
+        const show = config.shows.find(show => show.id === showId);
+        if (!show) {
+            throw new Error(`Show with id '${showId}' not found in config`);
+        }
+        return show;
     }
 }

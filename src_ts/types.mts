@@ -21,9 +21,11 @@ export type Config = {
     "minRequestIntervalMillis": Millis,
     "shows" : ConfigShow[],
     "channels" : ConfigChannel[],
-    "cache" : {
-        "maxItems": number,
-    }
+    "caches": {
+        "baseDirectory": string,
+        "scheduleCacheMaxItems": number,
+        "showsCacheMaxAgeHours": number
+    },
 };
 
 export type ConfigShow = {
@@ -44,6 +46,7 @@ export type ArchiveOrgFileMetadata = {
     "name": string,
     "format": string,
     "length": string,
+    "title"?: string,
 };
 
 export type ArchiveOrgMetadata = {
@@ -96,6 +99,7 @@ export type EpisodeId = string;
 export type Episode = {
     index: EpisodeIndex,
     showId: ShowId,
+    showName: ShowName,
     length: Seconds
 }
 
@@ -134,11 +138,24 @@ export type ScheduleResultsAfterInsertHandler = (results: ScheduleResults) => vo
 export type StringTransformer = (input: string) => string;
 
 export type NameParserConfig = {
-    playlistIds: string | string[],
+    playlistIds: PlaylistId | PlaylistId[],
     regex?: RegExp,
+    displayName?: EpisodeName,
+    showName?: ShowName,
     transforms?: {
-        title?: StringTransformer | StringTransformer[],
-        date?: StringTransformer | StringTransformer[],
-        num?: StringTransformer | StringTransformer[],
+        title?: StringTransformer[],
+        date?: StringTransformer[],
+        num?: StringTransformer[],
     }
+}
+
+export type NameParserStats = {
+    ok: number,
+    failed: number,
+    playlists: Map<PlaylistId, {ok: number, failed: number}>
+}
+
+export type Generator<T> = {
+    next: () => T,
+    length: number
 }

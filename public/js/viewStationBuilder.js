@@ -54,7 +54,7 @@ function buildStationBuilderView(eventSource) {
     function buildShowButtonElement(show) {
         const button = document.createElement('button');
         button.innerHTML = show.name;
-        button.dataset.index = show.index;
+        button.dataset.id = show.id;
         button.classList.add('menuButton');
         button.setAttribute('role', 'checkbox');
         button.ariaChecked = 'false';
