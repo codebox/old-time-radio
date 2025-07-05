@@ -24,7 +24,7 @@ export class Scheduler {
     private cache: Cache<ChannelId, FullChannelSchedule>;
 
     constructor() {
-        this.cache = new Cache<ChannelId, FullChannelSchedule>("schedules", channelId => this.calculateFullScheduleForChannel(channelId as ChannelId), config.caches.scheduleCacheMaxItems, false);
+        this.cache = new Cache<ChannelId, FullChannelSchedule>("schedules", channelId => this.calculateFullScheduleForChannel(channelId as ChannelId), config.caches.scheduleCacheMaxItems);
     }
 
     private playlistReachedMinDuration(minDuration: Seconds): SchedulerStopCondition {
@@ -147,4 +147,9 @@ export class Scheduler {
         return this.getSchedule(channelId, this.playlistContainsRequiredNumberOfItems(3));
     }
 
+    clearCache() {
+        return this.cache.clear();
+    }
 }
+
+export const scheduler = new Scheduler();

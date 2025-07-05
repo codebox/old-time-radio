@@ -24,7 +24,8 @@ export type Config = {
     "caches": {
         "baseDirectory": string,
         "scheduleCacheMaxItems": number,
-        "showsCacheMaxAgeHours": number
+        "showsCacheMaxAgeHours": number,
+        "showsCacheRefetchIntervalHours": number
     },
 };
 

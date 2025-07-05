@@ -93,7 +93,8 @@ export class Shows {
 
         } catch (error: any) {
             log.error(`Error fetching playlist '${playlistId}': ${error.message}`);
-            return [];
+            throw error;
+            // return [];
         }
     }
 

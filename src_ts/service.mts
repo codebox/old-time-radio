@@ -1,7 +1,6 @@
 import {config} from "./config.mjs";
 import type {
     ChannelId,
-    CurrentChannelSchedule,
     ConfigShow,
     DescriptiveId, PlayingNowAndNext,
     ShowId,
@@ -9,10 +8,9 @@ import type {
 } from "./types.mjs";
 import {buildChannelCodeFromShowIds} from "./channelCodes.mjs";
 import type {Seconds} from "./clock.mjs";
-import {Scheduler} from "./scheduler.mjs";
 import {getSitemapXml} from "./sitemap.mjs";
 import {shows} from "./shows.mjs";
-
+import {scheduler} from "./scheduler.mjs";
 
 function getChannelIdsForShowId(showId: ShowId) {
     return config.channels.filter(channel => channel.shows.includes(showId)).map(channel => channel.name);
@@ -23,12 +21,6 @@ function getDescriptiveIdForShowName(showName: string): DescriptiveId {
 }
 
 export class Service {
-    private scheduler: Scheduler;
-
-    constructor() {
-        this.scheduler = new Scheduler();
-    }
-
     private getShowsListItemFromConfigShow(configShow: ConfigShow): ShowsListItem {
         return {
             channels: getChannelIdsForShowId(configShow.id),
@@ -50,7 +42,7 @@ export class Service {
     }
 
     async getScheduleForChannel(channelId: ChannelId, length: Seconds): Promise<CurrentChannelScheduleWithDetails> {
-        const scheduleWithoutDetails = await this.scheduler.getScheduleForChannel(channelId, length),
+        const scheduleWithoutDetails = await scheduler.getScheduleForChannel(channelId, length),
             scheduleEpisodeDetails = await Promise.all(scheduleWithoutDetails.list.map(episode => shows.getEpisodeDetails(episode)));
 
         return {
@@ -64,7 +56,7 @@ export class Service {
     }
 
     getPlayingNowAndNext(channels: ChannelId[]): Promise<PlayingNowAndNext> {
-        return Promise.all(channels.map(channelId => this.scheduler.getPlayingNowAndNext(channelId))).then(channelSchedules => {
+        return Promise.all(channels.map(channelId => scheduler.getPlayingNowAndNext(channelId))).then(channelSchedules => {
             const result = {} as PlayingNowAndNext;
             channels.map((channelId, index) => {
                result[channelId] = channelSchedules[index];

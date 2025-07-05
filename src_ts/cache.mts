@@ -9,8 +9,8 @@ import {deepEquals} from "./utils.mjs";
 
 export class Cache<K,V> {
     private cacheName: string;
-    private diskCache: DiskCache<string,V>;
-    private lruCache: LRUCache<string,V>;
+    private diskCache: DiskCache<K,V>;
+    private lruCache: LRUCache<K,V>;
     private fetch: (key: K) => Promise<V>;
     private isFresh: (key: K) => Promise<boolean>;
 
@@ -19,14 +19,14 @@ export class Cache<K,V> {
         this.fetch = fetch;
 
         if (diskCacheMaxAge) {
-            this.diskCache = new DiskCache<string,V>(path.join(config.caches.baseDirectory, cacheName), diskCacheMaxAge as Seconds);
-            this.isFresh = key => this.diskCache.isFresh(key as string);
+            this.diskCache = new DiskCache<K,V>(path.join(config.caches.baseDirectory, cacheName), diskCacheMaxAge as Seconds);
+            this.isFresh = key => this.diskCache.isFresh(key);
 
         } else {
             this.isFresh = () => Promise.resolve(true);
         }
 
-        this.lruCache = new LRUCache<string,V>({
+        this.lruCache = new LRUCache<K,V>({
             max: maxItems,
             onInsert: (value, key) => {
                 log.debug(`Added item for [${key}] to ${this.cacheName} memory cache`);
@@ -46,10 +46,6 @@ export class Cache<K,V> {
         });
     }
 
-    private sanitizeKey(key: K) {
-        return key.toString().replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '_');
-    }
-
     async refetchStaleItems() {
         const staleKeys = [];
         for (const key of this.lruCache.keys()) {
@@ -63,7 +59,7 @@ export class Cache<K,V> {
             log.debug(`Refetching stale item for key [${key}] in ${this.cacheName} cache`);
             try {
                 const newValue = await this.fetch(key);
-                this.lruCache.set(key as string, newValue);
+                this.lruCache.set(key, newValue);
 
             } catch (error) {
                 log.error(`Failed to refetch item for key [${key}] in ${this.cacheName} cache: ${(error as Error).message}`);
@@ -72,38 +68,41 @@ export class Cache<K,V> {
     }
 
     async get(key: K): Promise<V> {
-        const sanitizedKey = this.sanitizeKey(key);
-
-        if (this.lruCache.has(sanitizedKey)) {
-            log.debug(`Cache hit for key [${sanitizedKey}] in ${this.cacheName} memory cache`);
-            return this.lruCache.get(sanitizedKey);
+        if (this.lruCache.has(key)) {
+            log.debug(`Cache hit for key [${key}] in ${this.cacheName} memory cache`);
+            return this.lruCache.get(key);
 
         } else if (this.diskCache) {
-            if (await this.diskCache.has(sanitizedKey)) {
-                log.debug(`Cache hit for key [${sanitizedKey}] in ${this.cacheName} disk cache`);
-                const value = await this.diskCache.get(sanitizedKey);
-                this.lruCache.set(sanitizedKey, value);
+            if (await this.diskCache.has(key)) {
+                log.debug(`Cache hit for key [${key}] in ${this.cacheName} disk cache`);
+                const value = await this.diskCache.get(key);
+                this.lruCache.set(key, value);
                 return value;
             }
         }
 
-        log.debug(`${this.cacheName} cache miss for key [${sanitizedKey}], fetching new value`);
+        log.debug(`${this.cacheName} cache miss for key [${key}], fetching new value`);
         const newValue = await this.fetch(key);
-        log.debug(`Fetched new value for [${sanitizedKey}], saving to ${this.cacheName} cache`);
-        this.lruCache.set(sanitizedKey, newValue); // gets saved to diskCache in onInsert
+        log.debug(`Fetched new value for [${key}], saving to ${this.cacheName} cache`);
+        this.lruCache.set(key, newValue); // gets saved to diskCache in onInsert
         return newValue;
     }
 
     async set(key: K, value: V) {
         log.debug(`Setting value for key [${key}] in ${this.cacheName} cache`);
-        const sanitizedKey = this.sanitizeKey(key);
-        this.lruCache.set(sanitizedKey, value);
+        this.lruCache.set(key, value);
     }
 
     async remove(key: K) {
-        const sanitizedKey = this.sanitizeKey(key);
-        log.debug(`Removing key [${sanitizedKey}] from ${this.cacheName} cache`);
-        this.lruCache.delete(sanitizedKey);
+        log.debug(`Removing key [${key}] from ${this.cacheName} cache`);
+        this.lruCache.delete(key);
+    }
+
+    async clear() {
+        if (this.diskCache) {
+            await this.diskCache.clear();
+        }
+        this.lruCache.clear();
     }
 }
 

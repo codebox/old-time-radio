@@ -1,9 +1,11 @@
 Backend Rewrite
 ---------------
-refetchStaleItems gets called before cache is populated?
-- when do we update archive.org cached data?
-    - need to invalidate schedules if playlist has changed
-        - need to check if playlist is different from last time
+scenarios to check
+    - fails to download show when not present is disk cache (ie when service starts for first time)
+        - ok to crash
+    - fails to download show on refresh
+        - keep stale copy and try again next time
+space patrol name parser doesnt add show name at the front
 
 Tests
 -----

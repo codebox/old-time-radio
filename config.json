@@ -17,7 +17,8 @@
   "caches": {
     "baseDirectory": "cache",
     "scheduleCacheMaxItems": 9,
-    "showsCacheMaxAgeHours": 12
+    "showsCacheMaxAgeHours": 4,
+    "showsCacheRefetchIntervalHours": 1
   },
   "scheduler": {
     "radical": 1.8
