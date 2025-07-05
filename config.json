@@ -16,7 +16,7 @@
   "minRequestIntervalMillis": 1500,
   "caches": {
     "baseDirectory": "cache",
-    "scheduleCacheMaxItems": 9,
+    "scheduleCacheMaxItems": 100,
     "showsCacheMaxAgeHours": 4,
     "showsCacheRefetchIntervalHours": 1
   },
@@ -25,7 +25,7 @@
   },
   "log": {
     "file": "/var/log/oldtimeradio/access.log",
-    "level": "debug"
+    "level": "info"
   },
   "shows" : [
     {
