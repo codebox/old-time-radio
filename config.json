@@ -3,7 +3,8 @@
     "port": 3000,
     "paths": {
       "static": "public",
-      "listenTo": "https://oldtime.radio/listen-to/",
+      "publicUrlPrefix": "https://oldtime.radio",
+      "listenTo": "/listen-to",
       "api": {
         "shows": "/api/shows",
         "channels": "/api/channels",

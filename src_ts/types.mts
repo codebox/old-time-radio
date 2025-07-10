@@ -5,6 +5,7 @@ export type Config = {
         "port": number,
         "paths": {
             "static": UrlPath,
+            "publicUrlPrefix": UrlPath,
             "listenTo": UrlPath,
             "api": {
                 "shows": UrlPath,
