@@ -3,10 +3,10 @@ import type {ShowsListItem, Xml} from "./types.mjs";
 
 export function getSitemapXml(shows: ShowsListItem[]){
     "use strict";
-    const urlPrefix = config.web.paths.listenTo,
+    const urlPrefix = `${config.web.paths.publicUrlPrefix}${config.web.paths.listenTo}`,
         urlElements = shows
             .map(show => show.descriptiveId)
-            .map(id => `<url><loc>${urlPrefix}${id}</loc></url>`);
+            .map(id => `<url><loc>${urlPrefix}/${id}</loc></url>`);
 
     return [
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
