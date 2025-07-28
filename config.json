@@ -225,8 +225,9 @@
     {
       "name": "Fibber McGee and Molly",
       "shortName": "Fibber McGee",
-      "playlists": ["FibberMcgeeAndMollyHq"],
-      "id": 36
+      "playlists": ["fibber-mc-gee-and-molly"],
+      "id": 36,
+      "skip": ["Partial", "Rebroadcast", "AFRTS", "Interviews"]
     },
     {
       "name": "Pat Novak, For Hire",

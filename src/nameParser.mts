@@ -315,11 +315,8 @@ const nameConfig: NameParserConfig[] = [
         }
     },
     {
-        playlistIds: ["FibberMcgeeAndMollyHq"],
-        regex: /(?<date>[0-9]+)-(?<num>[0-9]+)-(?<title>.*)/,
-        transforms: {
-            title: [addSpacesBeforeCapitals]
-        }
+        playlistIds: ["fibber-mc-gee-and-molly"],
+        regex: /FMM (?<date>[-0-9]{10}) \((?<num>[0-9x]+)\) (?<title>.*)/,
     },
     {
         playlistIds: ["otr_escape"],
