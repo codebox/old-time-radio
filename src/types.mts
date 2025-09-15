@@ -28,6 +28,12 @@ export type Config = {
         "showsCacheMaxAgeHours": number,
         "showsCacheRefetchIntervalHours": number
     },
+    "dataApi": {
+        "baseUrl": Url,
+        "paths": {
+            "shortSummaries": UrlPath
+        }
+    }
 };
 
 export type ConfigShow = {
@@ -77,6 +83,7 @@ export type ChannelCode = string & { readonly __brand: unique symbol }; // eg '0
 export type ChannelId = ChannelName | ChannelCode
 export type ShowName = string & { readonly __brand: unique symbol };
 export type EpisodeName = string & { readonly __brand: unique symbol };
+export type ShortEpisodeSummary = string & { readonly __brand: unique symbol };
 export type DescriptiveId = string & { readonly __brand: unique symbol };
 export type PlaylistId = string & { readonly __brand: unique symbol };
 export type ShowId = number & { readonly __brand: unique symbol };
@@ -85,6 +92,11 @@ export type Url = string & { readonly __brand: unique symbol };
 export type Xml = string & { readonly __brand: unique symbol };
 export type IsCommercial = boolean & { readonly __brand: unique symbol };
 export type SkipText = string & { readonly __brand: unique symbol };
+export type OtrDataEpisodeId = string & { readonly __brand: unique symbol };
+
+export type OtrDataShortSummaryResponse = {
+    [key in OtrDataEpisodeId]: ShortEpisodeSummary
+}
 
 export type ShowsListItem = {
     channels: ChannelId[], // used on client-side in Channel Builder to decide which section to display the show in
@@ -111,7 +123,8 @@ export type EpisodeDetails = {
     length: Seconds,
     name: EpisodeName,
     showName: ShowName,
-    urls: Url[]
+    urls: Url[],
+    shortDescription?: ShortEpisodeSummary
 }
 
 export type FullChannelSchedule = {

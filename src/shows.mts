@@ -6,7 +6,7 @@ import type {
     EpisodeId,
     EpisodeIndex,
     EpisodeName,
-    IsCommercial, PlaylistId,
+    IsCommercial, OtrDataEpisodeId, OtrDataShortSummaryResponse, PlaylistId, ShortEpisodeSummary,
     ShowId,
     ShowName,
     Url
@@ -17,6 +17,8 @@ import {Cache} from "./cache.mjs";
 import {config, configHelper} from "./config.mjs";
 import {archiveOrg} from "./archiveOrg.mjs";
 import {nameParser} from "./nameParser.mjs";
+import {otrData} from "./otrData.mjs";
+import path from "path";
 
 export class Shows {
     private readonly cache: Cache<ShowId, EpisodeDetails[]>
@@ -65,9 +67,16 @@ export class Shows {
         return true;
     }
 
+    private getShortDescription(fileMetadata: ArchiveOrgFileMetadata, shortSummaries: OtrDataShortSummaryResponse): ShortEpisodeSummary | undefined {
+        const id = path.parse(fileMetadata.name).name as OtrDataEpisodeId;
+        return shortSummaries[id];
+    }
+
     private async fetchEpisodeDetailsForPlaylistId(playlistId: PlaylistId, show: ConfigShow): Promise<EpisodeDetails[]> {
         try {
-            const playlistData = await archiveOrg.get(playlistId);
+            const playlistData = await archiveOrg.get(playlistId),
+                shortSummaries = await otrData.getShortEpisodeSummariesForPlaylist(playlistId);
+
             this.validatePlaylist(playlistData);
 
             return playlistData.files
@@ -87,7 +96,8 @@ export class Shows {
                             `https://${playlistData.server}${playlistData.dir}/${encodedFileName}` as Url,
                             `https://${playlistData.d1}${playlistData.dir}/${encodedFileName}` as Url,
                             `https://${playlistData.d2}${playlistData.dir}/${encodedFileName}` as Url,
-                        ]
+                        ],
+                        shortDescription: this.getShortDescription(fileMetadata, shortSummaries)
                     } as EpisodeDetails;
                 });
 

@@ -42,7 +42,8 @@ function buildScheduleView(eventSource) {
                 const result = {
                     time: `${hh}:${mm}`,
                     name: item.name,
-                    commercial: item.commercial
+                    commercial: item.commercial,
+                    shortSummary: item.shortDescription
                 };
                 nextShowStartOffsetFromNow += item.length;
                 return result;
@@ -50,8 +51,16 @@ function buildScheduleView(eventSource) {
 
             elScheduleList.innerHTML = '';
             scheduleList.forEach(scheduleItem => {
-                const el = document.createElement('li');
-                el.innerHTML = `<div class="scheduleItemTime">${scheduleItem.time}</div><div class="scheduleItemName">${scheduleItem.name}</div>`;
+                const el = document.createElement('li'), htmlParts = [];
+
+                htmlParts.push(`<div class="scheduleItemTime">${scheduleItem.time}</div>`);
+                htmlParts.push(`<div class="scheduleItemDetails">`);
+                htmlParts.push(`<div class="scheduleItemName">${scheduleItem.name}</div>`);
+                if (scheduleItem.shortSummary) {
+                    htmlParts.push(`<div class="scheduleItemShortSummary">${scheduleItem.shortSummary}</div>`);
+                }
+                htmlParts.push('</div>');
+                el.innerHTML = htmlParts.join('');
                 elScheduleList.appendChild(el);
             });
         },

@@ -24,6 +24,12 @@
   "scheduler": {
     "radical": 1.8
   },
+  "dataApi": {
+    "baseUrl": "http://localhost:8000",
+    "paths": {
+      "shortSummaries": "/api/short-summaries"
+    }
+  },
   "log": {
     "file": "/var/log/oldtimeradio/access.log",
     "level": "info"

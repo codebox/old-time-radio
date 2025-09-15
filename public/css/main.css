@@ -12,14 +12,16 @@
     --body-background: #777;
     --menu-font-color: black;
     --hr-bottom-color: #ddd;
+    --schedule-summary-color: #606060;
+    --monospace-font: Roboto Mono
 }
 @font-face {
     font-family: 'Bellerose';
     src: url('Bellerose.ttf') format('truetype');
 }
 @font-face {
-    font-family: 'Courier Prime';
-    src: url('CourierPrime-Regular.ttf') format('truetype');
+    font-family: 'Roboto Mono';
+    src: url('RobotoMono-VariableFont_wght.ttf') format('truetype');
 }
 *:focus-visible {
     outline-color: white;
@@ -57,7 +59,7 @@ html, body, div {
 }
 
 #message, #downloadLink {
-    font-family: 'Courier Prime', monospace;
+    font-family: var(--monospace-font), monospace;
     text-transform: uppercase;
     font-size: 14px;
     display: flex;
@@ -352,14 +354,19 @@ noscript a, noscript a:visited {
     display: flex;
     flex-direction: row;
     text-align: left;
-    font-size: 14px;
-    font-family: 'Courier Prime', monospace;
+    font-size: 13px;
+    font-family: var(--monospace-font), monospace;
 }
 #scheduleList li .scheduleItemTime {
     flex: 0 0 60px;
 }
 #scheduleList li .scheduleItemName{
     flex-grow: 1;
+}
+#scheduleList li .scheduleItemShortSummary{
+    color: var(--schedule-summary-color);
+    font-weight: 300;
+    margin-bottom: 5px;
 }
 #sleepTimerRunningDisplay {
     height: auto;
@@ -376,7 +383,7 @@ noscript a, noscript a:visited {
     flex-wrap: wrap;
 }
 #sleepTimerTime {
-    font-family: 'Courier Prime', monospace;
+    font-family: var(--monospace-font), monospace;
 }
 #stationDetails {
     height: auto;
