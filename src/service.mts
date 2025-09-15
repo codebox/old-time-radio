@@ -57,11 +57,11 @@ export class Service {
 
     getPlayingNowAndNext(channels: ChannelId[]): Promise<PlayingNowAndNext> {
         return Promise.all(channels.map(channelId => scheduler.getPlayingNowAndNext(channelId))).then(channelSchedules => {
-            const result = {} as PlayingNowAndNext;
+        const result = {} as PlayingNowAndNext;
             channels.map((channelId, index) => {
                result[channelId] = channelSchedules[index];
             });
-            return result;
+        return result;
         });
     }
 

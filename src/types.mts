@@ -31,7 +31,8 @@ export type Config = {
     "dataApi": {
         "baseUrl": Url,
         "paths": {
-            "shortSummaries": UrlPath
+            "shortSummaries": UrlPath,
+            "mediumSummaries": UrlPath
         }
     }
 };
@@ -84,6 +85,7 @@ export type ChannelId = ChannelName | ChannelCode
 export type ShowName = string & { readonly __brand: unique symbol };
 export type EpisodeName = string & { readonly __brand: unique symbol };
 export type ShortEpisodeSummary = string & { readonly __brand: unique symbol };
+export type MediumEpisodeSummary = string & { readonly __brand: unique symbol };
 export type DescriptiveId = string & { readonly __brand: unique symbol };
 export type PlaylistId = string & { readonly __brand: unique symbol };
 export type ShowId = number & { readonly __brand: unique symbol };
@@ -96,6 +98,10 @@ export type OtrDataEpisodeId = string & { readonly __brand: unique symbol };
 
 export type OtrDataShortSummaryResponse = {
     [key in OtrDataEpisodeId]: ShortEpisodeSummary
+}
+
+export type OtrDataMediumSummaryResponse = {
+    [key in OtrDataEpisodeId]: MediumEpisodeSummary
 }
 
 export type ShowsListItem = {

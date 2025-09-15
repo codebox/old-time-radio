@@ -1,17 +1,27 @@
 import { WebClient } from "./webClient.mjs";
 import { log } from "./log.mjs";
 import { config } from "./config.mjs";
-import type {OtrDataShortSummaryResponse, PlaylistId, Url} from "./types.mjs";
+import type {
+    OtrDataEpisodeId,
+    OtrDataMediumSummaryResponse,
+    OtrDataShortSummaryResponse,
+    PlaylistId,
+    ShowId,
+    Url
+} from "./types.mjs";
+import path from "path";
 
 export class OtrData {
     webClient;
     baseUrl;
     shortSummariesPath;
+    mediumSummariesPath;
 
     constructor() {
         this.webClient = new WebClient();
         this.baseUrl = config.dataApi.baseUrl;
         this.shortSummariesPath = config.dataApi.paths.shortSummaries;
+        this.mediumSummariesPath = config.dataApi.paths.mediumSummaries;
     }
 
     async get(url: Url) {
@@ -28,9 +38,15 @@ export class OtrData {
         return this.get(`${this.baseUrl}${this.shortSummariesPath}/${playlistId}` as Url);
     }
 
-    // async getMediumSummaryForEpisode(playlistId, episodeId) {
-    //     return this.get(`TODO/${playlistId}/${episodeId}`);
-    // }
+    async getMediumEpisodeSummariesForShow(showId: ShowId): Promise<OtrDataMediumSummaryResponse> {
+        return this.get(`${this.baseUrl}${this.mediumSummariesPath}/${showId}` as Url);
+    }
+
+    getOtrEpisodeId(fileName: string): OtrDataEpisodeId {
+        return path.parse(fileName).name as OtrDataEpisodeId;
+    }
+
+
     // async getLongSummaryForEpisode(playlistId, episodeId) {
     //     return this.get(`TODO/${playlistId}/${episodeId}`);
     // }

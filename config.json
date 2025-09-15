@@ -27,7 +27,8 @@
   "dataApi": {
     "baseUrl": "http://localhost:8000",
     "paths": {
-      "shortSummaries": "/api/short-summaries"
+      "shortSummaries": "/api/short-summaries",
+      "mediumSummaries": "/api/medium-summaries"
     }
   },
   "log": {

@@ -18,7 +18,6 @@ import {config, configHelper} from "./config.mjs";
 import {archiveOrg} from "./archiveOrg.mjs";
 import {nameParser} from "./nameParser.mjs";
 import {otrData} from "./otrData.mjs";
-import path from "path";
 
 export class Shows {
     private readonly cache: Cache<ShowId, EpisodeDetails[]>
@@ -68,7 +67,7 @@ export class Shows {
     }
 
     private getShortDescription(fileMetadata: ArchiveOrgFileMetadata, shortSummaries: OtrDataShortSummaryResponse): ShortEpisodeSummary | undefined {
-        const id = path.parse(fileMetadata.name).name as OtrDataEpisodeId;
+        const id = otrData.getOtrEpisodeId(fileMetadata.name);
         return shortSummaries[id];
     }
 
