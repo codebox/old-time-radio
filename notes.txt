@@ -1,8 +1,11 @@
 Search
 ------
 jq 'map({(.id): .metadata.summary_small}) | add' response.json
+jq 'map({(.id): {small: .metadata.summary_small, medium: .metadata.summary_medium}}) | add' response.json
+
 update cache timestamps:
     find cache/shows -type f -exec touch {} +
+
 
 Backend Rewrite
 ---------------

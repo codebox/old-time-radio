@@ -1,5 +1,9 @@
 import type {Millis, Seconds} from "./clock.mjs";
 
+export type WebClientConfig = {
+    minRequestIntervalMillis: number
+}
+
 export type Config = {
     "web": {
         "port": number,
@@ -19,6 +23,10 @@ export type Config = {
     "log": {
         "level": string
     },
+    "webClients": {
+        "archiveOrg": WebClientConfig,
+        "otrData": WebClientConfig
+    },
     "minRequestIntervalMillis": Millis,
     "shows" : ConfigShow[],
     "channels" : ConfigChannel[],
@@ -31,8 +39,7 @@ export type Config = {
     "dataApi": {
         "baseUrl": Url,
         "paths": {
-            "shortSummaries": UrlPath,
-            "mediumSummaries": UrlPath
+            "summaries": UrlPath
         }
     }
 };
@@ -96,12 +103,18 @@ export type IsCommercial = boolean & { readonly __brand: unique symbol };
 export type SkipText = string & { readonly __brand: unique symbol };
 export type OtrDataEpisodeId = string & { readonly __brand: unique symbol };
 
-export type OtrDataShortSummaryResponse = {
-    [key in OtrDataEpisodeId]: ShortEpisodeSummary
+export type OtrDocument = {
+    id: OtrDataEpisodeId,
+    text: string,
+    metadata: {
+        [key: string]: string
+    }
 }
-
-export type OtrDataMediumSummaryResponse = {
-    [key in OtrDataEpisodeId]: MediumEpisodeSummary
+export type OtrDataSummaryResponse = {
+    [key in OtrDataEpisodeId]: {
+        short: ShortEpisodeSummary,
+        medium: MediumEpisodeSummary,
+    }
 }
 
 export type ShowsListItem = {
@@ -130,7 +143,8 @@ export type EpisodeDetails = {
     name: EpisodeName,
     showName: ShowName,
     urls: Url[],
-    shortDescription?: ShortEpisodeSummary
+    shortDescription?: ShortEpisodeSummary,
+    mediumDescription?: MediumEpisodeSummary,
 }
 
 export type FullChannelSchedule = {

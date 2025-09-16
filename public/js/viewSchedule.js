@@ -43,7 +43,7 @@ function buildScheduleView(eventSource) {
                     time: `${hh}:${mm}`,
                     name: item.name,
                     commercial: item.commercial,
-                    shortSummary: item.shortDescription
+                    shortSummary: item.short
                 };
                 nextShowStartOffsetFromNow += item.length;
                 return result;

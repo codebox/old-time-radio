@@ -1,12 +1,13 @@
 import type {ArchiveOrgMetadata} from "./types.mjs";
 import {WebClient} from "./webClient.mjs";
 import {log} from "./log.mjs";
+import {config} from './config.mjs';
 
 export class ArchiveOrg {
     private webClient: WebClient;
 
     constructor() {
-        this.webClient = new WebClient();
+        this.webClient = new WebClient(config.webClients.archiveOrg);
     }
 
     async get(playlistId: string): Promise<ArchiveOrgMetadata> {

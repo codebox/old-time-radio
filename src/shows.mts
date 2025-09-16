@@ -6,7 +6,7 @@ import type {
     EpisodeId,
     EpisodeIndex,
     EpisodeName,
-    IsCommercial, OtrDataEpisodeId, OtrDataShortSummaryResponse, PlaylistId, ShortEpisodeSummary,
+    IsCommercial, OtrDataEpisodeId, PlaylistId, ShortEpisodeSummary,
     ShowId,
     ShowName,
     Url
@@ -66,15 +66,10 @@ export class Shows {
         return true;
     }
 
-    private getShortDescription(fileMetadata: ArchiveOrgFileMetadata, shortSummaries: OtrDataShortSummaryResponse): ShortEpisodeSummary | undefined {
-        const id = otrData.getOtrEpisodeId(fileMetadata.name);
-        return shortSummaries[id];
-    }
-
     private async fetchEpisodeDetailsForPlaylistId(playlistId: PlaylistId, show: ConfigShow): Promise<EpisodeDetails[]> {
         try {
             const playlistData = await archiveOrg.get(playlistId),
-                shortSummaries = await otrData.getShortEpisodeSummariesForPlaylist(playlistId);
+                summaries = await otrData.getEpisodeSummariesForPlaylist(playlistId);
 
             this.validatePlaylist(playlistData);
 
@@ -82,7 +77,9 @@ export class Shows {
                 .filter(fileMetadata => this.isPlayable(fileMetadata, playlistId))
                 .map(fileMetadata => {
                     const encodedFileName = encodeURIComponent(fileMetadata.name),
-                        archivalUrl = `https://archive.org/download/${playlistId}/${encodedFileName}` as Url;
+                        archivalUrl = `https://archive.org/download/${playlistId}/${encodedFileName}` as Url,
+                        otrDataId = otrData.getOtrEpisodeId(fileMetadata.name),
+                        episodeSummaries = summaries[otrDataId] || {};
 
                     return {
                         archivalUrl: archivalUrl,
@@ -96,7 +93,7 @@ export class Shows {
                             `https://${playlistData.d1}${playlistData.dir}/${encodedFileName}` as Url,
                             `https://${playlistData.d2}${playlistData.dir}/${encodedFileName}` as Url,
                         ],
-                        shortDescription: this.getShortDescription(fileMetadata, shortSummaries)
+                        ...episodeSummaries
                     } as EpisodeDetails;
                 });
 

@@ -2,11 +2,10 @@ import { WebClient } from "./webClient.mjs";
 import { log } from "./log.mjs";
 import { config } from "./config.mjs";
 import type {
+    MediumEpisodeSummary,
     OtrDataEpisodeId,
-    OtrDataMediumSummaryResponse,
-    OtrDataShortSummaryResponse,
-    PlaylistId,
-    ShowId,
+    OtrDataSummaryResponse, OtrDocument,
+    PlaylistId, ShortEpisodeSummary,
     Url
 } from "./types.mjs";
 import path from "path";
@@ -14,14 +13,12 @@ import path from "path";
 export class OtrData {
     webClient;
     baseUrl;
-    shortSummariesPath;
-    mediumSummariesPath;
+    summariesPath;
 
     constructor() {
-        this.webClient = new WebClient();
+        this.webClient = new WebClient(config.webClients.otrData);
         this.baseUrl = config.dataApi.baseUrl;
-        this.shortSummariesPath = config.dataApi.paths.shortSummaries;
-        this.mediumSummariesPath = config.dataApi.paths.mediumSummaries;
+        this.summariesPath = config.dataApi.paths.summaries;
     }
 
     async get(url: Url) {
@@ -34,22 +31,24 @@ export class OtrData {
         }
     }
 
-    async getShortEpisodeSummariesForPlaylist(playlistId: PlaylistId): Promise<OtrDataShortSummaryResponse> {
-        return this.get(`${this.baseUrl}${this.shortSummariesPath}/${playlistId}` as Url);
-    }
+    async getEpisodeSummariesForPlaylist(playlistId: PlaylistId): Promise<OtrDataSummaryResponse> {
+        const otrDataDocuments = await this.get(`${this.baseUrl}${this.summariesPath}${playlistId}` as Url) as OtrDocument[],
+            response = {} as OtrDataSummaryResponse;
 
-    async getMediumEpisodeSummariesForShow(showId: ShowId): Promise<OtrDataMediumSummaryResponse> {
-        return this.get(`${this.baseUrl}${this.mediumSummariesPath}/${showId}` as Url);
+        otrDataDocuments.forEach(otrDataDocument => {
+            response[otrDataDocument.id] = {
+                short: otrDataDocument.metadata.summary_small as ShortEpisodeSummary,
+                medium: otrDataDocument.metadata.summary_medium as MediumEpisodeSummary
+            }
+        });
+
+        return response;
     }
 
     getOtrEpisodeId(fileName: string): OtrDataEpisodeId {
         return path.parse(fileName).name as OtrDataEpisodeId;
     }
-
-
-    // async getLongSummaryForEpisode(playlistId, episodeId) {
-    //     return this.get(`TODO/${playlistId}/${episodeId}`);
-    // }
 }
+
 export const otrData = new OtrData();
 //# sourceMappingURL=otrData.mjs.map

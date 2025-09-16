@@ -1,7 +1,7 @@
 import {log} from "./log.mjs";
-import {config} from "./config.mjs";
 import {clock, type Millis} from "./clock.mjs";
 import axios from 'axios';
+import type {WebClientConfig} from "./types.mjs";
 
 type WebRequest = {
     url: string;
@@ -9,7 +9,11 @@ type WebRequest = {
     reject: (response: any) => void;
 }
 
-const requestQueue = (() => {
+type RequestQueue = {
+    push(url: string): Promise<{ [key: string]: any }>;
+}
+
+function buildRequestQueue(config: WebClientConfig) {
     const pendingRequests: WebRequest[] = [];
     let lastRequestMillis = 0 as Millis, running = false, interval;
 
@@ -58,10 +62,15 @@ const requestQueue = (() => {
             });
         }
     };
-})();
+}
 
 export class WebClient {
+    requestQueue: RequestQueue;
+
+    constructor(config: WebClientConfig) {
+        this.requestQueue = buildRequestQueue(config);
+    }
     async get(url: string): Promise<{ [key: string]: any }> {
-        return requestQueue.push(url);
+        return this.requestQueue.push(url);
     }
 }

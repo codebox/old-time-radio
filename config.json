@@ -14,7 +14,14 @@
       }
     }
   },
-  "minRequestIntervalMillis": 1500,
+  "webClients": {
+    "archiveOrg" : {
+      "minRequestIntervalMillis": 1500
+    },
+    "otrData": {
+      "minRequestIntervalMillis": 100
+    }
+  },
   "caches": {
     "baseDirectory": "cache",
     "scheduleCacheMaxItems": 100,
@@ -25,15 +32,14 @@
     "radical": 1.8
   },
   "dataApi": {
-    "baseUrl": "http://localhost:8000",
+    "baseUrl": "http://127.0.0.1:8000",
     "paths": {
-      "shortSummaries": "/api/short-summaries",
-      "mediumSummaries": "/api/medium-summaries"
+      "summaries": "/metadata_search?k=playlist&v="
     }
   },
   "log": {
     "file": "/var/log/oldtimeradio/access.log",
-    "level": "info"
+    "level": "debug"
   },
   "shows" : [
     {
