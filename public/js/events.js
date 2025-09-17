@@ -74,4 +74,6 @@ const EVENT_CHANNEL_BUTTON_CLICK = 'channelButtonClick',
     EVENT_STATION_BUILDER_GO_TO_CHANNEL_CLICK  = 'stationBuilderGoToChannelClick',
     EVENT_STATION_BUILDER_ADD_CHANNEL_CLICK = 'stationBuilderAddChannelClick',
     EVENT_STATION_BUILDER_DELETE_STATION_CLICK = 'stationBuilderDeleteStationClick',
-    EVENT_VISUALISER_BUTTON_CLICK = 'visualiserButtonClick';
+    EVENT_VISUALISER_BUTTON_CLICK = 'visualiserButtonClick',
+    EVENT_NEW_SUMMARY = 'newSummary',
+    EVENT_HIDE_SUMMARY = 'hideSummary';

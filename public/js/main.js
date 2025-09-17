@@ -9,6 +9,7 @@ window.onload = () => {
         visualiserDataFactory = buildVisualiserDataFactory(audioPlayer.getData),
         visualiser = buildVisualiser(visualiserDataFactory),
         messageManager = buildMessageManager(model, eventSource('msg')),
+        summaryManager = buildSummaryManager(eventSource('summary')),
         sleepTimer = buildSleepTimer(eventSource('sleep'));
 
     function eventSource(name) {
@@ -77,13 +78,26 @@ window.onload = () => {
         view.showMessage(text);
     });
 
+    summaryManager.on(EVENT_NEW_SUMMARY).then(event => {
+        const summaryText = event.data;
+        view.showEpisodeSummary(summaryText);
+    });
+
+    summaryManager.on(EVENT_HIDE_SUMMARY).then(() => {
+        view.hideEpisodeSummary();
+    });
+
     // Audio Player event handlers
     audioPlayer.on(EVENT_AUDIO_TRACK_LOADED).ifState(STATE_LOADING_TRACK).then(() => {
         view.stopSnowMachine();
         visualiser.start();
         audioPlayer.play(model.nextTrackOffset);
-        model.nextTrackOffset = 0;
         view.showDownloadLink(model.track.archivalUrl);
+        if (model.nextTrackOffset) {
+            // only show this if we start an episode part-way through
+            summaryManager.showSummary(model.track.medium);
+        }
+        model.nextTrackOffset = 0;
     });
 
     audioPlayer.on(EVENT_AUDIO_PLAY_STARTED).ifState(STATE_LOADING_TRACK).then(() => {
@@ -164,6 +178,7 @@ window.onload = () => {
             playingNowTimer.startIfApplicable();
 
             messageManager.showSelectChannel();
+            summaryManager.hideSummary();
 
             stateMachine.idle();
 
@@ -174,6 +189,7 @@ window.onload = () => {
             view.setChannelLoading(model.selectedChannelId);
             const channel = model.channels.find(channel => channel.id === model.selectedChannelId);
             messageManager.showTuningInToChannel(channel.name);
+            summaryManager.hideSummary();
             view.hideDownloadLink();
 
             /* Hack to make iOS web audio work, starting around iOS 15.5 browsers refuse to play media loaded from

@@ -63,6 +63,9 @@ const config = {
         apiCallIntervalMillis: 30 * 1000,
         infoDisplayIntervalMillis: 5 * 1000,
     },
+    summary: {
+        displayDurationMillis: 25 * 1000
+    },
     messages: {
         canned: {
             "all": [

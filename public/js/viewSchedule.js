@@ -33,7 +33,7 @@ function buildScheduleView(eventSource) {
                 timeNow = clock.nowSeconds();
             let nextShowStartOffsetFromNow = playingNow.length - schedule.initialOffset;
 
-            const scheduleList = [{time: 'NOW &gt;', name: playingNow.name}];
+            const scheduleList = [{time: 'NOW &gt;', name: playingNow.name, shortSummary: playingNow.short}];
             scheduleList.push(...schedule.list.filter(item => !item.commercial).map(item => {
                 const ts = nextShowStartOffsetFromNow + timeNow,
                     date = new Date(ts * 1000),
