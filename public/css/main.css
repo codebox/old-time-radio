@@ -526,36 +526,15 @@ canvas {
     text-align: center;
     overflow: hidden;
     padding: 20px;
-}
-
-#episodeSummaryContent {
     color: var(--font-color);
     text-shadow: 0px 0px 5px var(--font-color);
     background-color: rgba(0, 0, 0, 0.3);
-    transform: translateY(100%);
-    transition: none;
     font-family: Bellerose;
     font-size: 1.5em;
     line-height: 1.5em;
-}
-
-#episodeSummary.scrolling #episodeSummaryContent {
-    animation: scrollUp 20s linear forwards;
-}
-
-@keyframes scrollUp {
-    0% {
-        transform: translateY(100%);
-        opacity: 1;
-    }
-    75% {
-        transform: translateY(0);
-        opacity: 1;
-    }
-    100% {
-        transform: translateY(0);
-        opacity: 0;
-    }
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #preferenceToggles {

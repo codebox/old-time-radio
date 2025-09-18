@@ -30,6 +30,7 @@ window.onload = () => {
         view.showError(error);
         startSnowMachineIfAppropriate();
         messageManager.showError();
+        summaryManager.hideSummary();
     }
 
     function startSnowMachineIfAppropriate() {
@@ -94,7 +95,7 @@ window.onload = () => {
         audioPlayer.play(model.nextTrackOffset);
         view.showDownloadLink(model.track.archivalUrl);
         if (model.nextTrackOffset) {
-            // only show this if we start an episode part-way through
+            // only show this automatically if we start an episode part-way through
             summaryManager.showSummary(model.track.medium);
         }
         model.nextTrackOffset = 0;
@@ -124,6 +125,7 @@ window.onload = () => {
         view.sleep();
         tempMessageTimer.stop();
         messageManager.showSleeping();
+        summaryManager.hideSummary();
         scheduleRefresher.stop();
 
         const interval = setInterval(() => {
@@ -155,6 +157,7 @@ window.onload = () => {
         view.hideDownloadLink();
         tempMessageTimer.stop();
         messageManager.showSleeping();
+        summaryManager.hideSummary();
         visualiser.stop();
         playingNowTimer.stop();
         scheduleRefresher.stop();
@@ -203,6 +206,7 @@ window.onload = () => {
     });
 
     view.on(EVENT_MENU_OPEN_CLICK).then(() => {
+        summaryManager.hideSummary();
         view.openMenu();
         if (model.selectedChannelId) {
             model.selectedScheduleChannelId = model.selectedChannelId;

@@ -284,33 +284,11 @@ function buildView(eventSource, model) {
             elDownloadLink.innerHTML = '';
         },
         showEpisodeSummary(summary) {
-            elSummary.style.display = 'block';
-            const contentEl = elSummary.querySelector('#episodeSummaryContent');
-            contentEl.innerHTML = summary;
-            elSummary.classList.remove('scrolling');
-            
-            // Remove any existing animation event listeners
-            contentEl.removeEventListener('animationend', this._onScrollAnimationEnd);
-            
-            // Force reflow to reset animation
-            elSummary.offsetHeight;
-            elSummary.classList.add('scrolling');
-            
-            // Listen for animation completion
-            this._onScrollAnimationEnd = () => {
-                elSummary.style.display = 'none';
-                elSummary.classList.remove('scrolling');
-            };
-            contentEl.addEventListener('animationend', this._onScrollAnimationEnd, { once: true });
+            elSummary.style.display = 'flex';
+            elSummary.innerHTML = summary;
         },
         hideEpisodeSummary() {
-            console.log('hide summary');
-            const contentEl = elSummary.querySelector('#episodeSummaryContent');
-            if (contentEl && this._onScrollAnimationEnd) {
-                contentEl.removeEventListener('animationend', this._onScrollAnimationEnd);
-            }
             elSummary.style.display = 'none';
-            elSummary.classList.remove('scrolling');
         },
         showError(errorMsg) {
             forEachChannelButton((id, el) => {
