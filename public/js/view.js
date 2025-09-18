@@ -26,6 +26,7 @@ function buildView(eventSource, model) {
         elVisualiserButtons = document.getElementById('visualiserList'),
         elTitle = document.getElementsByTagName('title')[0],
         elSummary = document.getElementById('episodeSummary'),
+        elSummaryContent = document.getElementById('episodeSummaryContent'),
         elSummaryLink = document.getElementById('summaryLink'),
 
         sleepTimerView = buildSleepTimerView(eventSource),
@@ -289,8 +290,8 @@ function buildView(eventSource, model) {
             elDownloadLink.innerHTML = '';
         },
         showEpisodeSummary(summary) {
-            elSummary.style.display = 'flex';
-            elSummary.innerHTML = summary;
+            elSummary.style.display = 'grid';
+            elSummaryContent.innerHTML = summary;
             elSummaryLink.classList.add('selected');
         },
         hideEpisodeSummary() {

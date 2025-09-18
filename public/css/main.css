@@ -561,8 +561,6 @@ canvas {
 #episodeSummary {
     position: absolute;
     z-index: 7;
-    text-align: center;
-    overflow: hidden;
     padding: 20px;
     color: var(--font-color);
     text-shadow: 0px 0px 5px var(--font-color);
@@ -570,9 +568,15 @@ canvas {
     font-family: Bellerose;
     font-size: 1.5em;
     line-height: 1.5em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: grid;
+    grid-template-rows: 1fr auto 1fr;
+    overflow-y: auto;
+}
+
+#episodeSummaryContent {
+    grid-row: 2;
+    text-align: center;
+    min-height: 0;
 }
 
 #preferenceToggles {
@@ -665,6 +669,9 @@ body.sleeping #title .spacer {
     #scheduleList li .scheduleItemTime {
         flex: 0 0 50px;
     }
+    #episodeSummary {
+        font-size: 1.2em;
+    }
 }
 @media screen and (min-width: 350px) and (max-width: 500px) {
     #title {
@@ -685,6 +692,9 @@ body.sleeping #title .spacer {
     }
     #buttons {
         flex: 0 0 90%;
+    }
+    #episodeSummary {
+        font-size: 1.1em;
     }
 }
 @media screen and (max-width: 349px) {
@@ -732,5 +742,8 @@ body.sleeping #title .spacer {
     }
     .buttonBox {
         flex: 0 0 70px;
+    }
+    #episodeSummary {
+        font-size: 1em;
     }
 }
