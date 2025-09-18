@@ -30,7 +30,7 @@ window.onload = () => {
         view.showError(error);
         startSnowMachineIfAppropriate();
         messageManager.showError();
-        summaryManager.hideSummary();
+        summaryManager.clear();
     }
 
     function startSnowMachineIfAppropriate() {
@@ -79,13 +79,23 @@ window.onload = () => {
         view.showMessage(text);
     });
 
-    summaryManager.on(EVENT_NEW_SUMMARY).then(event => {
+    summaryManager.on(EVENT_SHOW_SUMMARY).then(event => {
         const summaryText = event.data;
         view.showEpisodeSummary(summaryText);
+        view.showSummaryLink();
     });
 
     summaryManager.on(EVENT_HIDE_SUMMARY).then(() => {
         view.hideEpisodeSummary();
+    });
+
+    summaryManager.on(EVENT_CLEAR_SUMMARY).then(() => {
+        view.hideEpisodeSummary();
+        view.hideSummaryLink();
+    });
+
+    view.on(SUMMARY_LINK_CLICK).then(() => {
+        summaryManager.toggle();
     });
 
     // Audio Player event handlers
@@ -94,9 +104,14 @@ window.onload = () => {
         visualiser.start();
         audioPlayer.play(model.nextTrackOffset);
         view.showDownloadLink(model.track.archivalUrl);
-        if (model.nextTrackOffset) {
-            // only show this automatically if we start an episode part-way through
-            summaryManager.showSummary(model.track.medium);
+        const hasSummary = !! model.track.medium,
+            tuningInPartWayThrough = !! model.nextTrackOffset;
+        if (hasSummary) {
+            summaryManager.setText(model.track.medium);
+            view.showSummaryLink();
+            if (tuningInPartWayThrough) {
+                summaryManager.showAndThenHide();
+            }
         }
         model.nextTrackOffset = 0;
     });
@@ -108,6 +123,7 @@ window.onload = () => {
     });
 
     audioPlayer.on(EVENT_AUDIO_TRACK_ENDED).ifState(STATE_PLAYING).then(() => {
+        summaryManager.clear();
         loadNextFromPlaylist();
     });
 
@@ -125,7 +141,7 @@ window.onload = () => {
         view.sleep();
         tempMessageTimer.stop();
         messageManager.showSleeping();
-        summaryManager.hideSummary();
+        summaryManager.clear();
         scheduleRefresher.stop();
 
         const interval = setInterval(() => {
@@ -157,7 +173,7 @@ window.onload = () => {
         view.hideDownloadLink();
         tempMessageTimer.stop();
         messageManager.showSleeping();
-        summaryManager.hideSummary();
+        summaryManager.clear();
         visualiser.stop();
         playingNowTimer.stop();
         scheduleRefresher.stop();
@@ -181,7 +197,7 @@ window.onload = () => {
             playingNowTimer.startIfApplicable();
 
             messageManager.showSelectChannel();
-            summaryManager.hideSummary();
+            summaryManager.clear();
 
             stateMachine.idle();
 
@@ -192,7 +208,7 @@ window.onload = () => {
             view.setChannelLoading(model.selectedChannelId);
             const channel = model.channels.find(channel => channel.id === model.selectedChannelId);
             messageManager.showTuningInToChannel(channel.name);
-            summaryManager.hideSummary();
+            summaryManager.clear();
             view.hideDownloadLink();
 
             /* Hack to make iOS web audio work, starting around iOS 15.5 browsers refuse to play media loaded from
@@ -206,7 +222,7 @@ window.onload = () => {
     });
 
     view.on(EVENT_MENU_OPEN_CLICK).then(() => {
-        summaryManager.hideSummary();
+        summaryManager.hide();
         view.openMenu();
         if (model.selectedChannelId) {
             model.selectedScheduleChannelId = model.selectedChannelId;

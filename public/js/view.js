@@ -26,6 +26,7 @@ function buildView(eventSource, model) {
         elVisualiserButtons = document.getElementById('visualiserList'),
         elTitle = document.getElementsByTagName('title')[0],
         elSummary = document.getElementById('episodeSummary'),
+        elSummaryLink = document.getElementById('summaryLink'),
 
         sleepTimerView = buildSleepTimerView(eventSource),
         scheduleView = buildScheduleView(eventSource),
@@ -143,6 +144,10 @@ function buildView(eventSource, model) {
     elPrefNowPlayingMessages.onclick = () => {
         eventSource.trigger(EVENT_PREF_NOW_PLAYING_CLICK);
     }
+
+    elSummaryLink.onclick = () => {
+        eventSource.trigger(SUMMARY_LINK_CLICK);
+    };
 
     sleepTimerView.init();
 
@@ -289,6 +294,12 @@ function buildView(eventSource, model) {
         },
         hideEpisodeSummary() {
             elSummary.style.display = 'none';
+        },
+        showSummaryLink() {
+            elSummaryLink.style.display = 'flex';
+        },
+        hideSummaryLink() {
+            elSummaryLink.style.display = 'none';
         },
         showError(errorMsg) {
             forEachChannelButton((id, el) => {

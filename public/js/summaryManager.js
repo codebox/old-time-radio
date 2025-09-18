@@ -1,7 +1,7 @@
 
 function buildSummaryManager(eventSource) {
     const SUMMARY_DURATION_MILLIS = config.summary.displayDurationMillis;
-    let timeout;
+    let timeout, state = {text: null, isVisible: false};
 
     function cancelTimeout() {
         if (timeout) {
@@ -12,20 +12,35 @@ function buildSummaryManager(eventSource) {
 
     return {
         on: eventSource.on,
-        showSummary(summaryText) {
+        setText(summaryText) {
+            state.text = summaryText;
+        },
+        showAndThenHide() {
+            this.show();
+            timeout = setTimeout(() => this.hide(), SUMMARY_DURATION_MILLIS);
+        },
+        show() {
             cancelTimeout();
-            if (summaryText) {
-                // we call this even if there is no summary text, to ensure any previous summary is cleared
-                timeout = setTimeout(() => {
-                    this.hideSummary();
-                }, SUMMARY_DURATION_MILLIS);
-
-                eventSource.trigger(EVENT_NEW_SUMMARY, summaryText);
+            if (state.text) {
+                state.isVisible = true;
+                eventSource.trigger(EVENT_SHOW_SUMMARY, state.text);
             }
         },
-        hideSummary() {
-            cancelTimeout();
+        hide() {
+            state.isVisible = false;
             eventSource.trigger(EVENT_HIDE_SUMMARY);
+        },
+        clear() {
+            state.text = null;
+            state.isVisible = false;
+            eventSource.trigger(EVENT_CLEAR_SUMMARY);
+        },
+        toggle() {
+            if (state.isVisible) {
+                this.hide();
+            } else {
+                this.show();
+            }
         }
     };
 }

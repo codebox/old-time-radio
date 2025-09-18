@@ -1,3 +1,7 @@
+TODO
+----
+summary display on mobile
+
 Search
 ------
 jq 'map({(.id): .metadata.summary_small}) | add' response.json
