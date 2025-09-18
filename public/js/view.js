@@ -291,9 +291,11 @@ function buildView(eventSource, model) {
         showEpisodeSummary(summary) {
             elSummary.style.display = 'flex';
             elSummary.innerHTML = summary;
+            elSummaryLink.classList.add('selected');
         },
         hideEpisodeSummary() {
             elSummary.style.display = 'none';
+            elSummaryLink.classList.remove('selected');
         },
         showSummaryLink() {
             elSummaryLink.style.display = 'flex';
