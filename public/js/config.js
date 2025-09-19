@@ -64,7 +64,7 @@ const config = {
         infoDisplayIntervalMillis: 5 * 1000,
     },
     summary: {
-        displayDurationMillis: 10 * 1000
+        displayDurationMillis: 60 * 1000
     },
     messages: {
         canned: {

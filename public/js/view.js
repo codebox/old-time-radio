@@ -17,6 +17,7 @@ function buildView(eventSource, model) {
         elVolumeDown = document.getElementById('volumeDown'),
         elPrefInfoMessages = document.getElementById('prefInfoMessages'),
         elPrefNowPlayingMessages = document.getElementById('prefNowPlayingMessages'),
+        elPrefShowSummary = document.getElementById('prefShowSummary'),
         elMessage = document.getElementById('message'),
         elDownloadLink = document.getElementById('downloadLink'),
         elButtonContainer = document.getElementById('buttons'),
@@ -144,6 +145,10 @@ function buildView(eventSource, model) {
 
     elPrefNowPlayingMessages.onclick = () => {
         eventSource.trigger(EVENT_PREF_NOW_PLAYING_CLICK);
+    }
+
+    elPrefShowSummary.onclick = () => {
+        eventSource.trigger(EVENT_PREF_SHOW_SUMMARY_CLICK);
     }
 
     elSummaryLink.onclick = () => {
@@ -340,6 +345,10 @@ function buildView(eventSource, model) {
         updatePrefNowPlayingMessages(showNowPlayingMessages) {
             elPrefNowPlayingMessages.classList.toggle(CLASS_SELECTED, showNowPlayingMessages);
             elPrefNowPlayingMessages.innerHTML = showNowPlayingMessages ? 'On' : 'Off';
+        },
+        updatePrefShowSummaryWhenTuningIn(showSummaryWhenTuningIn) {
+            elPrefShowSummary.classList.toggle(CLASS_SELECTED, showSummaryWhenTuningIn);
+            elPrefShowSummary.innerHTML = showSummaryWhenTuningIn ? 'On' : 'Off';
         },
         addShowTitleToPage(title) {
             elTitle.innerHTML += (' - ' + title);

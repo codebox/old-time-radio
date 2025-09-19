@@ -10,6 +10,7 @@ function buildModel() {
             'visualiserId': 'Oscillograph',
             'showInfoMessages': true,
             'showNowPlayingMessages': true,
+            'showSummaryWhenTuningIn': true,
         };
 
     let volume = 10,

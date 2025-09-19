@@ -597,6 +597,11 @@ canvas {
     font-size: 18px;
     margin-bottom: 10px;
     white-space: nowrap;
+    text-align: right;
+    justify-self: end;
+}
+#preferenceToggles button {
+    justify-self: left;
 }
 @keyframes pulse {
     0% {

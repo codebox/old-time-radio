@@ -109,7 +109,7 @@ window.onload = () => {
         if (hasSummary) {
             summaryManager.setText(model.track.medium);
             view.showSummaryLink();
-            if (tuningInPartWayThrough) {
+            if (tuningInPartWayThrough && model.showSummaryWhenTuningIn) {
                 summaryManager.showAndThenHide();
             }
         }
@@ -248,6 +248,7 @@ window.onload = () => {
     function applyModelPrefs() {
         view.updatePrefInfoMessages(model.showInfoMessages);
         view.updatePrefNowPlayingMessages(model.showNowPlayingMessages);
+        view.updatePrefShowSummaryWhenTuningIn(model.showSummaryWhenTuningIn);
         model.save();
     }
 
@@ -284,6 +285,11 @@ window.onload = () => {
             playingNowTimer.stop();
         }
 
+        applyModelPrefs();
+    });
+
+    view.on(EVENT_PREF_SHOW_SUMMARY_CLICK).then(() => {
+        model.showSummaryWhenTuningIn = !model.showSummaryWhenTuningIn;
         applyModelPrefs();
     });
 
