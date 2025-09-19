@@ -189,10 +189,13 @@ noscript a, noscript a:visited {
 #menuCloseIcon {
     display: none;
 }
+#title form {
+    margin-top: 5px;
+}
 #searchButton svg {
     width: 40px;
     height: 40px;
-    margin: 5px 0 0 5px;
+    margin: 5px 0 0 10px;
 }
 
 @keyframes growCircle{

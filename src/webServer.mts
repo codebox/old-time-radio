@@ -24,8 +24,12 @@ export class WebServer {
 
         this.app.use(config.web.paths.listenTo, express.static(config.web.paths.static));
 
+        this.app.use(config.web.paths.search, (req, res) => {
+            res.sendFile('public/search.html', {root:'./'});
+        });
+
         this.app.get(`${config.web.paths.listenTo}/:show`, (req, res) => {
-            res.sendFile('public/index.html',{root:'./'});
+            res.sendFile('public/index.html', {root:'./'});
         });
 
         this.app.get(config.web.paths.api.shows, (req, res) => {

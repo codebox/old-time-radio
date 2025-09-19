@@ -11,6 +11,7 @@ export type Config = {
             "static": UrlPath,
             "publicUrlPrefix": UrlPath,
             "listenTo": UrlPath,
+            "search": UrlPath,
             "api": {
                 "shows": UrlPath,
                 "channels": UrlPath,

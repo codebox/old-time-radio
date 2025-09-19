@@ -5,6 +5,7 @@
       "static": "public",
       "publicUrlPrefix": "https://oldtime.radio",
       "listenTo": "/listen-to",
+      "search": "/search",
       "api": {
         "shows": "/api/shows",
         "channels": "/api/channels",
