@@ -18,6 +18,7 @@ export type Config = {
                 "channel": UrlPath,
                 "generate": UrlPath,
                 "playingNow": UrlPath,
+                "search": UrlPath
             }
         }
     },
@@ -103,6 +104,17 @@ export type Xml = string & { readonly __brand: unique symbol };
 export type IsCommercial = boolean & { readonly __brand: unique symbol };
 export type SkipText = string & { readonly __brand: unique symbol };
 export type OtrDataEpisodeId = string & { readonly __brand: unique symbol };
+export type SearchText = string & { readonly __brand: unique symbol };
+export type SearchResults = SearchResult[];
+export type SearchResultTextMatch = string & { readonly __brand: unique symbol };
+
+export type SearchResult = {
+    show: ShowName,
+    episode: EpisodeName,
+    summary: ShortEpisodeSummary,
+    url: Url,
+    textMatches: SearchResultTextMatch[]
+}
 
 export type OtrDocument = {
     id: OtrDataEpisodeId,

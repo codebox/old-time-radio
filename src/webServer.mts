@@ -2,7 +2,7 @@ import express from "express";
 import {config} from "./config.mjs";
 import {log} from "./log.mjs";
 import {Service} from "./service.mjs";
-import type {ChannelId, ShowId} from "./types.mjs";
+import type {ChannelId, SearchText, ShowId} from "./types.mjs";
 import type {Seconds} from "./clock.mjs";
 
 export class WebServer {
@@ -83,6 +83,20 @@ export class WebServer {
                     log.error(`Error fetching playing now and next for channels ${channels}: ${err}`, err);
                     res.status(500).send('Internal Server Error');
                 });
+        });
+
+        this.app.get(config.web.paths.api.search + ':searchText', (req, res) => {
+            const searchText = req.params.searchText as SearchText;
+            if (searchText.length < 3) {
+                res.status(400).send('Search text must be at least 3 characters');
+                return;
+            }
+            this.service.search(searchText).then((results) => {
+                res.json(results);
+            }).catch((err) => {
+                log.error(`Error searching: ${err}`, err);
+                res.status(500).send('Internal Server Error');
+            })
         });
 
         this.app.get("/sitemap.xml", (req, res) => {

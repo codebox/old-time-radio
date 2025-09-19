@@ -4,13 +4,14 @@ import type {
     ConfigShow,
     DescriptiveId, PlayingNowAndNext,
     ShowId,
-    ShowsListItem, Xml, CurrentChannelScheduleWithDetails
+    ShowsListItem, Xml, CurrentChannelScheduleWithDetails, SearchText, SearchResults
 } from "./types.mjs";
 import {buildChannelCodeFromShowIds} from "./channelCodes.mjs";
 import type {Seconds} from "./clock.mjs";
 import {getSitemapXml} from "./sitemap.mjs";
 import {shows} from "./shows.mjs";
 import {scheduler} from "./scheduler.mjs";
+import {otrData} from "./otrData.mjs";
 
 function getChannelIdsForShowId(showId: ShowId) {
     return config.channels.filter(channel => channel.shows.includes(showId)).map(channel => channel.name);
@@ -63,6 +64,10 @@ export class Service {
             });
         return result;
         });
+    }
+
+    search(searchText: SearchText): Promise<SearchResults> {
+        return otrData.search(searchText);
     }
 
     getSitemapXml(): Promise<Xml> {

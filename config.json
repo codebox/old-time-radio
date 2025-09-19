@@ -11,7 +11,8 @@
         "channels": "/api/channels",
         "channel": "/api/channel/",
         "generate": "/api/channel/generate/",
-        "playingNow": "/api/playing-now"
+        "playingNow": "/api/playing-now",
+        "search": "/api/search/"
       }
     }
   },

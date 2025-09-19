@@ -5,7 +5,7 @@ import type {
     MediumEpisodeSummary,
     OtrDataEpisodeId,
     OtrDataSummaryResponse, OtrDocument,
-    PlaylistId, ShortEpisodeSummary,
+    PlaylistId, SearchResults, SearchText, ShortEpisodeSummary,
     Url
 } from "./types.mjs";
 import path from "path";
@@ -43,6 +43,10 @@ export class OtrData {
         });
 
         return response;
+    }
+
+    async search(searchText: SearchText): Promise<SearchResults> {
+        return Promise.resolve([]); // Not implemented
     }
 
     getOtrEpisodeId(fileName: string): OtrDataEpisodeId {
