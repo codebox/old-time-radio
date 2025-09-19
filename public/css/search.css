@@ -1,0 +1,89 @@
+@font-face {
+    font-family: 'Josefin';
+    src: url('JosefinSans-VariableFont_wght.ttf') format('truetype');
+}
+body {
+    background-color: #ccc;
+}
+#searchContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+#searchContainer #title {
+    flex-basis: 140px;
+}
+#searchContainer h1 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    line-height: 1.2;
+    margin-top: 10px;
+}
+#searchContainer h1 a {
+    text-decoration: none;
+    color: inherit;
+    margin-bottom: 0;
+}
+#searchContainer h1 span {
+    font-size: 0.6em;
+    font-weight: normal;
+}
+
+#searchForm {
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    flex: 0 0 40px;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+#searchForm button, #searchForm input {
+    outline-width: 1px;
+    outline-color: #999;
+}
+
+#searchInput {
+    width: 20em;
+    padding: 10px 20px;
+    border-radius: 50px;
+    border: 1px solid black;
+    font-size: 1em;
+}
+#searchResults {
+    flex: 1;
+}
+.searchResultItem {
+    height: auto;
+    font-family: "Josefin", sans-serif;
+    padding: 0 20px;
+}
+
+.searchResultItem .episodeSummary {
+    font-style: italic;
+}
+.searchResultItem h3 {
+    text-decoration: underline;
+}
+.searchResultItem h3 .showName {
+    font-weight: 400;
+}
+.searchResultItem h3 .episodeName {
+    font-weight: 300;
+}
+.searchResultItem .episodeMatches {
+    font-weight: 200;
+}
+#searchButton {
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 1em;
+    border: 1px solid black;
+    cursor: pointer;
+}
+#searchButton:hover {
+    background-color: white;
+}

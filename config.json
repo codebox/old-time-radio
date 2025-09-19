@@ -36,7 +36,8 @@
   "dataApi": {
     "baseUrl": "http://127.0.0.1:8000",
     "paths": {
-      "summaries": "/metadata_search?k=playlist&v="
+      "summaries": "/metadata_search?k=playlist&v=",
+      "search": "/search?q="
     }
   },
   "log": {

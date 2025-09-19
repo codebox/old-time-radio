@@ -11,12 +11,28 @@
     <meta property="og:description" content="Streaming shows from the Golden Age of Radio 24/7" />
     <meta property="og:image" content="https://oldtime.radio/otr.png" />
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/search.css">
 </head>
 <body>
-    <h1><a href="/">Old Time Radio</a></h1>
-    <h2>Search</h2>
-    <input id="searchInput" type="text" placeholder="Search...">
-    <button id="searchButton" aria-label="Search">Search</button>
+<div id="searchContainer">
+    <div id="title">
+        <div class="spacer" aria-hidden="true"></div>
+        <h1>
+            <a href="/">Old Time Radio</a>
+            <span>Search</span>
+        </h1>
+        <div class="spacer"></div>
+        <div class="radioWave" id="titleInner1" aria-hidden="true"></div>
+        <div class="radioWave" id="titleInner2" aria-hidden="true"></div>
+        <div class="radioWave" id="titleInner3" aria-hidden="true"></div>
+        <div class="radioWave" id="titleInner4" aria-hidden="true"></div>
+    </div>
+
+    <div id="searchForm">
+        <input id="searchInput" type="text" placeholder="Search..." autocomplete="off">
+        <button id="searchButton" aria-label="Search">Search</button>
+    </div>
+
     <div id="searchResults">
 
     </div>

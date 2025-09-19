@@ -3,8 +3,8 @@ import { log } from "./log.mjs";
 import { config } from "./config.mjs";
 import type {
     MediumEpisodeSummary,
-    OtrDataEpisodeId,
-    OtrDataSummaryResponse, OtrDocument,
+    OtrDataEpisodeId, OtrDataSearchResponse,
+    OtrDataSummaryResponse, OtrDocument, OtrSearchResult,
     PlaylistId, SearchResults, SearchText, ShortEpisodeSummary,
     Url
 } from "./types.mjs";
@@ -14,11 +14,13 @@ export class OtrData {
     webClient;
     baseUrl;
     summariesPath;
+    searchPath;
 
     constructor() {
         this.webClient = new WebClient(config.webClients.otrData);
         this.baseUrl = config.dataApi.baseUrl;
         this.summariesPath = config.dataApi.paths.summaries;
+        this.searchPath = config.dataApi.paths.search;
     }
 
     async get(url: Url) {
@@ -45,8 +47,8 @@ export class OtrData {
         return response;
     }
 
-    async search(searchText: SearchText): Promise<SearchResults> {
-        return Promise.resolve([]); // Not implemented
+    async search(searchText: SearchText): Promise<OtrDataSearchResponse> {
+        return await this.get(`${this.baseUrl}${this.searchPath}${searchText}` as Url) as OtrDataSearchResponse;
     }
 
     getOtrEpisodeId(fileName: string): OtrDataEpisodeId {

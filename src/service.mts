@@ -2,9 +2,17 @@ import {config} from "./config.mjs";
 import type {
     ChannelId,
     ConfigShow,
-    DescriptiveId, PlayingNowAndNext,
+    DescriptiveId,
+    PlayingNowAndNext,
     ShowId,
-    ShowsListItem, Xml, CurrentChannelScheduleWithDetails, SearchText, SearchResults
+    ShowsListItem,
+    Xml,
+    CurrentChannelScheduleWithDetails,
+    SearchText,
+    SearchResults,
+    ShowName,
+    EpisodeName,
+    ShortEpisodeSummary, Url, SearchResultTextMatch
 } from "./types.mjs";
 import {buildChannelCodeFromShowIds} from "./channelCodes.mjs";
 import type {Seconds} from "./clock.mjs";
@@ -66,8 +74,15 @@ export class Service {
         });
     }
 
-    search(searchText: SearchText): Promise<SearchResults> {
-        return otrData.search(searchText);
+    async search(searchText: SearchText): Promise<SearchResults> {
+        const otrDataSearchResponse = await otrData.search(searchText);
+        return otrDataSearchResponse.map(item => ({
+            show: item.metadata.show,
+            episode: item.metadata.episode,
+            summary: item.metadata.summary_small,
+            url: `http://archive.org/download/${item.metadata.playlist}/${item.id}.mp3` as Url,
+            textMatches: item.metadata._chunks.map(chunk => chunk.text) as SearchResultTextMatch[]
+        }));
     }
 
     getSitemapXml(): Promise<Xml> {

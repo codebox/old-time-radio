@@ -41,7 +41,8 @@ export type Config = {
     "dataApi": {
         "baseUrl": Url,
         "paths": {
-            "summaries": UrlPath
+            "summaries": UrlPath,
+            "search": UrlPath
         }
     }
 };
@@ -129,6 +130,23 @@ export type OtrDataSummaryResponse = {
         medium: MediumEpisodeSummary,
     }
 }
+
+export type OtrSearchResult = {
+    id: OtrDataEpisodeId,
+    text: string,
+    metadata: {
+        show: ShowName,
+        episode: EpisodeName,
+        summary_small: ShortEpisodeSummary,
+        playlist: PlaylistId,
+        _chunks: {
+            "similarity": number,
+            "text": string
+        }[]
+    }
+}
+
+export type OtrDataSearchResponse = OtrSearchResult[];
 
 export type ShowsListItem = {
     channels: ChannelId[], // used on client-side in Channel Builder to decide which section to display the show in

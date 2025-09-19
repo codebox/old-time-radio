@@ -16,18 +16,29 @@ window.onload = () => {
                         data.forEach(item => {
                             const div = document.createElement('div');
                             div.className = 'searchResultItem';
-                            const matches = item.matches.map(match => `<li>${match}</li>`).join('');
+                            const matches = item.textMatches.join(' ... ');
                             div.innerHTML = `
-                                <h3>${item.show} - ${item.episode}</h3>
-                                <p>${item.summary}</p>
-                                <p>${item.description}</p>
-                                <ul>${matches}</ul>
-                                <a href="${item.url}">Listen</a>
+                                <h3><span class="showName">${item.show}:</span> <span class="episodeName">${item.episode}</span></h3>
+                                <p class="episodeSummary">${item.summary}</p>
+                                <p class="episodeMatches">${matches}</p>
+                                <audio controls preload="none" src="${item.url}"></audio>
+                                <a href="${item.url}">Download</a>
                             `;
                             elSearchResults.appendChild(div);
                         });
                     }
                 })
         }
-    })
+    });
+
+    elSearchInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            elSearchButton.click();
+        } else if (event.key === 'Escape') {
+            elSearchInput.value = '';
+        }
+    });
+
+    elSearchInput.focus();
 };
