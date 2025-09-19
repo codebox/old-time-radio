@@ -150,6 +150,14 @@ function buildView(eventSource, model) {
         eventSource.trigger(SUMMARY_LINK_CLICK);
     };
 
+    elSummary.addEventListener('transitionend', () => {
+        if (elSummary.classList.contains('visible'))  {
+            elSummary.style.display = 'grid';
+        } else {
+            elSummary.style.display = 'none';
+        }
+    });
+
     sleepTimerView.init();
 
     const snowMachine = buildSnowMachine(elVisualiserCanvas);
@@ -290,12 +298,14 @@ function buildView(eventSource, model) {
             elDownloadLink.innerHTML = '';
         },
         showEpisodeSummary(summary) {
-            elSummary.style.display = 'grid';
             elSummaryContent.innerHTML = summary;
             elSummaryLink.classList.add('selected');
+            elSummary.style.display = 'grid';
+            elSummary.offsetHeight; // force reflow
+            elSummary.classList.add('visible');
         },
         hideEpisodeSummary() {
-            elSummary.style.display = 'none';
+            elSummary.classList.remove('visible');
             elSummaryLink.classList.remove('selected');
         },
         showSummaryLink() {

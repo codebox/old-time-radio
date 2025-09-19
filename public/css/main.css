@@ -571,6 +571,12 @@ canvas {
     display: grid;
     grid-template-rows: 1fr auto 1fr;
     overflow-y: auto;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+#episodeSummary.visible {
+    opacity: 1;
 }
 
 #episodeSummaryContent {
