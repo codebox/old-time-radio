@@ -134,6 +134,7 @@ export type OtrDataSummaryResponse = {
 export type OtrSearchResult = {
     id: OtrDataEpisodeId,
     text: string,
+    similarity: number,
     metadata: {
         show: ShowName,
         episode: EpisodeName,
