@@ -1,6 +1,6 @@
 
 function buildSummaryManager(eventSource) {
-    const SUMMARY_DURATION_MILLIS = config.summary.displayDurationMillis;
+    const WPM = config.summary.wpmReadingSpeed;
     let timeout, state = {text: null, isVisible: false};
 
     function cancelTimeout() {
@@ -10,6 +10,14 @@ function buildSummaryManager(eventSource) {
         }
     }
 
+    function calculateDisplayIntervalInMillis(text) {
+        const wordCount = text.trim().split(/\s+/).length,
+            readingTimeInMinutes = wordCount / WPM,
+            readingTimeInMillis = Math.ceil(readingTimeInMinutes * 60 * 1000);
+
+        return readingTimeInMillis;
+    }
+
     return {
         on: eventSource.on,
         setText(summaryText) {
@@ -17,7 +25,7 @@ function buildSummaryManager(eventSource) {
         },
         showAndThenHide() {
             this.show();
-            timeout = setTimeout(() => this.hide(), SUMMARY_DURATION_MILLIS);
+            timeout = setTimeout(() => this.hide(), calculateDisplayIntervalInMillis(state.text));
         },
         show() {
             cancelTimeout();
