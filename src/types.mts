@@ -12,13 +12,17 @@ export type Config = {
             "publicUrlPrefix": UrlPath,
             "listenTo": UrlPath,
             "search": UrlPath,
+            "shows": UrlPath,
+            "episodes": UrlPath,
             "api": {
                 "shows": UrlPath,
                 "channels": UrlPath,
                 "channel": UrlPath,
                 "generate": UrlPath,
                 "playingNow": UrlPath,
-                "search": UrlPath
+                "search": UrlPath,
+                "episodes": UrlPath,
+                "episode": UrlPath
             }
         }
     },
@@ -42,7 +46,10 @@ export type Config = {
         "baseUrl": Url,
         "paths": {
             "summaries": UrlPath,
-            "search": UrlPath
+            "search": UrlPath,
+            "shows": UrlPath,
+            "episodes": UrlPath,
+            "episode": UrlPath
         }
     }
 };
@@ -131,6 +138,10 @@ export type OtrDataSummaryResponse = {
     }
 }
 
+export type OtrDataShowCounts = {
+    [key in ShowName]: number
+}
+
 export type OtrSearchResult = {
     id: OtrDataEpisodeId,
     text: string,
@@ -140,6 +151,7 @@ export type OtrSearchResult = {
         episode: EpisodeName,
         summary_small: ShortEpisodeSummary,
         playlist: PlaylistId,
+        url: Url,
         _chunks: {
             "similarity": number,
             "text": string
@@ -148,6 +160,11 @@ export type OtrSearchResult = {
 }
 
 export type OtrDataSearchResponse = OtrSearchResult[];
+
+export type OtrEpisodeData = OtrDocument;
+
+export type OtrDataEpisodesResponse = OtrEpisodeData[];
+export type OtrDataEpisodeResponse = OtrEpisodeData;
 
 export type ShowsListItem = {
     channels: ChannelId[], // used on client-side in Channel Builder to decide which section to display the show in

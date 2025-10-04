@@ -12,7 +12,8 @@ import type {
     SearchResults,
     ShowName,
     EpisodeName,
-    ShortEpisodeSummary, Url, SearchResultTextMatch
+    ShortEpisodeSummary, Url, SearchResultTextMatch, EpisodeDetails, OtrDocument, EpisodeId, OtrDataEpisodeResponse,
+    OtrDataEpisodeId, OtrDataShowCounts, OtrDataEpisodesResponse
 } from "./types.mjs";
 import {buildChannelCodeFromShowIds} from "./channelCodes.mjs";
 import type {Seconds} from "./clock.mjs";
@@ -70,19 +71,32 @@ export class Service {
             channels.map((channelId, index) => {
                result[channelId] = channelSchedules[index];
             });
-        return result;
+            return result;
         });
     }
 
     async search(searchText: SearchText): Promise<SearchResults> {
         const otrDataSearchResponse = await otrData.search(searchText);
         return otrDataSearchResponse.map(item => ({
+            id: item.id,
             show: item.metadata.show,
             episode: item.metadata.episode,
             summary: item.metadata.summary_small,
-            url: `http://archive.org/download/${item.metadata.playlist}/${item.id}.mp3` as Url,
+            url: item.metadata.url,
             textMatches: item.metadata._chunks.map(chunk => chunk.text) as SearchResultTextMatch[]
         }));
+    }
+
+    async getEpisodeDetails(episodeId: OtrDataEpisodeId): Promise<OtrDataEpisodeResponse> {
+        return await otrData.getEpisodeDetails(episodeId);
+    }
+
+    async getShowsForSearch(): Promise<OtrDataShowCounts> {
+        return await otrData.getShows();
+    }
+
+    async getEpisodesForShow(showName: ShowName): Promise<OtrDataEpisodesResponse> {
+        return await otrData.getEpisodeDetailsForShow(showName);
     }
 
     getSitemapXml(): Promise<Xml> {

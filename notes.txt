@@ -1,6 +1,17 @@
 TODO
 ----
+new pages for
+    - list of shows available in search
+    - show pages with list of episodes
 summary display on mobile
+check html metadata values for new pages
+tidy up search.js code
+turn off debug logging
+
+define cut-off point for match relevance, maybe send poorer results to client but hide them and allow user to show them if they want
+
+move name parsing to backend, combine with otter data if we have it
+cache summaries from otrData with long expiry - they will change very rarely
 
 Search
 ------

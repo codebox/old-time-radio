@@ -2,7 +2,7 @@ import express from "express";
 import {config} from "./config.mjs";
 import {log} from "./log.mjs";
 import {Service} from "./service.mjs";
-import type {ChannelId, SearchText, ShowId} from "./types.mjs";
+import type {ChannelId, EpisodeId, EpisodeName, OtrDataEpisodeId, SearchText, ShowId, ShowName} from "./types.mjs";
 import type {Seconds} from "./clock.mjs";
 
 export class WebServer {
@@ -20,12 +20,31 @@ export class WebServer {
             next();
         });
 
+        this.app.set('view engine', 'ejs')
+
         this.app.use(express.static(config.web.paths.static));
 
         this.app.use(config.web.paths.listenTo, express.static(config.web.paths.static));
 
-        this.app.use(config.web.paths.search, (req, res) => {
+        this.app.get(config.web.paths.search, (req, res) => {
             res.sendFile('public/search.html', {root:'./'});
+        });
+
+        this.app.get(config.web.paths.shows, (req, res) => {
+            this.service.getShowsForSearch().then(showCounts => {
+                const links = Object.entries(showCounts).map(([showName, episodeCount]) => ({
+                    text: `${showName} (${episodeCount})`,
+                    url: `${config.web.paths.episodes}/${showName}`
+                }));
+                res.render('shows', { links });
+            })
+        });
+
+        this.app.get(`${config.web.paths.episodes}/:show`, (req, res) => {
+            const showName = req.params.show as ShowName;
+            this.service.getEpisodesForShow(showName).then(episodes => {
+                res.render('episodes', { episodes, showName });
+            })
         });
 
         this.app.get(`${config.web.paths.listenTo}/:show`, (req, res) => {
@@ -92,6 +111,26 @@ export class WebServer {
                 return;
             }
             this.service.search(searchText).then((results) => {
+                res.json(results);
+            }).catch((err) => {
+                log.error(`Error searching: ${err}`, err);
+                res.status(500).send("Sorry, search isn't working at the moment");
+            })
+        });
+
+        // this.app.get(`${config.web.paths.api.episodes}/:showName`, (req, res) => {
+        //     const showName = req.params.showName as ShowName;
+        //     this.service.episodes(showName).then((results) => {
+        //         res.json(results);
+        //     }).catch((err) => {
+        //         log.error(`Error searching: ${err}`, err);
+        //         res.status(500).send('Internal Server Error');
+        //     })
+        // });
+
+        this.app.get(`${config.web.paths.api.episode}/:episodeId`, (req, res) => {
+            const episodeId = req.params.episodeId as OtrDataEpisodeId;
+            this.service.getEpisodeDetails(episodeId).then((results) => {
                 res.json(results);
             }).catch((err) => {
                 log.error(`Error searching: ${err}`, err);

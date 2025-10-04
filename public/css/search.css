@@ -1,9 +1,8 @@
-@font-face {
-    font-family: 'Josefin';
-    src: url('JosefinSans-VariableFont_wght.ttf') format('truetype');
-}
 body {
     background-color: #ccc;
+}
+a {
+    color: var(--menu-font-color);
 }
 #searchContainer {
     display: flex;
@@ -31,6 +30,13 @@ body {
     font-weight: normal;
 }
 
+#searchDisclaimer {
+    font-family: "Josefin", sans-serif;
+    text-align: center;
+    font-weight: 300;
+    font-size: 1.2em;
+    margin-bottom: 0.4em;
+}
 #searchForm {
     padding: 10px;
     display: flex;
@@ -55,18 +61,24 @@ body {
 }
 #searchResults {
     flex: 1;
+    max-width: 800px;
+    margin: 0 auto 40px;
 }
 .searchResultItem {
     height: auto;
     font-family: "Josefin", sans-serif;
     padding: 0 20px;
+    font-weight: 300;
+    font-size: 1.2em;
 }
 
-.searchResultItem .episodeSummary {
-    font-style: italic;
-}
 .searchResultItem h3 {
     text-decoration: underline;
+    margin-bottom: 0;
+    font-size: 1.2em;
+}
+.searchResultItem .episodeSummary {
+    margin: 0.8em 0 0.4em 0;
 }
 .searchResultItem h3 .showName {
     font-weight: 400;
@@ -74,9 +86,13 @@ body {
 .searchResultItem h3 .episodeName {
     font-weight: 300;
 }
-.searchResultItem .episodeMatches {
-    font-weight: 200;
+.searchResultItem details {
+    margin-bottom: 2em;
 }
+.searchResultItem summary {
+    cursor: pointer;
+}
+
 #searchButton {
     padding: 10px 20px;
     border-radius: 20px;
@@ -86,4 +102,139 @@ body {
 }
 #searchButton:hover {
     background-color: white;
+}
+#searchRunning {
+    max-height: 100px;
+    text-align: center;
+    font-family: "Josefin", sans-serif;
+}
+.spinner {
+    width: 40px;
+    height: 40px;
+
+    position: relative;
+    margin: 10px auto;
+}
+.double-bounce1, .double-bounce2 {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: #333;
+    opacity: 0.6;
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    animation: sk-bounce 2.0s infinite ease-in-out;
+}
+
+.double-bounce2 {
+    -webkit-animation-delay: -1.0s;
+    animation-delay: -1.0s;
+}
+
+@keyframes sk-bounce {
+    0%, 100% {
+        transform: scale(0.0);
+    }
+    50% {
+        transform: scale(1.0);
+    }
+}
+
+.episodeDetailsLoading {
+    margin: 0 auto 20px;
+    width: 70px;
+    text-align: center;
+}
+
+.episodeDetailsLoading > div {
+    width: 18px;
+    height: 18px;
+    background-color: #333;
+
+    border-radius: 100%;
+    display: inline-block;
+    -webkit-animation: sk-bouncedelay2 1.4s infinite ease-in-out both;
+    animation: sk-bouncedelay2 1.4s infinite ease-in-out both;
+}
+
+.episodeDetailsLoading .bounce1 {
+    -webkit-animation-delay: -0.32s;
+    animation-delay: -0.32s;
+}
+
+.episodeDetailsLoading .bounce2 {
+    -webkit-animation-delay: -0.16s;
+    animation-delay: -0.16s;
+}
+
+@-webkit-keyframes sk-bouncedelay2 {
+    0%, 80%, 100% { -webkit-transform: scale(0) }
+    40% { -webkit-transform: scale(1.0) }
+}
+
+@keyframes sk-bouncedelay2 {
+    0%, 80%, 100% {
+        -webkit-transform: scale(0);
+        transform: scale(0);
+    } 40% {
+          -webkit-transform: scale(1.0);
+          transform: scale(1.0);
+      }
+}
+.episodeDownloadLinks {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+.episodeDownloadLinks a {
+    color: black;
+}
+
+.episodeDownloadLinks audio {
+    max-width: 100%;
+}
+
+.episodeDetailsContent {
+    max-width: 100%;
+    overflow-wrap: break-word;
+}
+
+.episodeDetailsContent p {
+    font-weight: 300;
+    margin-top: 0.4em;
+}
+
+#searchError {
+    text-align: center;
+    font-family: "Josefin", sans-serif;
+    font-weight: 400;
+    font-size: 1.2em;
+    margin-top: 0.5em;
+}
+
+@media screen and (max-width: 500px) {
+    #searchContainer #title {
+        flex-basis: 110px;
+    }
+    #searchDisclaimer {
+        font-size: 1em;
+        margin: 1em 0.4em 0.5em 0.4em;
+    }
+    #searchForm {
+        flex-direction: column;
+        gap: 10px;
+    }
+    #searchButton, #searchInput {
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .episodeDownloadLinks {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
 }

@@ -78,7 +78,7 @@ export class Shows {
                 .map(fileMetadata => {
                     const encodedFileName = encodeURIComponent(fileMetadata.name),
                         archivalUrl = `https://archive.org/download/${playlistId}/${encodedFileName}` as Url,
-                        otrDataId = otrData.getOtrEpisodeId(fileMetadata.name),
+                        otrDataId = otrData.getOtrEpisodeId(playlistId, fileMetadata.name),
                         episodeSummaries = summaries[otrDataId] || {};
 
                     return {
