@@ -14,6 +14,7 @@ export type Config = {
             "search": UrlPath,
             "shows": UrlPath,
             "episodes": UrlPath,
+            "episode": UrlPath,
             "api": {
                 "shows": UrlPath,
                 "channels": UrlPath,
@@ -117,6 +118,7 @@ export type SearchResults = SearchResult[];
 export type SearchResultTextMatch = string & { readonly __brand: unique symbol };
 
 export type SearchResult = {
+    id: OtrDataEpisodeId,
     show: ShowName,
     episode: EpisodeName,
     summary: ShortEpisodeSummary,

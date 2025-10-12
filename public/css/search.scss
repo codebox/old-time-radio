@@ -1,0 +1,208 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #ccc;
+}
+
+body, main, h1 {
+    display: flex;
+    flex-direction: column;
+}
+
+#title h1 {
+    line-height: 1.2;
+    margin-top: 5px;
+
+    a {
+        text-decoration: none;
+        color: inherit;
+        margin-bottom: 0;
+    }
+
+    span {
+        font-size: 1.8rem;
+        font-weight: normal;
+    }
+}
+#title.episodesHeader h1 span {
+    font-size: 1.4rem;
+    line-height: 2rem;
+}
+
+a {
+    color: black;
+}
+
+#title {
+    flex-basis: 9rem;
+}
+
+main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding-bottom: 3rem;
+    font-family: "Josefin", sans-serif;
+    font-weight: 300;
+    font-size: 1.2rem;
+
+    p {
+        line-height: 1.4rem;
+        text-underline-offset: 0.1em;
+
+        &.compact {
+            margin-bottom: 0;
+        }
+    }
+}
+
+.pageDescription {
+    text-align: center;
+    line-height: 1.2;
+}
+
+#searchForm {
+    display: flex;
+    flex-direction: row;
+    flex: 0 0 40px;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+
+    button, input {
+        outline-width: 1px;
+        outline-color: #999;
+        padding: 0.5rem 1.2rem;
+        border-radius: 50px;
+        border: 1px solid black;
+        font-size: 1rem;
+    }
+
+    input {
+        width: 20rem;
+    }
+
+    button:enabled {
+        cursor: pointer;
+
+        &:hover {
+            background-color: white;
+        }
+    }
+}
+
+#searchError {
+    text-align: center;
+    font-weight: 400;
+    font-size: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.episodeSummary {
+    h3 {
+        text-decoration: underline;
+        margin-bottom: 0;
+
+        .showName {
+            font-weight: 400;
+        }
+
+        .episodeName {
+            font-weight: 300;
+        }
+    }
+
+    .episodeSummary {
+        margin: 0.8em 0 0.4em 0;
+    }
+
+    summary {
+        cursor: pointer;
+    }
+}
+
+.episodeDetails {
+    margin-bottom: 1.5rem;
+
+    .episodeDownloadLinks {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .episodeDownloadLinks a {
+        color: black;
+    }
+
+    .episodeDownloadLinks audio {
+        max-width: 100%;
+    }
+}
+
+ul {
+    padding: 0;
+    margin: 0;
+    list-style: circle;
+
+    li {
+        margin: 0.5em 0;
+        text-underline-offset: 0.1em;
+
+        a {
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    }
+}
+
+h2, h3 {
+    font-weight: 400;
+    margin: 2rem 0 0 0;
+}
+
+.episodesList {
+    .episodeSummary {
+        margin: 0.4em 0 0.2em 0;
+    }
+    h3 {
+        margin-top: 0.6em;
+    }
+}
+
+.loading {
+    width: 40px;
+    height: 40px;
+
+    position: relative;
+    margin: 10px auto;
+
+    .double-bounce1, .double-bounce2 {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background-color: #333;
+        opacity: 0.6;
+        position: absolute;
+        top: 0;
+        left: 0;
+
+        animation: loading-bounce 2.0s infinite ease-in-out;
+    }
+    .double-bounce2 {
+        -webkit-animation-delay: -1.0s;
+        animation-delay: -1.0s;
+    }
+}
+
+@keyframes loading-bounce {
+    0%, 100% {
+        transform: scale(0.0);
+    }
+    50% {
+        transform: scale(1.0);
+    }
+}
+
+@media screen and (max-width: 500px) {
+
+}

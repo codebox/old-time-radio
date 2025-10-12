@@ -1,0 +1,17 @@
+<div class="episodeSummary">
+    <h3>
+        <a href="/episode/<%= id %>">
+            <% if (show) { %>
+                <span class="showName"><%= show %>:</span>
+            <% } %>
+            <span class="episodeName"><%= episode %></span>
+        </a>
+    </h3>
+    <p class="episodeSummary"><%= summary %></p>
+    <details data-episode-id="<%= id %>">
+        <summary>more...</summary>
+        <div class="episodeDetailsContainer">
+            <%- include('loading' )%>
+        </div>
+    </details>
+</div>

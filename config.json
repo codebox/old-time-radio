@@ -8,6 +8,7 @@
       "search": "/search",
       "shows": "/shows",
       "episodes": "/episodes",
+      "episode": "/episode",
       "api": {
         "shows": "/api/shows",
         "channels": "/api/channels",

@@ -36,12 +36,6 @@ body {
     min-width: 270px;
     transition: background-color 3s;
 }
-html, body, div {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    box-sizing: border-box;
-}
 #title {
     display: flex;
     flex-direction: row;

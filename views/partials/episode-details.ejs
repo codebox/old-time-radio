@@ -1,0 +1,12 @@
+<div class="episodeDetails">
+    <p><%- description.replaceAll("\\\"", "\"").replaceAll("\\n", "<br>") %></p>
+    <div class="episodeDownloadLinks">
+        <audio controls preload="none" src="<%= audioUrl %>"></audio>
+        <a href="<%= audioUrl %>">Download</a>
+        <a href="<%= episodePageUrl %>" target="_blank">Permalink</a>
+        <% const subject = encodeURIComponent("Episode summary feedback"),
+                body = encodeURIComponent(`I would like to report a problem with the summary for the episode <%= show %>: <%= episode %> (id = <%= id %>)\n\n<please describe the problem here>`),
+                mailToLink = `mailto:rob@oldtime.radio?subject=${subject}&body=${body}`; %>
+        <a href="<%= mailToLink %>" >Report a problem</a>
+    </div>
+</div>

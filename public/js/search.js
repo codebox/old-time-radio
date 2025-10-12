@@ -1,4 +1,4 @@
-window.onload = () => {
+window.addEventListener('load', () => {
     const elSearchInput = document.getElementById('searchInput'),
         elSearchButton = document.getElementById('searchButton'),
         elSearchResults = document.getElementById('searchResults'),
@@ -26,27 +26,7 @@ window.onload = () => {
         }
     }
 
-    elSearchResults.addEventListener('toggle', async (event) => {
-        const elDetails = event.target;
-        const episodeId = elDetails.dataset.episodeId;
-
-        if (!episodeId || !elDetails.open || elDetails.dataset.loaded) return;
-
-        elDetails.dataset.loaded = 'true';
-        const response = await fetch('/api/episode/' + encodeURIComponent(episodeId));
-        const data = await response.json();
-
-        elDetails.querySelector('.episodeDetailsContent').innerHTML = `
-            <p>${data.text.replaceAll('\\n', '<br>').replaceAll('\\"', '"')}</p>
-            <div class="episodeDownloadLinks">
-                <audio controls preload="none" src="${data.metadata.url}"></audio>
-                <a href="${data.metadata.url}">Download</a>
-            </div>
-        `;
-    }, true);
-
-    elSearchButton.addEventListener('click', async () => {
-        const searchText = elSearchInput.value.trim();
+    async function performSearch(searchText) {
         if (!searchText) return;
 
         try {
@@ -55,43 +35,24 @@ window.onload = () => {
 
             if (!response.ok) {
                 const errorMessage = await response.text();
-                throw new Error(errorMessage || `Search failed: ${response.status} ${response.statusText}`);
+                throw new Error(errorMessage || `${response.status} ${response.statusText}`);
             }
 
-            const data = await response.json();
+            const searchResultsHtml = await response.text();
             setState(STATE_RESULTS);
-            elSearchResults.innerHTML = '';
+            elSearchResults.innerHTML = searchResultsHtml;
 
-            if (data.length === 0) {
-                elSearchResults.innerHTML = '<p>No results found.</p>';
-            } else {
-                data.forEach(item => {
-                    const div = document.createElement('div');
-                    div.className = 'searchResultItem';
-                    const matches = item.textMatches.join(' ... ');
-                    div.innerHTML = `
-                        <h3>
-                            <span class="showName">${item.show}:</span> <span class="episodeName">${item.episode}</span>
-                        </h3>
-                        <p class="episodeSummary">${item.summary}</p>
-                        <details data-episode-id="${item.id}">
-                            <summary>more...</summary>
-                            <div class="episodeDetailsContent">
-                                <div class="episodeDetailsLoading">
-                                    <div class="bounce1"></div>
-                                    <div class="bounce2"></div>
-                                    <div class="bounce3"></div>
-                                </div>
-                            </div>
-                        </details>
-                    `;
-                    elSearchResults.appendChild(div);
-                });
-            }
+            history.pushState({searchText}, '', '/search/' + encodeURIComponent(searchText));
+
         } catch (error) {
             setState(STATE_ERROR);
-            elSearchError.textContent = error.message;
+            elSearchError.textContent = `Search failed: ${error.message}`;
         }
+    }
+
+    elSearchButton.addEventListener('click', async () => {
+        const searchText = elSearchInput.value.trim();
+        await performSearch(searchText);
     });
 
     elSearchInput.addEventListener('keydown', (event) => {
@@ -103,5 +64,13 @@ window.onload = () => {
         }
     });
 
-    setState(STATE_INIT);
-};
+    // Check if there's a search term in the URL on page load
+    const pathParts = window.location.pathname.split('/');
+    if (pathParts.length >= 3 && pathParts[1] === 'search' && pathParts[2]) {
+        const searchText = decodeURIComponent(pathParts[2]);
+        elSearchInput.value = searchText;
+        performSearch(searchText);
+    } else {
+        setState(STATE_INIT);
+    }
+});

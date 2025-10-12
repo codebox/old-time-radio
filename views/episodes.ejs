@@ -1,44 +1,30 @@
 <!doctype html>
 <html>
-<head>
-    <title>Old Time Radio - <%= showName %> Episodes</title>
-    <meta name="viewport" content="initial-scale=1,maximum-scale=1,width=device-width" />
-    <meta name="description" content="This station broadcasts Old Time Radio shows 24/7 for free. Listen to Superman, X-Minus One, Tarzan, Philip Marlowe, Gunsmoke, Jack Benny and many more" />
-    <link rel="icon" type="image/png" href="/favicon.png"/>
-    <meta property="og:title" content="Old Time Radio" />
-    <meta property="og:url" content="https://oldtime.radio" />
-    <meta property="og:type" content="website" />
-    <meta property="og:description" content="Streaming shows from the Golden Age of Radio 24/7" />
-    <meta property="og:image" content="https://oldtime.radio/otr.png" />
-    <link rel="stylesheet" href="/css/common.css">
-    <link rel="stylesheet" href="/css/episodes.css">
-</head>
-<body>
-    <div id="showsContainer">
-        <div id="title">
-            <div class="spacer" aria-hidden="true"></div>
-            <h1>
-                <a href="/">Old Time Radio</a>
-                <span><%= showName %> Episodes</span>
-            </h1>
-            <div class="spacer"></div>
-            <div class="radioWave" id="titleInner1" aria-hidden="true"></div>
-            <div class="radioWave" id="titleInner2" aria-hidden="true"></div>
-            <div class="radioWave" id="titleInner3" aria-hidden="true"></div>
-            <div class="radioWave" id="titleInner4" aria-hidden="true"></div>
-        </div>
+    <head>
+        <title>Old Time Radio - <%= showName %> Episodes</title>
+        <meta name="viewport" content="initial-scale=1,maximum-scale=1,width=device-width" />
+        <meta name="description" content="This station broadcasts Old Time Radio shows 24/7 for free. Listen to Superman, X-Minus One, Tarzan, Philip Marlowe, Gunsmoke, Jack Benny and many more" />
+        <link rel="icon" type="image/png" href="/favicon.png"/>
+        <meta property="og:title" content="Old Time Radio" />
+        <meta property="og:url" content="https://oldtime.radio" />
+        <meta property="og:type" content="website" />
+        <meta property="og:description" content="Streaming shows from the Golden Age of Radio 24/7" />
+        <meta property="og:image" content="https://oldtime.radio/otr.png" />
+        <link rel="stylesheet" href="/css/common.css">
+        <link rel="stylesheet" href="/css/search.css">
+    </head>
+    <body>
+        <%- include('partials/header', { subTitle: `${showName} Episodes`, cssClass: "episodesHeader" }) %>
+        <main class="episodesList">
+            <p>
+                The following episodes of '<%= showName %>' have been transcribed and summarised, and are available in <a href="/search">Old Time Radio Search</a>.
+                Click on an episode to see more information or go back to the <a href="/shows">list of shows</a>.
+            </p>
 
-        <p>
-            The following <%= showName %> %> episodes have been transcribed and summarised, and are available in <a href="/search">Old Time Radio Search</a>.<br>
-            Click on an episode to see the available summaries.
-        </p>
-
-        <ul id="episodesList">
-            <% episodes.forEach(episode => { %>
-                <li><%=episode.metadata.episode%></li>
-            <% }); %>
-        </ul>
-
-    </div>
-</body>
+            <div id="episodeSummaries">
+                <%- include('partials/episode-summaries', { summaries: episodes }) %>
+            </div>
+        </main>
+        <script src="/js/episodeSummary.js"></script>
+    </body>
 </html>

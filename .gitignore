@@ -8,3 +8,4 @@ public/lo.mp3
 public/test.mp3
 src/*.mjs
 src/*.mjs.map
+public/css/.sass-cache
