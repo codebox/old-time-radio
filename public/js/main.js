@@ -105,7 +105,7 @@ window.onload = () => {
         audioPlayer.play(model.nextTrackOffset);
         view.showDownloadLink(model.track.archivalUrl);
         const hasSummary = !! model.track.medium,
-            tuningInPartWayThrough = !! model.nextTrackOffset;
+            tuningInPartWayThrough = model.nextTrackOffset > (model.track.length * config.summary.autoShowPercentage / 100);
         if (hasSummary) {
             summaryManager.setText(model.track.medium);
             view.showSummaryLink();

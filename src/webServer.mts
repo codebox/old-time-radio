@@ -61,9 +61,9 @@ export class WebServer {
                 const episodeSummaries = episodes.map(ep => ({
                     id: ep.id,
                     show: '',
-                    episode: ep.metadata.episode,
-                    summary: ep.metadata.summary_small,
-                    url: ep.metadata.url,
+                    episode: ep.episode,
+                    summary: ep.summarySmall,
+                    url: ep.url,
                 }));
                 res.render('episodes', { episodes: episodeSummaries, showName });
             })
@@ -150,14 +150,7 @@ export class WebServer {
         this.app.get(`${config.web.paths.api.episode}/:episodeId`, (req, res) => {
             const episodeId = req.params.episodeId as OtrDataEpisodeId;
             this.service.getEpisodeDetails(episodeId).then((otrDocument) => {
-                res.render('partials/episode-details', {
-                    id: otrDocument.id,
-                    show: otrDocument.metadata.show,
-                    episode: otrDocument.metadata.episode,
-                    description: otrDocument.text,
-                    audioUrl: otrDocument.metadata.url,
-                    episodePageUrl: `/episode/${otrDocument.id}`,
-                });
+                res.render('partials/episode-details', { document: otrDocument });
             }).catch((err) => {
                 log.error(`Error searching: ${err}`, err);
                 res.status(500).send('Internal Server Error');

@@ -1,23 +1,15 @@
 <!doctype html>
 <html>
     <head>
-        <title>Old Time Radio - Search</title>
-        <meta name="viewport" content="initial-scale=1,maximum-scale=1,width=device-width" />
-        <meta name="description" content="This station broadcasts Old Time Radio shows 24/7 for free. Listen to Superman, X-Minus One, Tarzan, Philip Marlowe, Gunsmoke, Jack Benny and many more" />
-        <link rel="icon" type="image/png" href="/favicon.png"/>
-        <meta property="og:title" content="Old Time Radio" />
-        <meta property="og:url" content="https://oldtime.radio" />
-        <meta property="og:type" content="website" />
-        <meta property="og:description" content="Streaming shows from the Golden Age of Radio 24/7" />
-        <meta property="og:image" content="https://oldtime.radio/otr.png" />
-        <link rel="stylesheet" href="/css/common.css">
-        <link rel="stylesheet" href="/css/search.css">
+        <%- include('partials/head', { title: `Shows`, description: `List of transcribed radio shows available for searching` }) %>
     </head>
     <body>
         <%- include('partials/header', { subTitle: "Shows", cssClass: "" }) %>
         <main>
-            <p>
-                The following shows have been transcribed and are available in <a href="/search">Old Time Radio Search</a>.<br>
+            <p class="pageDescription">
+                The following shows have been transcribed and are available in <a href="/search">Old Time Radio Search</a>.
+            </p>
+            <p class="pageDescription">
                 Click on a show to see the available episodes.
             </p>
             <ul>

@@ -126,11 +126,41 @@ export type SearchResult = {
     textMatches: SearchResultTextMatch[]
 }
 
-export type OtrDocument = {
-    id: OtrDataEpisodeId,
-    text: string,
+export class OtrDocument {
+    id: OtrDataEpisodeId;
+    text: string;
     metadata: {
         [key: string]: string
+    };
+
+    constructor(data: { id: OtrDataEpisodeId; text: string; metadata: { [key: string]: string } }) {
+        this.id = data.id;
+        this.text = data.text;
+        this.metadata = data.metadata;
+    }
+
+    get url(): Url {
+        return this.metadata.url as Url;
+    }
+
+    get show(): ShowName {
+        return this.metadata.show as ShowName;
+    }
+
+    get episode(): EpisodeName {
+        return this.metadata.episode as EpisodeName;
+    }
+
+    get summarySmall(): ShortEpisodeSummary {
+        return this.metadata.summary_small as ShortEpisodeSummary;
+    }
+
+    get summaryMedium(): MediumEpisodeSummary {
+        return this.metadata.summary_medium as MediumEpisodeSummary;
+    }
+
+    get episodePageUrl(): string {
+        return `/episode/${this.id}`;
     }
 }
 export type OtrDataSummaryResponse = {

@@ -64,7 +64,8 @@ const config = {
         infoDisplayIntervalMillis: 5 * 1000,
     },
     summary: {
-        wpmReadingSpeed: 200
+        wpmReadingSpeed: 200,
+        autoShowPercentage: 10
     },
     messages: {
         canned: {

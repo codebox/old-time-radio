@@ -1,13 +1,24 @@
 import { WebClient } from "./webClient.mjs";
 import { log } from "./log.mjs";
 import { config } from "./config.mjs";
-import type {
-    EpisodeId,
-    MediumEpisodeSummary,
-    OtrDataEpisodeId, OtrDataEpisodeResponse, OtrDataEpisodesResponse, OtrDataSearchResponse, OtrDataShowCounts,
-    OtrDataSummaryResponse, OtrDocument, OtrSearchResult,
-    PlaylistId, SearchResults, SearchText, ShortEpisodeSummary, ShowId, ShowName,
-    Url
+import {
+    OtrDocument,
+    type EpisodeId,
+    type MediumEpisodeSummary,
+    type OtrDataEpisodeId,
+    type OtrDataEpisodeResponse,
+    type OtrDataEpisodesResponse,
+    type OtrDataSearchResponse,
+    type OtrDataShowCounts,
+    type OtrDataSummaryResponse,
+    type OtrSearchResult,
+    type PlaylistId,
+    type SearchResults,
+    type SearchText,
+    type ShortEpisodeSummary,
+    type ShowId,
+    type ShowName,
+    type Url
 } from "./types.mjs";
 import path from "path";
 
@@ -41,13 +52,14 @@ export class OtrData {
     }
 
     async getEpisodeSummariesForPlaylist(playlistId: PlaylistId): Promise<OtrDataSummaryResponse> {
-        const otrDataDocuments = await this.get(`${this.baseUrl}${this.summariesPath}${playlistId}` as Url) as OtrDocument[],
+        const rawDocuments = await this.get(`${this.baseUrl}${this.summariesPath}${playlistId}` as Url) as any[],
+            otrDataDocuments = rawDocuments.map(doc => new OtrDocument(doc)),
             response = {} as OtrDataSummaryResponse;
 
         otrDataDocuments.forEach(otrDataDocument => {
             response[otrDataDocument.id] = {
-                short: otrDataDocument.metadata.summary_small as ShortEpisodeSummary,
-                medium: otrDataDocument.metadata.summary_medium as MediumEpisodeSummary
+                short: otrDataDocument.summarySmall,
+                medium: otrDataDocument.summaryMedium
             }
         });
 
@@ -59,7 +71,8 @@ export class OtrData {
     }
 
     async getEpisodeDetails(id: OtrDataEpisodeId): Promise<OtrDataEpisodeResponse> {
-        return await this.get(`${this.baseUrl}${this.episodePath}${id}` as Url) as OtrDataEpisodeResponse;
+        const rawDocument = await this.get(`${this.baseUrl}${this.episodePath}${id}` as Url) as any;
+        return new OtrDocument(rawDocument);
     }
 
     async getShows(): Promise<OtrDataShowCounts> {
@@ -67,7 +80,8 @@ export class OtrData {
     }
 
     async getEpisodeDetailsForShow(showName: ShowName): Promise<OtrDataEpisodesResponse> {
-        return await this.get(`${this.baseUrl}${this.episodesPath}${showName}` as Url) as OtrDataEpisodesResponse;
+        const rawDocuments = await this.get(`${this.baseUrl}${this.episodesPath}${showName}` as Url) as any[];
+        return rawDocuments.map(doc => new OtrDocument(doc));
     }
 
     getOtrEpisodeId(playlistId: PlaylistId, fileName: string): OtrDataEpisodeId {

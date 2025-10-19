@@ -31,6 +31,8 @@ function getDescriptiveIdForShowName(showName: string): DescriptiveId {
 }
 
 export class Service {
+    private showsForSearchCache: OtrDataShowCounts | null = null;
+
     private getShowsListItemFromConfigShow(configShow: ConfigShow): ShowsListItem {
         return {
             channels: getChannelIdsForShowId(configShow.id),
@@ -92,7 +94,10 @@ export class Service {
     }
 
     async getShowsForSearch(): Promise<OtrDataShowCounts> {
-        return await otrData.getShows();
+        if (this.showsForSearchCache === null) {
+            this.showsForSearchCache = await otrData.getShows();
+        }
+        return this.showsForSearchCache;
     }
 
     async getEpisodesForShow(showName: ShowName): Promise<OtrDataEpisodesResponse> {

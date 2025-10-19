@@ -1,19 +1,15 @@
 TODO
 ----
-mobile css for new pages
-order of shows/episodes in list pages
-re-do gemini-2.5-flash-lite episodes
-add thumbs up/down for summaries
-clean up episode summary text and remove this code: description.replaceAll("\\\"", "\"").replaceAll("\\n", "<br>")
-SEO-ify episode page urls
-check html metadata values and titles for new pages
-add otter metadata to some shows
+metadata
+    add otter metadata to some shows
+    order of shows/episodes in list pages
+    clean up episode summary text and remove this code: description.replaceAll("\\\"", "\"").replaceAll("\\n", "<br>")
+    move name parsing to backend, combine with otter data if we have it
+    more filtering of episodes: interview, tribute, rehearsal, audition, biography, introduction
+generate sitemap for new pages
 turn off debug logging
 
 define cut-off point for match relevance, maybe send poorer results to client but hide them and allow user to show them if they want
-
-move name parsing to backend, combine with otter data if we have it
-cache summaries from otrData with long expiry - they will change very rarely
 
 Search
 ------

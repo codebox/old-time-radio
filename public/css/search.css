@@ -17,10 +17,11 @@ body, main, h1 {
   #title h1 span {
     font-size: 1.8rem;
     font-weight: normal; }
-
 #title.episodesHeader h1 span {
   font-size: 1.4rem;
   line-height: 2rem; }
+#title.episodeHeader h1 span {
+  font-size: 1.4rem; }
 
 a {
   color: black; }
@@ -31,7 +32,7 @@ a {
 main {
   max-width: 800px;
   margin: 0 auto;
-  padding-bottom: 3rem;
+  padding: 0.5rem 1rem 1rem 1rem;
   font-family: "Josefin", sans-serif;
   font-weight: 300;
   font-size: 1.2rem; }
@@ -43,7 +44,12 @@ main {
 
 .pageDescription {
   text-align: center;
-  line-height: 1.2; }
+  line-height: 1.2;
+  margin: 0.25rem 0; }
+  .pageDescription:first-of-type {
+    margin-top: 1rem; }
+  .pageDescription + .pageDescription {
+    margin-bottom: 1rem; }
 
 #searchForm {
   display: flex;
@@ -74,12 +80,14 @@ main {
 
 .episodeSummary h3 {
   text-decoration: underline;
-  margin-bottom: 0; }
+  margin-bottom: 0;
+  word-break: break-word;
+  line-height: 1.6rem; }
   .episodeSummary h3 .showName {
     font-weight: 400; }
   .episodeSummary h3 .episodeName {
     font-weight: 300; }
-.episodeSummary .episodeSummary {
+.episodeSummary .summaryText {
   margin: 0.8em 0 0.4em 0; }
 .episodeSummary summary {
   cursor: pointer; }
@@ -140,5 +148,43 @@ h2, h3 {
     transform: scale(0); }
   50% {
     transform: scale(1); } }
+@media screen and (max-width: 500px) {
+  ul {
+    list-style: none;
+    text-align: center; }
+
+  h2, h3 {
+    margin-top: 1rem; }
+
+  #title {
+    flex-basis: 110px; }
+
+  .pageDescription {
+    text-align: center;
+    font-size: 1em;
+    margin: 0.5em 0.4em; }
+
+  #searchForm {
+    flex-direction: column;
+    gap: 1rem; }
+    #searchForm input, #searchForm button {
+      width: 100%;
+      box-sizing: border-box; }
+
+  .episodeDetails .episodeDownloadLinks {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px; }
+
+  #title.episodeHeader h1 span, #title.episodesHeader h1 span {
+    font-size: clamp(0.8rem, 4vw, 1.4rem);
+    word-break: break-word; }
+
+  h2 {
+    font-size: clamp(0.9rem, 8vw, 1.4rem);
+    word-break: break-word; }
+
+  #searchResults {
+    margin-top: 0.8rem; } }
 
 /*# sourceMappingURL=search.css.map */
