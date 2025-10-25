@@ -102,6 +102,8 @@ export type ChannelCode = string & { readonly __brand: unique symbol }; // eg '0
 export type ChannelId = ChannelName | ChannelCode
 export type ShowName = string & { readonly __brand: unique symbol };
 export type EpisodeName = string & { readonly __brand: unique symbol };
+export type EpisodeDate = string & { readonly __brand: unique symbol };
+export type EpisodeNumber = number & { readonly __brand: unique symbol };
 export type ShortEpisodeSummary = string & { readonly __brand: unique symbol };
 export type MediumEpisodeSummary = string & { readonly __brand: unique symbol };
 export type DescriptiveId = string & { readonly __brand: unique symbol };
@@ -147,8 +149,16 @@ export class OtrDocument {
         return this.metadata.show as ShowName;
     }
 
+    get number(): EpisodeNumber {
+        return Number(this.metadata.number) as EpisodeNumber;
+    }
+
     get episode(): EpisodeName {
         return this.metadata.episode as EpisodeName;
+    }
+
+    get date(): EpisodeDate {
+        return this.metadata.date as EpisodeDate;
     }
 
     get summarySmall(): ShortEpisodeSummary {
@@ -164,11 +174,11 @@ export class OtrDocument {
     }
 }
 export type OtrDataSummaryResponse = {
-    [key in OtrDataEpisodeId]: {
-        short: ShortEpisodeSummary,
-        medium: MediumEpisodeSummary,
-    }
-}
+    url: Url,
+    name: EpisodeName,
+    short: ShortEpisodeSummary,
+    medium: MediumEpisodeSummary,
+}[];
 
 export type OtrDataShowCounts = {
     [key in ShowName]: number

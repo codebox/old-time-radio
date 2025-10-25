@@ -18,7 +18,7 @@ import {
     type ShortEpisodeSummary,
     type ShowId,
     type ShowName,
-    type Url
+    type Url, type EpisodeName
 } from "./types.mjs";
 import path from "path";
 
@@ -51,19 +51,23 @@ export class OtrData {
         }
     }
 
+    private buildEpisodeName(doc: OtrDocument): EpisodeName {
+        const numberPart = doc.number ? ` [#${doc.number}]` : '',
+            datePart = doc.date ? ` (${doc.date})` : '';
+        return `${doc.show}${numberPart} - ${doc.episode}${datePart}` as EpisodeName;
+    }
+
     async getEpisodeSummariesForPlaylist(playlistId: PlaylistId): Promise<OtrDataSummaryResponse> {
         const rawDocuments = await this.get(`${this.baseUrl}${this.summariesPath}${playlistId}` as Url) as any[],
-            otrDataDocuments = rawDocuments.map(doc => new OtrDocument(doc)),
-            response = {} as OtrDataSummaryResponse;
+            otrDataDocuments = rawDocuments.map(doc => new OtrDocument(doc));
+        console.log(`Fetched ${otrDataDocuments.length} episode summaries for playlist ${playlistId}`);
 
-        otrDataDocuments.forEach(otrDataDocument => {
-            response[otrDataDocument.id] = {
-                short: otrDataDocument.summarySmall,
-                medium: otrDataDocument.summaryMedium
-            }
-        });
-
-        return response;
+        return otrDataDocuments.map(otrDataDocument => ({
+            url: otrDataDocument.url,
+            name: this.buildEpisodeName(otrDataDocument),
+            short: otrDataDocument.summarySmall,
+            medium: otrDataDocument.summaryMedium
+        }));
     }
 
     async search(searchText: SearchText): Promise<OtrDataSearchResponse> {
@@ -84,10 +88,6 @@ export class OtrData {
         return rawDocuments.map(doc => new OtrDocument(doc));
     }
 
-    getOtrEpisodeId(playlistId: PlaylistId, fileName: string): OtrDataEpisodeId {
-        const fileWithoutExtension = path.parse(fileName).name;
-        return `${playlistId}/${fileWithoutExtension}` as OtrDataEpisodeId;
-    }
 }
 
 export const otrData = new OtrData();

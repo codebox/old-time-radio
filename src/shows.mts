@@ -3,12 +3,8 @@ import type {
     ArchiveOrgMetadata, ConfigShow,
     Episode,
     EpisodeDetails,
-    EpisodeId,
     EpisodeIndex,
-    EpisodeName,
-    IsCommercial, OtrDataEpisodeId, PlaylistId, ShortEpisodeSummary,
-    ShowId,
-    ShowName,
+    PlaylistId, ShowId,
     Url
 } from "./types.mjs";
 import type {Seconds} from "./clock.mjs";
@@ -16,7 +12,6 @@ import {log} from "./log.mjs";
 import {Cache} from "./cache.mjs";
 import {config, configHelper} from "./config.mjs";
 import {archiveOrg} from "./archiveOrg.mjs";
-import {nameParser} from "./nameParser.mjs";
 import {otrData} from "./otrData.mjs";
 
 export class Shows {
@@ -78,14 +73,12 @@ export class Shows {
                 .map(fileMetadata => {
                     const encodedFileName = encodeURIComponent(fileMetadata.name),
                         archivalUrl = `https://archive.org/download/${playlistId}/${encodedFileName}` as Url,
-                        otrDataId = otrData.getOtrEpisodeId(playlistId, fileMetadata.name),
-                        episodeSummaries = summaries[otrDataId] || {};
+                        episodeSummaries = summaries.find(o => o.url === archivalUrl) || {};
 
                     return {
                         archivalUrl: archivalUrl,
                         commercial: show.isCommercial,
                         length: this.convertFileLengthToSeconds(fileMetadata.length),
-                        name: nameParser.parse(playlistId, fileMetadata),
                         showName: show.name,
                         urls: [
                             archivalUrl,
