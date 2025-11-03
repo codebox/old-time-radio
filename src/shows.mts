@@ -75,7 +75,7 @@ export class Shows {
                         archivalUrl = `https://archive.org/download/${playlistId}/${encodedFileName}` as Url,
                         otrDataEpisodeDetails = summaries.find(o => o.url === archivalUrl);
 
-                    if (otrDataEpisodeDetails) {
+                    // if (otrDataEpisodeDetails) {
                         // if otrDataEpisodeDetails is undefined this episode was not found in otrData so we exclude it
                         return {
                             archivalUrl: archivalUrl,
@@ -90,7 +90,7 @@ export class Shows {
                             ],
                             ...otrDataEpisodeDetails
                         } as EpisodeDetails;
-                    }
+                    // }
                 })
                 .filter(o => o);
 
