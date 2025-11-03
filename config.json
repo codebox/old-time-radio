@@ -35,6 +35,25 @@
     "showsCacheMaxAgeHours": 4,
     "showsCacheRefetchIntervalHours": 1
   },
+  "sitemap": {
+    "maxAgeHours": 240
+  },
+  "search": {
+    "goodMatchThreshold" : 0.1,
+    "examples": [
+      "native priests steal emerald and escape in helicopter",
+      "purple twilight",
+      "lone ranger helps a deserting soldier",
+      "man who murders on full moon",
+      "man kills his wife and is haunted by lake spirits",
+      "fbi rescue 2 kidnapped boys from a remote cabin",
+      "bank robber wearing tape on his face",
+      "hidden passage behind a buddha statue",
+      "crack in a wall that cant be repaired",
+      "doctor makes family take over their mothers housework to show them how hard she works",
+      "farmer is jealous of farm hand and kills him in a fight but ultimately dies in a fire"
+    ]
+  },
   "scheduler": {
     "radical": 1.8
   },

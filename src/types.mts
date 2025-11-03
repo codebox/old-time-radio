@@ -1,4 +1,4 @@
-import type {Millis, Seconds} from "./clock.mjs";
+import type {Hours, Millis, Seconds} from "./clock.mjs";
 
 export type WebClientConfig = {
     minRequestIntervalMillis: number
@@ -42,6 +42,13 @@ export type Config = {
         "scheduleCacheMaxItems": number,
         "showsCacheMaxAgeHours": number,
         "showsCacheRefetchIntervalHours": number
+    },
+    "sitemap": {
+        "maxAgeHours": Hours
+    },
+    "search": {
+        "examples": SearchText[],
+        "goodMatchThreshold": number
     },
     "dataApi": {
         "baseUrl": Url,
@@ -104,6 +111,7 @@ export type ShowName = string & { readonly __brand: unique symbol };
 export type EpisodeName = string & { readonly __brand: unique symbol };
 export type EpisodeDate = string & { readonly __brand: unique symbol };
 export type EpisodeNumber = number & { readonly __brand: unique symbol };
+export type EpisodeLength = string & { readonly __brand: unique symbol };
 export type ShortEpisodeSummary = string & { readonly __brand: unique symbol };
 export type MediumEpisodeSummary = string & { readonly __brand: unique symbol };
 export type DescriptiveId = string & { readonly __brand: unique symbol };
@@ -151,6 +159,23 @@ export class OtrDocument {
 
     get number(): EpisodeNumber {
         return Number(this.metadata.number) as EpisodeNumber;
+    }
+
+    private padTime(num: number): string {
+        return num.toString().padStart(2, '0');
+    }
+
+    get length(): EpisodeLength {
+        const totalSeconds = Number(this.metadata.length),
+            hours = Math.floor(totalSeconds / 3600),
+            minutes = Math.floor((totalSeconds % 3600) / 60),
+            seconds = Math.floor(totalSeconds % 60);
+
+        if (hours) {
+            return `${hours}:${this.padTime(minutes)}:${this.padTime(seconds)}` as EpisodeLength;
+        } else {
+            return `${minutes}:${this.padTime(seconds)}` as EpisodeLength;
+        }
     }
 
     get episode(): EpisodeName {

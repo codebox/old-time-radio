@@ -2,6 +2,7 @@ const MILLISECONDS_PER_SECOND = 1000;
 
 export type Seconds = number & { readonly __brand: unique symbol };
 export type Millis = number & { readonly __brand: unique symbol };
+export type Hours = number & { readonly __brand: unique symbol };
 
 class Clock {
     now(): Seconds {

@@ -85,6 +85,7 @@ export class Service {
             episode: item.metadata.episode,
             summary: item.metadata.summary_small,
             url: item.metadata.url,
+            similarity: item.similarity,
             textMatches: item.metadata._chunks.map(chunk => chunk.text) as SearchResultTextMatch[]
         }));
     }
@@ -104,7 +105,8 @@ export class Service {
         return await otrData.getEpisodeDetailsForShow(showName);
     }
 
-    getSitemapXml(): Promise<Xml> {
-        return this.getShows().then(shows => getSitemapXml(shows));
+    async getSitemapXml(): Promise<Xml> {
+        const shows = await this.getShows();
+        return await getSitemapXml(shows);
     }
 }

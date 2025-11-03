@@ -84,7 +84,7 @@ export class OtrData {
     }
 
     async getEpisodeDetailsForShow(showName: ShowName): Promise<OtrDataEpisodesResponse> {
-        const rawDocuments = await this.get(`${this.baseUrl}${this.episodesPath}${showName}` as Url) as any[];
+        const rawDocuments = await this.get(`${this.baseUrl}${this.episodesPath}${encodeURIComponent(showName)}` as Url) as any[];
         return rawDocuments.map(doc => new OtrDocument(doc));
     }
 

@@ -1,5 +1,5 @@
 import express from "express";
-import {config} from "./config.mjs";
+import {config, configHelper} from "./config.mjs";
 import {log} from "./log.mjs";
 import {Service} from "./service.mjs";
 import type {
@@ -36,19 +36,23 @@ export class WebServer {
         this.app.use(config.web.paths.listenTo, express.static(config.web.paths.static));
 
         this.app.get(config.web.paths.search, (req, res) => {
-            res.render('search', { searchText: undefined });
+            const exampleSearch = configHelper.getRandomSearchExample(),
+                goodMatchThreshold = config.search.goodMatchThreshold;
+            res.render('search', { searchText: undefined, goodMatchThreshold, exampleSearch });
         });
 
         this.app.get(`${config.web.paths.search}/:searchText`, (req, res) => {
-            const searchText = req.params.searchText as SearchText;
-            res.render('search', { searchText });
+            const searchText = req.params.searchText as SearchText,
+                exampleSearch = configHelper.getRandomSearchExample(),
+                goodMatchThreshold = config.search.goodMatchThreshold;
+            res.render('search', { searchText, goodMatchThreshold, exampleSearch });
         });
 
         this.app.get(config.web.paths.shows, (req, res) => {
             this.service.getShowsForSearch().then(showCounts => {
                 const links = Object.entries(showCounts).map(([showName, episodeCount]) => ({
                     text: `${showName} (${episodeCount})`,
-                    url: `${config.web.paths.episodes}/${showName}`
+                    url: `${config.web.paths.episodes}/${encodeURIComponent(showName)}`
                 }));
                 links.sort((a, b) => a.text.localeCompare(b.text));
                 res.render('shows', { links });
@@ -64,12 +68,13 @@ export class WebServer {
                     episode: ep.episode,
                     summary: ep.summarySmall,
                     url: ep.url,
+                    similarity: 1
                 }));
                 res.render('episodes', { episodes: episodeSummaries, showName });
             })
         });
 
-        this.app.get(`${config.web.paths.episode}/:episodeId(.+/.+)`, (req, res) => {
+        this.app.get(`${config.web.paths.episode}/:episodeId`, (req, res) => {
             const episodeId = req.params.episodeId as OtrDataEpisodeId;
             this.service.getEpisodeDetails(episodeId).then(otrDocument => {
                 res.render('episode', {episode: otrDocument});

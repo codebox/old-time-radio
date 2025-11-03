@@ -34,5 +34,9 @@ export const configHelper = {
             throw new Error(`Show with id '${showId}' not found in config`);
         }
         return show;
+    },
+    getRandomSearchExample() {
+        return config.search.examples[Math.floor(Math.random() * config.search.examples.length)];
     }
 }
+let i = 0;

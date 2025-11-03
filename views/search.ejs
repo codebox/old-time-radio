@@ -10,12 +10,13 @@
                 Use this page to search for episodes of <a href="/shows">old radio shows</a>.
             </p>
             <p class="pageDescription">
-                Episodes were transcribed and summarised using software, and may contain errors.
+                Search using words/phrases that appear in the episode, or describe what happens in the plot <br>
+                e.g. <a href="/search/<%= exampleSearch %>">"<%= exampleSearch %>"</a>.
             </p>
 
             <div id="searchForm">
-                <input id="searchInput" type="text" placeholder="Search..." autocomplete="off">
-                <button id="searchButton" aria-label="Search">Search</button>
+                <input id="searchInput" class="rounded" type="text" placeholder="Search..." autocomplete="off">
+                <button id="searchButton" class="rounded" aria-label="Search">Search</button>
             </div>
 
             <div id="searchRunning">
@@ -23,8 +24,9 @@
             </div>
 
             <p id="searchError"></p>
+            <p id="searchInfo"></p>
 
-            <div id="searchResults"></div>
+            <div id="searchResults" data-threshold="<%= goodMatchThreshold%>"></div>
         </main>
         <script src="/js/search.js"></script>
         <script src="/js/episodeSummary.js"></script>

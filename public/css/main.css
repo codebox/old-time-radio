@@ -104,6 +104,7 @@ noscript a, noscript a:visited {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    z-index: 5;
 }
 #title svg {
     fill: white;

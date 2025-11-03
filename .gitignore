@@ -6,6 +6,7 @@ cache
 public/hi.mp3
 public/lo.mp3
 public/test.mp3
+public/sitemap.xml
 src/*.mjs
 src/*.mjs.map
 public/css/.sass-cache

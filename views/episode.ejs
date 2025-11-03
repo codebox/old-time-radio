@@ -6,17 +6,7 @@
     <body>
         <%- include('partials/header', { subTitle: `${episode.show}: ${episode.episode}`, cssClass: "episodeHeader" }) %>
         <main>
-            <h2><%= episode.show %>: <%= episode.episode %></h2>
-
-            <p class="compact"><em><%= episode.summarySmall %></em></p>
-
-            <h3>Plot Summary</h3>
-
             <%- include('partials/episode-details', { document: episode }) %>
-
-            <p class="compact">
-                <a href="/episodes/<%= episode.show %>">Other '<%= episode.show %>' episodes</a>
-            </p>
         </main>
     </body>
 </html>

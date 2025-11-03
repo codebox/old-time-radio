@@ -4,10 +4,13 @@ window.addEventListener('load', () => {
         elSearchResults = document.getElementById('searchResults'),
         elSearchRunning = document.getElementById('searchRunning'),
         elSearchError = document.getElementById('searchError'),
+        elSearchInfo = document.getElementById('searchInfo'),
+        goodMatchThreshold = Number(elSearchResults.dataset.threshold),
         STATE_INIT = 'initial',
         STATE_SEARCHING = 'searching',
         STATE_ERROR = 'error',
-        STATE_RESULTS = 'done';
+        STATE_RESULTS = 'done',
+        CSS_CLASS_SHOW_SECONDARY_MATCHES = 'showSecondaryMatches';
 
     function setVisible(el, visible) {
         el.style.display = visible ? 'block' : 'none';
@@ -18,6 +21,7 @@ window.addEventListener('load', () => {
         elSearchButton.disabled = state === STATE_SEARCHING;
 
         setVisible(elSearchResults, state === STATE_RESULTS);
+        setVisible(elSearchInfo, state === STATE_RESULTS);
         setVisible(elSearchRunning, state === STATE_SEARCHING);
         setVisible(elSearchError, state === STATE_ERROR);
 
@@ -38,9 +42,42 @@ window.addEventListener('load', () => {
                 throw new Error(errorMessage || `${response.status} ${response.statusText}`);
             }
 
-            const searchResultsHtml = await response.text();
+            elSearchResults.classList.remove(CSS_CLASS_SHOW_SECONDARY_MATCHES);
+            elSearchResults.innerHTML = await response.text();
+
+            let primaryMatchCount = 0,
+                secondaryMatchCount = 0;
+
+            elSearchResults.querySelectorAll('.episodeSummary').forEach(el => {
+                const score = Number(el.dataset.similarity);
+                if (score < goodMatchThreshold) {
+                    el.classList.add('secondaryMatch');
+                    if (secondaryMatchCount === 0) {
+                        const elShowSecondary = document.createElement('button');
+                        elShowSecondary.id = 'showSecondaryMatches';
+                        elShowSecondary.className = 'rounded';
+                        elShowSecondary.textContent = 'See Other Matches';
+                        elSearchResults.insertBefore(elShowSecondary, el);
+                        elShowSecondary.addEventListener('click', () => {
+                            elSearchResults.classList.add(CSS_CLASS_SHOW_SECONDARY_MATCHES);
+                            elSearchInfo.innerHTML += `<br>Displaying secondary matches.`;
+                            el.scrollIntoView({behavior: 'smooth', alignToTop: true});
+                        });
+                    }
+                    secondaryMatchCount++;
+                } else {
+                    primaryMatchCount++;
+                }
+            });
+
+            if (primaryMatchCount === 0) {
+                elSearchInfo.innerText = "No good matches found for your search.";
+            } else if (primaryMatchCount === 1) {
+                elSearchInfo.innerText = "1 good match found.";
+            } else {
+                elSearchInfo.innerText = `${primaryMatchCount} good matches found.`;
+            }
             setState(STATE_RESULTS);
-            elSearchResults.innerHTML = searchResultsHtml;
 
             history.pushState({searchText}, '', '/search/' + encodeURIComponent(searchText));
 

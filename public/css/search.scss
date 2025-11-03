@@ -71,12 +71,13 @@ main {
         margin-top: 1rem;
     }
 
-    & + & {
+    & + & + &{
         margin-bottom: 1rem;
     }
 }
 
 #searchForm {
+    margin-top: 1rem;
     display: flex;
     flex-direction: row;
     flex: 0 0 40px;
@@ -84,25 +85,24 @@ main {
     justify-content: center;
     gap: 0.5rem;
 
-    button, input {
-        outline-width: 1px;
-        outline-color: #999;
-        padding: 0.5rem 1.2rem;
-        border-radius: 50px;
-        border: 1px solid black;
-        font-size: 1rem;
-    }
-
     input {
         width: 20rem;
     }
+}
 
-    button:enabled {
-        cursor: pointer;
+button.rounded, input.rounded {
+    outline-width: 1px;
+    outline-color: #999;
+    padding: 0.5rem 1.2rem;
+    border-radius: 50px;
+    border: 1px solid black;
+    font-size: 1rem;
+}
+button.rounded:enabled {
+    cursor: pointer;
 
-        &:hover {
-            background-color: white;
-        }
+    &:hover {
+        background-color: white;
     }
 }
 
@@ -111,6 +111,36 @@ main {
     font-weight: 400;
     font-size: 1.5rem;
     margin-top: 1.5rem;
+}
+
+#searchInfo {
+    text-align: center;
+    font-weight: 400;
+    margin-bottom: 0;
+}
+
+#searchResults {
+    .secondaryMatch {
+        display: none;
+    }
+
+    #showSecondaryMatches {
+        display: block;
+        margin: 1rem auto;
+    }
+
+    &.showSecondaryMatches {
+        display: block;
+        margin: 1rem auto;
+
+        .secondaryMatch {
+            display: block;
+        }
+        #showSecondaryMatches {
+            display: none;
+        }
+    }
+
 }
 
 .episodeSummary {
@@ -136,6 +166,12 @@ main {
     summary {
         cursor: pointer;
     }
+
+    .episodeDetails {
+        .episodeMetadata, .episodeShortSummary, .episodeDownloadLinks, h3 {
+            display: none;
+        }
+    }
 }
 
 .episodeDetails {
@@ -154,6 +190,25 @@ main {
 
     .episodeDownloadLinks audio {
         max-width: 100%;
+    }
+    .episodeMetadata {
+        div {
+            display: flex;
+            gap: 1rem;
+            margin: 0.2rem 0;
+
+            dt {
+                flex: 0 0 6rem;
+                font-weight: 400;
+                &:after {
+                    content: ":";
+                }
+            }
+            dd {
+                flex: 1;
+                margin: 0;
+            }
+        }
     }
 }
 
@@ -235,11 +290,11 @@ h2, h3 {
     .pageDescription {
         text-align: center;
         font-size: 1em;
-        margin: 0.5em 0.4em;
+        margin: 0.2em 0.2em;
     }
     #searchForm {
         flex-direction: column;
-        gap: 1rem;
+        gap: 0.5rem;
 
         input, button {
             width: 100%;

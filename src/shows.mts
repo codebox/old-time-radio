@@ -73,22 +73,26 @@ export class Shows {
                 .map(fileMetadata => {
                     const encodedFileName = encodeURIComponent(fileMetadata.name),
                         archivalUrl = `https://archive.org/download/${playlistId}/${encodedFileName}` as Url,
-                        episodeSummaries = summaries.find(o => o.url === archivalUrl) || {};
+                        otrDataEpisodeDetails = summaries.find(o => o.url === archivalUrl);
 
-                    return {
-                        archivalUrl: archivalUrl,
-                        commercial: show.isCommercial,
-                        length: this.convertFileLengthToSeconds(fileMetadata.length),
-                        showName: show.name,
-                        urls: [
-                            archivalUrl,
-                            `https://${playlistData.server}${playlistData.dir}/${encodedFileName}` as Url,
-                            `https://${playlistData.d1}${playlistData.dir}/${encodedFileName}` as Url,
-                            `https://${playlistData.d2}${playlistData.dir}/${encodedFileName}` as Url,
-                        ],
-                        ...episodeSummaries
-                    } as EpisodeDetails;
-                });
+                    if (otrDataEpisodeDetails) {
+                        // if otrDataEpisodeDetails is undefined this episode was not found in otrData so we exclude it
+                        return {
+                            archivalUrl: archivalUrl,
+                            commercial: show.isCommercial,
+                            length: this.convertFileLengthToSeconds(fileMetadata.length),
+                            showName: show.name,
+                            urls: [
+                                archivalUrl,
+                                `https://${playlistData.server}${playlistData.dir}/${encodedFileName}` as Url,
+                                `https://${playlistData.d1}${playlistData.dir}/${encodedFileName}` as Url,
+                                `https://${playlistData.d2}${playlistData.dir}/${encodedFileName}` as Url,
+                            ],
+                            ...otrDataEpisodeDetails
+                        } as EpisodeDetails;
+                    }
+                })
+                .filter(o => o);
 
         } catch (error: any) {
             log.error(`Error fetching playlist '${playlistId}': ${error.message}`);

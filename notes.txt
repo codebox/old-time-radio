@@ -1,15 +1,11 @@
 TODO
 ----
-metadata
-    add otter metadata to some shows
-    order of shows/episodes in list pages
-    clean up episode summary text and remove this code: description.replaceAll("\\\"", "\"").replaceAll("\\n", "<br>")
-    move name parsing to backend, combine with otter data if we have it
-    more filtering of episodes: interview, tribute, rehearsal, audition, biography, introduction
-generate sitemap for new pages
-turn off debug logging
+add search etc to webcheck scripts
+use docker hostname in config.json 'oldtimeradio_data:8000'
 
-define cut-off point for match relevance, maybe send poorer results to client but hide them and allow user to show them if they want
+dont include episodes that aren't in otrdata db
+make sure app is robust to otrdata being offline (serve from cache only in that case) and can start using it again when it comes back up
+turn off debug logging
 
 Search
 ------
@@ -18,7 +14,6 @@ jq 'map({(.id): {small: .metadata.summary_small, medium: .metadata.summary_mediu
 
 update cache timestamps:
     find cache/shows -type f -exec touch {} +
-
 
 Backend Rewrite
 ---------------
