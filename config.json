@@ -58,7 +58,7 @@
     "radical": 1.8
   },
   "dataApi": {
-    "baseUrl": "oldtimeradio_data:8000",
+    "baseUrl": "http://oldtimeradio_data:8000",
     "paths": {
       "summaries": "/metadata_search?k=playlist&v=",
       "search": "/search?q=",
