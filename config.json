@@ -1,25 +1,6 @@
 {
   "web": {
-    "port": 3000,
-    "paths": {
-      "static": "public",
-      "publicUrlPrefix": "https://oldtime.radio",
-      "listenTo": "/listen-to",
-      "search": "/search",
-      "shows": "/shows",
-      "episodes": "/episodes",
-      "episode": "/episode",
-      "api": {
-        "shows": "/api/shows",
-        "channels": "/api/channels",
-        "channel": "/api/channel/",
-        "generate": "/api/channel/generate/",
-        "playingNow": "/api/playing-now",
-        "search": "/api/search/",
-        "episodes": "/api/episodes",
-        "episode": "/api/episode"
-      }
-    }
+    "port": 3000
   },
   "webClients": {
     "archiveOrg" : {
@@ -58,7 +39,7 @@
     "radical": 1.8
   },
   "dataApi": {
-    "baseUrl": "http://oldtimeradio_data:8000",
+    "baseUrl": "http://127.0.0.1:8000",
     "paths": {
       "summaries": "/metadata_search?k=playlist&v=",
       "search": "/search?q=",
@@ -71,906 +52,718 @@
     "file": "/var/log/oldtimeradio/access.log",
     "level": "info"
   },
-  "shows" : [
+  "shows": [
     {
-      "name": "Commercials",
-      "playlists": ["Old_Radio_Adverts_01"],
-      "id": 0,
+      "number": 0,
+      "id": "commercials",
       "isCommercial": true
     },
     {
-      "name": "X Minus One",
-      "playlists": ["OTRR_X_Minus_One_Singles"],
-      "id": 1
+      "number": 1,
+      "id": "x-minus-one"
     },
     {
-      "name": "Dimension X",
-      "playlists": ["OTRR_Dimension_X_Singles"],
-      "id": 2
+      "number": 2,
+      "id": "dimension-x"
     },
     {
-      "name": "Space Patrol",
-      "playlists": ["OTRR_Space_Patrol_Singles"],
-      "id": 3
+      "number": 3,
+      "id": "space-patrol"
     },
     {
-      "name": "Tom Corbett, Space Cadet",
-      "playlists": ["SpaceCadet", "SpaceCadet2"],
-      "id": 4
+      "number": 4,
+      "id": "tom-corbett-space-cadet"
     },
     {
-      "name": "Flash Gordon",
-      "playlists": ["Flash_Gordon1935"],
-      "id": 5
+      "number": 5,
+      "id": "flash-gordon"
     },
     {
-      "name": "Buck Rogers",
-      "playlists": ["otr_buckrogers"],
-      "id": 6
+      "number": 6,
+      "id": "buck-rogers"
     },
     {
-      "name": "Exploring Tomorrow",
-      "playlists": ["Exploring_Tomorrow"],
-      "id": 7
+      "number": 7,
+      "id": "exploring-tomorrow"
     },
     {
-      "name": "2000 Plus",
-      "playlists": ["otr_2000Plus"],
-      "id": 8
+      "number": 8,
+      "id": "2000-plus"
     },
     {
-      "name": "Planet Man",
-      "playlists": ["OTRR_Planet_Man_Ver2_Singles"],
-      "id": 9
+      "number": 9,
+      "id": "planet-man"
     },
     {
-      "name": "The Adventures of Superman",
-      "shortName": "Superman",
-      "playlists": ["TheAdventuresOfSuperman_201805"],
-      "id": 10
+      "number": 10,
+      "id": "the-adventures-of-superman"
     },
     {
-      "name": "Tarzan",
-      "playlists": ["OTRR_Tarzan_Singles_TotA", "OTRR_Tarzan_Singles_TatDoA", "OTRR_Tarzan_Singles_TatFoT", "OTRR_Tarzan_Singles_TLotJ"],
-      "id": 11
+      "number": 11,
+      "id": "tarzan"
     },
     {
-      "name": "The Green Hornet",
-      "playlists": ["TheGreenHornet"],
-      "id": 12
+      "number": 12,
+      "id": "the-green-hornet"
     },
     {
-      "name": "Dragnet",
-      "playlists": ["Dragnet_OTR"],
-      "id": 13
+      "number": 13,
+      "id": "dragnet"
     },
     {
-      "name": "Speed Gibson Of The International Secret Police",
-      "shortName": "Speed Gibson",
-      "playlists": ["Speed_Gibson_Of_The_International_Secret_Police"],
-      "id": 14
+      "number": 14,
+      "id": "speed-gibson-of-the-international-secret-police"
     },
     {
-      "name": "The Blue Beetle",
-      "playlists": ["OTRR_Blue_Beetle_Singles"],
-      "id": 15
+      "number": 15,
+      "id": "the-blue-beetle"
     },
     {
-      "name": "The Falcon",
-      "playlists": ["OTRR_Falcon_Singles"],
-      "id": 16
+      "number": 16,
+      "id": "the-falcon"
     },
     {
-      "name": "Dark Fantasy",
-      "playlists": ["OTRR_Dark_Fantasy_Singles"],
-      "id": 17
+      "number": 17,
+      "id": "dark-fantasy"
     },
     {
-      "name": "I Love a Mystery",
-      "playlists": ["otr_iloveamystery"],
-      "id": 18,
-      "skip": ["interview"]
+      "number": 18,
+      "id": "i-love-a-mystery"
     },
     {
-      "name": "Suspense",
-      "playlists": ["SUSPENSE", "SUSPENSE2", "SUSPENSE3"],
-      "id": 19
+      "number": 19,
+      "id": "suspense"
     },
     {
-      "name": "Molle Mystery Theatre",
-      "playlists": ["OTRR_Molle_Mystery_Theatre_Singles"],
-      "id": 20
+      "number": 20,
+      "id": "molle-mystery-theatre"
     },
     {
-      "name": "Mystery House",
-      "playlists": ["OTRR_Mystery_House_Singles"],
-      "id": 21
+      "number": 21,
+      "id": "mystery-house"
     },
     {
-      "name": "The Adventures of Philip Marlowe",
-      "shortName": "Philip Marlowe",
-      "playlists": ["OTRR_Philip_Marlowe_Singles"],
-      "id": 22
+      "number": 22,
+      "id": "the-adventures-of-philip-marlowe"
     },
     {
-      "name": "Boston Blackie",
-      "playlists": ["OTRR_Boston_Blackie_Singles"],
-      "id": 23
+      "number": 23,
+      "id": "boston-blackie"
     },
     {
-      "name": "The New Adventures of Sherlock Holmes",
-      "shortName": "Sherlock Holmes",
-      "playlists": ["sherlockholmes_otr"],
-      "id": 24
+      "number": 24,
+      "id": "the-new-adventures-of-sherlock-holmes"
     },
     {
-      "name": "Gunsmoke",
-      "playlists": ["GUNSMOKE01", "GUNSMOKE02", "GUNSMOKE03", "GUNSMOKE04"],
-      "id": 25
+      "number": 25,
+      "id": "gunsmoke"
     },
     {
-      "name": "The Lone Ranger",
-      "playlists": ["The_Lone_Ranger_Page_01", "The_Lone_Ranger_Page_02"],
-      "id": 26
+      "number": 26,
+      "id": "the-lone-ranger"
     },
     {
-      "name": "Have Gun Will Travel",
-      "playlists": ["HaveGunWillTravel_OldTimeRadio"],
-      "id": 27,
-      "skip": ["64kb"]
+      "number": 27,
+      "id": "have-gun-will-travel"
     },
     {
-      "name": "Tales of the Texas Rangers",
-      "shortName": "Texas Rangers",
-      "playlists": ["TalesOfTheTexasRangers"],
-      "id": 28
+      "number": 28,
+      "id": "tales-of-the-texas-rangers"
     },
     {
-      "name": "The Six Shooter",
-      "playlists": ["OTRR_The_Six_Shooter_Singles"],
-      "id": 29,
-        "skip": ["OTRR Introduction", "The Six Shooter Intro", "Jimmy Stewart Biography", "Hollywood Star Playhouse"]
+      "number": 29,
+      "id": "the-six-shooter"
     },
     {
-      "name": "Fort Laramie",
-      "playlists": ["OTRR_Fort_Laramie_Singles"],
-      "id": 30
+      "number": 30,
+      "id": "fort-laramie"
     },
     {
-      "name": "Our Miss Brooks",
-      "playlists": ["OurMissBrooks"],
-      "id": 31
+      "number": 31,
+      "id": "our-miss-brooks"
     },
     {
-      "name": "The Great Gildersleeve",
-      "playlists": ["Great_Gildersleeve"],
-      "id": 32
+      "number": 32,
+      "id": "the-great-gildersleeve"
     },
     {
-      "name": "The Harold Peary Show",
-      "shortName": "Harold Peary",
-      "playlists": ["OTRR_Harold_Peary_Show_Singles"],
-      "id": 33
+      "number": 33,
+      "id": "the-harold-peary-show"
     },
     {
-      "name": "The Jack Benny Show",
-      "shortName": "Jack Benny",
-      "playlists": ["OTRR_Jack_Benny_Singles_1932-1934", "OTRR_Jack_Benny_Singles_1934-1935", "OTRR_Jack_Benny_Singles_1935-1936", "OTRR_Jack_Benny_Singles_1936-1937", "OTRR_Jack_Benny_Singles_1937-1938", "OTRR_Jack_Benny_Singles_1938-1939", "OTRR_Jack_Benny_Singles_1939-1940", "OTRR_Jack_Benny_Singles_1940-1941", "OTRR_Jack_Benny_Singles_1941-1942", "OTRR_Jack_Benny_Singles_1942-1943", "OTRR_Jack_Benny_Singles_1943-1944", "OTRR_Jack_Benny_Singles_1944-1945", "OTRR_Jack_Benny_Singles_1945-1946", "OTRR_Jack_Benny_Singles_1946-1947", "OTRR_Jack_Benny_Singles_1947-1948", "OTRR_Jack_Benny_Singles_1948-1949", "OTRR_Jack_Benny_Singles_1949-1950", "OTRR_Jack_Benny_Singles_1950-1951", "OTRR_Jack_Benny_Singles_1951-1952", "OTRR_Jack_Benny_Singles_1952-1953", "OTRR_Jack_Benny_Singles_1953-1954", "OTRR_Jack_Benny_Singles_1954-1955"],
-      "id": 34
+      "number": 34,
+      "id": "the-jack-benny-show"
     },
     {
-      "name": "The Phil Harris - Alice Faye Show",
-      "shortName": "Phil Harris - Alice Faye",
-      "playlists": ["OTRR_Harris_Faye_Singles"],
-      "id": 35,
-        "skip": ["Audio Bio", "audio synopsis"]
+      "number": 35,
+      "id": "the-phil-harris-alice-faye-show"
     },
     {
-      "name": "Fibber McGee and Molly",
-      "shortName": "Fibber McGee",
-      "playlists": ["fibber-mc-gee-and-molly"],
-      "id": 36,
-      "skip": ["Partial", "Rebroadcast", "AFRTS", "Interviews"]
+      "number": 36,
+      "id": "fibber-mcgee-and-molly"
     },
     {
-      "name": "Pat Novak, For Hire",
-      "shortName": "Pat Novak",
-      "playlists": ["PatNovakForHire"],
-      "id": 37
+      "number": 37,
+      "id": "pat-novak-for-hire"
     },
     {
-      "name": "Escape",
-      "playlists": ["otr_escape"],
-      "id": 38
+      "number": 38,
+      "id": "escape"
     },
     {
-      "name": "The Lives of Harry Lime",
-      "shortName": "Harry Lime",
-      "playlists": ["TheLivesOfHarryLime"],
-      "id": 39
+      "number": 39,
+      "id": "the-lives-of-harry-lime"
     },
     {
-      "name": "The Saint",
-      "playlists": ["TheSaintVincentPriceOTR"],
-      "id": 40
+      "number": 40,
+      "id": "the-saint"
     },
     {
-      "name": "Broadway Is My Beat",
-      "playlists": ["OTRR_Broadway_Is_My_Beat_Singles"],
-      "id": 41
+      "number": 41,
+      "id": "broadway-is-my-beat"
     },
     {
-      "name": "Bold Venture",
-      "playlists": ["BoldVenture57Episodes"],
-      "id": 42
+      "number": 42,
+      "id": "bold-venture"
     },
     {
-      "name": "Inner Sanctum Mysteries",
-      "playlists": ["OTRR_Inner_Sanctum_Mysteries_Singles"],
-      "id": 43
+      "number": 43,
+      "id": "inner-sanctum-mysteries"
     },
     {
-      "name": "Lights Out",
-      "playlists": ["LightsOutoldTimeRadio"],
-      "id": 44
+      "number": 44,
+      "id": "lights-out"
     },
     {
-      "name": "The Mysterious Traveler",
-      "playlists": ["TheMysteriousTraveler"],
-      "id": 45
+      "number": 45,
+      "id": "the-mysterious-traveler"
     },
     {
-      "name": "Abbott and Costello",
-      "playlists": ["otr_abbottandcostello"],
-      "id": 46
+      "number": 46,
+      "id": "abbott-and-costello"
     },
     {
-      "name": "New Adventures of Nero Wolfe",
-      "shortName": "Nero Wolfe",
-      "playlists": ["OTRR_New_Adventures_of_Nero_Wolfe_Singles"],
-      "id": 47
+      "number": 47,
+      "id": "new-adventures-of-nero-wolfe"
     },
     {
-      "name": "The Black Museum",
-      "playlists": ["OTRR_Black_Museum_Singles"],
-      "id": 48,
-        "skip": ["Intro", "Biography"]
+      "number": 48,
+      "id": "the-black-museum"
     },
     {
-      "name": "My Favorite Husband",
-      "playlists": ["MyFavoriteHusband"],
-      "id": 49
+      "number": 49,
+      "id": "my-favorite-husband"
     },
     {
-      "name": "Command Performance",
-      "playlists": ["CommandPerformance"],
-      "id": 50
+      "number": 50,
+      "id": "command-performance"
     },
     {
-      "name": "The Whistler",
-      "playlists": ["OTRR_Whistler_Singles"],
-      "id": 51
+      "number": 51,
+      "id": "the-whistler"
     },
     {
-      "name": "Calling All Cars",
-      "playlists": ["OTRR_Calling_All_Cars_Singles"],
-      "id": 52
+      "number": 52,
+      "id": "calling-all-cars"
     },
     {
-      "name": "Weird Circle",
-      "playlists": ["OTRR_Weird_Circle_Singles"],
-      "id": 53
+      "number": 53,
+      "id": "weird-circle"
     },
     {
-      "name": "The Hermit's Cave",
-      "playlists": ["The_Hermits_Cave"],
-      "id": 54
+      "number": 54,
+      "id": "the-hermits-cave"
     },
     {
-      "name": "Hopalong Cassidy",
-      "playlists": ["HopalongCassidy"],
-      "id": 55
+      "number": 55,
+      "id": "hopalong-cassidy"
     },
     {
-      "name": "CBS Radio Mystery Theater [Fantasy]",
-      "shortName": "CBS Radio Mystery Theater",
-      "playlists": ["CBSMTFantasy1", "cbsmtfs2", "cbsmtfs3", "cbsmtfs4", "cbsmtfs5", "cbsmtfs6", "cbsmtfs7", "cbsmtfs8"],
-      "id": 56
+      "number": 56,
+      "id": "cbs-radio-mystery-theater-fantasy"
     },
     {
-      "name": "CBS Radio Mystery Theater",
-      "shortName": "CBS Radio Mystery Theater",
-      "playlists": ["CbsRadioMysteryTheater1975Page1", "CbsRadioMysteryTheater1976Page1", "CbsRadioMysteryTheater1976Page2", "CbsRadioMysteryTheater1976Page3", "CbsRadioMysteryTheater1976Page4", "CbsRadioMysteryTheater1976Page5"],
-      "id": 57
+      "number": 57,
+      "id": "cbs-radio-mystery-theater"
     },
     {
-      "name": "Richard Diamond, Private Detective",
-      "shortName": "Richard Diamond",
-      "playlists": ["OTRR_Richard_Diamond_Private_Detective_Singles"],
-      "id": 58
+      "number": 58,
+      "id": "richard-diamond-private-detective"
     },
     {
-      "name": "Ranger Bill",
-      "playlists": ["OTRR_Ranger_Bill_Singles"],
-      "id": 59
+      "number": 59,
+      "id": "ranger-bill"
     },
     {
-      "name": "Let George Do It",
-      "playlists": ["OTRR_Let_George_Do_It_Singles"],
-      "id": 60,
-        "skip": ["Audition"]
+      "number": 60,
+      "id": "let-george-do-it"
     },
     {
-      "name": "Father Knows Best",
-      "playlists": ["FatherKnowsBest45Episodes"],
-      "id": 61
+      "number": 61,
+      "id": "father-knows-best"
     },
     {
-      "name": "Secrets of Scotland Yard",
-      "playlists": ["OTRR_Secrets_Of_Scotland_Yard_Singles"],
-      "id": 62
+      "number": 62,
+      "id": "secrets-of-scotland-yard"
     },
     {
-      "name": "Mr District Attorney",
-      "playlists": ["OTRR_Mr_District_Attorney_Singles"],
-      "id": 63
+      "number": 63,
+      "id": "mr-district-attorney"
     },
     {
-      "name": "The Life of Riley",
-      "playlists": ["TheLifeOfRiley"],
-      "id": 64
+      "number": 64,
+      "id": "the-life-of-riley"
     },
     {
-      "name": "Lux Radio Theatre",
-      "playlists": ["OTRR_Lux_Radio_Theater_Singles"],
-      "id": 65
+      "number": 65,
+      "id": "lux-radio-theatre"
     },
     {
-      "name": "The Campbell Playhouse",
-      "playlists": ["otr_campbellplayhouse"],
-      "id": 66
+      "number": 66,
+      "id": "the-campbell-playhouse"
     },
     {
-      "name": "Mercury Theatre",
-      "playlists": ["OrsonWelles-MercuryTheater-1938Recordings"],
-      "id": 67
+      "number": 67,
+      "id": "mercury-theatre"
     },
     {
-      "name": "On Stage",
-      "playlists": ["OTRR_On_Stage_Singles_201901"],
-      "id": 68,
-        "skip": ["audio brief", "Bio"]
+      "number": 68,
+      "id": "on-stage"
     },
     {
-      "name": "Screen Guild Theater",
-      "playlists": ["ScreenGuildTheater"],
-      "id": 69
+      "number": 69,
+      "id": "screen-guild-theater"
     },
     {
-      "name": "Academy Award",
-      "playlists": ["OTRR_Academy_Award_Theater_Singles"],
-      "id": 70
+      "number": 70,
+      "id": "academy-award"
     },
     {
-      "name": "First Nighter",
-      "playlists": ["first-nighter"],
-      "id": 71
+      "number": 71,
+      "id": "first-nighter"
     },
     {
-      "name": "Screen Director's Playhouse",
-      "playlists": ["ScreenDirectorsPlayhouse"],
-      "id": 72
+      "number": 72,
+      "id": "screen-directors-playhouse"
     },
     {
-      "name": "NBC University Theater",
-      "playlists": ["NBC_University_Theater"],
-      "id": 73
+      "number": 73,
+      "id": "nbc-university-theater"
     },
     {
-      "name": "Dr. Kildare",
-      "playlists": ["OTRR_Dr_Kildare_Singles"],
-      "id": 74
+      "number": 74,
+      "id": "dr-kildare"
     },
     {
-      "name": "Yours Truly, Johnny Dollar",
-      "playlists": ["OTRR_YoursTrulyJohnnyDollar_Singles"],
-      "id": 75
+      "number": 75,
+      "id": "yours-truly-johnny-dollar"
     },
     {
-      "name": "Vic and Sade",
-      "playlists": ["VicSade1937-1939", "VicSade1940-1941", "VicSade1942-1947"],
-      "id": 76
+      "number": 76,
+      "id": "vic-and-sade"
     },
     {
-      "name": "SF 68",
-      "playlists": ["Sf_68"],
-      "id": 77
+      "number": 77,
+      "id": "sf-68"
     },
     {
-      "name": "The Haunting Hour",
-      "playlists": ["haunting_hour"],
-      "id": 78
+      "number": 78,
+      "id": "the-haunting-hour"
     },
     {
-      "name": "Moon Over Africa",
-      "playlists": ["OTRR_Moon_Over_Africa_Singles"],
-      "id": 79
+      "number": 79,
+      "id": "moon-over-africa"
     },
     {
-      "name": "Dangerous Assignment",
-      "playlists": ["Otrr_Dangerous_Assignment_Singles"],
-      "id": 80
+      "number": 80,
+      "id": "dangerous-assignment"
     },
     {
-      "name": "Sealed Book",
-      "playlists": ["OTRR_Sealed_Book_Singles"],
-      "id": 81
+      "number": 81,
+      "id": "sealed-book"
     },
     {
-      "name": "Whitehall 1212",
-      "playlists": ["OTRR_Whitehall_1212_Singles"],
-      "id": 82,
-        "skip": ["Series Synopsis", "star bio", "Audition"]
+      "number": 82,
+      "id": "whitehall-1212"
     },
     {
-      "name": "The Adventures of Frank Race",
-      "playlists": ["OTRR_Frank_Race_Singles"],
-      "id": 83
+      "number": 83,
+      "id": "the-adventures-of-frank-race"
     },
     {
-      "name": "The Halls of Ivy",
-      "playlists": ["OTRR_Halls_Of_Ivy_Singles"],
-      "id": 84
+      "number": 84,
+      "id": "the-halls-of-ivy"
     },
     {
-      "name": "The Clock",
-      "playlists": ["TheClock"],
-      "id": 85
+      "number": 85,
+      "id": "the-clock"
     },
     {
-      "name": "John Steele Adventurer",
-      "playlists": ["OTRR_John_Steele_Adventurer_Singles"],
-      "id": 86
+      "number": 86,
+      "id": "john-steele-adventurer"
     },
     {
-      "name": "The Mel Blanc Show",
-      "playlists": ["OTRR_Mel_Blanc_Singles"],
-      "id": 87
+      "number": 87,
+      "id": "the-mel-blanc-show"
     },
     {
-      "name": "Burns and Allen",
-      "playlists": ["the-burns-and-allen-show-1934-09-26-2-leaving-for-america"],
-      "id": 88
+      "number": 88,
+      "id": "burns-and-allen"
     },
     {
-      "name": "This Is Your FBI",
-      "playlists": ["OTRR_This_Is_Your_FBI_Singles"],
-      "id": 89
+      "number": 89,
+      "id": "this-is-your-fbi"
     },
     {
-      "name": "The Man Called X",
-      "playlists": ["OTRR_Man_Called_X_Singles"],
-      "id": 90,
-        "skip": ["Series Synopsis", "Herbert Marshall", "Leon Blasco"]
+      "number": 90,
+      "id": "the-man-called-x"
     },
     {
-      "name": "Counter-Spy",
-      "playlists": ["OTRR_Counterspy_Singles"],
-      "id": 91
+      "number": 91,
+      "id": "counter-spy"
     },
     {
-      "name": "Magic Island",
-      "playlists": ["OTRR_Magic_Island_Singles"],
-      "id": 92
+      "number": 92,
+      "id": "magic-island"
     },
     {
-      "name": "Frontier Gentleman",
-      "playlists": ["FrontierGentleman-All41Episodes"],
-      "id": 93
+      "number": 93,
+      "id": "frontier-gentleman"
     },
     {
-      "name": "Philo Vance",
-      "playlists": ["OTRR_Philo_Vance_Singles"],
-      "id": 94
+      "number": 94,
+      "id": "philo-vance"
     },
     {
-      "name": "Ozzie & Harriet",
-      "playlists": ["OzzieHarriet"],
-      "id": 95
+      "number": 95,
+      "id": "ozzie-harriet"
     },
     {
-      "name": "Duffy's Tavern",
-      "playlists": ["DuffysTavern_524"],
-      "id": 96
+      "number": 96,
+      "id": "duffys-tavern"
     },
     {
-      "name": "Frontier Town",
-      "playlists": ["OTRR_Frontier_Town_Singles"],
-      "id": 97
+      "number": 97,
+      "id": "frontier-town"
     },
     {
-      "name": "Hall of Fantasy",
-      "playlists": ["470213ThePerfectScript"],
-      "id": 98
+      "number": 98,
+      "id": "hall-of-fantasy"
     },
     {
-      "name": "Wild Bill Hickok",
-      "playlists": ["OTRR_Wild_Bill_Hickock_Singles"],
-      "id": 99,
-        "skip": ["Series Synopsis", "Bio"]
+      "number": 99,
+      "id": "wild-bill-hickok"
     },
     {
-      "name": "Candy Matson",
-      "playlists": ["OTRR_Candy_Matson_Singles"],
-      "id": 100
+      "number": 100,
+      "id": "candy-matson"
     },
     {
-      "name": "Sam Spade",
-      "playlists": ["OTRR_Sam_Spade_Singles"],
-      "id": 101,
-        "skip": ["Intro", "Biography", "SamShovel", "Bbc", "Spoof", "Suspense", "TheMalteseFalcon", "BurnsAllen"]
+      "number": 101,
+      "id": "sam-spade"
     },
     {
-      "name": "Radio Reader's Digest",
-      "playlists": ["RadioReadersDigest"],
-      "id": 102
+      "number": 102,
+      "id": "radio-readers-digest"
     },
     {
-      "name": "Classic Baseball",
-      "playlists": ["classicmlbbaseballradio"],
-      "id": 103
+      "number": 103,
+      "id": "classic-baseball"
     },
     {
-      "name": "Black Flame of the Amazon",
-      "playlists": ["OTRR_Black_Flame_Singles"],
-      "id": 104,
-        "skip": ["Introduction"]
+      "number": 104,
+      "id": "black-flame-of-the-amazon"
     },
     {
-      "name": "The Shadow",
-      "playlists": ["the-shadow-1938-10-09-141-death-stalks-the-shadow"],
-      "id": 105
+      "number": 105,
+      "id": "the-shadow"
     },
     {
-      "name": "Box 13",
-      "playlists": ["OTRR_Box_13_Singles"],
-      "id": 106
+      "number": 106,
+      "id": "box-13"
     },
     {
-      "name": "Barrie Craig, Confidential Investigator",
-      "playlists": ["OTRR_Barrie_Craig_Singles"],
-      "id": 107
+      "number": 107,
+      "id": "barrie-craig-confidential-investigator"
     },
     {
-      "name": "Mr. Keen, Tracer of Lost Persons",
-      "playlists": ["OTRR_Mr_Keen_Tracer_Of_Lost_Persons_Singles"],
-      "id": 108,
-      "skip": ["Introduction", "Producers", "Biography"]
+      "number": 108,
+      "id": "mr-keen-tracer-of-lost-persons"
     },
     {
-      "name": "Rocky Jordan",
-      "playlists": ["RockyJordan"],
-      "id": 109,
-      "skip": ["Audition"]
+      "number": 109,
+      "id": "rocky-jordan"
     },
     {
-      "name": "Nick Carter, Master Detective",
-      "playlists": ["OTRR_Nick_Carter_Master_Detective_Singles"],
-      "id": 110
+      "number": 110,
+      "id": "nick-carter-master-detective"
     },
     {
-      "name": "The Aldrich Family",
-      "playlists": ["TheAldrichFamily"],
-      "id": 111
+      "number": 111,
+      "id": "the-aldrich-family"
     },
     {
-      "name": "Gang Busters",
-      "playlists": ["gang-busters-1955-04-02-885-the-case-of-the-mistreated-lady"],
-      "id": 112
+      "number": 112,
+      "id": "gang-busters"
     },
     {
-      "name": "Night Beat",
-      "playlists": ["night-beat-1950-07-24-25-the-devils-bible"],
-      "id": 113
+      "number": 113,
+      "id": "night-beat"
     },
     {
-      "name": "Lum and Abner",
-      "playlists": ["l-a-1953-11-20-xx-thanksgiving-in-pine-ridge"],
-      "id": 114
+      "number": 114,
+      "id": "lum-and-abner"
     },
     {
-      "name": "Voyage of the Scarlet Queen",
-      "playlists": ["VoyageOfTheScarletQueen"],
-      "id": 115
+      "number": 115,
+      "id": "voyage-of-the-scarlet-queen"
     },
     {
-      "name": "The Bob Hope Show",
-      "playlists": ["The_Bob_Hope_Program"],
-      "id": 116
+      "number": 116,
+      "id": "the-bob-hope-show"
     },
     {
-      "name": "The Martin and Lewis Show",
-      "playlists": ["MartinAndLewis_OldTimeRadio"],
-      "id": 117
+      "number": 117,
+      "id": "the-martin-and-lewis-show"
     },
     {
-      "name": "It's Higgins, Sir!",
-      "playlists": ["ItsHigginsSir"],
-      "id": 118
+      "number": 118,
+      "id": "its-higgins-sir"
     },
     {
-      "name": "The Fred Allen Show",
-      "playlists": ["town-hall-tonight-1938-06-08-232-music-publisher-needs-a-tune"],
-      "id": 119
+      "number": 119,
+      "id": "the-fred-allen-show"
     },
     {
-      "name": "The Bickersons",
-      "playlists": ["bickersons-1947-03-02-12-blanche-has-a-stomach-ache"],
-      "id": 120
+      "number": 120,
+      "id": "the-bickersons"
     },
     {
-      "name": "The Big Show",
-      "playlists": ["OTRR_The_Big_Show_Singles"],
-      "id": 121
+      "number": 121,
+      "id": "the-big-show"
     },
     {
-      "name": "The Bing Crosby Show",
-      "playlists": ["general-electric-show-52-54-1952-12-25-12-guest-gary-crosby"],
-      "id": 122
+      "number": 122,
+      "id": "the-bing-crosby-show"
     },
     {
-      "name": "Amos and Andy",
-      "playlists": ["a-a-1948-11-14-183-tourist-sightseeing-agency-aka-ny-sightseeing-agency-aka-andy"],
-      "id": 123
+      "number": 123,
+      "id": "amos-and-andy"
     },
     {
-      "name": "Perry Mason",
-      "playlists": ["Perry_Mason_Radio_Show"],
-      "id": 124
+      "number": 124,
+      "id": "perry-mason"
     },
     {
-      "name": "Eddie Cantor",
-      "playlists": ["chaseandsanbornhour1931122015firstsongcarolinamoon"],
-      "id": 125
+      "number": 125,
+      "id": "eddie-cantor"
     },
     {
-      "name": "Edgar Bergen and Charlie McCarthy",
-      "playlists": ["edgar-bergen-1937-12-12-32-guest-mae-west"],
-      "id": 126
+      "number": 126,
+      "id": "edgar-bergen-and-charlie-mccarthy"
     },
     {
-      "name": "The Damon Runyon Theatre",
-      "playlists": ["OTRR_Damon_Runyon_Singles"],
-      "id": 127
+      "number": 127,
+      "id": "the-damon-runyon-theatre"
     },
     {
-      "name": "Quiet, Please",
-      "playlists": ["QuietPlease_806"],
-      "id": 128
+      "number": 128,
+      "id": "quiet-please"
     },
     {
-      "name": "The Witch's Tale",
-      "playlists": ["TheWitchsTale"],
-      "id": 129
+      "number": 129,
+      "id": "the-witchs-tale"
     },
     {
-      "name": "The Shadow of Fu Manchu",
-      "playlists": ["390903-102-the-joy-shop"],
-      "id": 130
+      "number": 130,
+      "id": "the-shadow-of-fu-manchu"
     },
     {
-      "name": "Chandu the Magician",
-      "playlists": ["otr_chanduthemagician"],
-      "id": 131
+      "number": 131,
+      "id": "chandu-the-magician"
     },
     {
-      "name": "Challenge of the Yukon",
-      "playlists": ["OTRR_Challenge_of_the_Yukon_Singles"],
-      "id": 132
+      "number": 132,
+      "id": "challenge-of-the-yukon"
     },
     {
-      "name": "Michael Shayne",
-      "playlists": ["Michael_Shayne"],
-      "id": 133
+      "number": 133,
+      "id": "michael-shayne"
     },
     {
-      "name": "Mr Moto",
-      "playlists": ["MrMoto"],
-      "id": 134
+      "number": 134,
+      "id": "mr-moto"
     },
     {
-      "name": "It Pays To Be Ignorant",
-      "playlists": ["ItPaysToBeIgnorant"],
-      "id": 135
+      "number": 135,
+      "id": "it-pays-to-be-ignorant"
     },
     {
-      "name": "Jeff Regan",
-      "playlists": ["OTRR_Jeff_Regan_Singles"],
-      "id": 136
+      "number": 136,
+      "id": "jeff-regan"
     },
     {
-      "name": "You Bet Your Life",
-      "playlists": ["you-bet-your-life-1952-02-20-160-secret-word-heart"],
-      "id": 137
+      "number": 137,
+      "id": "you-bet-your-life"
     },
     {
-      "name": "The Scarlet Pimpernel",
-      "playlists": ["The_Scarlet_Pimpernel"],
-      "id": 138
+      "number": 138,
+      "id": "the-scarlet-pimpernel"
     },
     {
-      "name": "Dr. Christian",
-      "playlists": ["Dr.Christian_911"],
-      "id": 139
+      "number": 139,
+      "id": "dr-christian"
     },
     {
-      "name": "One Man's Family",
-      "playlists": ["OneMansFamily"],
-      "id": 140
+      "number": 140,
+      "id": "one-mans-family"
     },
     {
-      "name": "The Goldbergs",
-      "playlists": ["Goldbergs"],
-      "id": 141
+      "number": 141,
+      "id": "the-goldbergs"
     },
     {
-      "name": "Ma Perkins",
-      "playlists": ["MaPerkins021950"],
-      "id": 142
+      "number": 142,
+      "id": "ma-perkins"
     },
     {
-      "name": "Adventures of Frank Merriwell",
-      "playlists": ["AdventuresofFrankMerriwell"],
-      "id": 143
+      "number": 143,
+      "id": "adventures-of-frank-merriwell"
     },
     {
-      "name": "Adventures of Maisie",
-      "playlists": ["Maisie"],
-      "id": 144
+      "number": 144,
+      "id": "adventures-of-maisie"
     },
     {
-      "name": "Red Ryder",
-      "playlists": ["red-ryder"],
-      "id": 145
+      "number": 145,
+      "id": "red-ryder"
     },
     {
-      "name": "Horizons West",
-      "playlists": ["OtrHorizonsWest13Of13Eps"],
-      "id": 146
+      "number": 146,
+      "id": "horizons-west"
     },
     {
-      "name": "Mark Trail",
-      "playlists": ["mark_trail"],
-      "id": 147
+      "number": 147,
+      "id": "mark-trail"
     },
     {
-      "name": "Luke Slaughter",
-      "playlists": ["OTRR_Luke_Slaughter_Of_Tombstone_Singles"],
-      "id": 148
+      "number": 148,
+      "id": "luke-slaughter"
     },
     {
-      "name": "Information, Please",
-      "playlists": ["Information-Please"],
-      "id": 149
+      "number": 149,
+      "id": "information-please"
     },
     {
-      "name": "My Friend Irma",
-      "playlists": ["my-friend-irma"],
-      "id": 150
+      "number": 150,
+      "id": "my-friend-irma"
     },
     {
-      "name": "Eb and Zeb",
-      "playlists": ["EbZeb"],
-      "id": 151
+      "number": 151,
+      "id": "eb-and-zeb"
     },
     {
-      "name": "The Milton Berle Show",
-      "playlists": ["Milton_Berle_47-48"],
-      "id": 152
+      "number": 152,
+      "id": "the-milton-berle-show"
     },
     {
-      "name": "The Goon Show",
-      "playlists": ["TheGoonShow1950to1960"],
-      "id": 153
+      "number": 153,
+      "id": "the-goon-show"
     },
     {
-      "name": "The Spike Jones Show",
-      "playlists": ["SpikeJones"],
-      "id": 154
+      "number": 154,
+      "id": "the-spike-jones-show"
     },
     {
-      "name": "Easy Aces",
-      "playlists": ["otr_easyaces"],
-      "id": 155
+      "number": 155,
+      "id": "easy-aces"
     },
     {
-      "name": "The Red Skelton Show",
-      "playlists": ["red-skelton-show_202008"],
-      "id": 156
+      "number": 156,
+      "id": "the-red-skelton-show"
     },
     {
-      "name": "Ghost Corps",
-      "playlists": ["otr_ghostcorps"],
-      "id": 157
+      "number": 157,
+      "id": "ghost-corps"
     },
     {
-      "name": "Dick Barton, Special Agent",
-      "playlists": ["otr_dickbartonspecialagent"],
-      "id": 158
+      "number": 158,
+      "id": "dick-barton-special-agent"
     },
     {
-      "name": "21st Precinct",
-      "playlists": ["OTRR_21st_Precinct_Singles"],
-      "id": 159
+      "number": 159,
+      "id": "21st-precinct"
     },
     {
-      "name": "Pete Kelly's Blues",
-      "playlists": ["PeteKellysBlues"],
-      "id": 160,
-      "skip": ["64kb"]
+      "number": 160,
+      "id": "pete-kellys-blues"
     },
     {
-      "name": "The Line-Up",
-      "playlists": ["OTRR_Line_Up_Singles"],
-      "id": 161
+      "number": 161,
+      "id": "the-line-up"
     },
     {
-      "name": "Diary of Fate",
-      "playlists": ["DiaryOfFate"],
-      "id": 162
+      "number": 162,
+      "id": "diary-of-fate"
     },
     {
-      "name": "Ripley's Believe It or Not",
-      "playlists": ["believe-it-or-not"],
-      "id": 163
+      "number": 163,
+      "id": "ripleys-believe-it-or-not"
     },
     {
-      "name": "Bill Stern Sports Reel",
-      "playlists": ["Bill_Sterns_Sports_Newsreel"],
-      "id": 164
+      "number": 164,
+      "id": "bill-stern-sports-reel"
     },
     {
-      "name": "World Adventurer's Club",
-      "playlists": ["OTRR_World_Adventurer_Club_Singles"],
-      "id": 165
+      "number": 165,
+      "id": "world-adventurers-club"
     }
   ],
   "channels" : [
     {
       "name" : "future",
-      "shows": [0,1,2,3,4,5,6,7,8,9,77]
+      "playCommercials": true,
+      "shows": ["commercials","x-minus-one","dimension-x","space-patrol","tom-corbett-space-cadet","flash-gordon","buck-rogers","exploring-tomorrow","2000-plus","planet-man","sf-68"]
     },
     {
       "name" : "action",
-      "shows": [0,10,11,14,15,16,18,39,40,42,59,79,80,83,86,90,91,92,104,115,131,132,138,165]
+      "playCommercials": true,
+      "shows": ["commercials","the-adventures-of-superman","tarzan","speed-gibson-of-the-international-secret-police","the-blue-beetle","the-falcon","i-love-a-mystery","the-lives-of-harry-lime","the-saint","bold-venture","ranger-bill","moon-over-africa","dangerous-assignment","the-adventures-of-frank-race","john-steele-adventurer","the-man-called-x","counter-spy","magic-island","black-flame-of-the-amazon","voyage-of-the-scarlet-queen","chandu-the-magician","challenge-of-the-yukon","the-scarlet-pimpernel","world-adventurers-club"]
     },
     {
       "name" : "crime",
-      "shows": [0,12,13,22,23,24,37,41,47,48,52,58,60,62,63,75,82,89,94,100,101,107,108,110,112,124,127,130,133,136,159,160,161]
+      "playCommercials": true,
+      "shows": ["commercials","the-green-hornet","dragnet","the-adventures-of-philip-marlowe","boston-blackie","the-new-adventures-of-sherlock-holmes","pat-novak-for-hire","broadway-is-my-beat","new-adventures-of-nero-wolfe","the-black-museum","calling-all-cars","richard-diamond-private-detective","let-george-do-it","secrets-of-scotland-yard","mr-district-attorney","yours-truly-johnny-dollar","whitehall-1212","this-is-your-fbi","philo-vance","candy-matson","sam-spade","barrie-craig-confidential-investigator","mr-keen-tracer-of-lost-persons","nick-carter-master-detective","gang-busters","perry-mason","the-damon-runyon-theatre","the-shadow-of-fu-manchu","michael-shayne","jeff-regan","21st-precinct","the-line-up"]
     },
     {
       "name" : "horror",
-      "shows": [0,17,43,44,53,54,78,81,98,128,129,162]
+      "playCommercials": true,
+      "shows": ["commercials","dark-fantasy","inner-sanctum-mysteries","lights-out","weird-circle","the-hermits-cave","the-haunting-hour","sealed-book","hall-of-fantasy","quiet-please","the-witchs-tale","diary-of-fate"]
     },
     {
       "name" : "suspense",
-      "shows": [0,19,20,21,38,45,51,56,57,85,105,106,109,113,134,157,158]
+      "playCommercials": true,
+      "shows": ["commercials","suspense","molle-mystery-theatre","mystery-house","escape","the-mysterious-traveler","the-whistler","cbs-radio-mystery-theater-fantasy","cbs-radio-mystery-theater","the-clock","the-shadow","box-13","rocky-jordan","night-beat","mr-moto","ghost-corps","dick-barton-special-agent"]
     },
     {
       "name" : "western",
-      "shows": [0,25,26,27,28,29,30,55,93,97,99,145,146,147,148]
+      "playCommercials": true,
+      "shows": ["commercials","gunsmoke","the-lone-ranger","have-gun-will-travel","tales-of-the-texas-rangers","the-six-shooter","fort-laramie","hopalong-cassidy","frontier-gentleman","frontier-town","wild-bill-hickok","red-ryder","horizons-west","mark-trail","luke-slaughter"]
     },
     {
       "name" : "comedy",
-      "shows": [0,31,32,33,34,35,36,46,49,61,64,76,84,87,88,95,96,111,114,116,117,118,119,120,121,123,125,126,135,137,149,150,151,152,153,154,155,156]
+      "playCommercials": true,
+      "shows": ["commercials","our-miss-brooks","the-great-gildersleeve","the-harold-peary-show","the-jack-benny-show","the-phil-harris-alice-faye-show","fibber-mcgee-and-molly","abbott-and-costello","my-favorite-husband","father-knows-best","the-life-of-riley","vic-and-sade","the-halls-of-ivy","the-mel-blanc-show","burns-and-allen","ozzie-harriet","duffys-tavern","the-aldrich-family","lum-and-abner","the-bob-hope-show","the-martin-and-lewis-show","its-higgins-sir","the-fred-allen-show","the-bickersons","the-big-show","amos-and-andy","eddie-cantor","edgar-bergen-and-charlie-mccarthy","it-pays-to-be-ignorant","you-bet-your-life","information-please","my-friend-irma","eb-and-zeb","the-milton-berle-show","the-goon-show","the-spike-jones-show","easy-aces","the-red-skelton-show"]
     },
     {
       "name" : "drama",
-      "shows": [0,65,66,67,68,69,70,71,72,73,74,102,139,140,141,142,143,144]
+      "playCommercials": true,
+      "shows": ["commercials","lux-radio-theatre","the-campbell-playhouse","mercury-theatre","on-stage","screen-guild-theater","academy-award","first-nighter","screen-directors-playhouse","nbc-university-theater","dr-kildare","radio-readers-digest","dr-christian","one-mans-family","the-goldbergs","ma-perkins","adventures-of-frank-merriwell","adventures-of-maisie"]
     },
     {
       "name" : "sports",
-      "shows": [0,103,164]
+      "playCommercials": true,
+      "shows": ["commercials","classic-baseball","bill-stern-sports-reel"]
     }
   ]
 }

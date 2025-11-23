@@ -1,18 +1,20 @@
-import express from "express";
-import {config, configHelper} from "./config.mjs";
+
+import {config} from "./config.mjs";
 import {log} from "./log.mjs";
 import {Service} from "./service.mjs";
+import express from "express";
 import type {
+    ApiChannelCodeGenerateResponse,
+    ApiChannelScheduleResponse, ApiChannelsResponse, ApiPlayingNowResponse,
+    ApiShowsResponse,
     ChannelId,
     EpisodeId,
-    EpisodeName,
-    OtrDataEpisodeId, OtrDocument,
-    PlaylistId,
-    SearchText, ShortEpisodeSummary,
+    Seconds,
     ShowId,
-    ShowName, Url
+    ShowName,
+    SearchText, ShowNumber, SearchViewData, ShowsViewData, EpisodesViewData, EpisodeViewData, Episode,
+    SearchResultsViewData
 } from "./types.mjs";
-import type {Seconds} from "./clock.mjs";
 
 export class WebServer {
     private app: express.Application;
@@ -24,159 +26,163 @@ export class WebServer {
     }
 
     private setupEndpointHandlers() {
+        this.app.set('view engine', 'ejs')
+
         this.app.use((req, res, next) => {
             log.debug(`Request: ${req.method} ${req.path}`);
             next();
         });
 
-        this.app.set('view engine', 'ejs')
+        this.app.use(express.static('public'));
+        this.app.use("/listen-to", express.static('public'));
 
-        this.app.use(express.static(config.web.paths.static));
-
-        this.app.use(config.web.paths.listenTo, express.static(config.web.paths.static));
-
-        this.app.get(config.web.paths.search, (req, res) => {
-            const exampleSearch = configHelper.getRandomSearchExample(),
-                goodMatchThreshold = config.search.goodMatchThreshold;
-            res.render('search', { searchText: undefined, goodMatchThreshold, exampleSearch });
+        this.app.get("/", async (req, res) => {
+            res.render('index', {root:'./'});
         });
 
-        this.app.get(`${config.web.paths.search}/:searchText`, (req, res) => {
-            const searchText = req.params.searchText as SearchText,
-                exampleSearch = configHelper.getRandomSearchExample(),
-                goodMatchThreshold = config.search.goodMatchThreshold;
-            res.render('search', { searchText, goodMatchThreshold, exampleSearch });
+        this.app.get("/listen-to/:show", async (req, res) => {
+            res.render('index', {root:'./'});
         });
 
-        this.app.get(config.web.paths.shows, (req, res) => {
-            this.service.getShowsForSearch().then(showCounts => {
-                const links = Object.entries(showCounts).map(([showName, episodeCount]) => ({
-                    text: `${showName} (${episodeCount})`,
-                    url: `${config.web.paths.episodes}/${encodeURIComponent(showName)}`
-                }));
-                links.sort((a, b) => a.text.localeCompare(b.text));
-                res.render('shows', { links });
-            })
+
+        // Main site API calls
+        this.app.get("/api/shows", async (req, res) => {
+            const shows = await this.service.getShows(),
+                response = shows as ApiShowsResponse;
+            res.json(response);
         });
 
-        this.app.get(`${config.web.paths.episodes}/:show`, (req, res) => {
-            const showName = req.params.show as ShowName;
-            this.service.getEpisodesForShow(showName).then(episodes => {
-                const episodeSummaries = episodes.map(ep => ({
-                    id: ep.id,
-                    show: '',
-                    episode: ep.episode,
-                    summary: ep.summarySmall,
-                    url: ep.url,
-                    similarity: 1
-                }));
-                res.render('episodes', { episodes: episodeSummaries, showName });
-            })
+        this.app.get("/api/channels", async (req, res) => {
+            const channels = await this.service.getChannelNames(),
+                response = channels as ApiChannelsResponse;
+            res.json(response);
         });
 
-        this.app.get(`${config.web.paths.episode}/:episodeId`, (req, res) => {
-            const episodeId = req.params.episodeId as OtrDataEpisodeId;
-            this.service.getEpisodeDetails(episodeId).then(otrDocument => {
-                res.render('episode', {episode: otrDocument});
-            })
-        });
-
-        this.app.get(`${config.web.paths.listenTo}/:show`, (req, res) => {
-            res.sendFile('public/index.html', {root:'./'});
-        });
-
-        this.app.get(config.web.paths.api.shows, (req, res) => {
-            this.service.getShows().then((shows) => {
-                res.json(shows);
-            }).catch((err) => {
-                log.error(`Error fetching shows: ${err}`, err);
-                res.status(500).send('Internal Server Error');
-            })
-        });
-
-        this.app.get(config.web.paths.api.channels, (req, res) => {
-            this.service.getChannels().then((channelIds) => {
-                res.json(channelIds);
-            }).catch((err) => {
-                log.error(`Error fetching channels: ${err}`, err);
-                res.status(500).send('Internal Server Error');
-            });
-        });
-
-        this.app.get(config.web.paths.api.channel + ':channel', (req, res) => {
+        this.app.get("/api/channel/:channel", async (req, res) => {
             const channelId = req.params.channel as ChannelId,
-                length = Number(req.query.length) as Seconds;
-            this.service.getScheduleForChannel(channelId, length).then(schedule => {
-                if (schedule) {
-                    res.status(200).json(schedule);
-                } else {
-                    res.status(400).send('Unknown channel');
-                }
-            }).catch((err) => {
-                log.error(`Error fetching schedule for channel ${channelId}: ${err}`, err);
-                res.status(500).send('Internal Server Error');
-            });
+                length = Number(req.query.length) as Seconds,
+                schedule = await this.service.getScheduleForChannel(channelId, length),
+                response = schedule as ApiChannelScheduleResponse;
+
+            res.json(response);
         });
 
-        this.app.get(config.web.paths.api.generate + ":ids", (req, res) => {
-            const ids = req.params.ids.split(',').map(s => Number(s)) as ShowId[];
-            try{
-                res.status(200).json(this.service.getCodeForShowIds(ids));
-            } catch (err: any) {
-                log.error(`Error generating channel code for ids ${ids}: ${err}`, err);
-                res.status(400).send('Invalid show IDs');
-            }
+        this.app.get("/api/channel/generate/:nums", async (req, res) => {
+            const showNumbers = req.params.nums.split(',').map(s => Number(s)) as ShowNumber[],
+                channelCode = await this.service.getChannelCodeForShowNumbers(showNumbers),
+                response = channelCode as ApiChannelCodeGenerateResponse;
+            //TODO validate showIds
+            res.json(response);
         });
 
-        this.app.get(config.web.paths.api.playingNow, (req, res) => {
-            const channels = (req.query.channels as string || '').split(',').filter(c => c) as ChannelId[];
-            this.service.getPlayingNowAndNext(channels)
-                .then(result => res.status(200).json(result))
-                .catch(err => {
-                    log.error(`Error fetching playing now and next for channels ${channels}: ${err}`, err);
-                    res.status(500).send('Internal Server Error');
-                });
+        this.app.get("/api/playing-now", async (req, res) => {
+            const channelIds = (req.query.channels as string || '').split(',').filter(c => c) as ChannelId[],
+                playingNowAndNext = await this.service.getPlayingNowAndNext(channelIds),
+                response = playingNowAndNext as ApiPlayingNowResponse;
+
+            res.json(response)
         });
 
-        this.app.get(config.web.paths.api.search + ':searchText', (req, res) => {
+        // Search pages
+        this.app.get("/search", (req, res) => {
+            const exampleSearch = config.getRandomSearchExample(),
+                goodMatchThreshold = config.searchGoodMatchThreshold,
+                viewData = {goodMatchThreshold, exampleSearch} as SearchViewData;
+
+            res.render('search', viewData);
+        });
+
+        this.app.get("/search/:searchText", (req, res) => {
+            const searchText = req.params.searchText as SearchText,
+                exampleSearch = config.getRandomSearchExample(),
+                goodMatchThreshold = config.searchGoodMatchThreshold,
+                viewData = {searchText, goodMatchThreshold, exampleSearch} as SearchViewData;
+
+            res.render('search', viewData);
+        });
+
+        this.app.get("/shows", async (req, res) => {
+            const episodeCounts = await this.service.getShowEpisodeCounts(),
+                links = Object.entries(episodeCounts).map(([showName, episodeCount]) => ({
+                    text: `${showName} (${episodeCount})`,
+                    url: `/episodes/${encodeURIComponent(showName)}`
+                }));
+            links.sort((a, b) => a.text.localeCompare(b.text));
+
+            const viewData = { links } as ShowsViewData;
+
+            res.render('shows', viewData);
+        });
+
+        function episodeToEpisodeViewData(episode: Episode): EpisodeViewData {
+            return {
+                id: episode.id,
+                similarity: 1,
+                show: episode.show,
+                episode: episode.title,
+                summary: episode.summarySmall
+            } as EpisodeViewData;
+        }
+
+        this.app.get("/episodes/:show", async (req, res) => {
+            const showId = req.params.show as ShowId,
+                episodes = (await this.service.getEpisodesForShow(showId)).map(episodeToEpisodeViewData),
+                showName = episodes[0].show,
+                viewData = { episodes, showName } as EpisodesViewData;
+
+            res.render('episodes', viewData);
+        });
+
+        this.app.get("/episode/:episodeId", async (req, res) => {
+            const episodeId = req.params.episodeId as EpisodeId,
+                episode = await this.service.getEpisode(episodeId),
+                viewData = episodeToEpisodeViewData(episode);
+
+            res.render('episode', viewData);
+        });
+
+        // Search API calls
+        this.app.get("/api/search/:searchText", async (req, res) => {
             const searchText = req.params.searchText as SearchText;
             if (searchText.length < 3) {
                 res.status(400).send('Search text must be at least 3 characters');
                 return;
             }
-            this.service.search(searchText).then((results) => {
-                res.render('partials/episode-summaries', {summaries: results});
-            }).catch((err) => {
-                log.error(`Error searching: ${err}`, err);
-                res.status(500).send("Sorry, search isn't working at the moment");
-            })
+
+            const searchResults = await this.service.search(searchText),
+                summaries = searchResults.map(searchResult => ({
+                    id: searchResult.id,
+                    similarity: searchResult.similarity,
+                    show: searchResult.metadata.show,
+                    episode: searchResult.metadata.episode,
+                    summary: searchResult.metadata.summary_small
+                } as EpisodeViewData)),
+                viewData = { summaries } as SearchResultsViewData;
+
+            res.render('partials/episode-summaries', viewData);
         });
 
-        this.app.get(`${config.web.paths.api.episode}/:episodeId`, (req, res) => {
-            const episodeId = req.params.episodeId as OtrDataEpisodeId;
-            this.service.getEpisodeDetails(episodeId).then((otrDocument) => {
-                res.render('partials/episode-details', { document: otrDocument });
-            }).catch((err) => {
-                log.error(`Error searching: ${err}`, err);
-                res.status(500).send('Internal Server Error');
-            })
+        this.app.get("/api/episode/:episodeId", async (req, res) => {
+            const episodeId = req.params.episodeId as EpisodeId,
+                episode = await this.service.getEpisode(episodeId),
+                viewData = episodeToEpisodeViewData(episode);
+
+            res.render('partials/episode-details', viewData);
         });
 
-        this.app.get("/sitemap.xml", (req, res) => {
-            this.service.getSitemapXml().then(xml => {
-                res.set('Content-Type', 'text/xml');
-                res.send(xml);
-            }).catch(err => {
-                log.error(`Error generating sitemap: ${err}`, err);
-                res.status(500).send('Internal Server Error');
-            });
+        this.app.get("/sitemap.xml", async (req, res) => {
+            const siteMapXml = await this.service.getSitemapXml()
+
+            res.set('Content-Type', 'text/xml');
+            res.send(siteMapXml);
         });
+
     }
 
     start() {
         this.setupEndpointHandlers();
-        this.app.listen(config.web.port, () => {
-            log.info(`Initialisation complete, listening on port ${config.web.port}...`);
+        this.app.listen(config.webPort, () => {
+            log.info(`Initialisation complete, listening on port ${config.webPort}...`);
         });
     }
 }

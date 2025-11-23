@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
     <head>
-        <%- include('partials/head', { title: `${episode.show}: ${episode.episode}`, description: `Plot summary and episode information for ${episode.show} episode '${episode.episode}'` }) %>
+        <%- include('partials/head', { title: `${episode.show}: ${episode.title}`, description: `Plot summary and episode information for ${episode.show} episode '${episode.title}'` }) %>
     </head>
     <body>
         <%- include('partials/header', { subTitle: `${episode.show}: ${episode.episode}`, cssClass: "episodeHeader" }) %>

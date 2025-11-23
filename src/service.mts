@@ -1,112 +1,65 @@
+import {DataService} from "./dataService.mjs";
 import {config} from "./config.mjs";
-import type {
-    ChannelId,
-    ConfigShow,
-    DescriptiveId,
-    PlayingNowAndNext,
-    ShowId,
-    ShowsListItem,
-    Xml,
-    CurrentChannelScheduleWithDetails,
-    SearchText,
-    SearchResults,
-    ShowName,
-    EpisodeName,
-    ShortEpisodeSummary, Url, SearchResultTextMatch, EpisodeDetails, OtrDocument, EpisodeId, OtrDataEpisodeResponse,
-    OtrDataEpisodeId, OtrDataShowCounts, OtrDataEpisodesResponse
-} from "./types.mjs";
-import {buildChannelCodeFromShowIds} from "./channelCodes.mjs";
-import type {Seconds} from "./clock.mjs";
-import {getSitemapXml} from "./sitemap.mjs";
-import {shows} from "./shows.mjs";
-import {scheduler} from "./scheduler.mjs";
-import {otrData} from "./otrData.mjs";
+import type {ChannelId, EpisodeId, PlayingNowAndNext, SearchText, Seconds, ShowId, ShowNumber} from "./types.mjs";
+import {ScheduleService} from "./scheduleService.mjs";
+import {ChannelCodeService} from "./channelCodeService.mjs";
+import {SiteMapService} from "./sitemapService.mjs";
 
-function getChannelIdsForShowId(showId: ShowId) {
-    return config.channels.filter(channel => channel.shows.includes(showId)).map(channel => channel.name);
-}
-
-function getDescriptiveIdForShowName(showName: string): DescriptiveId {
-    return showName.toLowerCase().replace(/ /g, '-').replace(/-+/g, '-').replace(/[^a-zA-Z0-9-]/g, '') as DescriptiveId;
-}
 
 export class Service {
-    private showsForSearchCache: OtrDataShowCounts | null = null;
+    private dataService: DataService;
+    private scheduleService: ScheduleService;
+    private channelCodeService: ChannelCodeService;
+    private sitemapService: SiteMapService;
 
-    private getShowsListItemFromConfigShow(configShow: ConfigShow): ShowsListItem {
-        return {
-            channels: getChannelIdsForShowId(configShow.id),
-            id: configShow.id,
-            isCommercial: configShow.isCommercial,
-            name: configShow.name,
-            shortName: configShow.shortName || configShow.name,
-            descriptiveId: getDescriptiveIdForShowName(configShow.name),
-            channelCode: buildChannelCodeFromShowIds([configShow.id]),
-        };
+    constructor() {
+        this.dataService = new DataService();
+        this.channelCodeService = new ChannelCodeService();
+        this.scheduleService = new ScheduleService(this.channelCodeService, this.dataService);
+        this.sitemapService = new SiteMapService(this.dataService);
     }
 
-    getShows(): Promise<ShowsListItem[]> {
-        return Promise.resolve(config.shows.map(show => this.getShowsListItemFromConfigShow(show)));
+    async getShows() {
+        return this.dataService.getShows();
     }
 
-    getChannels(): Promise<ChannelId[]> {
-        return Promise.resolve(config.channels.map(channel => channel.name));
+    async getChannelNames() {
+        return Promise.resolve(config.channelNames);
     }
 
-    async getScheduleForChannel(channelId: ChannelId, length: Seconds): Promise<CurrentChannelScheduleWithDetails> {
-        const scheduleWithoutDetails = await scheduler.getScheduleForChannel(channelId, length),
-            scheduleEpisodeDetails = await Promise.all(scheduleWithoutDetails.list.map(episode => shows.getEpisodeDetails(episode)));
-
-        return {
-            list: scheduleEpisodeDetails,
-            initialOffset: scheduleWithoutDetails.initialOffset,
-        } as CurrentChannelScheduleWithDetails;
+    async getScheduleForChannel(channelId: ChannelId, length: Seconds) {
+        return this.scheduleService.getScheduleForChannel(channelId, length);
     }
 
-    getCodeForShowIds(showIds: ShowId[]): ChannelId {
-        return buildChannelCodeFromShowIds(showIds);
+    async getChannelCodeForShowNumbers(showNumbers: ShowNumber[]) {
+        return Promise.resolve(this.channelCodeService.getCodeForShowNumbers(showNumbers));
     }
 
-    getPlayingNowAndNext(channels: ChannelId[]): Promise<PlayingNowAndNext> {
-        return Promise.all(channels.map(channelId => scheduler.getPlayingNowAndNext(channelId))).then(channelSchedules => {
-        const result = {} as PlayingNowAndNext;
-            channels.map((channelId, index) => {
-               result[channelId] = channelSchedules[index];
-            });
-            return result;
-        });
+    async getPlayingNowAndNext(channels: ChannelId[]): Promise<PlayingNowAndNext> {
+        return Object.fromEntries(
+            await Promise.all(channels.map(async channelId =>
+                [channelId, await this.scheduleService.getPlayingNowAndNext(channelId)]
+            ))
+        ) as PlayingNowAndNext;
     }
 
-    async search(searchText: SearchText): Promise<SearchResults> {
-        const otrDataSearchResponse = await otrData.search(searchText);
-        return otrDataSearchResponse.map(item => ({
-            id: item.id,
-            show: item.metadata.show,
-            episode: item.metadata.episode,
-            summary: item.metadata.summary_small,
-            url: item.metadata.url,
-            similarity: item.similarity,
-            textMatches: item.metadata._chunks.map(chunk => chunk.text) as SearchResultTextMatch[]
-        }));
+    async getShowEpisodeCounts() {
+        return this.dataService.getShowEpisodeCounts();
     }
 
-    async getEpisodeDetails(episodeId: OtrDataEpisodeId): Promise<OtrDataEpisodeResponse> {
-        return await otrData.getEpisodeDetails(episodeId);
+    async getEpisodesForShow(showId: ShowId) {
+        return this.dataService.getEpisodesForShow(showId);
     }
 
-    async getShowsForSearch(): Promise<OtrDataShowCounts> {
-        if (this.showsForSearchCache === null) {
-            this.showsForSearchCache = await otrData.getShows();
-        }
-        return this.showsForSearchCache;
+    async getEpisode(episodeId: EpisodeId) {
+        return this.dataService.getEpisode(episodeId);
     }
 
-    async getEpisodesForShow(showName: ShowName): Promise<OtrDataEpisodesResponse> {
-        return await otrData.getEpisodeDetailsForShow(showName);
+    async search(searchText: SearchText) {
+        return this.dataService.search(searchText);
     }
 
-    async getSitemapXml(): Promise<Xml> {
-        const shows = await this.getShows();
-        return await getSitemapXml(shows);
+    async getSitemapXml() {
+        return this.sitemapService.getSitemapXml();
     }
 }

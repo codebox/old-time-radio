@@ -6,7 +6,7 @@ export class Log {
 
     constructor() {
         this.logger = winston.createLogger({
-            level: config.logLevel,
+            level: config.log.level,
             format: winston.format.combine(
                 winston.format.errors({stack: true}),
                 winston.format.timestamp(),

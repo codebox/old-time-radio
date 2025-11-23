@@ -1,11 +1,11 @@
 import {promises as fs} from "fs";
-import * as path from "path";
+import path from "path";
 import { LRUCache } from 'lru-cache'
 import {log} from "./log.mjs";
+import type {Seconds} from "./clock.mjs";
 import {config} from "./config.mjs";
+import {clock, type Millis} from "./clock.mjs";
 import {deepEquals} from "./utils.mjs";
-import type {Millis, Seconds} from "./types.mjs";
-import {clock} from "./clock.mjs";
 
 export class Cache<K,V> {
     private cacheName: string;
@@ -19,7 +19,7 @@ export class Cache<K,V> {
         this.fetch = fetch;
 
         if (diskCacheMaxAge) {
-            this.diskCache = new DiskCache<K,V>(path.join(config.cacheBaseDir, cacheName), diskCacheMaxAge as Seconds);
+            this.diskCache = new DiskCache<K,V>(path.join(config.caches.baseDirectory, cacheName), diskCacheMaxAge as Seconds);
             this.isFresh = key => this.diskCache.isFresh(key);
 
         } else {

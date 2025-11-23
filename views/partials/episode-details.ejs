@@ -2,41 +2,41 @@
     <dl class="episodeMetadata">
         <div>
             <dt>Show</dt>
-            <dd><a href="/episodes/<%= encodeURIComponent(document.show) %>"><%= document.show %></a></dd>
+            <dd><a href="/episodes/<%= encodeURIComponent(show) %>"><%= show %></a></dd>
         </div>
         <div>
             <dt>Episode</dt>
-            <dd><%= document.episode %></dd>
+            <dd><%= title %></dd>
         </div>
         <div>
             <dt>Length</dt>
-            <dd><%= document.length %></dd>
+            <dd><%= duration %></dd>
         </div>
-    <% if(document.date) { %>
+    <% if(date) { %>
         <div>
             <dt>Broadcast</dt>
-            <dd><%= document.date %></dd>
+            <dd><%= date %></dd>
         </div>
     <% }%>
-    <% if(document.number) { %>
+    <% if(number) { %>
             <div>
                 <dt>Number</dt>
-                <dd><%= document.number %></dd>
+                <dd><%= number %></dd>
             </div>
     <% }%>
     </dl>
-    <p class="episodeShortSummary"><em><%= document.summarySmall %></em></p>
+    <p class="episodeShortSummary"><em><%= summarySmall %></em></p>
 
     <div class="episodeDownloadLinks">
-        <audio controls preload="none" src="<%= document.url %>"></audio>
-        <a href="<%= document.url %>">Download</a>
+        <audio controls preload="none" src="<%= url %>"></audio>
+        <a href="<%= url %>">Download</a>
     </div>
 
     <h3>Plot Summary</h3>
-    <p><%- document.text.replaceAll("\\\"", "\"").replaceAll("\n", "<br>") %></p>
+    <p><%- text.replaceAll("\\\"", "\"").replaceAll("\n", "<br>") %></p>
     <p>
         <% const subject = encodeURIComponent("Episode summary feedback"); %>
-        <% const body = encodeURIComponent("I would like to report a problem with the summary for the episode " + document.show + ": " + document.episode + " (id = " + document.id + ")\n\n<please describe the problem here>"); %>
+        <% const body = encodeURIComponent("I would like to report a problem with the summary for the episode " + show + ": " + episode + " (id = " + id + ")\n\n<please describe the problem here>"); %>
         <% const mailToLink = "mailto:rob@oldtime.radio?subject=" + subject + "&body=" + body; %>
         <a href="<%= mailToLink %>">Report a problem</a>
     </p>

@@ -1,42 +1,65 @@
-import {readFile} from "fs/promises";
-import type {Config, PlaylistId, ShowId} from "./types.mjs";
+import {readFileSync} from "fs";
+import type {Channel, ChannelName, Hours, SearchText, ShowConfig, ShowId, ShowNumber, Url} from "./types.mjs";
 
-export const config: Config = JSON.parse(await readFile("config.json", "utf8"));
+class Config {
+    private configData = JSON.parse(readFileSync("config.json", "utf8"));
 
-export const configHelper = {
-    getShowForPlaylistId(playlistId: PlaylistId) {
-        return config.shows.find(show => show.playlists.includes(playlistId));
-    },
-    getAllPlaylistIds() {
-        return config.shows.flatMap(show => show.playlists)
-    },
-    getChannelNamesForShowId(showId: ShowId) {
-        return config.channels.filter(channel => channel.shows.includes(showId)).map(channel => channel.name);
-    },
-    getShows(){
-        return config.shows.map(show => {
-            return {
-                channels: configHelper.getChannelNamesForShowId(show.id),
-                id: show.id,
-                isCommercial: !! show.isCommercial,
-                name: show.name,
-                shortName: show.shortName || show.name,
-                playlists: show.playlists
-            };
-        });
-    },
-    getChannels() {
-        return config.channels.map(channel => channel.name);
-    },
-    getShowFromId(showId: ShowId) {
-        const show = config.shows.find(show => show.id === showId);
-        if (!show) {
-            throw new Error(`Show with id '${showId}' not found in config`);
+    get webPort(): number {
+        return this.configData.web.port;
+    }
+
+    get logLevel(): string {
+        return this.configData.log.level;
+    }
+
+    get channels(): Channel[] {
+        return this.configData.channels;
+    }
+
+    get channelNames(): ChannelName[] {
+        return this.channels.map((channel: Channel) => channel.name);
+    }
+
+    get searchGoodMatchThreshold(): number {
+        return this.configData.search.goodMatchThreshold;
+    }
+
+    getRandomSearchExample(): SearchText {
+        const searchExamples = this.configData.search.examples as SearchText[];
+        return searchExamples[Math.floor(Math.random() * searchExamples.length)];
+    }
+
+    get sitemapMaxAgeHours(): Hours {
+        return this.configData.sitemap.maxAgeHours;
+    }
+
+    get publicUrlPrefix(): Url {
+        return this.configData.web.publicUrlPrefix;
+    }
+
+    get cacheBaseDir(): string {
+        return this.configData.cache.baseDir;
+    }
+
+    get scheduleCacheMaxItems(): number {
+        return this.configData.cache.scheduleCacheMaxItems;
+    }
+
+    getShowConfigById(showId: ShowId): ShowConfig {
+        const maybeShowConfig = this.configData.shows.find((show: ShowConfig) => show.id === showId);
+        if (!maybeShowConfig) {
+            throw new Error(`Show config not found for showId: ${showId}`);
         }
-        return show;
-    },
-    getRandomSearchExample() {
-        return config.search.examples[Math.floor(Math.random() * config.search.examples.length)];
+        return maybeShowConfig as ShowConfig;
+    }
+
+    getShowConfigByNumber(showNumber: ShowNumber): ShowConfig {
+        const maybeShowConfig = this.configData.shows.find((show: ShowConfig) => show.number === showNumber);
+        if (!maybeShowConfig) {
+            throw new Error(`Show config not found for showNumber: ${showNumber}`);
+        }
+        return maybeShowConfig as ShowConfig;
     }
 }
-let i = 0;
+
+export const config = new Config();

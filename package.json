@@ -2,9 +2,9 @@
   "name": "old-time-radio",
   "version": "1.0.0",
   "description": "A website for listening to Old Time Radio hosted by archive.org",
-  "main": "src/app.js",
+  "main": "src_old/app.js",
   "scripts": {
-    "start": "node src/app.js"
+    "start": "node src_old/app.js"
   },
   "repository": {
     "type": "git",

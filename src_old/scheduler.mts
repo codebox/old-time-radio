@@ -4,7 +4,7 @@ import type {
     ChannelId,
     CurrentChannelSchedule,
     ShowId,
-    FullChannelSchedule, Episode, ScheduleResultsAfterInsertHandler
+    FullChannelSchedule, Episode, ScheduleResultsAfterInsertHandler, ScheduleResults, ShowCounts
 } from "./types.mjs";
 import type {Seconds} from "./clock.mjs";
 import {clock} from "./clock.mjs";
@@ -12,6 +12,7 @@ import {buildShowIdsFromChannelCode} from "./channelCodes.mjs";
 import {shows} from "./shows.mjs";
 import {generator, schedule} from "./utils.mjs";
 import {Cache} from "./cache.mjs";
+import {log} from "../src/log.mjs";
 
 type SchedulerStopCondition = (currentPlaylistDuration: Seconds, currentPlaylistSize: number) => boolean;
 type SchedulePosition = {itemIndex: number, itemOffset: Seconds};
@@ -19,6 +20,8 @@ type SchedulePosition = {itemIndex: number, itemOffset: Seconds};
 const DEFAULT_SCHEDULE_LENGTH = 60 * 60 as Seconds,
     MAX_SCHEDULE_LENGTH = 24 * 60 * 60 as Seconds,
     START_TIME = 1595199600 as Seconds; // 2020-07-20 00:00:00
+
+
 
 export class Scheduler {
     private cache: Cache<ChannelId, FullChannelSchedule>;
@@ -86,6 +89,8 @@ export class Scheduler {
             length: totalChannelDuration
         };
     }
+
+
 
     private getCurrentSchedulePosition(fullSchedule: FullChannelSchedule): SchedulePosition {
         const scheduleDuration = fullSchedule.length as Seconds,
