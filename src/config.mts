@@ -1,5 +1,5 @@
 import {readFileSync} from "fs";
-import type {Channel, ChannelName, Hours, SearchText, ShowConfig, ShowId, ShowNumber, Url} from "./types.mjs";
+import type {Channel, ChannelName, Hours, Millis, SearchText, ShowConfig, ShowId, ShowNumber, Url} from "./types.mjs";
 
 class Config {
     private configData = JSON.parse(readFileSync("config.json", "utf8"));
@@ -59,6 +59,19 @@ class Config {
             throw new Error(`Show config not found for showNumber: ${showNumber}`);
         }
         return maybeShowConfig as ShowConfig;
+    }
+
+    get dataServiceBaseUrl(): string {
+        return this.configData.dataApi.baseUrl;
+    }
+
+    get dataServiceMinRequestIntervalMillis(): Millis {
+        return this.configData.dataApi.minRequestIntervalMillis as Millis;
+    }
+
+    isShowCommercial(showId: ShowId): boolean {
+        const showConfig = this.getShowConfigById(showId);
+        return showConfig.isCommercial;
     }
 }
 

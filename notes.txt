@@ -5,6 +5,7 @@ code:
     naming convention for types returned from data service
     implement data service
     profit?
+stop whole ap crashing if we get a 500 from otrdata api
 add search etc to webcheck scripts
 use docker hostname in config.json 'oldtimeradio_data:8000'
 handle shows with no results from data api gracefully

@@ -1,4 +1,4 @@
-import {Millis, Seconds} from "./types.mjs";
+import type {Millis, Seconds} from "./types.mjs";
 
 const MILLISECONDS_PER_SECOND = 1000;
 

@@ -90,7 +90,7 @@ function buildPlayingNowManager(model, elCanvas) {
         ctx.clearRect(0, 0, elCanvas.width, elCanvas.height);
         const channelId = playingNowData[currentIndex].channelId,
             channelDescription = describeChannel(channelId),
-            playingNowName = playingNowData[currentIndex].list[0].showName;
+            playingNowName = playingNowData[currentIndex].list[0].show;
 
         fillTextMultiLine([
             {text: 'Now Playing on'},

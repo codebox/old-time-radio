@@ -31,21 +31,21 @@ function buildScheduleView(eventSource) {
         displaySchedule(schedule) {
             const playingNow = schedule.list.shift(),
                 timeNow = clock.nowSeconds();
-            let nextShowStartOffsetFromNow = playingNow.length - schedule.initialOffset;
+            let nextShowStartOffsetFromNow = playingNow.duration - schedule.initialOffset;
 
-            const scheduleList = [{time: 'NOW &gt;', name: playingNow.name, shortSummary: playingNow.short}];
-            scheduleList.push(...schedule.list.filter(item => !item.commercial).map(item => {
+            const scheduleList = [{time: 'NOW &gt;', name: `${playingNow.show} - ${playingNow.title}`, shortSummary: playingNow.summarySmall}];
+            scheduleList.push(...schedule.list.filter(item => !item.isCommercial).map(item => {
                 const ts = nextShowStartOffsetFromNow + timeNow,
                     date = new Date(ts * 1000),
                     hh = date.getHours().toString().padStart(2,'0'),
                     mm = date.getMinutes().toString().padStart(2,'0');
                 const result = {
                     time: `${hh}:${mm}`,
-                    name: item.name,
-                    commercial: item.commercial,
-                    shortSummary: item.short
+                    name: `${item.show} - ${item.title}`,
+                    commercial: item.isCommercial,
+                    shortSummary: item.summarySmall
                 };
-                nextShowStartOffsetFromNow += item.length;
+                nextShowStartOffsetFromNow += item.duration;
                 return result;
             }));
 

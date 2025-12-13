@@ -54,7 +54,7 @@ window.onload = () => {
         function playNextFromPlaylist() {
             const nextItem = model.playlist.shift();
             model.track = nextItem;
-            audioPlayer.load(nextItem.urls);
+            audioPlayer.load(nextItem.url);
             stateMachine.loadingTrack();
         }
 
@@ -104,10 +104,10 @@ window.onload = () => {
         visualiser.start();
         audioPlayer.play(model.nextTrackOffset);
         view.showDownloadLink(model.track.archivalUrl);
-        const hasSummary = !! model.track.medium,
-            tuningInPartWayThrough = model.nextTrackOffset > (model.track.length * config.summary.autoShowPercentage / 100);
+        const hasSummary = !! model.track.summaryMedium,
+            tuningInPartWayThrough = model.nextTrackOffset > (model.track.duration * config.summary.autoShowPercentage / 100);
         if (hasSummary) {
-            summaryManager.setText(model.track.medium);
+            summaryManager.setText(model.track.summaryMedium);
             view.showSummaryLink();
             if (tuningInPartWayThrough && model.showSummaryWhenTuningIn) {
                 summaryManager.showAndThenHide();
@@ -119,7 +119,7 @@ window.onload = () => {
     audioPlayer.on(EVENT_AUDIO_PLAY_STARTED).ifState(STATE_LOADING_TRACK).then(() => {
         stateMachine.playing();
         view.setChannelLoaded(model.selectedChannelId);
-        messageManager.showNowPlaying(model.track.name);
+        messageManager.showNowPlaying(`${model.track.show} - ${model.track.title}`);
     });
 
     audioPlayer.on(EVENT_AUDIO_TRACK_ENDED).ifState(STATE_PLAYING).then(() => {

@@ -2,15 +2,7 @@
   "web": {
     "port": 3000
   },
-  "webClients": {
-    "archiveOrg" : {
-      "minRequestIntervalMillis": 1500
-    },
-    "otrData": {
-      "minRequestIntervalMillis": 100
-    }
-  },
-  "caches": {
+  "cache": {
     "baseDirectory": "cache",
     "scheduleCacheMaxItems": 100,
     "showsCacheMaxAgeHours": 4,
@@ -40,13 +32,7 @@
   },
   "dataApi": {
     "baseUrl": "http://127.0.0.1:8000",
-    "paths": {
-      "summaries": "/metadata_search?k=playlist&v=",
-      "search": "/search?q=",
-      "shows": "/shows",
-      "episodes": "/metadata_search?k=show&v=",
-      "episode": "/get?id="
-    }
+    "minRequestIntervalMillis": 50
   },
   "log": {
     "file": "/var/log/oldtimeradio/access.log",

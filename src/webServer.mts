@@ -102,10 +102,10 @@ export class WebServer {
         });
 
         this.app.get("/shows", async (req, res) => {
-            const episodeCounts = await this.service.getShowEpisodeCounts(),
-                links = Object.entries(episodeCounts).map(([showName, episodeCount]) => ({
-                    text: `${showName} (${episodeCount})`,
-                    url: `/episodes/${encodeURIComponent(showName)}`
+            const shows = await this.service.getShows(),
+                links = shows.map(show => ({
+                    text: `${show.name} (${show.episodeCount})`,
+                    url: `/episodes/${show.id}`
                 }));
             links.sort((a, b) => a.text.localeCompare(b.text));
 

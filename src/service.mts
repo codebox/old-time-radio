@@ -43,10 +43,6 @@ export class Service {
         ) as PlayingNowAndNext;
     }
 
-    async getShowEpisodeCounts() {
-        return this.dataService.getShowEpisodeCounts();
-    }
-
     async getEpisodesForShow(showId: ShowId) {
         return this.dataService.getEpisodesForShow(showId);
     }

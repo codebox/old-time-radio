@@ -54,11 +54,19 @@ export class ScheduleService {
         }
 
         const scheduleResults = this.schedule(nonCommercialShowCounts, afterEach),
-            fullSchedule = [] as Episode[];
+            fullSchedule = [] as Episode[],
+            commercialShowIdsSet = new Set<ShowId>(commercialShowIds);
+
+        function isCommercial(showId: ShowId): boolean {
+            return commercialShowIdsSet.has(showId);
+        }
 
         scheduleResults.forEach((showId) => {
             const index = showIdToIndex.get(showId),
                 nextItem = showScheduleItems[index].next();
+            if (isCommercial(showId)) {
+                nextItem.isCommercial = true;
+            }
 
             fullSchedule.push(nextItem);
         });

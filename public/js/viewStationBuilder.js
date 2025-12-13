@@ -24,7 +24,7 @@ function buildStationBuilderView(eventSource) {
             return s1.name > s2.name ? 1 : -1;
         }
         shows.forEach(show => {
-            if (show.channels.length) {
+            if (show.channels && show.channels.length) {
                 show.channels.forEach(channelName => {
                     if (!genreMap[channelName]) {
                         genreMap[channelName] = [];

@@ -25,6 +25,12 @@ export type BroadcastDate = string & { readonly __brand: unique symbol };
 // Short summary of an episode (typically 1-2 sentences) returned from the data service
 export type ShortEpisodeSummary = string & { readonly __brand: unique symbol };
 
+// Medium summary of an episode (typically 1 paragraph) returned from the data service
+export type MediumEpisodeSummary = string & { readonly __brand: unique symbol };
+
+// Long summary of an episode (typically several paragraphs) returned from the data service
+export type LongEpisodeSummary = string & { readonly __brand: unique symbol };
+
 // Generated channel code for user-defined channels
 export type ChannelCode = string & { readonly __brand: unique symbol };
 
@@ -43,6 +49,7 @@ export type Hours = number & { readonly __brand: unique symbol };
 export type Show = {
     id: ShowId;
     name: ShowName
+    episodeCount: number
 }
 
 // Data about a specific show, read from the config file
@@ -55,12 +62,17 @@ export type ShowConfig = {
 // Data about a specific episode, returned from the data service
 export type Episode = {
     id: EpisodeId;
+    showId: ShowId;
     show: ShowName;
+    isCommercial: boolean;
     title: EpisodeTitle;
     duration: Seconds;
     date: BroadcastDate;
     number: EpisodeNumber;
+    url: Url;
     summarySmall: ShortEpisodeSummary;
+    summaryMedium?: MediumEpisodeSummary;
+    summaryLong?: LongEpisodeSummary;
 }
 
 // Data about a specific channel, read from the config file
@@ -113,14 +125,6 @@ export type SearchResult = {
     }
 };
 
-// Array of search results, returned from the data service
-export type SearchResults = SearchResult[];
-
-// Mapping of show names to their respective episode counts returned by the data service, used to render the Show List page in search
-export type ShowEpisodeCounts = {
-    [key in ShowName]: number
-};
-
 // Represents the XML content of a sitemap
 export type SiteMapXml = string & { readonly __brand: unique symbol };
 
@@ -165,3 +169,12 @@ export type EpisodesViewData = {
 export type SearchResultsViewData = {
     summaries: EpisodeViewData[];
 }
+
+// Endpoint responses returned from the data service
+export type DataServiceShowsResponse = Show[];
+
+export type DataServiceEpisodesResponse = Episode[];
+
+export type DataServiceEpisodeDetailsResponse = Episode;
+
+export type DataServiceSearchResponse = SearchResult[];
