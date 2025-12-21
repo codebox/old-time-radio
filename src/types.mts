@@ -150,13 +150,27 @@ export type ShowsViewData = {
     links: { text: string; url: Url }[];
 }
 
-// Data used to populate episode.ejs view, also used in episodes.ejs and search.ejs
+// Data used to populate episodes.ejs and search.ejs
 export type EpisodeViewData = {
     id: EpisodeId;
     similarity: number;
     show: ShowName;
     episode: EpisodeTitle;
     summary: ShortEpisodeSummary;
+}
+
+// Data used to populate episode-details.ejs
+export type EpisodeDetailsViewData = {
+    id: EpisodeId;
+    showId: ShowId;
+    show: ShowName;
+    title: EpisodeTitle;
+    duration: string;
+    date: BroadcastDate;
+    number: EpisodeNumber;
+    url: Url;
+    summarySmall: ShortEpisodeSummary;
+    summaryLong: LongEpisodeSummary;
 }
 
 // Data used to populate the episodes.ejs view

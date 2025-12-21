@@ -12,7 +12,7 @@
     "maxAgeHours": 240
   },
   "search": {
-    "goodMatchThreshold" : 0.1,
+    "goodMatchThreshold": 0.1,
     "examples": [
       "native priests steal emerald and escape in helicopter",
       "purple twilight",
@@ -31,7 +31,7 @@
     "radical": 1.8
   },
   "dataApi": {
-    "baseUrl": "http://127.0.0.1:8000",
+    "baseUrl": "http://oldtimeradio_api:8000",
     "minRequestIntervalMillis": 50
   },
   "log": {
@@ -681,10 +681,6 @@
       "id": "21st-precinct"
     },
     {
-      "number": 160,
-      "id": "pete-kellys-blues"
-    },
-    {
       "number": 161,
       "id": "the-line-up"
     },
@@ -705,51 +701,230 @@
       "id": "world-adventurers-club"
     }
   ],
-  "channels" : [
+  "channels": [
     {
-      "name" : "future",
+      "name": "future",
       "playCommercials": true,
-      "shows": ["commercials","x-minus-one","dimension-x","space-patrol","tom-corbett-space-cadet","flash-gordon","buck-rogers","exploring-tomorrow","2000-plus","planet-man","sf-68"]
+      "shows": [
+        "commercials",
+        "x-minus-one",
+        "dimension-x",
+        "space-patrol",
+        "tom-corbett-space-cadet",
+        "flash-gordon",
+        "buck-rogers",
+        "exploring-tomorrow",
+        "2000-plus",
+        "planet-man",
+        "sf-68"
+      ]
     },
     {
-      "name" : "action",
+      "name": "action",
       "playCommercials": true,
-      "shows": ["commercials","the-adventures-of-superman","tarzan","speed-gibson-of-the-international-secret-police","the-blue-beetle","the-falcon","i-love-a-mystery","the-lives-of-harry-lime","the-saint","bold-venture","ranger-bill","moon-over-africa","dangerous-assignment","the-adventures-of-frank-race","john-steele-adventurer","the-man-called-x","counter-spy","magic-island","black-flame-of-the-amazon","voyage-of-the-scarlet-queen","chandu-the-magician","challenge-of-the-yukon","the-scarlet-pimpernel","world-adventurers-club"]
+      "shows": [
+        "commercials",
+        "the-adventures-of-superman",
+        "tarzan",
+        "speed-gibson-of-the-international-secret-police",
+        "the-blue-beetle",
+        "the-falcon",
+        "i-love-a-mystery",
+        "the-lives-of-harry-lime",
+        "the-saint",
+        "bold-venture",
+        "ranger-bill",
+        "moon-over-africa",
+        "dangerous-assignment",
+        "the-adventures-of-frank-race",
+        "john-steele-adventurer",
+        "the-man-called-x",
+        "counter-spy",
+        "magic-island",
+        "black-flame-of-the-amazon",
+        "voyage-of-the-scarlet-queen",
+        "chandu-the-magician",
+        "challenge-of-the-yukon",
+        "the-scarlet-pimpernel",
+        "world-adventurers-club"
+      ]
     },
     {
-      "name" : "crime",
+      "name": "crime",
       "playCommercials": true,
-      "shows": ["commercials","the-green-hornet","dragnet","the-adventures-of-philip-marlowe","boston-blackie","the-new-adventures-of-sherlock-holmes","pat-novak-for-hire","broadway-is-my-beat","new-adventures-of-nero-wolfe","the-black-museum","calling-all-cars","richard-diamond-private-detective","let-george-do-it","secrets-of-scotland-yard","mr-district-attorney","yours-truly-johnny-dollar","whitehall-1212","this-is-your-fbi","philo-vance","candy-matson","sam-spade","barrie-craig-confidential-investigator","mr-keen-tracer-of-lost-persons","nick-carter-master-detective","gang-busters","perry-mason","the-damon-runyon-theatre","the-shadow-of-fu-manchu","michael-shayne","jeff-regan","21st-precinct","the-line-up"]
+      "shows": [
+        "commercials",
+        "the-green-hornet",
+        "dragnet",
+        "the-adventures-of-philip-marlowe",
+        "boston-blackie",
+        "the-new-adventures-of-sherlock-holmes",
+        "pat-novak-for-hire",
+        "broadway-is-my-beat",
+        "new-adventures-of-nero-wolfe",
+        "the-black-museum",
+        "calling-all-cars",
+        "richard-diamond-private-detective",
+        "let-george-do-it",
+        "secrets-of-scotland-yard",
+        "mr-district-attorney",
+        "yours-truly-johnny-dollar",
+        "whitehall-1212",
+        "this-is-your-fbi",
+        "philo-vance",
+        "candy-matson",
+        "sam-spade",
+        "barrie-craig-confidential-investigator",
+        "mr-keen-tracer-of-lost-persons",
+        "nick-carter-master-detective",
+        "gang-busters",
+        "perry-mason",
+        "the-damon-runyon-theatre",
+        "the-shadow-of-fu-manchu",
+        "michael-shayne",
+        "jeff-regan",
+        "21st-precinct",
+        "the-line-up"
+      ]
     },
     {
-      "name" : "horror",
+      "name": "horror",
       "playCommercials": true,
-      "shows": ["commercials","dark-fantasy","inner-sanctum-mysteries","lights-out","weird-circle","the-hermits-cave","the-haunting-hour","sealed-book","hall-of-fantasy","quiet-please","the-witchs-tale","diary-of-fate"]
+      "shows": [
+        "commercials",
+        "dark-fantasy",
+        "inner-sanctum-mysteries",
+        "lights-out",
+        "weird-circle",
+        "the-hermits-cave",
+        "the-haunting-hour",
+        "sealed-book",
+        "hall-of-fantasy",
+        "quiet-please",
+        "the-witchs-tale",
+        "diary-of-fate"
+      ]
     },
     {
-      "name" : "suspense",
+      "name": "suspense",
       "playCommercials": true,
-      "shows": ["commercials","suspense","molle-mystery-theatre","mystery-house","escape","the-mysterious-traveler","the-whistler","cbs-radio-mystery-theater-fantasy","cbs-radio-mystery-theater","the-clock","the-shadow","box-13","rocky-jordan","night-beat","mr-moto","ghost-corps","dick-barton-special-agent"]
+      "shows": [
+        "commercials",
+        "suspense",
+        "molle-mystery-theatre",
+        "mystery-house",
+        "escape",
+        "the-mysterious-traveler",
+        "the-whistler",
+        "cbs-radio-mystery-theater-fantasy",
+        "cbs-radio-mystery-theater",
+        "the-clock",
+        "the-shadow",
+        "box-13",
+        "rocky-jordan",
+        "night-beat",
+        "mr-moto",
+        "ghost-corps",
+        "dick-barton-special-agent"
+      ]
     },
     {
-      "name" : "western",
+      "name": "western",
       "playCommercials": true,
-      "shows": ["commercials","gunsmoke","the-lone-ranger","have-gun-will-travel","tales-of-the-texas-rangers","the-six-shooter","fort-laramie","hopalong-cassidy","frontier-gentleman","frontier-town","wild-bill-hickok","red-ryder","horizons-west","mark-trail","luke-slaughter"]
+      "shows": [
+        "commercials",
+        "gunsmoke",
+        "the-lone-ranger",
+        "have-gun-will-travel",
+        "tales-of-the-texas-rangers",
+        "the-six-shooter",
+        "fort-laramie",
+        "hopalong-cassidy",
+        "frontier-gentleman",
+        "frontier-town",
+        "wild-bill-hickok",
+        "red-ryder",
+        "horizons-west",
+        "mark-trail",
+        "luke-slaughter"
+      ]
     },
     {
-      "name" : "comedy",
+      "name": "comedy",
       "playCommercials": true,
-      "shows": ["commercials","our-miss-brooks","the-great-gildersleeve","the-harold-peary-show","the-jack-benny-show","the-phil-harris-alice-faye-show","fibber-mcgee-and-molly","abbott-and-costello","my-favorite-husband","father-knows-best","the-life-of-riley","vic-and-sade","the-halls-of-ivy","the-mel-blanc-show","burns-and-allen","ozzie-harriet","duffys-tavern","the-aldrich-family","lum-and-abner","the-bob-hope-show","the-martin-and-lewis-show","its-higgins-sir","the-fred-allen-show","the-bickersons","the-big-show","amos-and-andy","eddie-cantor","edgar-bergen-and-charlie-mccarthy","it-pays-to-be-ignorant","you-bet-your-life","information-please","my-friend-irma","eb-and-zeb","the-milton-berle-show","the-goon-show","the-spike-jones-show","easy-aces","the-red-skelton-show"]
+      "shows": [
+        "commercials",
+        "our-miss-brooks",
+        "the-great-gildersleeve",
+        "the-harold-peary-show",
+        "the-jack-benny-show",
+        "the-phil-harris-alice-faye-show",
+        "fibber-mcgee-and-molly",
+        "abbott-and-costello",
+        "my-favorite-husband",
+        "father-knows-best",
+        "the-life-of-riley",
+        "vic-and-sade",
+        "the-halls-of-ivy",
+        "the-mel-blanc-show",
+        "burns-and-allen",
+        "ozzie-harriet",
+        "duffys-tavern",
+        "the-aldrich-family",
+        "lum-and-abner",
+        "the-bob-hope-show",
+        "the-martin-and-lewis-show",
+        "its-higgins-sir",
+        "the-fred-allen-show",
+        "the-bickersons",
+        "the-big-show",
+        "amos-and-andy",
+        "eddie-cantor",
+        "edgar-bergen-and-charlie-mccarthy",
+        "it-pays-to-be-ignorant",
+        "you-bet-your-life",
+        "information-please",
+        "my-friend-irma",
+        "eb-and-zeb",
+        "the-milton-berle-show",
+        "the-goon-show",
+        "the-spike-jones-show",
+        "easy-aces",
+        "the-red-skelton-show"
+      ]
     },
     {
-      "name" : "drama",
+      "name": "drama",
       "playCommercials": true,
-      "shows": ["commercials","lux-radio-theatre","the-campbell-playhouse","mercury-theatre","on-stage","screen-guild-theater","academy-award","first-nighter","screen-directors-playhouse","nbc-university-theater","dr-kildare","radio-readers-digest","dr-christian","one-mans-family","the-goldbergs","ma-perkins","adventures-of-frank-merriwell","adventures-of-maisie"]
+      "shows": [
+        "commercials",
+        "lux-radio-theatre",
+        "the-campbell-playhouse",
+        "mercury-theatre",
+        "on-stage",
+        "screen-guild-theater",
+        "academy-award",
+        "first-nighter",
+        "screen-directors-playhouse",
+        "nbc-university-theater",
+        "dr-kildare",
+        "radio-readers-digest",
+        "dr-christian",
+        "one-mans-family",
+        "the-goldbergs",
+        "ma-perkins",
+        "adventures-of-frank-merriwell",
+        "adventures-of-maisie"
+      ]
     },
     {
-      "name" : "sports",
+      "name": "sports",
       "playCommercials": true,
-      "shows": ["commercials","classic-baseball","bill-stern-sports-reel"]
+      "shows": [
+        "commercials",
+        "classic-baseball",
+        "bill-stern-sports-reel"
+      ]
     }
   ]
 }

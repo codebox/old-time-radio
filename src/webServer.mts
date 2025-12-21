@@ -2,7 +2,7 @@
 import {config} from "./config.mjs";
 import {log} from "./log.mjs";
 import {Service} from "./service.mjs";
-import express from "express";
+import express, { type Request, type Response, type NextFunction } from "express";
 import type {
     ApiChannelCodeGenerateResponse,
     ApiChannelScheduleResponse, ApiChannelsResponse, ApiPlayingNowResponse,
@@ -13,7 +13,7 @@ import type {
     ShowId,
     ShowName,
     SearchText, ShowNumber, SearchViewData, ShowsViewData, EpisodesViewData, EpisodeViewData, Episode,
-    SearchResultsViewData
+    SearchResultsViewData, EpisodeDetailsViewData
 } from "./types.mjs";
 
 export class WebServer {
@@ -114,6 +114,20 @@ export class WebServer {
             res.render('shows', viewData);
         });
 
+        function formatDuration(seconds: number): string {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = Math.floor(seconds % 60);
+
+            if (hours > 0) {
+                // Format as H:MM:SS
+                return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            } else {
+                // Format as MM:SS
+                return `${minutes}:${secs.toString().padStart(2, '0')}`;
+            }
+        }
+
         function episodeToEpisodeViewData(episode: Episode): EpisodeViewData {
             return {
                 id: episode.id,
@@ -122,6 +136,21 @@ export class WebServer {
                 episode: episode.title,
                 summary: episode.summarySmall
             } as EpisodeViewData;
+        }
+
+        function episodeToEpisodeDetailsViewData(episode: Episode): EpisodeDetailsViewData {
+            return {
+                id: episode.id,
+                showId: episode.showId,
+                show: episode.show,
+                title: episode.title,
+                duration: formatDuration(episode.duration),
+                date: episode.date,
+                number: episode.number,
+                url: episode.url,
+                summarySmall: episode.summarySmall,
+                summaryLong: episode.summaryLong
+            } as EpisodeDetailsViewData;
         }
 
         this.app.get("/episodes/:show", async (req, res) => {
@@ -136,9 +165,9 @@ export class WebServer {
         this.app.get("/episode/:episodeId", async (req, res) => {
             const episodeId = req.params.episodeId as EpisodeId,
                 episode = await this.service.getEpisode(episodeId),
-                viewData = episodeToEpisodeViewData(episode);
+                viewData = episodeToEpisodeDetailsViewData(episode);
 
-            res.render('episode', viewData);
+            res.render('episode', {episode: viewData});
         });
 
         // Search API calls
@@ -165,7 +194,7 @@ export class WebServer {
         this.app.get("/api/episode/:episodeId", async (req, res) => {
             const episodeId = req.params.episodeId as EpisodeId,
                 episode = await this.service.getEpisode(episodeId),
-                viewData = episodeToEpisodeViewData(episode);
+                viewData = episodeToEpisodeDetailsViewData(episode);
 
             res.render('partials/episode-details', viewData);
         });
@@ -177,6 +206,10 @@ export class WebServer {
             res.send(siteMapXml);
         });
 
+        this.app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+            log.error(`Error: ${err.message}`, err);
+            res.status(500).json({ error: "Internal server error" });
+        });
     }
 
     start() {

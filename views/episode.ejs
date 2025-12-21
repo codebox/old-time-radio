@@ -4,9 +4,9 @@
         <%- include('partials/head', { title: `${episode.show}: ${episode.title}`, description: `Plot summary and episode information for ${episode.show} episode '${episode.title}'` }) %>
     </head>
     <body>
-        <%- include('partials/header', { subTitle: `${episode.show}: ${episode.episode}`, cssClass: "episodeHeader" }) %>
+        <%- include('partials/header', { subTitle: `${episode.show}: ${episode.title}`, cssClass: "episodeHeader" }) %>
         <main>
-            <%- include('partials/episode-details', { document: episode }) %>
+            <%- include('partials/episode-details', episode) %>
         </main>
     </body>
 </html>
