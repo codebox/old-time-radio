@@ -31,7 +31,7 @@
     "radical": 1.8
   },
   "dataApi": {
-    "baseUrl": "http://oldtimeradio_api:8000",
+    "baseUrl": "http://api.oldtime.radio",
     "minRequestIntervalMillis": 50
   },
   "log": {

@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "target": "es2022",
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+
+    "strict": true,
+    "strictNullChecks": false,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+
+    "module": "ES2022",
+    "moduleResolution": "bundler",
+    "outDir": ".",
+    "sourceMap": true,
+
+    "lib": ["es2022", "dom", "dom.iterable"]
+  },
+  "include": ["./**/*.mts", "./**/*.ts"],
+  "exclude": ["node_modules", "**/*.mjs"]
+}

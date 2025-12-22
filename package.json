@@ -4,7 +4,10 @@
   "description": "A website for listening to Old Time Radio hosted by archive.org",
   "main": "src_old/app.js",
   "scripts": {
-    "start": "node src_old/app.js"
+    "start": "node src_old/app.js",
+    "build:public": "tsc -p public/js/tsconfig.json",
+    "watch:public": "tsc -p public/js/tsconfig.json --watch",
+    "typecheck:public": "tsc -p public/js/tsconfig.json --noEmit"
   },
   "repository": {
     "type": "git",
