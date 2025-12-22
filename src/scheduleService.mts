@@ -127,7 +127,7 @@ export class ScheduleService {
         if (configChannel) {
             return configChannel.shows;
         } else {
-            return this.channelCodeService.getShowNumbersFromCode(channelId as ChannelCode).map(showNumber => config.getShowConfigByNumber(showNumber).id);
+            return this.channelCodeService.getShowIndexesFromCode(channelId as ChannelCode).map(showIndex => config.getShowConfigByIndex(showIndex).id);
         }
     }
 

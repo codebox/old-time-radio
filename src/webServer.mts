@@ -12,7 +12,7 @@ import type {
     Seconds,
     ShowId,
     ShowName,
-    SearchText, ShowNumber, SearchViewData, ShowsViewData, EpisodesViewData, EpisodeViewData, Episode,
+    SearchText, ShowIndex, SearchViewData, ShowsViewData, EpisodesViewData, EpisodeViewData, Episode,
     EpisodeWithLongSummary, SearchResultsViewData, EpisodeDetailsViewData
 } from "./types.mjs";
 
@@ -68,8 +68,8 @@ export class WebServer {
         });
 
         this.app.get("/api/channel/generate/:nums", async (req, res) => {
-            const showNumbers = req.params.nums.split(',').map(s => Number(s)) as ShowNumber[],
-                channelCode = await this.service.getChannelCodeForShowNumbers(showNumbers),
+            const showIndexes = req.params.nums.split(',').map(s => Number(s)) as ShowIndex[],
+                channelCode = await this.service.getChannelCodeForShowIndexes(showIndexes),
                 response = channelCode as ApiChannelCodeGenerateResponse;
             //TODO validate showIds
             res.json(response);

@@ -19,7 +19,7 @@ export function buildModel(): Model {
         stationBuilderModel: StationBuilderModel = {
         shows: [],
         savedChannelCodes: [],
-        commercialShowIds: [],
+        commercialShowIndexes: [],
         includeCommercials: false
     };
 

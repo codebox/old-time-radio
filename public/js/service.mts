@@ -1,5 +1,5 @@
 import { buildClock } from './clock.mjs';
-import type { Service, ChannelId, ShowId, ApiChannelsResponse, ApiShowsResponse, ApiChannelCodeGenerateResponse, ApiChannelScheduleResponse, ApiPlayingNowResponse } from './types.mjs';
+import type { Service, ChannelId, ShowIndex, ApiChannelsResponse, ApiShowsResponse, ApiChannelCodeGenerateResponse, ApiChannelScheduleResponse, ApiPlayingNowResponse } from './types.mjs';
 
 type CacheEntry = {
     ts: number;
@@ -56,8 +56,8 @@ export function buildService(): Service {
             return fetch('/api/shows')
                 .then(response => response.json());
         },
-        getChannelCodeForShows(indexes: ShowId[]): Promise<ApiChannelCodeGenerateResponse> {
-            return fetch(`/api/channel/generate/${indexes.join(',')}`)
+        getChannelCodeForShows(showIndexes: ShowIndex[]): Promise<ApiChannelCodeGenerateResponse> {
+            return fetch(`/api/channel/generate/${showIndexes.join(',')}`)
                 .then(response => response.json());
         },
         getPlaylistForChannel(channelId: ChannelId, length?: number): Promise<ApiChannelScheduleResponse> {

@@ -488,15 +488,15 @@ window.onload = () => {
     });
 
     view.on(EVENT_STATION_BUILDER_CREATE_CHANNEL_CLICK).then(() => {
-        const selectedShowIds = model.stationBuilder.shows.filter(show => show.selected).map(show => show.id);
+        const selectedShowIndexes = model.stationBuilder.shows.filter(show => show.selected).map(show => show.index);
         if (model.stationBuilder.includeCommercials) {
-            selectedShowIds.push(...model.stationBuilder.commercialShowIds);
+            selectedShowIndexes.push(...model.stationBuilder.commercialShowIndexes);
         }
 
         model.stationBuilder.shows.forEach(show => show.selected = false);
         view.updateStationBuilderShowSelections(model.stationBuilder);
 
-        service.getChannelCodeForShows(selectedShowIds).then(channelCode => {
+        service.getChannelCodeForShows(selectedShowIndexes).then(channelCode => {
             model.stationBuilder.savedChannelCodes.push(channelCode);
             view.updateStationBuilderStationDetails(model.stationBuilder);
         });
@@ -548,7 +548,7 @@ window.onload = () => {
                 view.addShowTitleToPage(showObject!.name as string);
 
                 // Generate channel code on-demand for single-show channel
-                return service.getChannelCodeForShows([showObject!.id]).then(channelCode => [{
+                return service.getChannelCodeForShows([showObject!.index]).then(channelCode => [{
                     id: channelCode as ChannelId,
                     name: showObject!.name as string,
                     userChannel: true
@@ -592,6 +592,7 @@ window.onload = () => {
                 model.stationBuilder.shows = [...shows.filter(show => !show.isCommercial).map(show => {
                     return {
                         id: show.id,
+                        index: show.index,
                         name: show.name,
                         selected: false,
                         channels: show.channels

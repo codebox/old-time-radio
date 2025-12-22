@@ -1,4 +1,4 @@
-import type {ChannelCode, ShowNumber} from "./types.mjs";
+import type {ChannelCode, ShowIndex} from "./types.mjs";
 
 const TOO_BIG_ID = 200,
     SHOWS_PER_CHAR = 6,
@@ -19,8 +19,8 @@ function stringToNum(s: string) {
 }
 
 export class ChannelCodeService {
-    getCodeForShowNumbers(showNumbers: ShowNumber[]): ChannelCode {
-        const numericIds = showNumbers.map(Number).filter(n=>!isNaN(n)),
+    getCodeForShowIndexes(showIndexes: ShowIndex[]): ChannelCode {
+        const numericIds = showIndexes.map(Number).filter(n=>!isNaN(n)),
             uniqueNumericIds = new Set(numericIds);
 
         const maxId = numericIds.length ? Math.max(...numericIds) : 0;
@@ -38,13 +38,13 @@ export class ChannelCodeService {
         return groupTotals.map(numToString).join('') as ChannelCode;
     }
 
-    getShowNumbersFromCode(channelCode: ChannelCode) {
+    getShowIndexesFromCode(channelCode: ChannelCode) {
         const numbers: number[] = [];
         channelCode.split('').forEach((c, charIndex) => {
             const num = stringToNum(c);
             numbers.push(...[num & 1, num & 2, num & 4, num & 8, num & 16, num & 32].map((n,i) => n ? i + charIndex * SHOWS_PER_CHAR : null).filter(n => n !== null));
         });
-        return numbers as ShowNumber[];
+        return numbers as ShowIndex[];
     }
 
 }

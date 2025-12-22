@@ -2,6 +2,7 @@
 export type {
     ShowId,
     ShowName,
+    ShowIndex,
     EpisodeId,
     EpisodeTitle,
     EpisodeNumber,
@@ -28,6 +29,7 @@ export type {
 import type {
     ShowId,
     ShowName,
+    ShowIndex,
     ChannelName,
     ChannelCode,
     Url,
@@ -60,6 +62,7 @@ export type Channel = {
 // Station builder show representation
 export type StationBuilderShow = {
     id: ShowId;
+    index: ShowIndex;
     name: ShowName;
     selected: boolean;
     channels: ChannelName[];
@@ -70,7 +73,7 @@ export type StationBuilderShow = {
 export type StationBuilderModel = {
     shows: StationBuilderShow[];
     savedChannelCodes: ChannelCode[];
-    commercialShowIds: ShowId[];
+    commercialShowIndexes: ShowIndex[];
     includeCommercials: boolean;
 };
 
@@ -210,7 +213,7 @@ export type SnowMachine = {
 export type Service = {
     getChannels(): Promise<string[]>;
     getShowList(): Promise<ApiShowEnriched[]>;
-    getChannelCodeForShows(indexes: ShowId[]): Promise<ChannelCode>;
+    getChannelCodeForShows(showIndexes: ShowIndex[]): Promise<ChannelCode>;
     getPlaylistForChannel(channelId: ChannelCode | ChannelName, length?: number): Promise<ApiChannelScheduleResponse>;
     getPlayingNow(channelsList?: (ChannelCode | ChannelName)[]): Promise<ApiPlayingNowResponse>;
 };

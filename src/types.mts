@@ -2,6 +2,7 @@
 export type {
     ShowId,
     ShowName,
+    ShowIndex,
     EpisodeId,
     EpisodeTitle,
     EpisodeNumber,
@@ -28,6 +29,7 @@ export type {
 import type {
     ShowId,
     ShowName,
+    ShowIndex,
     EpisodeId,
     EpisodeTitle,
     EpisodeNumber,
@@ -41,13 +43,6 @@ import type {
     ChannelSchedule,
     ApiShow
 } from '../shared/types.mjs';
-
-// ============================================
-// Backend-specific branded types
-// ============================================
-
-// Unique numeric code for a show, read from config file and used to generate channel codes
-export type ShowNumber = number & { readonly __brand: unique symbol };
 
 export type Hours = number & { readonly __brand: unique symbol };
 
@@ -70,7 +65,7 @@ export type Show = ApiShow;
 // Data about a specific show, read from the config file
 export type ShowConfig = {
     id: ShowId;
-    number: ShowNumber;
+    number: ShowIndex;
     isCommercial: boolean;
 };
 

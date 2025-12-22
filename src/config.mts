@@ -1,5 +1,5 @@
 import {readFileSync} from "fs";
-import type {Channel, ChannelName, Hours, Millis, SearchText, ShowConfig, ShowId, ShowNumber, Url} from "./types.mjs";
+import type {Channel, ChannelName, Hours, Millis, SearchText, ShowConfig, ShowId, ShowIndex, Url} from "./types.mjs";
 
 class Config {
     private configData = JSON.parse(readFileSync("config.json", "utf8"));
@@ -53,10 +53,10 @@ class Config {
         return maybeShowConfig as ShowConfig;
     }
 
-    getShowConfigByNumber(showNumber: ShowNumber): ShowConfig {
-        const maybeShowConfig = this.configData.shows.find((show: ShowConfig) => show.number === showNumber);
+    getShowConfigByIndex(showIndex: ShowIndex): ShowConfig {
+        const maybeShowConfig = this.configData.shows.find((show: ShowConfig) => show.number === showIndex);
         if (!maybeShowConfig) {
-            throw new Error(`Show config not found for showNumber: ${showNumber}`);
+            throw new Error(`Show config not found for showIndex: ${showIndex}`);
         }
         return maybeShowConfig as ShowConfig;
     }

@@ -1,6 +1,6 @@
 import {DataService} from "./dataService.mjs";
 import {config} from "./config.mjs";
-import type {ChannelId, EpisodeId, PlayingNowAndNext, SearchText, Seconds, ShowId, ShowNumber, ApiShowEnriched} from "./types.mjs";
+import type {ChannelId, EpisodeId, PlayingNowAndNext, SearchText, Seconds, ShowId, ShowIndex, ApiShowEnriched} from "./types.mjs";
 import {ScheduleService} from "./scheduleService.mjs";
 import {ChannelCodeService} from "./channelCodeService.mjs";
 import {SiteMapService} from "./sitemapService.mjs";
@@ -25,7 +25,7 @@ export class Service {
             const showConfig = config.getShowConfigById(show.id);
             return {
                 ...show,
-                index: showConfig.number as number,
+                index: showConfig.number,
                 isCommercial: showConfig.isCommercial || false,
                 channels: config.getChannelsForShow(show.id)
             };
@@ -40,8 +40,8 @@ export class Service {
         return this.scheduleService.getScheduleForChannel(channelId, length);
     }
 
-    async getChannelCodeForShowNumbers(showNumbers: ShowNumber[]) {
-        return Promise.resolve(this.channelCodeService.getCodeForShowNumbers(showNumbers));
+    async getChannelCodeForShowIndexes(showIndexes: ShowIndex[]) {
+        return Promise.resolve(this.channelCodeService.getCodeForShowIndexes(showIndexes));
     }
 
     async getPlayingNowAndNext(channels: ChannelId[]): Promise<PlayingNowAndNext> {

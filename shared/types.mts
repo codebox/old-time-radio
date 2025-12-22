@@ -41,6 +41,9 @@ export type Url = string & { readonly __brand: unique symbol };
 export type Seconds = number & { readonly __brand: unique symbol };
 export type Millis = number & { readonly __brand: unique symbol };
 
+// Numeric index identifying a show in config
+export type ShowIndex = number & { readonly __brand: unique symbol };
+
 // ============================================
 // API Data Types
 // ============================================
@@ -54,7 +57,7 @@ export type ApiShow = {
 
 // Enriched show data returned by /api/shows (includes config-derived fields)
 export type ApiShowEnriched = ApiShow & {
-    index: number;              // from config 'number' property
+    index: ShowIndex;           // from config 'number' property
     isCommercial: boolean;      // from config (default false if missing)
     channels: ChannelName[];    // derived from config channels array
 };
