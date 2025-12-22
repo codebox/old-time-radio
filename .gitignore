@@ -12,3 +12,7 @@ src/*.mjs.map
 public/js/*.mjs
 public/js/*.mjs.map
 public/css/.sass-cache
+*.tsbuildinfo
+shared/*.mjs
+shared/*.mjs.map
+shared/*.d.mts

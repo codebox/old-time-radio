@@ -1,6 +1,6 @@
 import {DataService} from "./dataService.mjs";
 import {config} from "./config.mjs";
-import type {ChannelId, EpisodeId, PlayingNowAndNext, SearchText, Seconds, ShowId, ShowNumber} from "./types.mjs";
+import type {ChannelId, EpisodeId, PlayingNowAndNext, SearchText, Seconds, ShowId, ShowNumber, ApiShowEnriched} from "./types.mjs";
 import {ScheduleService} from "./scheduleService.mjs";
 import {ChannelCodeService} from "./channelCodeService.mjs";
 import {SiteMapService} from "./sitemapService.mjs";
@@ -19,8 +19,17 @@ export class Service {
         this.sitemapService = new SiteMapService(this.dataService);
     }
 
-    async getShows() {
-        return this.dataService.getShows();
+    async getShows(): Promise<ApiShowEnriched[]> {
+        const shows = await this.dataService.getShows();
+        return shows.map(show => {
+            const showConfig = config.getShowConfigById(show.id);
+            return {
+                ...show,
+                index: showConfig.number as number,
+                isCommercial: showConfig.isCommercial || false,
+                channels: config.getChannelsForShow(show.id)
+            };
+        });
     }
 
     async getChannelNames() {

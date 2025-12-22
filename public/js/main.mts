@@ -542,14 +542,15 @@ window.onload = () => {
             if (pathParts[1] === 'listen-to') {
                 model.setModeSingleShow();
 
-                const descriptiveShowId = pathParts[2].toLowerCase(),
-                    showObject = model.shows!.find((show: Show) => show.descriptiveId === descriptiveShowId);
+                const showId = pathParts[2].toLowerCase(),
+                    showObject = model.shows!.find((show: Show) => show.id === showId);
 
                 view.addShowTitleToPage(showObject!.name as string);
 
-                return Promise.resolve([{
-                    id: showObject!.channelCode as ChannelId,
-                    name: showObject!.shortName,
+                // Generate channel code on-demand for single-show channel
+                return service.getChannelCodeForShows([showObject!.id]).then(channelCode => [{
+                    id: channelCode as ChannelId,
+                    name: showObject!.name as string,
                     userChannel: true
                 }]);
 
@@ -585,16 +586,8 @@ window.onload = () => {
 
         service.getShowList()
             .then(shows => {
-                model.shows = [...shows.map(show => {
-                    return {
-                        ...show,
-                        index: show.index,
-                        name: show.name,
-                        shortName: show.shortName,
-                        descriptiveId: show.descriptiveId,
-                        channelCode: show.channelCode
-                    };
-                })];
+                // Shows now come enriched from the API
+                model.shows = shows;
 
                 model.stationBuilder.shows = [...shows.filter(show => !show.isCommercial).map(show => {
                     return {

@@ -22,5 +22,8 @@
     "lib": ["es2022", "dom", "dom.iterable"]
   },
   "include": ["./**/*.mts", "./**/*.ts"],
-  "exclude": ["node_modules", "**/*.mjs"]
+  "exclude": ["node_modules", "**/*.mjs"],
+  "references": [
+    { "path": "../../shared" }
+  ]
 }

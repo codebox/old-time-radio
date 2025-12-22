@@ -13,7 +13,7 @@ import type {
     ShowId,
     ShowName,
     SearchText, ShowNumber, SearchViewData, ShowsViewData, EpisodesViewData, EpisodeViewData, Episode,
-    SearchResultsViewData, EpisodeDetailsViewData
+    EpisodeWithLongSummary, SearchResultsViewData, EpisodeDetailsViewData
 } from "./types.mjs";
 
 export class WebServer {
@@ -138,7 +138,7 @@ export class WebServer {
             } as EpisodeViewData;
         }
 
-        function episodeToEpisodeDetailsViewData(episode: Episode): EpisodeDetailsViewData {
+        function episodeToEpisodeDetailsViewData(episode: EpisodeWithLongSummary): EpisodeDetailsViewData {
             return {
                 id: episode.id,
                 showId: episode.showId,

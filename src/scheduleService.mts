@@ -1,5 +1,5 @@
 import type {
-    ChannelId, Schedule, Seconds, CurrentChannelSchedule, Episode, FullChannelSchedule,
+    ChannelId, Seconds, CurrentChannelSchedule, Episode, FullChannelSchedule,
     ShowId, ChannelCode
 } from "./types.mjs";
 import {Cache} from "./cache.mjs";
@@ -194,7 +194,7 @@ export class ScheduleService {
         });
     }
 
-    async getScheduleForChannel(channelId: ChannelId, length: Seconds): Promise<Schedule> {
+    async getScheduleForChannel(channelId: ChannelId, length: Seconds): Promise<CurrentChannelSchedule> {
         return this.getSchedule(channelId, this.playlistReachedMinDuration(Math.min(length || DEFAULT_SCHEDULE_LENGTH, MAX_SCHEDULE_LENGTH) as Seconds));
     }
 

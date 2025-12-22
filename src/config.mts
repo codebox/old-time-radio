@@ -73,6 +73,12 @@ class Config {
         const showConfig = this.getShowConfigById(showId);
         return showConfig.isCommercial;
     }
+
+    getChannelsForShow(showId: ShowId): ChannelName[] {
+        return this.channels
+            .filter((channel: Channel) => channel.shows.includes(showId))
+            .map((channel: Channel) => channel.name);
+    }
 }
 
 export const config = new Config();

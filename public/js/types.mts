@@ -1,80 +1,58 @@
-// Frontend types that mirror or complement backend API response types
+// Re-export shared types
+export type {
+    ShowId,
+    ShowName,
+    EpisodeId,
+    EpisodeTitle,
+    EpisodeNumber,
+    ChannelName,
+    ChannelCode,
+    ChannelId,
+    BroadcastDate,
+    ShortEpisodeSummary,
+    MediumEpisodeSummary,
+    Url,
+    Seconds,
+    Millis,
+    ApiShow,
+    ApiShowEnriched,
+    Episode,
+    ChannelSchedule,
+    ApiShowsResponse,
+    ApiChannelsResponse,
+    ApiChannelScheduleResponse,
+    ApiChannelCodeGenerateResponse,
+    ApiPlayingNowResponse
+} from '../../shared/types.mjs';
 
-// Branded types for type safety (mirroring backend pattern)
-export type ShowId = string & { readonly __brand: unique symbol };
-export type ShowName = string & { readonly __brand: unique symbol };
-export type EpisodeId = string & { readonly __brand: unique symbol };
-export type EpisodeTitle = string & { readonly __brand: unique symbol };
-export type ChannelName = string & { readonly __brand: unique symbol };
-export type ChannelCode = string & { readonly __brand: unique symbol };
-export type ChannelId = ChannelName | ChannelCode;
-export type BroadcastDate = string & { readonly __brand: unique symbol };
-export type ShortEpisodeSummary = string & { readonly __brand: unique symbol };
-export type MediumEpisodeSummary = string & { readonly __brand: unique symbol };
-export type Url = string & { readonly __brand: unique symbol };
-export type Seconds = number & { readonly __brand: unique symbol };
-export type Millis = number & { readonly __brand: unique symbol };
+import type {
+    ShowId,
+    ShowName,
+    ChannelName,
+    ChannelCode,
+    Url,
+    Seconds,
+    Episode,
+    ApiShowEnriched,
+    ApiChannelScheduleResponse,
+    ApiPlayingNowResponse
+} from '../../shared/types.mjs';
 
-// Episode data from API
-export type Episode = {
-    id: EpisodeId;
-    showId: ShowId;
-    show: ShowName;
-    isCommercial: boolean;
-    title: EpisodeTitle;
-    duration: Seconds;
-    date: BroadcastDate;
-    url: Url;
-    summarySmall: ShortEpisodeSummary;
-    summaryMedium?: MediumEpisodeSummary;
-};
+// ============================================
+// Frontend-specific types
+// ============================================
 
-// Playlist item used internally (extended episode with additional fields)
+// Show data (now comes enriched from the API)
+export type Show = ApiShowEnriched;
+
+// Playlist item used internally (episode with additional playback fields)
 export type PlaylistItem = Episode & {
-    name?: string;
-    commercial?: boolean;
     archivalUrl?: Url;
-    length?: Seconds;
-};
-
-// Show data from API
-export type Show = {
-    id: ShowId;
-    index: number;
-    name: ShowName;
-    shortName: string;
-    descriptiveId: string;
-    channelCode: ChannelCode;
-    isCommercial: boolean;
-    channels?: ChannelName[];
-};
-
-// API Response: /api/shows
-export type ApiShowsResponse = Show[];
-
-// API Response: /api/channels
-export type ApiChannelsResponse = ChannelName[];
-
-// API Response: /api/channel/:channel
-export type ApiChannelScheduleResponse = {
-    list: PlaylistItem[];
-    initialOffset: Seconds;
-};
-
-// API Response: /api/channel/generate/:nums
-export type ApiChannelCodeGenerateResponse = ChannelCode;
-
-// API Response: /api/playing-now
-export type ApiPlayingNowResponse = {
-    [key: string]: {
-        list: PlaylistItem[];
-        initialOffset: Seconds;
-    };
 };
 
 // Frontend channel representation
 export type Channel = {
-    id: ChannelId;
+    id: ChannelCode | ChannelName;
     name: string;
     userChannel: boolean;
 };
@@ -84,7 +62,7 @@ export type StationBuilderShow = {
     id: ShowId;
     name: ShowName;
     selected: boolean;
-    channels?: ChannelName[];
+    channels: ChannelName[];
     elements?: HTMLButtonElement[];
 };
 
@@ -96,13 +74,10 @@ export type StationBuilderModel = {
     includeCommercials: boolean;
 };
 
-// Event data types
-export type EventData = {
-    text?: string;
-    isTemp?: boolean;
-};
+// ============================================
+// Event system types
+// ============================================
 
-// Event source interface
 export type EventHandler = (event: Event & { data?: unknown }) => void;
 
 export type EventSubscription = {
@@ -115,7 +90,10 @@ export type EventSource = {
     on(eventName: string): EventSubscription;
 };
 
-// State machine interface
+// ============================================
+// Component interfaces
+// ============================================
+
 export type StateMachine = {
     readonly state: string;
     initialising(): void;
@@ -128,18 +106,15 @@ export type StateMachine = {
     playing(): void;
 };
 
-// Clock interface
 export type Clock = {
     nowSeconds(): number;
     nowMillis(): number;
 };
 
-// Audio data source interface
 export type AudioDataSource = {
     get(): number[];
 };
 
-// Audio data source builder interface
 export type AudioDataSourceBuilder = {
     withBucketCount(count: number): AudioDataSourceBuilder;
     withRedistribution(p: number): AudioDataSourceBuilder;
@@ -148,12 +123,10 @@ export type AudioDataSourceBuilder = {
     build(): AudioDataSource;
 };
 
-// Visualiser data factory interface
 export type VisualiserDataFactory = {
     audioDataSource(): AudioDataSourceBuilder;
 };
 
-// Visualiser interface
 export type Visualiser = {
     init(canvas: HTMLCanvasElement): void;
     getVisualiserIds(): string[];
@@ -163,7 +136,6 @@ export type Visualiser = {
     onResize(): () => void;
 };
 
-// Audio player interface
 export type AudioPlayer = {
     on: EventSource['on'];
     load(urls: string | string[]): void;
@@ -174,7 +146,6 @@ export type AudioPlayer = {
     getData(): Uint8Array;
 };
 
-// Message manager interface
 export type MessageManager = {
     on: EventSource['on'];
     init(): void;
@@ -187,7 +158,6 @@ export type MessageManager = {
     showError(): void;
 };
 
-// Summary manager interface
 export type SummaryManager = {
     on: EventSource['on'];
     setText(summaryText: string): void;
@@ -198,7 +168,6 @@ export type SummaryManager = {
     toggle(): void;
 };
 
-// Sleep timer interface
 export type SleepTimer = {
     on: EventSource['on'];
     start(minutes: number): void;
@@ -206,22 +175,19 @@ export type SleepTimer = {
     getMinutesRequested(): number | null;
 };
 
-// Sleep timer view interface
 export type SleepTimerView = {
     init(): void;
     render(totalSeconds: number): void;
     setRunState(isRunning: boolean): void;
 };
 
-// Schedule view interface
 export type ScheduleView = {
     addChannel(channel: Channel): void;
-    setSelectedChannel(selectedChannelId: ChannelId | null): void;
+    setSelectedChannel(selectedChannelId: ChannelCode | ChannelName | null): void;
     displaySchedule(schedule: ApiChannelScheduleResponse): void;
     hideSchedule(): void;
 };
 
-// Station builder view interface
 export type StationBuilderView = {
     populate(stationBuilderModel: StationBuilderModel): void;
     updateShowSelections(stationBuilderModel: StationBuilderModel): void;
@@ -230,29 +196,25 @@ export type StationBuilderView = {
     addAnotherChannel(): void;
 };
 
-// Playing now manager interface
 export type PlayingNowManager = {
     start(details: ApiPlayingNowResponse): void;
     update(details: ApiPlayingNowResponse): void;
     stop(): void;
 };
 
-// Snow machine interface
 export type SnowMachine = {
     start(intensity: number): void;
     stop(): void;
 };
 
-// Service interface
 export type Service = {
-    getChannels(): Promise<ApiChannelsResponse>;
-    getShowList(): Promise<ApiShowsResponse>;
-    getChannelCodeForShows(indexes: ShowId[]): Promise<ApiChannelCodeGenerateResponse>;
-    getPlaylistForChannel(channelId: ChannelId, length?: number): Promise<ApiChannelScheduleResponse>;
-    getPlayingNow(channelsList?: ChannelId[]): Promise<ApiPlayingNowResponse>;
+    getChannels(): Promise<string[]>;
+    getShowList(): Promise<ApiShowEnriched[]>;
+    getChannelCodeForShows(indexes: ShowId[]): Promise<ChannelCode>;
+    getPlaylistForChannel(channelId: ChannelCode | ChannelName, length?: number): Promise<ApiChannelScheduleResponse>;
+    getPlayingNow(channelsList?: (ChannelCode | ChannelName)[]): Promise<ApiPlayingNowResponse>;
 };
 
-// Model interface
 export type Model = {
     load(): void;
     save(): void;
@@ -272,20 +234,19 @@ export type Model = {
     // Dynamic properties set at runtime
     channels: Channel[] | null;
     shows: Show[] | null;
-    selectedChannelId: ChannelId | null;
-    selectedScheduleChannelId: ChannelId | null;
+    selectedChannelId: ChannelCode | ChannelName | null;
+    selectedScheduleChannelId: ChannelCode | ChannelName | null;
     playlist: PlaylistItem[] | null;
     track: PlaylistItem | null;
     nextTrackOffset: Seconds | null;
 };
 
-// View interface
 export type View = {
     on: EventSource['on'];
     setChannels(channels: Channel[]): void;
     setNoChannelSelected(): void;
-    setChannelLoading(channelId: ChannelId): void;
-    setChannelLoaded(channelId: ChannelId): void;
+    setChannelLoading(channelId: ChannelCode | ChannelName): void;
+    setChannelLoaded(channelId: ChannelCode | ChannelName): void;
     openMenu(): void;
     closeMenu(): void;
     updateVolume(volume: number, minVolume: number, maxVolume: number): void;
@@ -295,7 +256,7 @@ export type View = {
     clearSleepTimer(): void;
     sleep(): void;
     wakeUp(): void;
-    updateScheduleChannelSelection(channelId?: ChannelId | null): void;
+    updateScheduleChannelSelection(channelId?: ChannelCode | ChannelName | null): void;
     displaySchedule(schedule: ApiChannelScheduleResponse): void;
     hideSchedule(): void;
     populateStationBuilderShows(stationBuilderModel: StationBuilderModel): void;

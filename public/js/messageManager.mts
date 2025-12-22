@@ -29,7 +29,7 @@ export function buildMessageManager(model: Model, eventSource: EventSource): Mes
 
     const cannedMessages = (() => {
         function showNext(): string | undefined {
-            const nonCommercials = (model.playlist || []).filter((item: PlaylistItem) => !item.commercial);
+            const nonCommercials = (model.playlist || []).filter((item: PlaylistItem) => !item.isCommercial);
             if (nonCommercials.length) {
                 return `Up next: ${nonCommercials[0].show}`;
             }

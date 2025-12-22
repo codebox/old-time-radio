@@ -15,11 +15,13 @@
     "noImplicitOverride": true,
 
     "module": "NodeNext",
+    "outDir": ".",
     "sourceMap": true,
+    "composite": true,
+    "declaration": true,
 
     "lib": ["es2022"]
   },
-  "references": [
-    { "path": "../shared" }
-  ]
+  "include": ["./**/*.mts"],
+  "exclude": ["node_modules", "**/*.mjs"]
 }
