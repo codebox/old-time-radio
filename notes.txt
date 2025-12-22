@@ -1,9 +1,6 @@
 TODO
 ----
-channel builder shows all shows in 'other' category and always gets channels=0 as code
-handle shows with no results from data api gracefully
 some shows not returning summaries eg fibber+molly
-dont include episodes that aren't in otrdata db
 make sure app is robust to otrdata being offline (serve from cache only in that case) and can start using it again when it comes back up
 turn off debug logging
 check that all example queries still give good results

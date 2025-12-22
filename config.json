@@ -695,10 +695,6 @@
     {
       "number": 164,
       "id": "bill-stern-sports-reel"
-    },
-    {
-      "number": 165,
-      "id": "world-adventurers-club"
     }
   ],
   "channels": [
@@ -716,7 +712,8 @@
         "exploring-tomorrow",
         "2000-plus",
         "planet-man",
-        "sf-68"
+        "sf-68",
+        "not-a-show"
       ]
     },
     {
@@ -745,8 +742,7 @@
         "voyage-of-the-scarlet-queen",
         "chandu-the-magician",
         "challenge-of-the-yukon",
-        "the-scarlet-pimpernel",
-        "world-adventurers-club"
+        "the-scarlet-pimpernel"
       ]
     },
     {

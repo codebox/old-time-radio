@@ -45,6 +45,10 @@ class Config {
         return this.configData.cache.scheduleCacheMaxItems;
     }
 
+    hasShowConfig(showId: ShowId): boolean {
+        return this.configData.shows.some((show: ShowConfig) => show.id === showId);
+    }
+
     getShowConfigById(showId: ShowId): ShowConfig {
         const maybeShowConfig = this.configData.shows.find((show: ShowConfig) => show.id === showId);
         if (!maybeShowConfig) {

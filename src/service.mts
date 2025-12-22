@@ -1,5 +1,6 @@
 import {DataService} from "./dataService.mjs";
 import {config} from "./config.mjs";
+import {log} from "./log.mjs";
 import type {ChannelId, EpisodeId, PlayingNowAndNext, SearchText, Seconds, ShowId, ShowIndex, ApiShowEnriched} from "./types.mjs";
 import {ScheduleService} from "./scheduleService.mjs";
 import {ChannelCodeService} from "./channelCodeService.mjs";
@@ -21,15 +22,23 @@ export class Service {
 
     async getShows(): Promise<ApiShowEnriched[]> {
         const shows = await this.dataService.getShows();
-        return shows.map(show => {
-            const showConfig = config.getShowConfigById(show.id);
-            return {
-                ...show,
-                index: showConfig.number,
-                isCommercial: showConfig.isCommercial || false,
-                channels: config.getChannelsForShow(show.id)
-            };
-        });
+        return shows
+            .filter(show => {
+                if (!config.hasShowConfig(show.id)) {
+                    log.warn(`Data service returned show '${show.id}' which has no config entry - skipping`);
+                    return false;
+                }
+                return true;
+            })
+            .map(show => {
+                const showConfig = config.getShowConfigById(show.id);
+                return {
+                    ...show,
+                    index: showConfig.number,
+                    isCommercial: showConfig.isCommercial || false,
+                    channels: config.getChannelsForShow(show.id)
+                };
+            });
     }
 
     async getChannelNames() {

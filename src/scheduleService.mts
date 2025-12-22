@@ -33,15 +33,49 @@ export class ScheduleService {
     }
 
     private async calculateFullScheduleForChannel(channelId: ChannelId): Promise<FullChannelSchedule> {
-        const allShowIds = this.getShowIdsForChannelId(channelId),
-            nonCommercialShowIds = allShowIds.filter(showId => !config.getShowConfigById(showId).isCommercial),
-            commercialShowIds = allShowIds.filter(showId => config.getShowConfigById(showId).isCommercial),
-            showScheduleItems = (await Promise.all(allShowIds.map(showId => this.dataService.getEpisodesForShow(showId)))).map(generator),
-            showIdToIndex = new Map(allShowIds.map((showId, index) => [showId, index])),
+        const rawShowIds = this.getShowIdsForChannelId(channelId);
+
+        // Filter out shows that don't have a config entry
+        const allShowIds = rawShowIds.filter(showId => {
+            if (!config.hasShowConfig(showId)) {
+                log.warn(`Channel '${channelId}' references show '${showId}' which has no config entry - skipping`);
+                return false;
+            }
+            return true;
+        });
+
+        // Fetch episodes for all valid shows, catching errors for individual shows
+        const failedShowIds = new Set<ShowId>();
+        const episodesByShow = await Promise.all(allShowIds.map(async showId => {
+            try {
+                return await this.dataService.getEpisodesForShow(showId);
+            } catch (error) {
+                log.warn(`Channel '${channelId}' includes show '${showId}' which failed to fetch episodes - skipping`);
+                failedShowIds.add(showId);
+                return [] as Episode[];
+            }
+        }));
+
+        // Filter out shows with no episodes
+        const validShowIds = allShowIds.filter((showId, index) => {
+            if (!episodesByShow[index] || episodesByShow[index].length === 0) {
+                if (!failedShowIds.has(showId)) {
+                    log.warn(`Channel '${channelId}' includes show '${showId}' which has no episodes - skipping`);
+                }
+                return false;
+            }
+            return true;
+        });
+
+        const validEpisodes = episodesByShow.filter(episodes => episodes && episodes.length > 0),
+            nonCommercialShowIds = validShowIds.filter(showId => !config.getShowConfigById(showId).isCommercial),
+            commercialShowIds = validShowIds.filter(showId => config.getShowConfigById(showId).isCommercial),
+            showScheduleItems = validEpisodes.map(generator),
+            showIdToIndex = new Map(validShowIds.map((showId, index) => [showId, index])),
             nonCommercialShowCounts = new Map<ShowId, number>();
 
         nonCommercialShowIds.forEach((showId, i) => {
-            const index = showIdToIndex.get(showId)
+            const index = showIdToIndex.get(showId)!;
             nonCommercialShowCounts.set(showId, showScheduleItems[index].length);
         });
 
