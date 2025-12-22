@@ -5,6 +5,7 @@
   "cache": {
     "baseDirectory": "cache",
     "scheduleCacheMaxItems": 100,
+    "scheduleCacheMaxAgeHours": 4,
     "showsCacheMaxAgeHours": 4,
     "showsCacheRefetchIntervalHours": 1
   },

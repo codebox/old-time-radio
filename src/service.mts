@@ -1,26 +1,35 @@
 import {DataService} from "./dataService.mjs";
 import {config} from "./config.mjs";
 import {log} from "./log.mjs";
+import {Cache} from "./cache.mjs";
 import type {ChannelId, EpisodeId, PlayingNowAndNext, SearchText, Seconds, ShowId, ShowIndex, ApiShowEnriched} from "./types.mjs";
 import {ScheduleService} from "./scheduleService.mjs";
 import {ChannelCodeService} from "./channelCodeService.mjs";
 import {SiteMapService} from "./sitemapService.mjs";
 
+const SHOWS_CACHE_KEY = 'all';
 
 export class Service {
     private dataService: DataService;
     private scheduleService: ScheduleService;
     private channelCodeService: ChannelCodeService;
     private sitemapService: SiteMapService;
+    private showsCache: Cache<string, ApiShowEnriched[]>;
 
     constructor() {
         this.dataService = new DataService();
         this.channelCodeService = new ChannelCodeService();
         this.scheduleService = new ScheduleService(this.channelCodeService, this.dataService);
         this.sitemapService = new SiteMapService(this.dataService);
+        this.showsCache = new Cache<string, ApiShowEnriched[]>(
+            "shows",
+            () => this.fetchAndEnrichShows(),
+            1, // maxItems - only one shows list
+            config.showsCacheMaxAgeSeconds
+        );
     }
 
-    async getShows(): Promise<ApiShowEnriched[]> {
+    private async fetchAndEnrichShows(): Promise<ApiShowEnriched[]> {
         const shows = await this.dataService.getShows();
         return shows
             .filter(show => {
@@ -39,6 +48,10 @@ export class Service {
                     channels: config.getChannelsForShow(show.id)
                 };
             });
+    }
+
+    async getShows(): Promise<ApiShowEnriched[]> {
+        return this.showsCache.get(SHOWS_CACHE_KEY);
     }
 
     async getChannelNames() {

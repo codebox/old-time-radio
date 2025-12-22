@@ -1,5 +1,5 @@
 import {readFileSync} from "fs";
-import type {Channel, ChannelName, Hours, Millis, SearchText, ShowConfig, ShowId, ShowIndex, Url} from "./types.mjs";
+import type {Channel, ChannelName, Hours, Millis, SearchText, Seconds, ShowConfig, ShowId, ShowIndex, Url} from "./types.mjs";
 
 class Config {
     private configData = JSON.parse(readFileSync("config.json", "utf8"));
@@ -38,11 +38,19 @@ class Config {
     }
 
     get cacheBaseDir(): string {
-        return this.configData.cache.baseDir;
+        return this.configData.cache.baseDirectory;
     }
 
     get scheduleCacheMaxItems(): number {
         return this.configData.cache.scheduleCacheMaxItems;
+    }
+
+    get showsCacheMaxAgeSeconds(): Seconds {
+        return (this.configData.cache.showsCacheMaxAgeHours * 60 * 60) as Seconds;
+    }
+
+    get scheduleCacheMaxAgeSeconds(): Seconds {
+        return (this.configData.cache.scheduleCacheMaxAgeHours * 60 * 60) as Seconds;
     }
 
     hasShowConfig(showId: ShowId): boolean {

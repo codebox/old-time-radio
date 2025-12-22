@@ -1,7 +1,7 @@
 TODO
 ----
+better error in search if dataservice down: Search failed: {"error":"Internal server error"}
 some shows not returning summaries eg fibber+molly
-make sure app is robust to otrdata being offline (serve from cache only in that case) and can start using it again when it comes back up
 turn off debug logging
 check that all example queries still give good results
 add search etc to webcheck scripts

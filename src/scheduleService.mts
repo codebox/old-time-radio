@@ -29,7 +29,7 @@ export class ScheduleService {
     constructor(channelCodeService: ChannelCodeService, dataService: DataService) {
         this.channelCodeService = channelCodeService;
         this.dataService = dataService;
-        this.cache = new Cache<ChannelId, FullChannelSchedule>("schedules", channelId => this.calculateFullScheduleForChannel(channelId as ChannelId), config.scheduleCacheMaxItems);
+        this.cache = new Cache<ChannelId, FullChannelSchedule>("schedules", channelId => this.calculateFullScheduleForChannel(channelId as ChannelId), config.scheduleCacheMaxItems, config.scheduleCacheMaxAgeSeconds);
     }
 
     private async calculateFullScheduleForChannel(channelId: ChannelId): Promise<FullChannelSchedule> {
