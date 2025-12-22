@@ -63,8 +63,8 @@ export function buildVisualiserDataFactory(dataSource: () => Uint8Array): Visual
     }
 
     function buildAudioDataSource(bucketCount: number | undefined, redistribution: number, activityThresholdMillis: number | undefined, shuffleBuckets: boolean): AudioDataSource {
-        const shuffledIndexes = shuffle(Array.from(Array(bucketCount || 0).keys()));
-        const activityTimestamps = new Array(bucketCount || 0).fill(0);
+        const shuffledIndexes = shuffle(Array.from(Array(bucketCount || 0).keys())),
+            activityTimestamps = new Array(bucketCount || 0).fill(0);
 
         return {
             get(): number[] {
@@ -100,10 +100,10 @@ export function buildVisualiserDataFactory(dataSource: () => Uint8Array): Visual
 
     return {
         audioDataSource(): AudioDataSourceBuilder {
-            let bucketCount: number | undefined;
-            let redistribution = 1;
-            let activityThresholdMillis: number | undefined;
-            let shuffleBuckets = false;
+            let bucketCount: number | undefined,
+                redistribution = 1,
+                activityThresholdMillis: number | undefined,
+                shuffleBuckets = false;
 
             return {
                 withBucketCount(count: number) {

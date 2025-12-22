@@ -14,22 +14,23 @@ type Genre = {
 };
 
 export function buildStationBuilderView(eventSource: EventSource): StationBuilderView {
-    const elShowList = document.getElementById('showList')!;
-    const elShowsSelected = document.getElementById('showsSelected')!;
-    const elCreateChannelButton = document.getElementById('createChannel')!;
-    const elStationDetails = document.getElementById('stationDetails')! as HTMLDivElement;
-    const elGoToStation = document.getElementById('goToStation')!;
-    const elAddAnotherChannel = document.getElementById('addAnotherChannel')!;
-    const elChannelCount = document.getElementById('channelCount')!;
-    const elDeleteStationButton = document.getElementById('deleteStation')!;
-    const elStationBuilderTitle = document.getElementById('stationBuilderTitle')!;
-    const elIncludeAdsInChannelButton = document.getElementById('adsInChannel')!;
+    const
+        elShowList = document.getElementById('showList')!,
+        elShowsSelected = document.getElementById('showsSelected')!,
+        elCreateChannelButton = document.getElementById('createChannel')!,
+        elStationDetails = document.getElementById('stationDetails')! as HTMLDivElement,
+        elGoToStation = document.getElementById('goToStation')!,
+        elAddAnotherChannel = document.getElementById('addAnotherChannel')!,
+        elChannelCount = document.getElementById('channelCount')!,
+        elDeleteStationButton = document.getElementById('deleteStation')!,
+        elStationBuilderTitle = document.getElementById('stationBuilderTitle')!,
+        elIncludeAdsInChannelButton = document.getElementById('adsInChannel')!,
 
-    const CSS_CLASS_SELECTED = 'selected';
+        CSS_CLASS_SELECTED = 'selected';
 
     function buildGenreListForShows(shows: StationBuilderShow[]): Genre[] {
-        const unclassifiedShows: StationBuilderShow[] = [];
-        const genreMap: Record<string, StationBuilderShow[]> = {};
+        const unclassifiedShows: StationBuilderShow[] = [],
+            genreMap: Record<string, StationBuilderShow[]> = {};
 
         function sortShowsByName(s1: StationBuilderShow, s2: StationBuilderShow): number {
             return s1.name > s2.name ? 1 : -1;

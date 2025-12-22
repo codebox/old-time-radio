@@ -1,17 +1,16 @@
-const STATE_INIT = 'initial';
-const STATE_SEARCHING = 'searching';
-const STATE_ERROR = 'error';
-const STATE_RESULTS = 'done';
-const CSS_CLASS_SHOW_SECONDARY_MATCHES = 'showSecondaryMatches';
-
 window.addEventListener('load', () => {
-    const elSearchInput = document.getElementById('searchInput') as HTMLInputElement;
-    const elSearchButton = document.getElementById('searchButton') as HTMLButtonElement;
-    const elSearchResults = document.getElementById('searchResults') as HTMLDivElement;
-    const elSearchRunning = document.getElementById('searchRunning')!;
-    const elSearchError = document.getElementById('searchError')!;
-    const elSearchInfo = document.getElementById('searchInfo')!;
-    const goodMatchThreshold = Number(elSearchResults.dataset.threshold);
+    const elSearchInput = document.getElementById('searchInput') as HTMLInputElement,
+        elSearchButton = document.getElementById('searchButton') as HTMLButtonElement,
+        elSearchResults = document.getElementById('searchResults') as HTMLDivElement,
+        elSearchRunning = document.getElementById('searchRunning')!,
+        elSearchError = document.getElementById('searchError')!,
+        elSearchInfo = document.getElementById('searchInfo')!,
+        goodMatchThreshold = Number(elSearchResults.dataset.threshold),
+        STATE_INIT = 'initial',
+        STATE_SEARCHING = 'searching',
+        STATE_ERROR = 'error',
+        STATE_RESULTS = 'done',
+        CSS_CLASS_SHOW_SECONDARY_MATCHES = 'showSecondaryMatches';
 
     function setVisible(el: HTMLElement, visible: boolean) {
         el.style.display = visible ? 'block' : 'none';
@@ -46,8 +45,8 @@ window.addEventListener('load', () => {
             elSearchResults.classList.remove(CSS_CLASS_SHOW_SECONDARY_MATCHES);
             elSearchResults.innerHTML = await response.text();
 
-            let primaryMatchCount = 0;
-            let secondaryMatchCount = 0;
+            let primaryMatchCount = 0,
+                secondaryMatchCount = 0;
 
             elSearchResults.querySelectorAll('.episodeSummary').forEach(el => {
                 const score = Number((el as HTMLElement).dataset.similarity);

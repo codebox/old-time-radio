@@ -3,12 +3,12 @@ import { EVENT_SLEEP_TIMER_CLICK } from './events.mjs';
 import type { SleepTimerView, EventSource } from './types.mjs';
 
 export function buildSleepTimerView(eventSource: EventSource): SleepTimerView {
-    const elSleepTimerTime = document.getElementById('sleepTimerTime')!;
-    const elSleepTimerRunningDisplay = document.getElementById('sleepTimerRunningDisplay')!;
-    const elSleepTimerButtons = document.getElementById('sleepTimerButtons')!;
+    const elSleepTimerTime = document.getElementById('sleepTimerTime')!,
+        elSleepTimerRunningDisplay = document.getElementById('sleepTimerRunningDisplay')!,
+        elSleepTimerButtons = document.getElementById('sleepTimerButtons')!,
 
-    const HIDDEN_CSS_CLASS = 'hidden';
-    const INTERVALS = config.sleepTimer.intervals;
+        HIDDEN_CSS_CLASS = 'hidden',
+        INTERVALS = config.sleepTimer.intervals;
 
     function formatTimePart(value: number): string {
         return (value < 10 ? '0' : '') + value;

@@ -19,34 +19,34 @@ type TextAndOffset = {
 };
 
 export function buildPlayingNowManager(model: Model, elCanvas: HTMLCanvasElement): PlayingNowManager {
-    const ctx = elCanvas.getContext('2d')!;
-    const updatePeriodSeconds = 7;
-    const spriteCoords: SpriteCoord[] = [
-        { x: 3, y: 16, w: 540, h: 93 },
-        { x: 633, y: 1, w: 549, h: 125 },
-        { x: 2, y: 264, w: 540, h: 103 },
-        { x: 635, y: 261, w: 548, h: 123 },
-        { x: 2, y: 499, w: 539, h: 147 },
-        { x: 615, y: 531, w: 583, h: 103 },
-        { x: 1, y: 788, w: 540, h: 111 },
-        { x: 630, y: 790, w: 549, h: 82 },
-        { x: 0, y: 1043, w: 540, h: 87 },
-        { x: 632, y: 1037, w: 553, h: 128 }
-    ];
-    const minPrintableRegionHeight = 150;
-    const maxPrintableRegionHeight = 200;
-    const spriteImage = new Image();
+    const ctx = elCanvas.getContext('2d')!,
+        updatePeriodSeconds = 7,
+        spriteCoords: SpriteCoord[] = [
+            { x: 3, y: 16, w: 540, h: 93 },
+            { x: 633, y: 1, w: 549, h: 125 },
+            { x: 2, y: 264, w: 540, h: 103 },
+            { x: 635, y: 261, w: 548, h: 123 },
+            { x: 2, y: 499, w: 539, h: 147 },
+            { x: 615, y: 531, w: 583, h: 103 },
+            { x: 1, y: 788, w: 540, h: 111 },
+            { x: 630, y: 790, w: 549, h: 82 },
+            { x: 0, y: 1043, w: 540, h: 87 },
+            { x: 632, y: 1037, w: 553, h: 128 }
+        ],
+        minPrintableRegionHeight = 150,
+        maxPrintableRegionHeight = 200,
+        spriteImage = new Image();
 
     spriteImage.src = 'swirl_sprites.png';
 
-    let updateTimerId: ReturnType<typeof setInterval> | null = null;
-    let canvasWidth: number;
-    let canvasHeight: number;
-    let spacing: number;
-    let imageHeight: number;
-    let initialY: number;
-    let lineHeight: number;
-    let canvasSizeOk: boolean;
+    let updateTimerId: ReturnType<typeof setInterval> | null,
+        canvasWidth: number,
+        canvasHeight: number,
+        spacing: number,
+        imageHeight: number,
+        initialY: number,
+        lineHeight: number,
+        canvasSizeOk: boolean;
 
     function fillTextMultiLine(textAndOffsets: TextAndOffset[]) {
         let nextY = initialY;
@@ -103,9 +103,9 @@ export function buildPlayingNowManager(model: Model, elCanvas: HTMLCanvasElement
         canvasSizeOk = initialY >= 0;
     }
 
-    let playingNowData: PlayingNowDataItem[] = [];
-    let currentIndex = 0;
-    let spriteIndex = 0;
+    let playingNowData: PlayingNowDataItem[] | null,
+        currentIndex = 0,
+        spriteIndex = 0;
 
     function updateCurrentIndex() {
         spriteIndex = (spriteIndex + 1) % spriteCoords.length;

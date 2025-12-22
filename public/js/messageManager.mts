@@ -5,8 +5,8 @@ import type { MessageManager, Model, EventSource, PlaylistItem } from './types.m
 export function buildMessageManager(model: Model, eventSource: EventSource): MessageManager {
     const TEMP_MESSAGE_DURATION = config.messages.tempMessageDurationMillis;
 
-    let persistentMessage: string;
-    let temporaryMessage: string | null;
+    let persistentMessage: string,
+        temporaryMessage: string | null;
 
     function triggerNewMessage(text: string, isTemp = false) {
         if (isTemp) {
@@ -45,8 +45,8 @@ export function buildMessageManager(model: Model, eventSource: EventSource): Mes
             }
         }
 
-        let messages: (string | (() => string | undefined))[];
-        let nextIndex = 0;
+        let messages: (string | (() => string | undefined))[],
+            nextIndex = 0;
         return {
             init() {
                 const modeSpecificCannedMessages = getModeSpecificCannedMessages(),

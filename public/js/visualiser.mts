@@ -5,13 +5,13 @@ import type { Visualiser, VisualiserDataFactory } from './types.mjs';
 export function buildVisualiser(dataFactory: VisualiserDataFactory): Visualiser {
     const BACKGROUND_COLOUR = 'black';
 
-    let isStarted = false;
-    let elCanvas: HTMLCanvasElement;
-    let ctx: CanvasRenderingContext2D;
-    let width: number;
-    let height: number;
-    let fadeOutTimeout: ReturnType<typeof setTimeout> | null = null;
-    let visualiserId: string;
+    let isStarted = false,
+        elCanvas: HTMLCanvasElement,
+        ctx: CanvasRenderingContext2D,
+        width: number,
+        height: number,
+        fadeOutTimeout: ReturnType<typeof setTimeout> | null = null,
+        visualiserId: string;
 
     function updateCanvasSize() {
         const ratio = window.devicePixelRatio || 1;
@@ -44,9 +44,9 @@ export function buildVisualiser(dataFactory: VisualiserDataFactory): Visualiser 
                 .withShuffling()
                 .build();
 
-        let startTs = clock.nowMillis();
-        let snapshots: { distance: number; data: { radius: number; startAngle: number; endAngle: number }[] }[] = [];
-        let lastSnapshotTs = clock.nowMillis();
+        let startTs = clock.nowMillis(),
+            snapshots: { distance: number; data: { radius: number; startAngle: number; endAngle: number }[] }[] = [],
+            lastSnapshotTs = clock.nowMillis();
 
         return () => {
             const cx = width / 2,

@@ -14,11 +14,11 @@ export function buildAudioPlayer(maxVolume: number, eventSource: EventSource): A
         FFT_WINDOW_SIZE = config.audio.fftWindowSize,
         BUFFER_LENGTH = FFT_WINDOW_SIZE / 2;
 
-    let analyser: AnalyserNode | undefined;
-    let audioInitialised = false;
-    let audioGain: GainNode | undefined;
-    let loadingTrack = false;
-    let initialAudioGainValue: number | undefined;
+    let analyser: AnalyserNode | undefined,
+        audioInitialised = false,
+        audioGain: GainNode | undefined,
+        loadingTrack = false,
+        initialAudioGainValue: number | undefined;
 
     function initAudio() {
         if (!audioInitialised) {

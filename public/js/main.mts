@@ -45,16 +45,16 @@ import { shuffle } from './utils.mjs';
 import type { StateMachine, EventSource, Channel, ChannelId, StationBuilderShow, Show } from './types.mjs';
 
 window.onload = () => {
-    const model = buildModel();
-    const stateMachine = buildStateMachine();
-    const view = buildView(eventSource('view'), model);
-    const service = buildService();
-    const audioPlayer = buildAudioPlayer(model.maxVolume, eventSource('audio'));
-    const visualiserDataFactory = buildVisualiserDataFactory(audioPlayer.getData.bind(audioPlayer));
-    const visualiser = buildVisualiser(visualiserDataFactory);
-    const messageManager = buildMessageManager(model, eventSource('msg'));
-    const summaryManager = buildSummaryManager(eventSource('summary'));
-    const sleepTimer = buildSleepTimer(eventSource('sleep'));
+    const model = buildModel(),
+        stateMachine = buildStateMachine(),
+        view = buildView(eventSource('view'), model),
+        service = buildService(),
+        audioPlayer = buildAudioPlayer(model.maxVolume, eventSource('audio')),
+        visualiserDataFactory = buildVisualiserDataFactory(audioPlayer.getData.bind(audioPlayer)),
+        visualiser = buildVisualiser(visualiserDataFactory),
+        messageManager = buildMessageManager(model, eventSource('msg')),
+        summaryManager = buildSummaryManager(eventSource('summary')),
+        sleepTimer = buildSleepTimer(eventSource('sleep'));
 
     function eventSource(name: string): EventSource {
         return buildEventSource(name, stateMachine);
@@ -88,8 +88,8 @@ window.onload = () => {
             }
             return undefined;
         }
-        const today = new Date();
-        const snowIntensity = getSnowIntensityForToday(today.getDate(), today.getMonth());
+        const today = new Date(),
+            snowIntensity = getSnowIntensityForToday(today.getDate(), today.getMonth());
         if (snowIntensity) {
             view.startSnowMachine(snowIntensity);
         }
@@ -149,8 +149,8 @@ window.onload = () => {
         visualiser.start();
         audioPlayer.play(model.nextTrackOffset as number);
         view.showDownloadLink(model.track!.archivalUrl!);
-        const hasSummary = !!model.track!.summaryMedium;
-        const tuningInPartWayThrough = (model.nextTrackOffset as number) > (model.track!.duration * config.summary.autoShowPercentage / 100);
+        const hasSummary = !!model.track!.summaryMedium,
+            tuningInPartWayThrough = (model.nextTrackOffset as number) > (model.track!.duration * config.summary.autoShowPercentage / 100);
         if (hasSummary) {
             summaryManager.setText(model.track!.summaryMedium as string);
             view.showSummaryLink();
@@ -359,8 +359,8 @@ window.onload = () => {
     })();
 
     const playingNowTimer = (() => {
-        let timerId: ReturnType<typeof setInterval> | null = null;
-        let channelIds: ChannelId[];
+        let timerId: ReturnType<typeof setInterval> | null,
+            channelIds: ChannelId[];
 
         function updatePlayingNowDetails() {
             service.getPlayingNow(channelIds).then(playingNow => {
@@ -458,8 +458,8 @@ window.onload = () => {
     })();
 
     view.on(EVENT_SCHEDULE_BUTTON_CLICK).then(event => {
-        const channelId = (event as Event & { data: ChannelId }).data;
-        const selectedChannelWasClicked = model.selectedScheduleChannelId === channelId;
+        const channelId = (event as Event & { data: ChannelId }).data,
+            selectedChannelWasClicked = model.selectedScheduleChannelId === channelId;
 
         // clicking the channel that was already selected should de-select it, leaving no channel selected
         const selectedChannel = selectedChannelWasClicked ? null : channelId;
@@ -542,8 +542,8 @@ window.onload = () => {
             if (pathParts[1] === 'listen-to') {
                 model.setModeSingleShow();
 
-                const descriptiveShowId = pathParts[2].toLowerCase();
-                const showObject = model.shows!.find((show: Show) => show.descriptiveId === descriptiveShowId);
+                const descriptiveShowId = pathParts[2].toLowerCase(),
+                    showObject = model.shows!.find((show: Show) => show.descriptiveId === descriptiveShowId);
 
                 view.addShowTitleToPage(showObject!.name as string);
 

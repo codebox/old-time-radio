@@ -3,11 +3,11 @@ import { EVENT_SCHEDULE_BUTTON_CLICK } from './events.mjs';
 import type { ScheduleView, EventSource, Channel, ChannelId, ApiChannelScheduleResponse } from './types.mjs';
 
 export function buildScheduleView(eventSource: EventSource): ScheduleView {
-    const elChannelLinks = document.getElementById('channelScheduleLinks')!;
-    const elScheduleList = document.getElementById('scheduleList')!;
-    const channelToElement: Record<string, HTMLButtonElement> = {};
-    const CSS_CLASS_SELECTED = 'selected';
-    const clock = buildClock();
+    const elChannelLinks = document.getElementById('channelScheduleLinks')!,
+        elScheduleList = document.getElementById('scheduleList')!,
+        channelToElement: Record<string, HTMLButtonElement> = {},
+        CSS_CLASS_SELECTED = 'selected',
+        clock = buildClock();
 
     return {
         addChannel(channel: Channel) {
@@ -31,8 +31,8 @@ export function buildScheduleView(eventSource: EventSource): ScheduleView {
             });
         },
         displaySchedule(schedule: ApiChannelScheduleResponse) {
-            const playingNow = schedule.list.shift()!;
-            const timeNow = clock.nowSeconds();
+            const playingNow = schedule.list.shift()!,
+                timeNow = clock.nowSeconds();
             let nextShowStartOffsetFromNow = playingNow.duration - schedule.initialOffset;
 
             const scheduleList: { time: string; name: string; shortSummary?: string; commercial?: boolean }[] = [
@@ -55,8 +55,7 @@ export function buildScheduleView(eventSource: EventSource): ScheduleView {
 
             elScheduleList.innerHTML = '';
             scheduleList.forEach(scheduleItem => {
-                const el = document.createElement('li');
-                const htmlParts: string[] = [];
+                const el = document.createElement('li'), htmlParts: string[] = [];
 
                 htmlParts.push(`<div class="scheduleItemTime">${scheduleItem.time}</div>`);
                 htmlParts.push(`<div class="scheduleItemDetails">`);

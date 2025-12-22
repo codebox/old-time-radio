@@ -14,9 +14,9 @@ export function buildModel(): Model {
             'showSummaryWhenTuningIn': true,
         };
 
-    let volume = 10;
-    let mode: string;
-    const stationBuilderModel: StationBuilderModel = {
+    let volume = 10,
+        mode: string,
+        stationBuilderModel: StationBuilderModel = {
         shows: [],
         savedChannelCodes: [],
         commercialShowIds: [],

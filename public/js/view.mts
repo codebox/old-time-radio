@@ -21,39 +21,39 @@ import { buildSnowMachine } from './snowMachine.mjs';
 import type { View, EventSource, Model, Channel, ChannelId, Visualiser, ApiChannelScheduleResponse, ApiPlayingNowResponse, StationBuilderModel, Url } from './types.mjs';
 
 export function buildView(eventSource: EventSource, model: Model): View {
-    const FEW_CHANNELS_LIMIT = 4;
-    const channelButtons: Record<string, HTMLDivElement> = {};
-    const visualiserButtons: Record<string, HTMLButtonElement> = {};
+    const FEW_CHANNELS_LIMIT = 4,
+        channelButtons: Record<string, HTMLDivElement> = {},
+        visualiserButtons: Record<string, HTMLButtonElement> = {},
 
-    const CLASS_LOADING = 'channelLoading';
-    const CLASS_PLAYING = 'channelPlaying';
-    const CLASS_ERROR = 'channelError';
-    const CLASS_SELECTED = 'selected';
+        CLASS_LOADING = 'channelLoading',
+        CLASS_PLAYING = 'channelPlaying',
+        CLASS_ERROR = 'channelError',
+        CLASS_SELECTED = 'selected',
 
-    const elMenuOpenIcon = document.getElementById('menuOpenIcon')!;
-    const elMenuCloseIcon = document.getElementById('menuCloseIcon')!;
-    const elMenuButton = document.getElementById('menuButton')! as HTMLButtonElement;
-    const elMenuBox = document.getElementById('menu')! as HTMLDivElement;
-    const elVolumeUp = document.getElementById('volumeUp')!;
-    const elVolumeDown = document.getElementById('volumeDown')!;
-    const elPrefInfoMessages = document.getElementById('prefInfoMessages')!;
-    const elPrefNowPlayingMessages = document.getElementById('prefNowPlayingMessages')!;
-    const elPrefShowSummary = document.getElementById('prefShowSummary')!;
-    const elMessage = document.getElementById('message')!;
-    const elDownloadLink = document.getElementById('downloadLink')!;
-    const elButtonContainer = document.getElementById('buttons')!;
-    const elVolumeLeds = Array.from(Array(10).keys()).map(i => document.getElementById(`vol${i + 1}`)!);
-    const elVisualiserCanvas = document.getElementById('visualiserCanvas')! as HTMLCanvasElement;
-    const elPlayingNowCanvas = document.getElementById('playingNowCanvas')! as HTMLCanvasElement;
-    const elVisualiserButtons = document.getElementById('visualiserList')!;
-    const elTitle = document.getElementsByTagName('title')[0];
-    const elSummary = document.getElementById('episodeSummary')! as HTMLDivElement;
-    const elSummaryContent = document.getElementById('episodeSummaryContent')!;
-    const elSummaryLink = document.getElementById('summaryLink')!;
+        elMenuOpenIcon = document.getElementById('menuOpenIcon')!,
+        elMenuCloseIcon = document.getElementById('menuCloseIcon')!,
+        elMenuButton = document.getElementById('menuButton')! as HTMLButtonElement,
+        elMenuBox = document.getElementById('menu')! as HTMLDivElement,
+        elVolumeUp = document.getElementById('volumeUp')!,
+        elVolumeDown = document.getElementById('volumeDown')!,
+        elPrefInfoMessages = document.getElementById('prefInfoMessages')!,
+        elPrefNowPlayingMessages = document.getElementById('prefNowPlayingMessages')!,
+        elPrefShowSummary = document.getElementById('prefShowSummary')!,
+        elMessage = document.getElementById('message')!,
+        elDownloadLink = document.getElementById('downloadLink')!,
+        elButtonContainer = document.getElementById('buttons')!,
+        elVolumeLeds = Array.from(Array(10).keys()).map(i => document.getElementById(`vol${i + 1}`)!),
+        elVisualiserCanvas = document.getElementById('visualiserCanvas')! as HTMLCanvasElement,
+        elPlayingNowCanvas = document.getElementById('playingNowCanvas')! as HTMLCanvasElement,
+        elVisualiserButtons = document.getElementById('visualiserList')!,
+        elTitle = document.getElementsByTagName('title')[0],
+        elSummary = document.getElementById('episodeSummary')! as HTMLDivElement,
+        elSummaryContent = document.getElementById('episodeSummaryContent')!,
+        elSummaryLink = document.getElementById('summaryLink')!,
 
-    const sleepTimerView = buildSleepTimerView(eventSource);
-    const scheduleView = buildScheduleView(eventSource);
-    const stationBuilderView = buildStationBuilderView(eventSource);
+        sleepTimerView = buildSleepTimerView(eventSource),
+        scheduleView = buildScheduleView(eventSource),
+        stationBuilderView = buildStationBuilderView(eventSource);
 
     function forEachChannelButton(fn: (channelId: string, el: HTMLDivElement) => void) {
         Object.keys(channelButtons).forEach(channelId => {
@@ -62,14 +62,14 @@ export function buildView(eventSource: EventSource, model: Model): View {
     }
 
     function buildChannelButton(channel: Channel) {
-        const channelId = channel.id as string;
-        const channelName = channel.name;
-        const elButtonBox = document.createElement('div');
+        const channelId = channel.id as string,
+            channelName = channel.name,
+            elButtonBox = document.createElement('div');
         elButtonBox.classList.add('buttonBox');
 
-        const elButtonIndicator = document.createElement('div');
-        const elButton = document.createElement('button');
-        const elButtonLabel = document.createElement('label');
+        const elButtonIndicator = document.createElement('div'),
+            elButton = document.createElement('button'),
+            elButtonLabel = document.createElement('label');
 
         elButtonIndicator.classList.add('buttonIndicator');
 

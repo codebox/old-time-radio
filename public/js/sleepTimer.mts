@@ -3,13 +3,9 @@ import { EVENT_SLEEP_TIMER_TICK, EVENT_SLEEP_TIMER_DONE } from './events.mjs';
 import type { SleepTimer, EventSource } from './types.mjs';
 
 export function buildSleepTimer(eventSource: EventSource): SleepTimer {
-    const ONE_SECOND_IN_MILLIS = 1000;
-    const SECONDS_PER_MINUTE = 60;
-    const clock = buildClock();
+    const ONE_SECOND_IN_MILLIS = 1000, SECONDS_PER_MINUTE = 60, clock = buildClock();
 
-    let endTimeSeconds: number;
-    let interval: ReturnType<typeof setInterval> | null = null;
-    let minutesRequested: number | null = null;
+    let endTimeSeconds: number, interval: ReturnType<typeof setInterval> | null = null, minutesRequested: number | null = null;
 
     function onTick() {
         const secondsRemaining = endTimeSeconds - clock.nowSeconds();

@@ -4,8 +4,8 @@ import type { SummaryManager, EventSource } from './types.mjs';
 
 export function buildSummaryManager(eventSource: EventSource): SummaryManager {
     const WPM = config.summary.wpmReadingSpeed;
-    let timeout: ReturnType<typeof setTimeout> | null = null;
-    const state = { text: null as string | null, isVisible: false };
+    let timeout: ReturnType<typeof setTimeout> | null = null,
+        state = { text: null as string | null, isVisible: false };
 
     function cancelTimeout() {
         if (timeout) {

@@ -13,24 +13,21 @@ type Snowflake = {
 };
 
 export function buildSnowMachine(elCanvas: HTMLCanvasElement): SnowMachine {
-    const maxSnowflakeCount = config.snow.maxFlakeCount;
-    const minSize = config.snow.minFlakeSize;
-    const maxSize = config.snow.maxFlakeSize;
-    const minXSpeed = -config.snow.maxXSpeed;
-    const maxXSpeed = config.snow.maxXSpeed;
-    const minYSpeed = config.snow.minYSpeed;
-    const maxYSpeed = config.snow.maxYSpeed;
-    const windSpeedDelta = config.snow.windSpeedDelta;
-    const windSpeedChangeIntervalMillis = config.snow.windSpeedChangeIntervalSeconds * 1000;
-    const snowflakeAddIntervalMillis = config.snow.snowflakeAddIntervalSeconds * 1000;
-    const distanceColourFade = config.snow.distanceColourFade;
+    const maxSnowflakeCount = config.snow.maxFlakeCount,
+        minSize = config.snow.minFlakeSize,
+        maxSize = config.snow.maxFlakeSize,
+        minXSpeed = -config.snow.maxXSpeed,
+        maxXSpeed = config.snow.maxXSpeed,
+        minYSpeed = config.snow.minYSpeed,
+        maxYSpeed = config.snow.maxYSpeed,
+        windSpeedDelta = config.snow.windSpeedDelta,
+        windSpeedChangeIntervalMillis = config.snow.windSpeedChangeIntervalSeconds * 1000,
+        snowflakeAddIntervalMillis = config.snow.snowflakeAddIntervalSeconds * 1000,
+        distanceColourFade = config.snow.distanceColourFade;
 
-    let snowFlakeCount = 0;
-    let running = false;
-    let currentWindSpeed = 0;
-    let targetWindSpeed = 0;
-    let lastWindSpeedChangeTs = Date.now();
-    let lastAddedSnowflakeTs = Date.now();
+        let snowFlakeCount = 0, running = false, currentWindSpeed = 0, targetWindSpeed = 0,
+        lastWindSpeedChangeTs = Date.now(),
+        lastAddedSnowflakeTs = Date.now();
 
     function buildSnowflake(): Snowflake {
         const distance = rndRange(0, 1);
