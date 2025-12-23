@@ -37,7 +37,7 @@ export class SiteMapService {
             episodes = await Promise.all(shows.map(show => this.dataService.getEpisodesForShow(show.id)));
 
         const listenToUrls = shows.map(show => `${config.publicUrlPrefix}/listen-to/${show.id}` as Url),
-            showUrls = shows.map(show => `${config.publicUrlPrefix}/episodes/${encodeURIComponent(show.name)}` as Url),
+            showUrls = shows.map(show => `${config.publicUrlPrefix}/episodes/${encodeURIComponent(show.id)}` as Url),
             episodeUrls = episodes.flat().flatMap(episode => `${config.publicUrlPrefix}/episode/${episode.id}` as Url),
             searchPageUrl = `${config.publicUrlPrefix}/search` as Url,
             urlElements = [searchPageUrl, ...listenToUrls, ...showUrls, ...episodeUrls].map(url => `<url><loc>${url}</loc></url>\n`);

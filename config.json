@@ -1,6 +1,7 @@
 {
   "web": {
-    "port": 3000
+    "port": 3000,
+    "publicUrlPrefix": "https://oldtime.radio"
   },
   "cache": {
     "baseDirectory": "cache",
@@ -712,8 +713,7 @@
         "exploring-tomorrow",
         "2000-plus",
         "planet-man",
-        "sf-68",
-        "not-a-show"
+        "sf-68"
       ]
     },
     {
