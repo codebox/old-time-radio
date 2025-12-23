@@ -103,7 +103,7 @@ export class WebServer {
 
         this.app.get("/shows", async (req, res) => {
             const shows = await this.service.getShows(),
-                links = shows.map(show => ({
+                links = shows.filter(show => show.hasSummaries).map(show => ({
                     text: `${show.name} (${show.episodeCount})`,
                     url: `/episodes/${show.id}`
                 }));

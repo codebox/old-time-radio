@@ -53,6 +53,7 @@ export type ApiShow = {
     id: ShowId;
     name: ShowName;
     episodeCount: number;
+    hasSummaries: boolean;
 };
 
 // Enriched show data returned by /api/shows (includes config-derived fields)
