@@ -13,7 +13,7 @@
     "maxAgeHours": 240
   },
   "search": {
-    "goodMatchThreshold": 0.1,
+    "goodMatchThreshold": 0.6,
     "examples": [
       "native priests steal emerald and escape in helicopter",
       "purple twilight",

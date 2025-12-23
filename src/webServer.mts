@@ -178,17 +178,22 @@ export class WebServer {
                 return;
             }
 
-            const searchResults = await this.service.search(searchText),
-                summaries = searchResults.map(searchResult => ({
-                    id: searchResult.id,
-                    similarity: searchResult.similarity,
-                    show: searchResult.metadata.show,
-                    episode: searchResult.metadata.episode,
-                    summary: searchResult.metadata.summary_small
-                } as EpisodeViewData)),
-                viewData = { summaries } as SearchResultsViewData;
+            try {
+                const searchResults = await this.service.search(searchText),
+                    summaries = searchResults.map(searchResult => ({
+                        id: searchResult.id,
+                        similarity: searchResult.similarity,
+                        show: searchResult.metadata.show,
+                        episode: searchResult.metadata.episode,
+                        summary: searchResult.metadata.summary_small
+                    } as EpisodeViewData)),
+                    viewData = {summaries} as SearchResultsViewData;
 
-            res.render('partials/episode-summaries', viewData);
+                res.render('partials/episode-summaries', viewData);
+            } catch (error: any) {
+                log.error(`Error during search for '${searchText}': ${error.message}`, error);
+                res.status(500).json({ error: "Internal server error" });
+            }
         });
 
         this.app.get("/api/episode/:episodeId", async (req, res) => {

@@ -1,11 +1,10 @@
 TODO
 ----
-better error in search if dataservice down: Search failed: {"error":"Internal server error"}
+some shows sohuldnt be in the shows list eg 'commercials'
+check that all example queries still give good results
 some shows not returning summaries eg fibber+molly
 turn off debug logging
-check that all example queries still give good results
 add search etc to webcheck scripts
-some shows sohuldnt be in the shows list eg 'commercials'
 
 Search
 ------

@@ -56,7 +56,7 @@ window.addEventListener('load', () => {
                         const elShowSecondary = document.createElement('button');
                         elShowSecondary.id = 'showSecondaryMatches';
                         elShowSecondary.className = 'rounded';
-                        elShowSecondary.textContent = 'See Other Matches';
+                        elShowSecondary.textContent = 'See Other Potential Matches';
                         elSearchResults.insertBefore(elShowSecondary, el);
                         elShowSecondary.addEventListener('click', () => {
                             elSearchResults.classList.add(CSS_CLASS_SHOW_SECONDARY_MATCHES);
@@ -73,9 +73,9 @@ window.addEventListener('load', () => {
             if (primaryMatchCount === 0) {
                 elSearchInfo.innerText = "No good matches found for your search.";
             } else if (primaryMatchCount === 1) {
-                elSearchInfo.innerText = "1 good match found.";
+                elSearchInfo.innerText = "1 match found.";
             } else {
-                elSearchInfo.innerText = `${primaryMatchCount} good matches found.`;
+                elSearchInfo.innerText = `${primaryMatchCount} matches found.`;
             }
             setState(STATE_RESULTS);
 
@@ -83,7 +83,7 @@ window.addEventListener('load', () => {
 
         } catch (error) {
             setState(STATE_ERROR);
-            elSearchError.textContent = `Search failed: ${(error as Error).message}`;
+            elSearchError.textContent = `Search failed, please try again later.`;
         }
     }
 
