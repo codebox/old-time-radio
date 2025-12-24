@@ -155,7 +155,7 @@ export type MessageManager = {
     showLoadingChannels(): void;
     showSelectChannel(): void;
     showTuningInToChannel(channelName: string): void;
-    showNowPlaying(trackName: string): void;
+    showNowPlaying(playlistItem: PlaylistItem): void;
     showTempMessage(): void;
     showSleeping(): void;
     showError(): void;

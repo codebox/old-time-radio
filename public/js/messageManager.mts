@@ -83,8 +83,8 @@ export function buildMessageManager(model: Model, eventSource: EventSource): Mes
                 triggerNewMessage(`Tuning in to the ${channelName} channel...`);
             }
         },
-        showNowPlaying(trackName: string) {
-            triggerNewMessage(trackName);
+        showNowPlaying(playlistItem: PlaylistItem) {
+            triggerNewMessage(`${playlistItem.show} - ${playlistItem.title} ${playlistItem.date ? `[${playlistItem.date}]` : ''}`);
         },
         showTempMessage() {
             const msgText = cannedMessages.next();

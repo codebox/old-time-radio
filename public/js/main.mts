@@ -164,7 +164,7 @@ window.onload = () => {
     audioPlayer.on(EVENT_AUDIO_PLAY_STARTED).ifState(STATE_LOADING_TRACK).then(() => {
         stateMachine.playing();
         view.setChannelLoaded(model.selectedChannelId!);
-        messageManager.showNowPlaying(`${model.track!.show} - ${model.track!.title}`);
+        messageManager.showNowPlaying(model.track);
     });
 
     audioPlayer.on(EVENT_AUDIO_TRACK_ENDED).ifState(STATE_PLAYING).then(() => {
@@ -410,7 +410,7 @@ window.onload = () => {
         audioPlayer.setVolume(model.volume);
         tempMessageTimer.startIfApplicable();
 
-        messageManager.showNowPlaying(`${model.track!.show} - ${model.track!.title}`);
+        messageManager.showNowPlaying(model.track);
         stateMachine.playing();
     });
 
