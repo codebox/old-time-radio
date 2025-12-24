@@ -1,6 +1,6 @@
 import { buildClock } from './clock.mjs';
 import { EVENT_SCHEDULE_BUTTON_CLICK } from './events.mjs';
-import type { ScheduleView, EventSource, Channel, ChannelId, ApiChannelScheduleResponse } from './types.mjs';
+import type {ScheduleView, EventSource, Channel, ChannelId, ApiChannelScheduleResponse, Episode} from './types.mjs';
 
 export function buildScheduleView(eventSource: EventSource): ScheduleView {
     const elChannelLinks = document.getElementById('channelScheduleLinks')!,
@@ -31,12 +31,16 @@ export function buildScheduleView(eventSource: EventSource): ScheduleView {
             });
         },
         displaySchedule(schedule: ApiChannelScheduleResponse) {
+            function scheduleItemText(episode: Episode) {
+                return `${episode.show} - ${episode.title} ${episode.date ? `[${episode.date}]` : ''}`;
+            }
+
             const playingNow = schedule.list.shift()!,
                 timeNow = clock.nowSeconds();
             let nextShowStartOffsetFromNow = playingNow.duration - schedule.initialOffset;
 
             const scheduleList: { time: string; name: string; shortSummary?: string; commercial?: boolean }[] = [
-                { time: 'NOW &gt;', name: `${playingNow.show} - ${playingNow.title}`, shortSummary: playingNow.summarySmall as string }
+                { time: 'NOW &gt;', name: scheduleItemText(playingNow), shortSummary: playingNow.summarySmall as string }
             ];
             scheduleList.push(...schedule.list.filter(item => !item.isCommercial).map(item => {
                 const ts = nextShowStartOffsetFromNow + timeNow,
@@ -45,7 +49,7 @@ export function buildScheduleView(eventSource: EventSource): ScheduleView {
                     mm = date.getMinutes().toString().padStart(2, '0');
                 const result = {
                     time: `${hh}:${mm}`,
-                    name: `${item.show} - ${item.title}`,
+                    name: scheduleItemText(item),
                     commercial: item.isCommercial,
                     shortSummary: item.summarySmall as string
                 };
