@@ -47,11 +47,6 @@ import type {
 // Show data (now comes enriched from the API)
 export type Show = ApiShowEnriched;
 
-// Playlist item used internally (episode with additional playback fields)
-export type PlaylistItem = Episode & {
-    archivalUrl?: Url;
-};
-
 // Frontend channel representation
 export type Channel = {
     id: ChannelCode | ChannelName;
@@ -155,7 +150,7 @@ export type MessageManager = {
     showLoadingChannels(): void;
     showSelectChannel(): void;
     showTuningInToChannel(channelName: string): void;
-    showNowPlaying(playlistItem: PlaylistItem): void;
+    showNowPlaying(episode: Episode): void;
     showTempMessage(): void;
     showSleeping(): void;
     showError(): void;
@@ -239,8 +234,8 @@ export type Model = {
     shows: Show[] | null;
     selectedChannelId: ChannelCode | ChannelName | null;
     selectedScheduleChannelId: ChannelCode | ChannelName | null;
-    playlist: PlaylistItem[] | null;
-    track: PlaylistItem | null;
+    playlist: Episode[] | null;
+    track: Episode | null;
     nextTrackOffset: Seconds | null;
 };
 

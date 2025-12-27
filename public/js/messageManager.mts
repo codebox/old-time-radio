@@ -1,6 +1,6 @@
 import { config } from './config.mjs';
 import { EVENT_NEW_MESSAGE } from './events.mjs';
-import type { MessageManager, Model, EventSource, PlaylistItem } from './types.mjs';
+import type {MessageManager, Model, EventSource, Episode} from './types.mjs';
 
 export function buildMessageManager(model: Model, eventSource: EventSource): MessageManager {
     const TEMP_MESSAGE_DURATION = config.messages.tempMessageDurationMillis;
@@ -29,7 +29,7 @@ export function buildMessageManager(model: Model, eventSource: EventSource): Mes
 
     const cannedMessages = (() => {
         function showNext(): string | undefined {
-            const nonCommercials = (model.playlist || []).filter((item: PlaylistItem) => !item.isCommercial);
+            const nonCommercials = (model.playlist || []).filter((item: Episode) => !item.isCommercial);
             if (nonCommercials.length) {
                 return `Up next: ${nonCommercials[0].show}`;
             }
@@ -83,8 +83,8 @@ export function buildMessageManager(model: Model, eventSource: EventSource): Mes
                 triggerNewMessage(`Tuning in to the ${channelName} channel...`);
             }
         },
-        showNowPlaying(playlistItem: PlaylistItem) {
-            triggerNewMessage(`${playlistItem.show} - ${playlistItem.title} ${playlistItem.date ? `[${playlistItem.date}]` : ''}`);
+        showNowPlaying(episode: Episode) {
+            triggerNewMessage(`${episode.show} - ${episode.title} ${episode.date ? `[${episode.date}]` : ''}`);
         },
         showTempMessage() {
             const msgText = cannedMessages.next();

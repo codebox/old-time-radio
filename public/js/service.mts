@@ -22,8 +22,8 @@ export function buildService(): Service {
                 if (entry) {
                     const ageInSeconds = clock.nowSeconds() - entry.ts,
                         initialOffsetInSecondsNow = entry.playlist.initialOffset + ageInSeconds,
-                        lengthOfCurrentPlaylistItem = entry.playlist.list[0]?.duration;
-                    if (lengthOfCurrentPlaylistItem && lengthOfCurrentPlaylistItem > initialOffsetInSecondsNow) {
+                        lengthOfCurrentEpisode = entry.playlist.list[0]?.duration;
+                    if (lengthOfCurrentEpisode && lengthOfCurrentEpisode > initialOffsetInSecondsNow) {
                         return {
                             initialOffset: initialOffsetInSecondsNow,
                             list: [...entry.playlist.list]
