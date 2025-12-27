@@ -148,7 +148,7 @@ window.onload = () => {
         view.stopSnowMachine();
         visualiser.start();
         audioPlayer.play(model.nextTrackOffset as number);
-        view.showDownloadLink(model.track!.archivalUrl!);
+        view.showDownloadLink(model.track!.url!);
         const hasSummary = !!model.track!.summaryMedium,
             tuningInPartWayThrough = (model.nextTrackOffset as number) > (model.track!.duration * config.summary.autoShowPercentage / 100);
         if (hasSummary) {
