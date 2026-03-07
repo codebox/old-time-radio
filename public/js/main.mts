@@ -95,11 +95,16 @@ window.onload = () => {
         }
     }
 
+    function toUrls(archiveUrl: string): string[] {
+        const fallbackUrl = archiveUrl.replace('https://archive.org/download/', 'https://oldtime.radio/audio/');
+        return [archiveUrl, fallbackUrl];
+    }
+
     function loadNextFromPlaylist() {
         function playNextFromPlaylist() {
             const nextItem = model.playlist!.shift()!;
             model.track = nextItem;
-            audioPlayer.load(nextItem.url as string);
+            audioPlayer.load(toUrls(nextItem.url as string));
             stateMachine.loadingTrack();
         }
 
