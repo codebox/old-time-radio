@@ -5,6 +5,7 @@ import {clock} from "./clock.mjs";
 import {config} from "./config.mjs";
 import {log} from "./log.mjs";
 import {DataService} from "./dataService.mjs";
+import {hasEpisodeSummary} from "./utils.mjs";
 
 const SITEMAP_FILE_PATH = path.join(process.cwd(), 'public', 'sitemap.xml'),
     ENCODING = 'utf-8';
@@ -39,7 +40,9 @@ export class SiteMapService {
 
         const listenToUrls = shows.map(show => `${config.publicUrlPrefix}/listen-to/${show.id}` as Url),
             showUrls = showsWithSummaries.map(show => `${config.publicUrlPrefix}/episodes/${encodeURIComponent(show.id)}` as Url),
-            episodeUrls = episodes.flat().flatMap(episode => `${config.publicUrlPrefix}/episode/${episode.id}` as Url),
+            episodeUrls = episodes.flat()
+                .filter(hasEpisodeSummary)
+                .map(episode => `${config.publicUrlPrefix}/episode/${episode.id}` as Url),
             searchPageUrl = `${config.publicUrlPrefix}/search` as Url,
             urlElements = [searchPageUrl, ...listenToUrls, ...showUrls, ...episodeUrls].map(url => `<url><loc>${url}</loc></url>\n`);
 

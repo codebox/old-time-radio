@@ -1,4 +1,8 @@
-import type {Generator} from "./types.mjs";
+import type {Episode, Generator} from "./types.mjs";
+
+export function hasEpisodeSummary(episode: Episode): boolean {
+    return Boolean(episode.summarySmall);
+}
 
 export function generator<T>(items: T[]): Generator<T> {
     if (items.length === 0) {

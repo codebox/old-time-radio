@@ -15,6 +15,7 @@ import type {
     SearchText, ShowIndex, SearchViewData, ShowsViewData, EpisodesViewData, EpisodeViewData, Episode,
     EpisodeWithLongSummary, SearchResultsViewData, EpisodeDetailsViewData
 } from "./types.mjs";
+import {hasEpisodeSummary} from "./utils.mjs";
 
 export class WebServer {
     private app: express.Application;
@@ -155,7 +156,9 @@ export class WebServer {
 
         this.app.get("/episodes/:show", async (req, res) => {
             const showId = req.params.show as ShowId,
-                episodes = (await this.service.getEpisodesForShow(showId)).map(episodeToEpisodeViewData),
+                episodes = (await this.service.getEpisodesForShow(showId))
+                    .filter(hasEpisodeSummary)
+                    .map(episodeToEpisodeViewData),
                 showName = episodes[0].show,
                 viewData = { episodes, showName } as EpisodesViewData;
 
