@@ -10,11 +10,11 @@
     "clean:frontend": "rm -f public/js/*.mjs public/js/*.mjs.map public/js/tsconfig.tsbuildinfo",
     "clean": "npm run clean:shared && npm run clean:backend && npm run clean:frontend",
     "build:shared": "tsc --build shared/tsconfig.json",
-    "build:backend": "tsc -p src/tsconfig.json --noEmit",
+    "build:backend": "tsc -p src/tsconfig.json",
     "build:frontend": "tsc --build public/js/tsconfig.json",
     "build": "npm run build:shared && npm run build:backend && npm run build:frontend",
     "rebuild": "npm run clean && npm run build",
-    "typecheck": "tsc --build --noEmit shared/tsconfig.json src/tsconfig.json public/js/tsconfig.json",
+    "typecheck": "tsc -p shared/tsconfig.json --noEmit && tsc -p src/tsconfig.json --noEmit && tsc -p public/js/tsconfig.json --noEmit",
     "watch:frontend": "tsc --build --watch public/js/tsconfig.json"
   },
   "repository": {

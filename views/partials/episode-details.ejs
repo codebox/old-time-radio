@@ -32,8 +32,10 @@
         <a href="<%= url %>">Download</a>
     </div>
 
+    <% if (summaryLong) { %>
     <h3>Plot Summary</h3>
-    <p><%- summaryLong.replaceAll("\\\"", "\"").replaceAll("\n", "<br>") %></p>
+    <p><% summaryLong.replaceAll("\\\"", "\"").split("\n").forEach((line, index) => { %><% if (index > 0) { %><br><% } %><%= line %><% }) %></p>
+    <% } %>
     <p>
         <% const subject = encodeURIComponent("Episode summary feedback"); %>
         <% const body = encodeURIComponent("I would like to report a problem with the summary for the episode " + show + ": " + title + " (id = " + id + ")\n\n<please describe the problem here>"); %>

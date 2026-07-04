@@ -13,6 +13,8 @@ type RequestQueue = {
     push(url: string): Promise<{ [key: string]: any }>;
 }
 
+const REQUEST_TIMEOUT_MILLIS = 30_000;
+
 function buildRequestQueue(minRequestIntervalMillis: Millis) {
     const pendingRequests: WebRequest[] = [];
     let lastRequestMillis = 0 as Millis, running = false, interval;
@@ -29,14 +31,14 @@ function buildRequestQueue(minRequestIntervalMillis: Millis) {
                 setTimeout(() => {
                     const {url, resolve, reject} = pendingRequests.shift();
                     log.debug(`Requesting ${url}...`);
-                    axios.get(url)
+                    axios.get(url, {timeout: REQUEST_TIMEOUT_MILLIS})
                         .then(response => {
                             log.debug(`Request for ${url} succeeded: ${response.status} - ${response.statusText}`);
                             resolve(response.data)
                         })
-                        .catch(response => {
-                            log.error(`Request for ${url} failed: ${response.status} - ${response.statusText}`);
-                            reject(response);
+                        .catch(error => {
+                            log.error(`Request for ${url} failed: ${error.response ? `${error.response.status} - ${error.response.statusText}` : error.message}`);
+                            reject(error);
                         })
                         .finally(() => {
                             lastRequestMillis = clock.nowMillis();

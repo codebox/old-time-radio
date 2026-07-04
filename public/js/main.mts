@@ -114,12 +114,20 @@ window.onload = () => {
         } else {
             playingNowTimer.stop();
             stateMachine.tuningIn();
-            service.getPlaylistForChannel(model.selectedChannelId!).then(playlist => {
+            const channelId = model.selectedChannelId!;
+            service.getPlaylistForChannel(channelId).then(playlist => {
+                if (channelId !== model.selectedChannelId) {
+                    return; // a different channel was selected while this playlist was loading
+                }
                 model.playlist = playlist.list;
                 model.nextTrackOffset = playlist.initialOffset;
                 playNextFromPlaylist();
 
-            }).catch(onError);
+            }).catch(error => {
+                if (channelId === model.selectedChannelId) {
+                    onError(error);
+                }
+            });
         }
     }
 

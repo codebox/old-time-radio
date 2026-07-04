@@ -17,6 +17,11 @@ import type {
 } from "./types.mjs";
 import {hasEpisodeSummary} from "./utils.mjs";
 
+// Matches built-in channel names ('future', 'comedy', ...) and generated channel codes,
+// which use only characters from the CHAR_MAP in channelCodeService. Anything else is
+// rejected before it can reach the disk cache, where the id is used as a file name.
+const VALID_CHANNEL_ID = /^[0-9A-Za-z_-]{1,100}$/;
+
 export class WebServer {
     private app: express.Application;
     private service: Service;
@@ -32,6 +37,15 @@ export class WebServer {
         this.app.use((req, res, next) => {
             log.debug(`Request: ${req.method} ${req.path}`);
             next();
+        });
+
+        // Registered before express.static so that the generated sitemap file in
+        // 'public' can never shadow this route and get served stale forever
+        this.app.get("/sitemap.xml", async (req, res) => {
+            const siteMapXml = await this.service.getSitemapXml()
+
+            res.set('Content-Type', 'text/xml');
+            res.send(siteMapXml);
         });
 
         this.app.use(express.static('public'));
@@ -60,6 +74,10 @@ export class WebServer {
         });
 
         this.app.get("/api/channel/:channel", async (req, res) => {
+            if (!VALID_CHANNEL_ID.test(req.params.channel)) {
+                res.status(400).json({ error: "Invalid channel id" });
+                return;
+            }
             const channelId = req.params.channel as ChannelId,
                 length = Number(req.query.length) as Seconds,
                 schedule = await this.service.getScheduleForChannel(channelId, length),
@@ -69,16 +87,23 @@ export class WebServer {
         });
 
         this.app.get("/api/channel/generate/:nums", async (req, res) => {
-            const showIndexes = req.params.nums.split(',').map(s => Number(s)) as ShowIndex[],
-                channelCode = await this.service.getChannelCodeForShowIndexes(showIndexes),
+            const showIndexes = req.params.nums.split(',').map(s => Number(s)) as ShowIndex[];
+            if (showIndexes.length === 0 || showIndexes.some(n => !Number.isInteger(n) || n < 0 || n > 200)) {
+                res.status(400).json({ error: "Invalid show indexes" });
+                return;
+            }
+            const channelCode = await this.service.getChannelCodeForShowIndexes(showIndexes),
                 response = channelCode as ApiChannelCodeGenerateResponse;
-            //TODO validate showIds
             res.json(response);
         });
 
         this.app.get("/api/playing-now", async (req, res) => {
-            const channelIds = (req.query.channels as string || '').split(',').filter(c => c) as ChannelId[],
-                playingNowAndNext = await this.service.getPlayingNowAndNext(channelIds),
+            const channelIds = (req.query.channels as string || '').split(',').filter(c => c) as ChannelId[];
+            if (channelIds.some(channelId => !VALID_CHANNEL_ID.test(channelId))) {
+                res.status(400).json({ error: "Invalid channel id" });
+                return;
+            }
+            const playingNowAndNext = await this.service.getPlayingNowAndNext(channelIds),
                 response = playingNowAndNext as ApiPlayingNowResponse;
 
             res.json(response)
@@ -158,8 +183,14 @@ export class WebServer {
             const showId = req.params.show as ShowId,
                 episodes = (await this.service.getEpisodesForShow(showId))
                     .filter(hasEpisodeSummary)
-                    .map(episodeToEpisodeViewData),
-                showName = episodes[0].show,
+                    .map(episodeToEpisodeViewData);
+
+            if (episodes.length === 0) {
+                res.status(404).send('Show not found');
+                return;
+            }
+
+            const showName = episodes[0].show,
                 viewData = { episodes, showName } as EpisodesViewData;
 
             res.render('episodes', viewData);
@@ -207,15 +238,12 @@ export class WebServer {
             res.render('partials/episode-details', viewData);
         });
 
-        this.app.get("/sitemap.xml", async (req, res) => {
-            const siteMapXml = await this.service.getSitemapXml()
-
-            res.set('Content-Type', 'text/xml');
-            res.send(siteMapXml);
-        });
-
         this.app.use((err: any, req: Request, res: Response, next: NextFunction) => {
             log.error(`Error: ${err.message}`, err);
+            if (res.headersSent) {
+                next(err);
+                return;
+            }
             res.status(500).json({ error: "Internal server error" });
         });
     }

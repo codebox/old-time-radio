@@ -39,11 +39,11 @@ export class DataService {
     }
 
     async getEpisodesForShow(showId: ShowId): Promise<Episode[]> {
-        return await this.fetchApi<DataServiceEpisodesResponse>(`/shows/${showId}/episodes`) as Episode[];
+        return await this.fetchApi<DataServiceEpisodesResponse>(`/shows/${encodeURIComponent(showId)}/episodes`) as Episode[];
     }
 
     async getEpisode(episodeId: EpisodeId): Promise<Episode> {
-        return await this.fetchApi<DataServiceEpisodeDetailsResponse>(`/episodes/${episodeId}`) as Episode;
+        return await this.fetchApi<DataServiceEpisodeDetailsResponse>(`/episodes/${encodeURIComponent(episodeId)}`) as Episode;
     }
 
     async search(searchText: SearchText): Promise<SearchResult[]> {

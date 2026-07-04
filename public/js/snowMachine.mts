@@ -88,8 +88,10 @@ export function buildSnowMachine(elCanvas: HTMLCanvasElement): SnowMachine {
     return {
         start(intensity: number) {
             snowFlakeCount = Math.round(maxSnowflakeCount * intensity);
-            running = true;
-            updateCanvas();
+            if (!running) {
+                running = true;
+                updateCanvas();
+            }
         },
         stop() {
             running = false;

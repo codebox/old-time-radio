@@ -197,6 +197,11 @@ export class ScheduleService {
     }
 
     private getCurrentSchedulePosition(fullSchedule: FullChannelSchedule): SchedulePosition {
+        // A missing/non-numeric episode duration would make offsetSinceStartOfPlay NaN and
+        // the while-loop below would never terminate, blocking the event loop
+        if (!Number.isFinite(fullSchedule.length) || fullSchedule.length <= 0) {
+            throw new Error(`Invalid schedule duration: ${fullSchedule.length}`);
+        }
         const scheduleDuration = fullSchedule.length as Seconds,
             offsetSinceStartOfPlay = (clock.now() - START_TIME) % scheduleDuration as Seconds,
             numberOfItemsInSchedule = fullSchedule.list.length;
