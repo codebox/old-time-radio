@@ -189,6 +189,15 @@ window.onload = () => {
         onError((event as Event & { data: unknown }).data);
     });
 
+    audioPlayer.on(EVENT_AUDIO_ERROR).ifState(STATE_PLAYING).then(() => {
+        // The current track died part-way through and all of its fallback urls failed too -
+        // skip to the next track rather than stalling silently (if loading that also fails,
+        // the LOADING_TRACK error handler above takes over and shows the error state)
+        console.error('Audio failed mid-playback and could not be recovered, skipping to next track');
+        summaryManager.clear();
+        loadNextFromPlaylist();
+    });
+
     // Sleep Timer event handlers
     sleepTimer.on(EVENT_SLEEP_TIMER_TICK).then(event => {
         const secondsLeft = (event as Event & { data: number }).data;

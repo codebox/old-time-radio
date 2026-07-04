@@ -59,8 +59,19 @@ export function buildAudioPlayer(maxVolume: number, eventSource: EventSource): A
         return maxVolume * Math.sqrt(gain);
     }
 
+    /* If playback fails part-way through a track (rather than during the initial load) we retry with
+    the remaining fallback urls, resuming from where the audio stopped. The state machine stays in the
+    'Playing' state throughout - the recovery is internal to the player. */
+    let resumeOffsetAfterError: number | null = null;
+
     audio.addEventListener('canplaythrough', () => {
-        if (loadingTrack) {
+        if (resumeOffsetAfterError !== null) {
+            const offset = resumeOffsetAfterError;
+            resumeOffsetAfterError = null;
+            console.log(`Resuming playback at offset ${offset}`);
+            audio.currentTime = offset;
+            audio.play();
+        } else if (loadingTrack) {
             eventSource.trigger(EVENT_AUDIO_TRACK_LOADED);
         }
     });
@@ -79,9 +90,14 @@ export function buildAudioPlayer(maxVolume: number, eventSource: EventSource): A
     audio.addEventListener('error', event => {
         console.error(`Error loading audio from ${audio.src}: ${event}`);
         if (currentUrls.length > 0) {
+            if (!loadingTrack) {
+                // playback failed part-way through the track, resume from the same point once the next url loads
+                resumeOffsetAfterError = audio.currentTime || 0;
+            }
             loadUrl(currentUrls.shift()!);
         } else {
             console.log('No more urls to try');
+            resumeOffsetAfterError = null;
             eventSource.trigger(EVENT_AUDIO_ERROR, event);
         }
     });
@@ -91,6 +107,7 @@ export function buildAudioPlayer(maxVolume: number, eventSource: EventSource): A
         load(urls: string | string[]) {
             initAudio();
             loadingTrack = true;
+            resumeOffsetAfterError = null;
             currentUrls = Array.isArray(urls) ? urls : [urls];
             loadUrl(currentUrls.shift()!);
         },
