@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html lang="en">
     <head>
         <%- include('partials/head', { title: `Search`, description: `Search engine for episodes of old radio shows` }) %>
     </head>
@@ -15,7 +15,7 @@
             </p>
 
             <div id="searchForm">
-                <input id="searchInput" class="rounded" type="text" placeholder="Search..." autocomplete="off">
+                <input id="searchInput" class="rounded" type="text" placeholder="Search..." aria-label="Search" autocomplete="off">
                 <button id="searchButton" class="rounded" aria-label="Search">Search</button>
             </div>
 

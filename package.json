@@ -2,7 +2,7 @@
   "name": "old-time-radio",
   "version": "1.0.0",
   "description": "A website for listening to Old Time Radio hosted by archive.org",
-  "main": "src_old/app.js",
+  "main": "src/app.mjs",
   "scripts": {
     "start": "node src/app.mjs",
     "clean:shared": "rm -f shared/*.mjs shared/*.mjs.map shared/*.d.mts shared/tsconfig.tsbuildinfo",
@@ -31,17 +31,12 @@
     "axios": "^1.6.0",
     "ejs": "^3.1.10",
     "express": "^5.2.1",
-    "jasmine": "^3.7.0",
-    "level": "^9.0.0",
     "lru-cache": "^11.1.0",
-    "proxyquire": "^2.1.3",
     "winston": "^3.17.0"
   },
   "devDependencies": {
-    "@types/axios": "^0.14.4",
     "@types/express": "^5.0.6",
     "@types/node": "^22.13.14",
-    "@types/winston": "^2.4.4",
     "typescript": "^5.7.3"
   }
 }

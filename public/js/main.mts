@@ -373,30 +373,40 @@ window.onload = () => {
 
     const playingNowTimer = (() => {
         let timerId: ReturnType<typeof setInterval> | null,
-            channelIds: ChannelId[];
+            channelIds: ChannelId[],
+            starting = false;
 
         function updatePlayingNowDetails() {
             service.getPlayingNow(channelIds).then(playingNow => {
                 if (playingNow) {
                     view.updatePlayingNowDetails(playingNow);
                 }
-            });
+            }).catch(error => console.error('Failed to update playing-now details', error));
         }
 
         return {
             startIfApplicable() {
-                if (!timerId && model.showNowPlayingMessages) {
+                if (!timerId && !starting && model.showNowPlayingMessages) {
                     channelIds = shuffle(model.channels!.map(c => c.id));
                     if (channelIds.length > 1) {
                         // Only show 'playing now' details if there are multiple channels
+                        starting = true;
                         service.getPlayingNow(channelIds).then(playingNow => {
+                            if (!starting) {
+                                return; // stop() was called while the initial request was in flight
+                            }
+                            starting = false;
                             view.showPlayingNowDetails(playingNow);
                             timerId = setInterval(updatePlayingNowDetails, config.playingNow.apiCallIntervalMillis);
+                        }).catch(error => {
+                            starting = false;
+                            console.error('Failed to fetch playing-now details', error);
                         });
                     }
                 }
             },
             stop() {
+                starting = false;
                 if (timerId) {
                     clearInterval(timerId);
                     timerId = null;
@@ -457,7 +467,7 @@ window.onload = () => {
                         if (channelId === model.selectedScheduleChannelId) {
                             view.displaySchedule(schedule);
                         }
-                    });
+                    }).catch(error => console.error(`Failed to fetch schedule for channel ${channelId}`, error));
                 }
             },
             stop() {
@@ -506,13 +516,15 @@ window.onload = () => {
             selectedShowIndexes.push(...model.stationBuilder.commercialShowIndexes);
         }
 
-        model.stationBuilder.shows.forEach(show => show.selected = false);
-        view.updateStationBuilderShowSelections(model.stationBuilder);
-
         service.getChannelCodeForShows(selectedShowIndexes).then(channelCode => {
+            // Only clear the selections once the channel has actually been created,
+            // so a failed request doesn't throw away the user's choices
+            model.stationBuilder.shows.forEach(show => show.selected = false);
+            view.updateStationBuilderShowSelections(model.stationBuilder);
+
             model.stationBuilder.savedChannelCodes.push(channelCode);
             view.updateStationBuilderStationDetails(model.stationBuilder);
-        });
+        }).catch(error => console.error('Failed to create channel', error));
     });
 
     view.on(EVENT_STATION_BUILDER_GO_TO_CHANNEL_CLICK).then(() => {

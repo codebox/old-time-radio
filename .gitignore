@@ -16,3 +16,4 @@ public/css/.sass-cache
 shared/*.mjs
 shared/*.mjs.map
 shared/*.d.mts
+config_*.json

@@ -41,10 +41,12 @@ export function buildSummaryManager(eventSource: EventSource): SummaryManager {
             }
         },
         hide() {
+            cancelTimeout();
             state.isVisible = false;
             eventSource.trigger(EVENT_HIDE_SUMMARY);
         },
         clear() {
+            cancelTimeout();
             state.text = null;
             state.isVisible = false;
             eventSource.trigger(EVENT_CLEAR_SUMMARY);

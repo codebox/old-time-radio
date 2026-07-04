@@ -22,6 +22,11 @@ import {hasEpisodeSummary} from "./utils.mjs";
 // rejected before it can reach the disk cache, where the id is used as a file name.
 const VALID_CHANNEL_ID = /^[0-9A-Za-z_-]{1,100}$/;
 
+// True if the data API rejected the id with a 404, as opposed to a network/server failure
+function isUpstreamNotFound(error: any): boolean {
+    return error?.response?.status === 404;
+}
+
 export class WebServer {
     private app: express.Application;
     private service: Service;
@@ -180,10 +185,20 @@ export class WebServer {
         }
 
         this.app.get("/episodes/:show", async (req, res) => {
-            const showId = req.params.show as ShowId,
-                episodes = (await this.service.getEpisodesForShow(showId))
-                    .filter(hasEpisodeSummary)
-                    .map(episodeToEpisodeViewData);
+            const showId = req.params.show as ShowId;
+            let allEpisodes: Episode[];
+            try {
+                allEpisodes = await this.service.getEpisodesForShow(showId);
+            } catch (error) {
+                if (isUpstreamNotFound(error)) {
+                    res.status(404).send('Show not found');
+                    return;
+                }
+                throw error;
+            }
+            const episodes = allEpisodes
+                .filter(hasEpisodeSummary)
+                .map(episodeToEpisodeViewData);
 
             if (episodes.length === 0) {
                 res.status(404).send('Show not found');
@@ -197,11 +212,19 @@ export class WebServer {
         });
 
         this.app.get("/episode/:episodeId", async (req, res) => {
-            const episodeId = req.params.episodeId as EpisodeId,
-                episode = await this.service.getEpisode(episodeId),
-                viewData = episodeToEpisodeDetailsViewData(episode);
+            const episodeId = req.params.episodeId as EpisodeId;
+            try {
+                const episode = await this.service.getEpisode(episodeId),
+                    viewData = episodeToEpisodeDetailsViewData(episode);
 
-            res.render('episode', {episode: viewData});
+                res.render('episode', {episode: viewData});
+            } catch (error) {
+                if (isUpstreamNotFound(error)) {
+                    res.status(404).send('Episode not found');
+                    return;
+                }
+                throw error;
+            }
         });
 
         // Search API calls
@@ -231,11 +254,19 @@ export class WebServer {
         });
 
         this.app.get("/api/episode/:episodeId", async (req, res) => {
-            const episodeId = req.params.episodeId as EpisodeId,
-                episode = await this.service.getEpisode(episodeId),
-                viewData = episodeToEpisodeDetailsViewData(episode);
+            const episodeId = req.params.episodeId as EpisodeId;
+            try {
+                const episode = await this.service.getEpisode(episodeId),
+                    viewData = episodeToEpisodeDetailsViewData(episode);
 
-            res.render('partials/episode-details', viewData);
+                res.render('partials/episode-details', viewData);
+            } catch (error) {
+                if (isUpstreamNotFound(error)) {
+                    res.status(404).send('Episode not found');
+                    return;
+                }
+                throw error;
+            }
         });
 
         this.app.use((err: any, req: Request, res: Response, next: NextFunction) => {
