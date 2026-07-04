@@ -44,6 +44,10 @@ import { buildSleepTimer } from './sleepTimer.mjs';
 import { shuffle } from './utils.mjs';
 import type { StateMachine, EventSource, Channel, ChannelId, StationBuilderShow, Show } from './types.mjs';
 
+/* 0.2 seconds of silence (8kbps mono mp3), inlined as a data url so the iOS workaround below doesn't
+need a network request or a checked-in binary. It only ever gets loaded, never played. */
+const SILENT_MP3_DATA_URL = 'data:audio/mpeg;base64,SUQzBAAAAAAAIlRTU0UAAAAOAAADTGF2ZjYyLjMuMTAwAAAAAAAAAAAAAAD/83DAAAAAAAAAAAAASW5mbwAAAA8AAAAKAAABvAB3d3d3d3d3d3eHh4eHh4eHh4eHlpaWlpaWlpaWlqWlpaWlpaWlpaW0tLS0tLS0tLS0w8PDw8PDw8PDw9LS0tLS0tLS0tLh4eHh4eHh4eHh8PDw8PDw8PDw8P////////////8AAAAATGF2YzYyLjExAAAAAAAAAAAAAAAAJAMGAAAAAAAAAbzs8qKyAAAAAAAAAAAAAAAAAP/zEMQAAAADSAAAAABMQU1FMy4xMDBVVVVV//MSxA0AAANIAAAAAFVVVVVVVVVVVVVVVVVV//MQxBsAAANIAAAAAFVVVVVVVVVVVVVVVVX/8xDEKAAAA0gAAAAAVVVVVVVVVVVVVVVVVf/zEMQ1AAADSAAAAABVVVVVVVVVVVVVVVVV//MQxEIAAANIAAAAAFVVVVVVVVVVVVVVVVX/8xDETwAAA0gAAAAAVVVVVVVVVVVVVVVVVf/zEMRcAAADSAAAAABVVVVVVVVVVVVVVVVV//MQxGkAAANIAAAAAFVVVVVVVVVVVVVVVVX/8xLEdgAAA0gAAAAAVVVVVVVVVVVVVVVVVVU=';
+
 window.onload = () => {
     const model = buildModel(),
         stateMachine = buildStateMachine(),
@@ -282,7 +286,7 @@ window.onload = () => {
             within an AJAX event handler (such as loadNextFromPlaylist -> service.getPlaylistForChannel) but if we load
             something (anything) outside the callback without playing it, then subsequent load/plays from within the
             callback all work - Godammit Safari */
-            audioPlayer.load('silence.mp3');
+            audioPlayer.load(SILENT_MP3_DATA_URL);
 
             loadNextFromPlaylist();
         }
