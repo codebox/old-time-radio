@@ -214,8 +214,16 @@ export class WebServer {
         this.app.get("/episode/:episodeId", async (req, res) => {
             const episodeId = req.params.episodeId as EpisodeId;
             try {
-                const episode = await this.service.getEpisode(episodeId),
-                    viewData = episodeToEpisodeDetailsViewData(episode);
+                const episode = await this.service.getEpisode(episodeId);
+
+                // Episodes without a summary are already excluded from /episodes/:show and the sitemap,
+                // so treat them as non-existent here too rather than exposing them via a direct URL
+                if (!hasEpisodeSummary(episode)) {
+                    res.status(404).send('Episode not found');
+                    return;
+                }
+
+                const viewData = episodeToEpisodeDetailsViewData(episode);
 
                 res.render('episode', {episode: viewData});
             } catch (error) {
@@ -256,8 +264,14 @@ export class WebServer {
         this.app.get("/api/episode/:episodeId", async (req, res) => {
             const episodeId = req.params.episodeId as EpisodeId;
             try {
-                const episode = await this.service.getEpisode(episodeId),
-                    viewData = episodeToEpisodeDetailsViewData(episode);
+                const episode = await this.service.getEpisode(episodeId);
+
+                if (!hasEpisodeSummary(episode)) {
+                    res.status(404).send('Episode not found');
+                    return;
+                }
+
+                const viewData = episodeToEpisodeDetailsViewData(episode);
 
                 res.render('partials/episode-details', viewData);
             } catch (error) {
