@@ -20,6 +20,14 @@ import { buildPlayingNowManager } from './playingNowManager.mjs';
 import { buildSnowMachine } from './snowMachine.mjs';
 import type { View, EventSource, Model, Channel, ChannelId, Visualiser, ApiChannelScheduleResponse, ApiPlayingNowResponse, StationBuilderModel, Url } from './types.mjs';
 
+/* True for any browser on iOS (Apple requires them all to use WebKit - iPads have reported themselves as
+Macs since iPadOS 13, hence the maxTouchPoints check) and for Safari on the desktop (Chrome and Edge include
+'Safari' in their user-agent strings, so they must be excluded explicitly). Used by showDownloadLink(), which
+needs to treat WebKit differently - see the comment there. */
+const isWebKit = /iPad|iPhone|iPod/.test(navigator.userAgent)
+    || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+    || (/Safari\//.test(navigator.userAgent) && !/Chrome|Chromium|Edg\//.test(navigator.userAgent));
+
 export function buildView(eventSource: EventSource, model: Model): View {
     const FEW_CHANNELS_LIMIT = 4,
         channelButtons: Record<string, HTMLDivElement> = {},
@@ -320,20 +328,35 @@ export function buildView(eventSource: EventSource, model: Model): View {
             playingNowPrinter.stop();
         },
         /*
-         * The download link points at archive.org's /cors/ path rather than the /download/ path we get from the API.
-         * Both serve identical bytes, but /download/ sends 'Content-Type: audio/mpeg', which browsers render inline -
-         * on iPhones that meant tapping the link just opened a page playing the episode, with no way to save it.
-         * /cors/ sends 'application/octet-stream' instead, which browsers can't render, so they download it. We can't
-         * use the HTML download attribute to force this ourselves, because it's only honoured for same-origin links.
+         * The download link needs to save the file rather than play it in the browser, and how we achieve that
+         * depends on the browser engine. The API gives us 'https://archive.org/download/...' urls, which send
+         * 'Content-Type: audio/mpeg' - every browser renders that inline, so clicking the link just played the
+         * episode on a new page. Two different rewrites fix this:
          *
-         * Note that /cors/ is undocumented for this purpose - it exists for CORS-restricted fetches, and it's served
-         * from archive.org's front end rather than redirecting to a datanode like /download/ does. If downloads start
-         * failing or get slow, this rewrite is the first thing to suspect. To revert, drop the replace() and go back to:
+         * - Default (Chrome/Firefox/Edge): archive.org's /cors/ path serves the identical bytes but with
+         *   'Content-Type: application/octet-stream', which these browsers can't render, so they download it.
+         *   Note that /cors/ is undocumented for this purpose - it exists for CORS-restricted fetches - so if
+         *   downloads start failing or get slow on these browsers, this rewrite is the first thing to suspect.
+         *
+         * - WebKit (everything on iOS, plus desktop Safari): WebKit sniffs the content, recognises audio, and
+         *   plays it inline regardless of the declared type, so /cors/ doesn't help. The one signal it does
+         *   respect is the HTML download attribute, but that's only honoured on same-origin links - so for these
+         *   browsers we use our own '/audio/' mirror of archive.org instead. This costs us bandwidth on cache
+         *   misses, which is why it isn't the default for everyone.
+         *
+         * To revert to the original (plays inline, but always direct from archive.org):
          *     elDownloadLink.innerHTML = `<a href="${mp3Url}" target="_blank">Download this show as an MP3 file</a>`;
          */
         showDownloadLink(mp3Url: Url) {
-            const downloadUrl = (mp3Url as string).replace('https://archive.org/download/', 'https://archive.org/cors/');
-            elDownloadLink.innerHTML = `<a href="${downloadUrl}">Download this show as an MP3 file</a>`;
+            const link = document.createElement('a');
+            if (isWebKit) {
+                link.href = (mp3Url as string).replace('https://archive.org/download/', '/audio/');
+                link.setAttribute('download', ''); // filename comes from the url
+            } else {
+                link.href = (mp3Url as string).replace('https://archive.org/download/', 'https://archive.org/cors/');
+            }
+            link.textContent = 'Download this show as an MP3 file';
+            elDownloadLink.replaceChildren(link);
         },
         hideDownloadLink() {
             elDownloadLink.innerHTML = '';
