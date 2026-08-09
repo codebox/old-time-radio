@@ -319,8 +319,21 @@ export function buildView(eventSource: EventSource, model: Model): View {
             elPlayingNowCanvas.style.display = 'none';
             playingNowPrinter.stop();
         },
+        /*
+         * The download link points at archive.org's /cors/ path rather than the /download/ path we get from the API.
+         * Both serve identical bytes, but /download/ sends 'Content-Type: audio/mpeg', which browsers render inline -
+         * on iPhones that meant tapping the link just opened a page playing the episode, with no way to save it.
+         * /cors/ sends 'application/octet-stream' instead, which browsers can't render, so they download it. We can't
+         * use the HTML download attribute to force this ourselves, because it's only honoured for same-origin links.
+         *
+         * Note that /cors/ is undocumented for this purpose - it exists for CORS-restricted fetches, and it's served
+         * from archive.org's front end rather than redirecting to a datanode like /download/ does. If downloads start
+         * failing or get slow, this rewrite is the first thing to suspect. To revert, drop the replace() and go back to:
+         *     elDownloadLink.innerHTML = `<a href="${mp3Url}" target="_blank">Download this show as an MP3 file</a>`;
+         */
         showDownloadLink(mp3Url: Url) {
-            elDownloadLink.innerHTML = `<a href="${mp3Url}" target="_blank">Download this show as an MP3 file</a>`;
+            const downloadUrl = (mp3Url as string).replace('https://archive.org/download/', 'https://archive.org/cors/');
+            elDownloadLink.innerHTML = `<a href="${downloadUrl}">Download this show as an MP3 file</a>`;
         },
         hideDownloadLink() {
             elDownloadLink.innerHTML = '';
