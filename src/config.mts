@@ -65,6 +65,10 @@ class Config {
         return maybeShowConfig as ShowConfig;
     }
 
+    hasShowConfigByIndex(showIndex: ShowIndex): boolean {
+        return this.configData.shows.some((show: ShowConfig) => show.number === showIndex);
+    }
+
     getShowConfigByIndex(showIndex: ShowIndex): ShowConfig {
         const maybeShowConfig = this.configData.shows.find((show: ShowConfig) => show.number === showIndex);
         if (!maybeShowConfig) {

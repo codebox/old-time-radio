@@ -67,10 +67,19 @@ export class Service {
     }
 
     async getPlayingNowAndNext(channels: ChannelId[]): Promise<PlayingNowAndNext> {
+        // Failed channels are omitted from the response rather than failing the whole batch - one dead
+        // channel code (or one channel with upstream problems) shouldn't break playing-now for the rest
+        const results = await Promise.allSettled(channels.map(async channelId =>
+            [channelId, await this.scheduleService.getPlayingNowAndNext(channelId)] as const
+        ));
         return Object.fromEntries(
-            await Promise.all(channels.map(async channelId =>
-                [channelId, await this.scheduleService.getPlayingNowAndNext(channelId)]
-            ))
+            results.flatMap((result, i) => {
+                if (result.status === 'rejected') {
+                    log.warn(`Unable to get playing-now details for channel '${channels[i]}': ${result.reason?.message}`);
+                    return [];
+                }
+                return [result.value];
+            })
         ) as PlayingNowAndNext;
     }
 

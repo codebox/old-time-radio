@@ -21,6 +21,17 @@ const DEFAULT_SCHEDULE_LENGTH = 60 * 60 as Seconds,
     MAX_SCHEDULE_LENGTH = 24 * 60 * 60 as Seconds,
     START_TIME = 1595199600 as Seconds; // 2020-07-20 00:00:00
 
+/* Thrown when a channel id is neither a built-in channel name nor a channel code containing at least
+one show that still exists in the config. Channel codes are bitmaps over show indexes and they outlive
+the config - they live on in users' bookmarks and shared urls - so codes referencing since-removed shows
+are expected and should produce a 404, not a 500. */
+export class ChannelNotFoundError extends Error {
+    constructor(channelId: ChannelId) {
+        super(`No shows found for channel: ${channelId}`);
+        this.name = 'ChannelNotFoundError';
+    }
+}
+
 export class ScheduleService {
     private channelCodeService: ChannelCodeService;
     private dataService: DataService;
@@ -160,9 +171,22 @@ export class ScheduleService {
         const configChannel = config.channels.find(channel => channel.name === channelId);
         if (configChannel) {
             return configChannel.shows;
-        } else {
-            return this.channelCodeService.getShowIndexesFromCode(channelId as ChannelCode).map(showIndex => config.getShowConfigByIndex(showIndex).id);
         }
+
+        // Skip decoded indexes with no config entry rather than failing the whole channel - stale codes
+        // referencing since-removed shows should degrade to their surviving shows
+        const validShowIndexes = this.channelCodeService.getShowIndexesFromCode(channelId as ChannelCode).filter(showIndex => {
+            if (!config.hasShowConfigByIndex(showIndex)) {
+                log.warn(`Channel code '${channelId}' includes show index ${showIndex} which has no config entry - skipping`);
+                return false;
+            }
+            return true;
+        });
+
+        if (validShowIndexes.length === 0) {
+            throw new ChannelNotFoundError(channelId);
+        }
+        return validShowIndexes.map(showIndex => config.getShowConfigByIndex(showIndex).id);
     }
 
     private playlistReachedMinDuration(minDuration: Seconds): SchedulerStopCondition {

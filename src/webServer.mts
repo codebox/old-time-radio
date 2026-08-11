@@ -16,6 +16,7 @@ import type {
     EpisodeWithLongSummary, SearchResultsViewData, EpisodeDetailsViewData
 } from "./types.mjs";
 import {hasEpisodeSummary} from "./utils.mjs";
+import {ChannelNotFoundError} from "./scheduleService.mjs";
 
 // Matches built-in channel names ('future', 'comedy', ...) and generated channel codes,
 // which use only characters from the CHAR_MAP in channelCodeService. Anything else is
@@ -84,11 +85,20 @@ export class WebServer {
                 return;
             }
             const channelId = req.params.channel as ChannelId,
-                length = Number(req.query.length) as Seconds,
-                schedule = await this.service.getScheduleForChannel(channelId, length),
-                response = schedule as ApiChannelScheduleResponse;
+                length = Number(req.query.length) as Seconds;
 
-            res.json(response);
+            try {
+                const schedule = await this.service.getScheduleForChannel(channelId, length),
+                    response = schedule as ApiChannelScheduleResponse;
+
+                res.json(response);
+            } catch (error) {
+                if (error instanceof ChannelNotFoundError) {
+                    res.status(404).json({ error: "Channel not found" });
+                    return;
+                }
+                throw error;
+            }
         });
 
         this.app.get("/api/channel/generate/:nums", async (req, res) => {
