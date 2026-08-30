@@ -95,8 +95,10 @@ export const config = {
     },
     snow: {
         maxFlakeCount: 500,
-        minFlakeSize: 0.5,
-        maxFlakeSize: 3,
+        minFlakeSize: 2,
+        maxFlakeSize: 8,
+        maxSpinSpeed: 0.012,
+        flakeDesignCount: 8,
         maxXSpeed: 0.5,
         minYSpeed: 0.3,
         maxYSpeed: 2,
