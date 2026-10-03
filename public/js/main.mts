@@ -399,7 +399,8 @@ window.onload = () => {
 
         return {
             startIfApplicable() {
-                if (!timerId && !starting && model.showNowPlayingMessages) {
+                // 'playing now' details are only shown while no channel is selected, they would sit on top of the visualiser otherwise
+                if (!timerId && !starting && model.showNowPlayingMessages && !model.selectedChannelId) {
                     channelIds = shuffle(model.channels!.map(c => c.id));
                     if (channelIds.length > 1) {
                         // Only show 'playing now' details if there are multiple channels
