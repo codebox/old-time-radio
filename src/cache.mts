@@ -13,6 +13,7 @@ export class Cache<K,V> {
     private lruCache: LRUCache<K,V>;
     private fetch: (key: K) => Promise<V>;
     private isFresh: (key: K) => Promise<boolean>;
+    private pendingFetches: Map<K, Promise<V>> = new Map();
 
     constructor(cacheName: string, fetch: (key: K) => Promise<V>, maxItems: number, diskCacheMaxAge?: Seconds) {
         this.cacheName = cacheName;
@@ -28,48 +29,60 @@ export class Cache<K,V> {
 
         this.lruCache = new LRUCache<K,V>({
             max: maxItems,
-            onInsert: (value, key) => {
-                log.debug(`Added item for [${key}] to ${this.cacheName} memory cache`);
-                if (this.diskCache) {
-                    this.diskCache.set(key, value).then(didUpdate => {
-                        if (didUpdate) {
-                            log.debug(`Saved item for [${key}] to ${this.cacheName} disk cache`);
-                        }
-                    }).catch((error: { message: string; }) => {
-                        log.error(`Failed to save item for [${key}] to ${this.cacheName} disk cache: ${error.message}`);
-                    })
-                }
-            },
             dispose: (value, key, reason) => {
                 log.debug(`Disposing item for [${key}] from ${this.cacheName} cache, reason=${reason}`);
             },
         });
     }
 
-    async refetchStaleItems() {
-        const staleKeys = [];
-        for (const key of this.lruCache.keys()) {
-            if (!await this.isFresh(key as K)) {
-                staleKeys.push(key as K);
-            }
+    /* Saves a freshly-fetched value to the disk cache (fire-and-forget). Deliberately NOT done for
+    values that were loaded from the disk cache itself - re-saving those would bump their timestamps
+    and make stale entries look fresh. */
+    private persist(key: K, value: V) {
+        if (this.diskCache) {
+            this.diskCache.set(key, value).then(didUpdate => {
+                if (didUpdate) {
+                    log.debug(`Saved item for [${key}] to ${this.cacheName} disk cache`);
+                }
+            }).catch((error: { message: string; }) => {
+                log.error(`Failed to save item for [${key}] to ${this.cacheName} disk cache: ${error.message}`);
+            })
         }
+    }
 
-        log.debug(`Found ${staleKeys.length} stale items in ${this.cacheName} cache`);
-        for (const key of staleKeys) {
-            log.debug(`Refetching stale item for key [${key}] in ${this.cacheName} cache`);
-            try {
-                const newValue = await this.fetch(key);
-                this.lruCache.set(key, newValue);
-
-            } catch (error) {
-                log.error(`Failed to refetch item for key [${key}] in ${this.cacheName} cache: ${(error as Error).message}`);
-            }
+    /* Fetches a new value for the key and stores it in the cache. Concurrent calls for the same key
+    share a single fetch rather than each triggering their own. */
+    private fetchAndStore(key: K): Promise<V> {
+        let pending = this.pendingFetches.get(key);
+        if (!pending) {
+            pending = this.fetch(key)
+                .then(newValue => {
+                    this.lruCache.set(key, newValue);
+                    this.persist(key, newValue);
+                    return newValue;
+                })
+                .finally(() => this.pendingFetches.delete(key));
+            this.pendingFetches.set(key, pending);
         }
+        return pending;
+    }
+
+    /* Kicks off a background refresh of a stale entry. The stale value continues to be served until
+    the refresh completes; if the refresh fails the stale value keeps being served and we try again
+    on the next access. */
+    private refreshStaleItem(key: K) {
+        log.debug(`Cached value for key [${key}] in ${this.cacheName} cache is stale, refreshing in background`);
+        this.fetchAndStore(key).catch((error: Error) => {
+            log.warn(`Failed to refresh stale item for key [${key}] in ${this.cacheName} cache, continuing to serve stale value: ${error.message}`);
+        });
     }
 
     async get(key: K): Promise<V> {
         if (this.lruCache.has(key)) {
             log.debug(`Cache hit for key [${key}] in ${this.cacheName} memory cache`);
+            if (!await this.isFresh(key)) {
+                this.refreshStaleItem(key);
+            }
             return this.lruCache.get(key);
 
         } else if (this.diskCache) {
@@ -77,20 +90,21 @@ export class Cache<K,V> {
                 log.debug(`Cache hit for key [${key}] in ${this.cacheName} disk cache`);
                 const value = await this.diskCache.get(key);
                 this.lruCache.set(key, value);
+                if (!await this.isFresh(key)) {
+                    this.refreshStaleItem(key);
+                }
                 return value;
             }
         }
 
         log.debug(`${this.cacheName} cache miss for key [${key}], fetching new value`);
-        const newValue = await this.fetch(key);
-        log.debug(`Fetched new value for [${key}], saving to ${this.cacheName} cache`);
-        this.lruCache.set(key, newValue); // gets saved to diskCache in onInsert
-        return newValue;
+        return this.fetchAndStore(key);
     }
 
     async set(key: K, value: V) {
         log.debug(`Setting value for key [${key}] in ${this.cacheName} cache`);
         this.lruCache.set(key, value);
+        this.persist(key, value);
     }
 
     async remove(key: K) {
@@ -143,10 +157,16 @@ class DiskCache<K,V> {
 
     async isFresh(key: K): Promise<boolean> {
         if (!this.fileModificationTimes.has(key)) {
-            const fileStats = await fs.stat(this.getFilePath(key)),
-                modifiedTime = fileStats.mtimeMs as Millis;
+            try {
+                const fileStats = await fs.stat(this.getFilePath(key)),
+                    modifiedTime = fileStats.mtimeMs as Millis;
 
-            this.fileModificationTimes.set(key, modifiedTime);
+                this.fileModificationTimes.set(key, modifiedTime);
+            } catch (error) {
+                // no disk file yet (e.g. the first write is still in flight) - the value must
+                // have been fetched very recently so treat it as fresh
+                return true;
+            }
         }
 
         const currentTime = clock.nowMillis() as Millis,
@@ -170,6 +190,12 @@ class DiskCache<K,V> {
         const currentValue = await this.get(key);
         if (deepEquals(value, currentValue)) {
             log.debug(`Disk cache value for key [${key}] is unchanged, skipping write`);
+            // the entry was still refreshed, so bump its timestamps - otherwise an entry whose
+            // refetched value happens to be identical would look permanently stale
+            const now = clock.nowMillis(),
+                timestamp = new Date(now);
+            this.fileModificationTimes.set(key, now);
+            await fs.utimes(this.getFilePath(key), timestamp, timestamp);
             return false;
         } else {
             await fs.writeFile(this.getFilePath(key), JSON.stringify(value));
@@ -179,6 +205,7 @@ class DiskCache<K,V> {
     }
 
     async remove(key: K) {
+        this.fileModificationTimes.delete(key);
         try {
             await fs.unlink(this.getFilePath(key));
         } catch (error) {
@@ -190,6 +217,7 @@ class DiskCache<K,V> {
     }
 
     async clear() {
+        this.fileModificationTimes.clear();
         try {
             const files = await fs.readdir(this.cacheDir);
             await Promise.all(

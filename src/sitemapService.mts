@@ -12,6 +12,7 @@ const SITEMAP_FILE_PATH = path.join(process.cwd(), 'public', 'sitemap.xml'),
 
 export class SiteMapService {
     private dataService: DataService;
+    private pendingRegeneration: Promise<SiteMapXml> | null = null;
 
     constructor(dataService: DataService) {
         this.dataService = dataService;
@@ -32,6 +33,17 @@ export class SiteMapService {
             // File doesn't exist, generate it
         }
 
+        // Regeneration fetches the episode list for every show, so concurrent requests
+        // for a stale sitemap share a single regeneration rather than each starting their own
+        if (!this.pendingRegeneration) {
+            this.pendingRegeneration = this.regenerate().finally(() => {
+                this.pendingRegeneration = null;
+            });
+        }
+        return this.pendingRegeneration;
+    }
+
+    private async regenerate(): Promise<SiteMapXml> {
         log.info(`Regenerating ${SITEMAP_FILE_PATH}...`);
 
         const shows = await this.dataService.getShows(),
