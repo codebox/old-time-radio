@@ -696,6 +696,10 @@
     {
       "number": 164,
       "id": "bill-stern-sports-reel"
+    },
+    {
+      "number": 165,
+      "id": "pursuit"
     }
   ],
   "channels": [
@@ -780,7 +784,8 @@
         "michael-shayne",
         "jeff-regan",
         "21st-precinct",
-        "the-line-up"
+        "the-line-up",
+        "pursuit"
       ]
     },
     {
