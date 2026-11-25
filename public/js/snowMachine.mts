@@ -13,6 +13,10 @@ type Snowflake = {
     sprite: FlakeSprite;
     angle: number;
     spin: number;
+    tumbleAxis: number;
+    tumbleAxisDrift: number;
+    tumbleAngle: number;
+    tumbleSpeed: number;
 };
 
 type BranchDesign = {
@@ -135,6 +139,12 @@ export function buildSnowMachine(elCanvas: HTMLCanvasElement): SnowMachine {
         minYSpeed = config.snow.minYSpeed,
         maxYSpeed = config.snow.maxYSpeed,
         maxSpinSpeed = config.snow.maxSpinSpeed,
+        tumbleSpeed = config.snow.tumbleSpeed,
+        tumbleSpeedVariation = config.snow.tumbleSpeedVariation,
+        tumbleDistanceSlowdown = config.snow.tumbleDistanceSlowdown,
+        maxTumbleAxisDrift = config.snow.maxTumbleAxisDrift,
+        minTumbleThickness = config.snow.minTumbleThickness,
+        tumbleShimmer = config.snow.tumbleShimmer,
         windSpeedDelta = config.snow.windSpeedDelta,
         windSpeedChangeIntervalMillis = config.snow.windSpeedChangeIntervalSeconds * 1000,
         snowflakeAddIntervalMillis = config.snow.snowflakeAddIntervalSeconds * 1000,
@@ -157,17 +167,32 @@ export function buildSnowMachine(elCanvas: HTMLCanvasElement): SnowMachine {
             distance,
             sprite: sprites[Math.floor(Math.random() * sprites.length)],
             angle: rndRange(0, 2 * Math.PI),
-            spin: rndRange(-maxSpinSpeed, maxSpinSpeed) * (1 - distance)
+            spin: rndRange(-maxSpinSpeed, maxSpinSpeed) * (1 - distance),
+            // Tumbling: the flake turns about an axis lying in its own plane, so it
+            // foreshortens to edge-on and back. The axis itself slowly drifts round.
+            tumbleAxis: rndRange(0, Math.PI),
+            tumbleAxisDrift: rndRange(-maxTumbleAxisDrift, maxTumbleAxisDrift),
+            tumbleAngle: rndRange(0, 2 * Math.PI),
+            tumbleSpeed: tumbleSpeed
+                * rndRange(1 - tumbleSpeedVariation, 1 + tumbleSpeedVariation)
+                * (Math.random() < 0.5 ? -1 : 1)
+                * (1 - distance * tumbleDistanceSlowdown)
         };
     }
 
     function drawSnowflake(snowflake: Snowflake) {
         const ctx = elCanvas.getContext('2d')!,
             diameter = snowflake.size * 2,
-            sprite = pickSpriteResolution(snowflake.sprite, diameter);
+            sprite = pickSpriteResolution(snowflake.sprite, diameter),
+            // How face-on the flake is: 1 when facing the viewer, minTumbleThickness edge-on.
+            squash = Math.max(Math.abs(Math.cos(snowflake.tumbleAngle)), minTumbleThickness);
         ctx.save();
-        ctx.globalAlpha = snowflake.opacity;
+        // Flakes catch the light as they turn to face the viewer.
+        ctx.globalAlpha = snowflake.opacity * (1 - tumbleShimmer + tumbleShimmer * squash);
         ctx.translate(snowflake.x, snowflake.y);
+        ctx.rotate(snowflake.tumbleAxis);
+        ctx.scale(1, squash);
+        ctx.rotate(-snowflake.tumbleAxis);
         ctx.rotate(snowflake.angle);
         ctx.drawImage(sprite, -snowflake.size, -snowflake.size, diameter, diameter);
         ctx.restore();
@@ -177,6 +202,8 @@ export function buildSnowMachine(elCanvas: HTMLCanvasElement): SnowMachine {
         snowflake.x += snowflake.speedX + (currentWindSpeed * (1 - snowflake.distance / 2));
         snowflake.y += snowflake.speedY;
         snowflake.angle += snowflake.spin;
+        snowflake.tumbleAngle += snowflake.tumbleSpeed;
+        snowflake.tumbleAxis += snowflake.tumbleAxisDrift;
         if (snowflake.y > elCanvas.height + snowflake.size) {
             Object.assign(snowflake, buildSnowflake());
         }

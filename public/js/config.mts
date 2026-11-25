@@ -98,6 +98,13 @@ export const config = {
         minFlakeSize: 2,
         maxFlakeSize: 8,
         maxSpinSpeed: 0.012,
+        // Tumbling: each flake flips over about an axis across its face.
+        tumbleSpeed: 0.02,              // average flip speed, radians per frame
+        tumbleSpeedVariation: 0.5,      // each flake's speed is tumbleSpeed x (1 +/- this)
+        tumbleDistanceSlowdown: 0.5,    // how much slower the most distant flakes tumble (0 = no slowdown, 1 = stopped)
+        maxTumbleAxisDrift: 0.004,      // how fast the flip axis turns round, radians per frame
+        minTumbleThickness: 0.2,        // how thin a flake gets edge-on (1 = never foreshortens, 0 = disappears)
+        tumbleShimmer: 0.5,             // how much a flake dims edge-on (0 = none, 1 = fully transparent)
         flakeDesignCount: 8,
         maxXSpeed: 0.5,
         minYSpeed: 0.3,
